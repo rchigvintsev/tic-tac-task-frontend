@@ -1,5 +1,11 @@
-<h2>Tasks</h2>
+<mat-card>
+  <mat-card-title>Tasks</mat-card-title>
 
-<div *ngFor="let task of tasks">
-  {{ task.title }}
-</div>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let task of tasks">
+        <h3 mat-line>{{ task.title }}</h3>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
