@@ -1,6 +1,17 @@
-<mat-toolbar color="primary">
-  <span>{{ title }}</span>
-</mat-toolbar>
+<div class="page">
+  <div class="page-content">
+    <mat-toolbar color="primary">
+      <span>{{ title }}</span>
+    </mat-toolbar>
 
-<router-outlet></router-outlet>
-<app-tasks></app-tasks>
+    <main>
+      <router-outlet></router-outlet>
+      <app-tasks></app-tasks>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+      </div>
+    </footer>
+  </div>
+</div>
