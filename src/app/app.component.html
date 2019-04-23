@@ -11,6 +11,9 @@
 
     <footer class="footer">
       <div class="footer-content">
+        <ng-container *ngFor="let lang of translate.getLangs()">
+          <button (click)="changeLanguage(lang)">{{ lang }}</button>
+        </ng-container>
       </div>
     </footer>
   </div>
