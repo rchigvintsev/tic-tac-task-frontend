@@ -11,9 +11,12 @@
 
     <footer class="footer">
       <div class="footer-content">
-        <ng-container *ngFor="let lang of translate.getLangs()">
-          <button (click)="changeLanguage(lang)">{{ lang }}</button>
-        </ng-container>
+        <div class="lang-container" style="float: right">
+          <ng-container *ngFor="let lang of translate.getLangs(); let i = index;">
+            <span *ngIf="i > 0">|</span>
+            <a mat-button routerLink="." (click)="changeLanguage(lang)">{{ lang }}</a>
+          </ng-container>
+        </div>
       </div>
     </footer>
   </div>
