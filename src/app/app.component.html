@@ -6,16 +6,14 @@
 
     <main>
       <router-outlet></router-outlet>
-      <app-tasks></app-tasks>
     </main>
 
     <footer class="footer">
       <div class="footer-content">
         <div class="lang-container" style="float: right">
-          <ng-container *ngFor="let lang of translate.getLangs(); let i = index;">
-            <span *ngIf="i > 0">|</span>
-            <a mat-button routerLink="." (click)="changeLanguage(lang)">{{ lang }}</a>
-          </ng-container>
+            <a mat-button [routerLink]="'/en'" [routerLinkActive]="['router-link-active']">en</a>
+            <span>|</span>
+            <a mat-button [routerLink]="'/ru'" [routerLinkActive]="['router-link-active']">ru</a>
         </div>
       </div>
     </footer>
