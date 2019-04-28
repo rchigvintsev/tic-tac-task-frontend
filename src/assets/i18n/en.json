@@ -1,3 +1,4 @@
 {
-  "tasks": "Tasks"
+  "tasks": "Tasks",
+  "task_title_prompt": "Enter task title"
 }

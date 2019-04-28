@@ -10,6 +10,7 @@ import {TaskService} from '../service/task.service';
 })
 export class TasksComponent implements OnInit {
   tasks: Array<Task>;
+  model = new Task();
 
   constructor(private taskService: TaskService) { }
 
@@ -17,4 +18,9 @@ export class TasksComponent implements OnInit {
     this.taskService.getTasks().subscribe(tasks => { this.tasks = tasks })
   }
 
+  onSubmit() {
+    this.taskService.createTask(this.model).subscribe(task => {
+      this.tasks.push(task);
+    });
+  }
 }
