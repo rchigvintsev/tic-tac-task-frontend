@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
+import {Strings} from '../util/strings';
 
 @Component({
   selector: 'app-tasks',
@@ -10,17 +12,38 @@ import {TaskService} from '../service/task.service';
 })
 export class TasksComponent implements OnInit {
   tasks: Array<Task>;
-  model = new Task();
 
-  constructor(private taskService: TaskService) { }
+  @ViewChild("taskForm")
+  taskForm: NgForm;
+  formModel = new Task();
+
+  constructor(private taskService: TaskService) {
+  }
 
   ngOnInit() {
-    this.taskService.getTasks().subscribe(tasks => { this.tasks = tasks })
+    this.taskService.getTasks().subscribe(tasks => {
+      this.tasks = tasks
+    })
   }
 
   onSubmit() {
-    this.taskService.createTask(this.model).subscribe(task => {
-      this.tasks.push(task);
-    });
+    if (this.validateTaskForm()) {
+      this.taskService.createTask(this.formModel).subscribe(task => {
+        this.tasks.push(task);
+      });
+      this.taskForm.resetForm();
+    }
+  }
+
+  private validateTaskForm() {
+    if (!this.taskForm.valid)
+      return false;
+
+    if (Strings.isBlank(this.formModel.title)) {
+      this.taskForm.form.controls['title'].setErrors({'incorrect': true});
+      return false;
+    }
+
+    return true;
   }
 }

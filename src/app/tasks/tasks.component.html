@@ -1,14 +1,14 @@
 <mat-card>
   <mat-card-title [translate]="'tasks'">Tasks</mat-card-title>
 
-  <form #taskForm="ngForm" (ngSubmit)="onSubmit(); taskForm.resetForm()">
+  <form #taskForm="ngForm" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <label>
         <input matInput
                id="title"
                type="text"
                name="title"
-               [(ngModel)]="model.title"
+               [(ngModel)]="formModel.title"
                placeholder="{{ 'task_title_prompt' | translate }}"
                required>
       </label>
