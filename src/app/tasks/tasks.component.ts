@@ -28,11 +28,19 @@ export class TasksComponent implements OnInit {
 
   onSubmit() {
     if (this.validateTaskForm()) {
-      this.taskService.createTask(this.formModel).subscribe(task => {
+      this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
       });
       this.taskForm.resetForm();
     }
+  }
+
+  onCheck(task: Task) {
+    task.completed = true;
+    this.taskService.saveTask(task).subscribe(task => {
+      let taskIndex = this.tasks.indexOf(task);
+      this.tasks.splice(taskIndex, 1);
+    });
   }
 
   private validateTaskForm() {

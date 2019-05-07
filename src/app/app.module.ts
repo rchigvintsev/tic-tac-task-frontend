@@ -1,7 +1,14 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatInputModule,
+  MatListModule,
+  MatToolbarModule
+} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 
@@ -33,6 +40,7 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     MatListModule,
     MatToolbarModule,
+    MatCheckboxModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {

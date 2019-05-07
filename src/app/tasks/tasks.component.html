@@ -17,9 +17,10 @@
   </form>
 
   <mat-card-content>
-    <mat-list>
+    <mat-list id="task_list">
       <mat-list-item *ngFor="let task of tasks">
-        <h3 mat-line>{{ task.title }}</h3>
+        <mat-checkbox (change)="onCheck(task)"></mat-checkbox>
+        <span>{{ task.title }}</span>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
