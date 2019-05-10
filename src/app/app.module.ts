@@ -19,6 +19,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TasksComponent} from './tasks/tasks.component';
+import {TaskDetailComponent} from './task-detail/task-detail.component';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -28,7 +29,8 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     DashboardComponent,
-    TasksComponent
+    TasksComponent,
+    TaskDetailComponent
   ],
   imports: [
     BrowserModule,

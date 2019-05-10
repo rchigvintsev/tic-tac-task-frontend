@@ -7,9 +7,11 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
 
 import {DashboardComponent} from './dashboard/dashboard.component';
+import {TaskDetailComponent} from './task-detail/task-detail.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
+  {path: 'task/:id', component: TaskDetailComponent}
 ];
 
 export function LocalizeHttpLoaderFactory(translate: TranslateService,
