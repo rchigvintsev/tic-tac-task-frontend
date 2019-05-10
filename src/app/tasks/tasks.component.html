@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title [translate]="'tasks'">Tasks</mat-card-title>
 
-  <form #taskForm="ngForm" (ngSubmit)="onSubmit()">
+  <form #taskForm="ngForm" (ngSubmit)="createTask()">
     <mat-form-field>
       <label>
         <input matInput
@@ -19,8 +19,11 @@
   <mat-card-content>
     <mat-list id="task_list">
       <mat-list-item *ngFor="let task of tasks">
-        <mat-checkbox (change)="onCheck(task)"></mat-checkbox>
-        <span>{{ task.title }}</span>
+        <mat-checkbox (change)="completeTask(task)"></mat-checkbox>
+
+        <div id="task_title" [routerLink]="['task/', task.id]">
+          <span>{{ task.title }}</span>
+        </div>
       </mat-list-item>
     </mat-list>
   </mat-card-content>

@@ -9,7 +9,7 @@ import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualPars
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {path: '', component: DashboardComponent},
   {path: 'task/:id', component: TaskDetailComponent}
 ];

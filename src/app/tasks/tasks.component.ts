@@ -26,7 +26,7 @@ export class TasksComponent implements OnInit {
     })
   }
 
-  onSubmit() {
+  createTask() {
     if (this.validateTaskForm()) {
       this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
@@ -35,7 +35,7 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  onCheck(task: Task) {
+  completeTask(task: Task) {
     task.completed = true;
     this.taskService.saveTask(task).subscribe(task => {
       let taskIndex = this.tasks.indexOf(task);

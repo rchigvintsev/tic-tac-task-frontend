@@ -3,12 +3,15 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
-import {DashboardComponent} from './dashboard.component';
-import {TasksComponent} from '../tasks/tasks.component';
 import {TranslateHttpLoaderFactory} from '../app.module';
+import {routes} from '../app-routing.module';
+
+import {DashboardComponent} from './dashboard.component';
+import {TaskDetailComponent} from '../task-detail/task-detail.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -19,6 +22,7 @@ describe('DashboardComponent', () => {
       imports: [
         FormsModule,
         HttpClientTestingModule,
+        RouterTestingModule.withRoutes(routes),
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -27,7 +31,7 @@ describe('DashboardComponent', () => {
           }
         })
       ],
-      declarations: [DashboardComponent, TasksComponent],
+      declarations: [DashboardComponent, TaskDetailComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
