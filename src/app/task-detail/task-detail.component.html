@@ -9,6 +9,7 @@
                     id="description"
                     name="description"
                     [(ngModel)]="task.description"
+                    (blur)="saveTask()"
                     placeholder="{{ 'description' | translate }}"
                     maxlength="10000">
           </textarea>
