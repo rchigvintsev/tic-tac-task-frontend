@@ -8,12 +8,10 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
-
-import {TasksComponent} from './tasks.component';
 import {routes} from '../app-routing.module';
-
-import {DashboardComponent} from '../dashboard/dashboard.component';
+import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
+import {DashboardComponent} from '../dashboard/dashboard.component';
 
 describe('TasksComponent', () => {
   let component: TasksComponent;

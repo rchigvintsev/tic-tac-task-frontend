@@ -10,6 +10,7 @@
                name="title"
                [(ngModel)]="formModel.title"
                placeholder="{{ 'task_title_prompt' | translate }}"
+               maxlength="255"
                required>
       </label>
       <button type="submit" hidden="hidden">Submit</button>

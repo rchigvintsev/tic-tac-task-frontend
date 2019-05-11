@@ -1,4 +1,5 @@
 {
   "tasks": "Задачи",
-  "task_title_prompt": "Введите название задачи"
+  "task_title_prompt": "Введите название задачи",
+  "description": "Описание"
 }

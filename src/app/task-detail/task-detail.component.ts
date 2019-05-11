@@ -1,4 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+
+import {Task} from '../model/task';
+import {TaskService} from '../service/task.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -6,9 +10,13 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./task-detail.component.styl']
 })
 export class TaskDetailComponent implements OnInit {
-  constructor() {
+  @Input() task: Task;
+
+  constructor(private route: ActivatedRoute, private taskService: TaskService) {
   }
 
   ngOnInit() {
+    const taskId = +this.route.snapshot.paramMap.get('id');
+    this.taskService.getTask(taskId).subscribe(task => this.task = task);
   }
 }

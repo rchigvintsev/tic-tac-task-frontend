@@ -1,4 +1,5 @@
 {
   "tasks": "Tasks",
-  "task_title_prompt": "Enter task title"
+  "task_title_prompt": "Enter task title",
+  "description": "Description"
 }

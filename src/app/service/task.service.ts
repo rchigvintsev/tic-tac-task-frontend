@@ -20,9 +20,16 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
+  getTask(id: number): Observable<Task> {
+    return this.http.get<any>(`${this.taskUrl}/${id}`).pipe(
+      map(response => {
+        return new Task().deserialize(response);
+      })
+    );
+  }
+
   readonly getTasks = (() => {
-    // noinspection JSUnusedGlobalSymbols
-    const options = Object.assign({params: new HttpParams().set('completed', 'false')}, httpOptions);
+    const options = {params: new HttpParams().set('completed', 'false')};
     return (): Observable<Task[]> => {
       return this.http.get<any>(`${this.taskUrl}/search/findByCompleted`, options).pipe(
         map(response => {
