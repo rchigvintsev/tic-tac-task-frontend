@@ -1,5 +1,23 @@
-<mat-card *ngIf="task">
-  <mat-card-title>{{ task.title }}</mat-card-title>
+<mat-card *ngIf="formModel">
+  <mat-card-title>
+    <form [style.display]="titleEditing ? 'flex' : 'none'" #taskTitleForm="ngForm">
+      <mat-form-field>
+        <label>
+          <input matInput
+                 #title
+                 name="title"
+                 type="text"
+                 [(ngModel)]="formModel.title"
+                 (blur)="endTitleEditing()"
+                 placeholder="{{ 'title' | translate }}"
+                 maxlength="255"
+                 required/>
+        </label>
+      </mat-form-field>
+    </form>
+
+    <span [style.display]="titleEditing ? 'none' : 'inline'" (click)="beginTitleEditing()">{{ formModel.title }}</span>
+  </mat-card-title>
 
   <mat-card-content>
     <form>
@@ -8,7 +26,7 @@
           <textarea matInput
                     id="description"
                     name="description"
-                    [(ngModel)]="task.description"
+                    [(ngModel)]="formModel.description"
                     (blur)="saveTask()"
                     placeholder="{{ 'description' | translate }}"
                     maxlength="10000">

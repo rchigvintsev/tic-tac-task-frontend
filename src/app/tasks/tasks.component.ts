@@ -11,11 +11,12 @@ import {Strings} from '../util/strings';
   styleUrls: ['./tasks.component.styl']
 })
 export class TasksComponent implements OnInit {
-  tasks: Array<Task>;
-
   @ViewChild("taskForm")
   taskForm: NgForm;
+
   formModel = new Task();
+
+  tasks: Array<Task>;
 
   constructor(private taskService: TaskService) {
   }
