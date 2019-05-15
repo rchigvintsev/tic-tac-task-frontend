@@ -1,6 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NgForm} from '@angular/forms';
 
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
@@ -12,13 +11,9 @@ import {Strings} from '../util/strings';
   styleUrls: ['./task-detail.component.styl']
 })
 export class TaskDetailComponent implements OnInit {
-  @ViewChild("taskTitleForm")
-  titleForm: NgForm;
   @ViewChild("title")
   titleElement: ElementRef;
-
   titleEditing = false;
-
   formModel: Task;
 
   private task: Task;

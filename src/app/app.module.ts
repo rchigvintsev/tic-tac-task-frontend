@@ -20,6 +20,7 @@ import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
+import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -30,7 +31,8 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     AppComponent,
     DashboardComponent,
     TasksComponent,
-    TaskDetailComponent
+    TaskDetailComponent,
+    NotBlankValidatorDirective
   ],
   imports: [
     BrowserModule,

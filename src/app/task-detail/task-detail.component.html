@@ -1,6 +1,6 @@
 <mat-card *ngIf="formModel">
   <mat-card-title>
-    <form [style.display]="titleEditing ? 'flex' : 'none'" #taskTitleForm="ngForm">
+    <form [style.display]="titleEditing ? 'flex' : 'none'">
       <mat-form-field>
         <label>
           <input matInput
@@ -11,7 +11,8 @@
                  (blur)="endTitleEditing()"
                  placeholder="{{ 'title' | translate }}"
                  maxlength="255"
-                 required/>
+                 required
+                 notBlank/>
         </label>
       </mat-form-field>
     </form>
