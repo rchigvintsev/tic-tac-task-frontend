@@ -5,7 +5,7 @@ import {Strings} from '../util/strings';
 
 function notBlankValidator(): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} | null => {
-    if (Strings.isBlank(control.value)) {
+    if (control.dirty && Strings.isBlank(control.value)) {
       control.markAsTouched();
       return {'notBlank': {}}
     }
