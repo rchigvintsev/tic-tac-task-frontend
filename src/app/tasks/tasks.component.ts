@@ -13,9 +13,7 @@ import {Strings} from '../util/strings';
 export class TasksComponent implements OnInit {
   @ViewChild("taskForm")
   taskForm: NgForm;
-
   formModel = new Task();
-
   tasks: Array<Task>;
 
   constructor(private taskService: TaskService) {
@@ -28,7 +26,7 @@ export class TasksComponent implements OnInit {
   }
 
   createTask() {
-    if (this.validateTaskForm()) {
+    if (!Strings.isBlank(this.formModel.title)) {
       this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
       });
@@ -42,17 +40,5 @@ export class TasksComponent implements OnInit {
       let taskIndex = this.tasks.indexOf(task);
       this.tasks.splice(taskIndex, 1);
     });
-  }
-
-  private validateTaskForm() {
-    if (!this.taskForm.valid)
-      return false;
-
-    if (Strings.isBlank(this.formModel.title)) {
-      this.taskForm.form.controls['title'].setErrors({'incorrect': true});
-      return false;
-    }
-
-    return true;
   }
 }

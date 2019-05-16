@@ -11,7 +11,8 @@
                [(ngModel)]="formModel.title"
                placeholder="{{ 'task_title_prompt' | translate }}"
                maxlength="255"
-               required>
+               required
+               notBlank>
       </label>
       <button type="submit" hidden="hidden">Submit</button>
     </mat-form-field>
