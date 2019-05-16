@@ -1,6 +1,6 @@
 <mat-card *ngIf="formModel">
   <mat-card-title>
-    <form [style.display]="titleEditing ? 'flex' : 'none'">
+    <form *ngIf="titleEditing">
       <mat-form-field>
         <label>
           <input matInput
@@ -17,7 +17,7 @@
       </mat-form-field>
     </form>
 
-    <span [style.display]="titleEditing ? 'none' : 'inline'" (click)="beginTitleEditing()">{{ formModel.title }}</span>
+    <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ formModel.title }}</span>
   </mat-card-title>
 
   <mat-card-content>
