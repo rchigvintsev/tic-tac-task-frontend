@@ -4,49 +4,6 @@
 body {
   margin: 0;
   font-family: Roboto, sans-serif;
-
-  .page {
-    min-height: 100vh;
-
-    > .page-content {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-
-      main {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-
-        > *:not(router-outlet) {
-          display: block;
-          flex: 1;
-        }
-
-        form {
-          display: flex;
-          flex-direction: column;
-        }
-      }
-
-      footer {
-        background-color: #f5f5f5;
-        margin-top: auto;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-
-        .footer-content {
-          padding: 0 16px;
-
-          .lang-container {
-            float: right;
-
-            a {
-              min-width: 32px;
-            }
-          }
-        }
-      }
-    }
-  }
+  min-height: 100vh;
+  background-color: #f5f5f5;
 }

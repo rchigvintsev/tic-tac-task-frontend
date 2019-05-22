@@ -1,21 +1,19 @@
 <div class="page">
-  <div class="page-content">
+  <header>
     <mat-toolbar color="primary">
       <span>{{ title }}</span>
     </mat-toolbar>
+  </header>
 
-    <main>
-      <router-outlet></router-outlet>
-    </main>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="lang-container" style="float: right">
-            <a mat-button [routerLink]="'/en'" [routerLinkActive]="['router-link-active']">en</a>
-            <span>|</span>
-            <a mat-button [routerLink]="'/ru'" [routerLinkActive]="['router-link-active']">ru</a>
-        </div>
-      </div>
-    </footer>
-  </div>
+  <footer>
+    <div class="language-switcher">
+        <a mat-button [routerLink]="'/en'" [routerLinkActive]="['router-link-active']">en</a>
+        <span>|</span>
+        <a mat-button [routerLink]="'/ru'" [routerLinkActive]="['router-link-active']">ru</a>
+    </div>
+  </footer>
 </div>

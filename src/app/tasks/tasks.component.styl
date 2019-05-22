@@ -1,3 +1,8 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 #task_list {
   .mat-list-item {
     &:hover {
@@ -6,9 +11,13 @@
 
     mat-checkbox {
       margin-right: 16px;
+
+      ::ng-deep .mat-checkbox-ripple { // ::ng-deep is deprecated
+        display: none;
+      }
     }
 
-    #task_title {
+    #title_column {
       display: flex;
       flex-direction: row;
       align-items: center;

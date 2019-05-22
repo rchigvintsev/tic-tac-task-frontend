@@ -5,11 +5,10 @@
     <mat-form-field>
       <label>
         <input matInput
-               id="title"
                type="text"
                name="title"
                [(ngModel)]="formModel.title"
-               placeholder="{{ 'task_title_prompt' | translate }}"
+               placeholder="{{ 'new_task' | translate }}"
                maxlength="255"
                required
                notBlank>
@@ -23,7 +22,7 @@
       <mat-list-item *ngFor="let task of tasks">
         <mat-checkbox (change)="completeTask(task)"></mat-checkbox>
 
-        <div id="task_title" [routerLink]="['task/', task.id]">
+        <div id="title_column" [routerLink]="['task/', task.id]">
           <span>{{ task.title }}</span>
         </div>
       </mat-list-item>

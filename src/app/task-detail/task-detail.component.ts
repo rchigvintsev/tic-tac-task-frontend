@@ -32,14 +32,13 @@ export class TaskDetailComponent implements OnInit {
   }
 
   endTitleEditing() {
-    if (Strings.isBlank(this.formModel.title))
-      this.formModel.title = this.task.title;
-    else
-      this.saveTask();
+    this.saveTask();
     this.titleEditing = false;
   }
 
   saveTask() {
+    if (Strings.isBlank(this.formModel.title))
+      this.formModel.title = this.task.title;
     if (!this.formModel.equals(this.task))
       this.taskService.saveTask(this.formModel).subscribe(task => this.setModel(task));
   }

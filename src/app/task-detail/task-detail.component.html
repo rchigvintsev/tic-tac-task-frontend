@@ -1,26 +1,32 @@
 <mat-card *ngIf="formModel">
-  <mat-card-title>
-    <form *ngIf="titleEditing">
-      <mat-form-field>
-        <label>
-          <input matInput
-                 #title
-                 name="title"
-                 type="text"
-                 [(ngModel)]="formModel.title"
-                 (blur)="endTitleEditing()"
-                 placeholder="{{ 'title' | translate }}"
-                 maxlength="255"
-                 required
-                 notBlank/>
-        </label>
-      </mat-form-field>
-    </form>
+  <div class="mat-card-header">
+    <a mat-icon-button [routerLink]="'/'">
+      <mat-icon aria-label="Back button">arrow_back</mat-icon>
+    </a>
 
-    <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ formModel.title }}</span>
-  </mat-card-title>
+    <div class="mat-card-title">
+        <form *ngIf="titleEditing">
+          <mat-form-field>
+            <label>
+              <input matInput
+                     #title
+                     name="title"
+                     type="text"
+                     [(ngModel)]="formModel.title"
+                     (blur)="endTitleEditing()"
+                     placeholder="{{ 'title' | translate }}"
+                     maxlength="255"
+                     required
+                     notBlank/>
+            </label>
+          </mat-form-field>
+        </form>
 
-  <mat-card-content class="task-detail-content">
+        <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ formModel.title }}</span>
+    </div>
+  </div>
+
+  <mat-card-content>
     <form>
       <mat-form-field>
         <label>

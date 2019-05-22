@@ -5,6 +5,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatIconModule,
   MatInputModule,
   MatListModule,
   MatToolbarModule
@@ -41,10 +42,11 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     FormsModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule,
-    MatListModule,
-    MatToolbarModule,
     MatCheckboxModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatListModule,
+    MatInputModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {

@@ -1,6 +1,7 @@
 {
+  "task": "Task",
   "tasks": "Tasks",
-  "task_title_prompt": "Enter task title",
+  "new_task": "New task",
   "title": "Title",
   "description": "Description",
   "back": "Back"
