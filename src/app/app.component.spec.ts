@@ -29,6 +29,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.page > .page-content > mat-toolbar > span').textContent).toContain('Orchestra');
+    expect(compiled.querySelector('.page > header > mat-toolbar > span').textContent).toContain('Orchestra');
   });
 });
