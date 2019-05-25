@@ -11,7 +11,7 @@ import {Strings} from '../util/strings';
   styleUrls: ['./tasks.component.styl']
 })
 export class TasksComponent implements OnInit {
-  @ViewChild("taskForm")
+  @ViewChild('taskForm')
   taskForm: NgForm;
   formModel = new Task();
   tasks: Array<Task>;
@@ -21,8 +21,8 @@ export class TasksComponent implements OnInit {
 
   ngOnInit() {
     this.taskService.getTasks().subscribe(tasks => {
-      this.tasks = tasks
-    })
+      this.tasks = tasks;
+    });
   }
 
   createTask() {
@@ -36,9 +36,8 @@ export class TasksComponent implements OnInit {
 
   completeTask(task: Task) {
     task.completed = true;
-    this.taskService.saveTask(task).subscribe(task => {
-      let taskIndex = this.tasks.indexOf(task);
-      this.tasks.splice(taskIndex, 1);
+    this.taskService.saveTask(task).subscribe(savedTask => {
+      this.tasks = this.tasks.filter(e => e.id !== savedTask.id);
     });
   }
 }

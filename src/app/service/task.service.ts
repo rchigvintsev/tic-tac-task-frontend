@@ -20,6 +20,21 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
+  readonly getTasks = (() => {
+    const options = {params: new HttpParams().set('completed', 'false')};
+    return (): Observable<Task[]> => {
+      return this.http.get<any>(`${this.taskUrl}/search/findByCompleted`, options).pipe(
+        map(response => {
+          const tasks = [];
+          for (const json of response._embedded.tasks) {
+            tasks.push(new Task().deserialize(json));
+          }
+          return tasks;
+        })
+      );
+    };
+  })();
+
   getTask(id: number): Observable<Task> {
     return this.http.get<any>(`${this.taskUrl}/${id}`).pipe(
       map(response => {
@@ -27,20 +42,6 @@ export class TaskService {
       })
     );
   }
-
-  readonly getTasks = (() => {
-    const options = {params: new HttpParams().set('completed', 'false')};
-    return (): Observable<Task[]> => {
-      return this.http.get<any>(`${this.taskUrl}/search/findByCompleted`, options).pipe(
-        map(response => {
-          const tasks = [];
-          for (let json of response._embedded.tasks)
-            tasks.push(new Task().deserialize(json));
-          return tasks;
-        })
-      )
-    };
-  })();
 
   saveTask(task: Task): Observable<Task> {
     return this.http.post<Task>(this.taskUrl, task, httpOptions).pipe(
