@@ -4,5 +4,6 @@
   "new_task": "New task",
   "title": "Title",
   "description": "Description",
-  "back": "Back"
+  "leave_comment": "Leave comment",
+  "post": "Post"
 }

@@ -1,28 +1,28 @@
-<mat-card *ngIf="formModel">
+<mat-card *ngIf="taskFormModel">
   <div class="mat-card-header">
     <a mat-icon-button [routerLink]="'/'">
       <mat-icon aria-label="Back button">arrow_back</mat-icon>
     </a>
 
     <div class="mat-card-title">
-        <form *ngIf="titleEditing">
-          <mat-form-field>
-            <label>
-              <input matInput
-                     #title
-                     name="title"
-                     type="text"
-                     [(ngModel)]="formModel.title"
-                     (blur)="endTitleEditing()"
-                     placeholder="{{ 'title' | translate }}"
-                     maxlength="255"
-                     required
-                     notBlank/>
-            </label>
-          </mat-form-field>
-        </form>
+      <form *ngIf="titleEditing">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #title
+                   name="title"
+                   type="text"
+                   [(ngModel)]="taskFormModel.title"
+                   (blur)="endTitleEditing()"
+                   placeholder="{{ 'title' | translate }}"
+                   maxlength="255"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
 
-        <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ formModel.title }}</span>
+      <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ taskFormModel.title }}</span>
     </div>
   </div>
 
@@ -33,7 +33,7 @@
           <textarea matInput
                     id="description"
                     name="description"
-                    [(ngModel)]="formModel.description"
+                    [(ngModel)]="taskFormModel.description"
                     (blur)="saveTask()"
                     placeholder="{{ 'description' | translate }}"
                     maxlength="10000">
@@ -43,7 +43,35 @@
     </form>
   </mat-card-content>
 
-  <mat-card-actions [align]="'end'">
-    <a mat-button [routerLink]="'/'">{{ 'back' | translate }}</a>
-  </mat-card-actions>
+  <mat-card-content *ngIf="commentFormModel">
+    <form>
+      <mat-form-field>
+        <label>
+          <textarea matInput
+                    id="comment"
+                    name="comment"
+                    [(ngModel)]="commentFormModel.commentText"
+                    placeholder="{{ 'leave_comment' | translate }}"
+                    maxlength="10000">
+          </textarea>
+        </label>
+      </mat-form-field>
+
+      <div>
+        <button mat-raised-button type="submit" color="primary">{{ 'post' | translate }}</button>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <ng-container *ngIf="comments">
+    <div class="divider-wrapper">
+      <mat-divider></mat-divider>
+    </div>
+
+    <mat-card-content *ngFor="let comment of comments">
+      <div class="comment-wrapper">
+        <span>{{ comment.commentText }}</span>
+      </div>
+    </mat-card-content>
+  </ng-container>
 </mat-card>
