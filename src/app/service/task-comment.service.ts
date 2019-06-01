@@ -1,19 +1,45 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 
 import {TaskComment} from '../model/task-comment';
+
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskCommentService {
   // TODO: save base URL somewhere in the application settings
+  private taskUrl = '//localhost:8080/tasks';
   private taskCommentUrl = '//localhost:8080/taskComments';
 
   constructor(private http: HttpClient) {
+  }
+
+  readonly createComment = (() => {
+    const options = {headers: new HttpHeaders({'Content-Type': 'text/uri-list'})};
+    return (comment: TaskComment, taskId: number): Observable<TaskComment> => {
+      return this.saveComment(comment).pipe(
+        mergeMap(response => {
+          const savedComment = new TaskComment().deserialize(response);
+          return this.http.put<TaskComment>(`${this.taskCommentUrl}/${savedComment.id}/task`,
+            `${this.taskUrl}/${taskId}`, options).pipe(map(() => savedComment));
+        })
+      );
+    };
+  })();
+
+  saveComment(comment: TaskComment): Observable<TaskComment> {
+    return this.http.post<TaskComment>(this.taskCommentUrl, comment, httpOptions).pipe(
+      map(response => {
+        return new TaskComment().deserialize(response);
+      })
+    );
   }
 
   getCommentsForTaskId(taskId: number): Observable<TaskComment[]> {

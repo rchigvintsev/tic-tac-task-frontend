@@ -29,8 +29,8 @@ export class TasksComponent implements OnInit {
     if (!Strings.isBlank(this.formModel.title)) {
       this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
+        this.taskForm.resetForm();
       });
-      this.taskForm.resetForm();
     }
   }
 

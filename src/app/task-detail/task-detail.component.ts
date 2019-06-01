@@ -1,5 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {NgForm} from '@angular/forms';
 
 import {Task} from '../model/task';
 import {TaskComment} from '../model/task-comment';
@@ -17,7 +18,9 @@ export class TaskDetailComponent implements OnInit {
   titleElement: ElementRef;
   titleEditing = false;
   taskFormModel: Task;
-  commentFormModel = new TaskComment();
+  @ViewChild('commentForm')
+  commentForm: NgForm;
+  commentFormModel: TaskComment;
   comments: Array<TaskComment>;
 
   private task: Task;
@@ -29,6 +32,7 @@ export class TaskDetailComponent implements OnInit {
 
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
+    this.setCommentModel(new TaskComment());
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task));
     this.taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
   }
@@ -52,8 +56,22 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
+  createComment() {
+    if (!Strings.isBlank(this.commentFormModel.commentText)) {
+      this.commentFormModel.createdAt = new Date();
+      this.taskCommentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
+        this.comments.push(comment);
+        this.commentForm.resetForm();
+      });
+    }
+  }
+
   private setTaskModel(task) {
     this.taskFormModel = task;
     this.task = task.clone();
+  }
+
+  private setCommentModel(comment) {
+    this.commentFormModel = comment;
   }
 }
