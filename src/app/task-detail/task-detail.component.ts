@@ -31,8 +31,8 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    const taskId = +this.route.snapshot.paramMap.get('id');
     this.setCommentModel(new TaskComment());
+    const taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task));
     this.taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
   }

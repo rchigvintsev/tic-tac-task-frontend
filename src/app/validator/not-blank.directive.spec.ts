@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NotBlankValidatorDirective} from './not-blank.directive';
 import {Component, ViewChild} from '@angular/core';
@@ -21,10 +21,10 @@ describe('NotBlankValidatorDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let component: TestComponent;
 
-  beforeEach(() => TestBed.configureTestingModule({
+  beforeEach(async(() => TestBed.configureTestingModule({
     imports: [FormsModule],
     declarations: [TestComponent, NotBlankValidatorDirective]
-  }));
+  })));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TestComponent);
