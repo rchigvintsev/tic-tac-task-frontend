@@ -15,7 +15,7 @@ const httpOptions = {
 })
 export class TaskService {
   // TODO: save base URL somewhere in the application settings
-  private taskUrl = '//localhost:8080/tasks';
+  taskUrl = '//localhost:8080/tasks';
 
   constructor(private http: HttpClient) {
   }
