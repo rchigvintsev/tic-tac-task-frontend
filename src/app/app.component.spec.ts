@@ -1,13 +1,28 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClient} from '@angular/common/http';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {AppComponent} from './app.component';
+import {TranslateHttpLoaderFactory} from './app.module';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: TranslateHttpLoaderFactory,
+            deps: [HttpClient]
+          }
+        })
+      ],
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

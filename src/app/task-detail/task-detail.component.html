@@ -70,6 +70,9 @@
 
     <mat-card-content *ngFor="let comment of comments">
       <div class="comment-wrapper">
+        <div class="comment-date-wrapper">
+          <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
+        </div>
         <span>{{ comment.commentText }}</span>
       </div>
     </mat-card-content>
