@@ -13,7 +13,7 @@
                    name="title"
                    type="text"
                    [(ngModel)]="taskFormModel.title"
-                   (blur)="endTitleEditing()"
+                   (blur)="onTitleInputBlur()"
                    placeholder="{{ 'title' | translate }}"
                    maxlength="255"
                    required
@@ -22,7 +22,7 @@
         </mat-form-field>
       </form>
 
-      <span *ngIf="!titleEditing" (click)="beginTitleEditing()">{{ taskFormModel.title }}</span>
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()">{{ taskFormModel.title }}</span>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
                     id="description"
                     name="description"
                     [(ngModel)]="taskFormModel.description"
-                    (blur)="saveTask()"
+                    (blur)="onDescriptionInputBlur()"
                     placeholder="{{ 'description' | translate }}"
                     maxlength="10000">
           </textarea>
@@ -44,13 +44,14 @@
   </mat-card-content>
 
   <mat-card-content *ngIf="commentFormModel">
-    <form #commentForm="ngForm" (ngSubmit)="createComment()">
+    <form #commentForm="ngForm" (ngSubmit)="onCommentFormSubmit()">
       <mat-form-field>
         <label>
           <textarea matInput
                     id="comment"
                     name="comment"
                     [(ngModel)]="commentFormModel.commentText"
+                    (keyup)="onCommentInputKeyUp()"
                     placeholder="{{ 'leave_comment' | translate }}"
                     maxlength="10000">
           </textarea>
@@ -58,7 +59,9 @@
       </mat-form-field>
 
       <div>
-        <button mat-raised-button type="submit" color="primary">{{ 'post' | translate }}</button>
+        <button mat-raised-button type="submit" color="primary" [disabled]="!commentFormEnabled">
+          {{ 'post' | translate }}
+        </button>
       </div>
     </form>
   </mat-card-content>

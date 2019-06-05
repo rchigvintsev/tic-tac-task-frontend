@@ -23,6 +23,7 @@ export class TaskDetailComponent implements OnInit {
   @ViewChild('commentForm')
   commentForm: NgForm;
   commentFormModel: TaskComment;
+  commentFormEnabled: boolean;
   comments: Array<TaskComment>;
 
   private task: Task;
@@ -39,14 +40,28 @@ export class TaskDetailComponent implements OnInit {
     this.taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
   }
 
-  beginTitleEditing() {
-    this.titleEditing = true;
-    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  onTitleTextClick() {
+    this.beginTitleEditing();
   }
 
-  endTitleEditing() {
+  onTitleInputBlur() {
+    this.endTitleEditing();
+  }
+
+  onDescriptionInputBlur() {
     this.saveTask();
-    this.titleEditing = false;
+  }
+
+  onCommentInputKeyUp() {
+    this.commentFormEnabled = !Strings.isBlank(this.commentFormModel.commentText);
+  }
+
+  onCommentFormSubmit() {
+    this.createComment();
+  }
+
+  getRelativeCommentDate(comment: TaskComment) {
+    return moment(comment.createdAt, 'YYYY-MM-DD\'T\'HH:mm:ss.SSS').fromNow();
   }
 
   saveTask() {
@@ -56,10 +71,6 @@ export class TaskDetailComponent implements OnInit {
     if (!this.taskFormModel.equals(this.task)) {
       this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task));
     }
-  }
-
-  getRelativeCommentDate(comment: TaskComment) {
-    return moment(comment.createdAt, 'YYYY-MM-DD\'T\'HH:mm:ss.SSS').fromNow();
   }
 
   createComment() {
@@ -79,5 +90,15 @@ export class TaskDetailComponent implements OnInit {
 
   private setCommentModel(comment) {
     this.commentFormModel = comment;
+  }
+
+  private beginTitleEditing() {
+    this.titleEditing = true;
+    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  }
+
+  private endTitleEditing() {
+    this.saveTask();
+    this.titleEditing = false;
   }
 }
