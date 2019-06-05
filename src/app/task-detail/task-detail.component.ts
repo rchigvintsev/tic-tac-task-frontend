@@ -66,7 +66,7 @@ export class TaskDetailComponent implements OnInit {
     if (!Strings.isBlank(this.commentFormModel.commentText)) {
       this.commentFormModel.createdAt = new Date();
       this.taskCommentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
-        this.comments.push(comment);
+        this.comments.unshift(comment);
         this.commentForm.resetForm();
       });
     }

@@ -135,6 +135,14 @@ describe('TaskDetailComponent', () => {
     expect(taskCommentService.createComment).toHaveBeenCalled();
   });
 
+  it('should place new comment at top of comment list', () => {
+    const commentText = 'New comment';
+    component.commentFormModel.commentText = commentText;
+    component.createComment();
+    expect(component.comments.length).toBe(2);
+    expect(component.comments[0].commentText).toEqual(commentText);
+  });
+
   it('should not create comment with blank comment text', () => {
     component.commentFormModel.commentText = ' ';
     component.createComment();
