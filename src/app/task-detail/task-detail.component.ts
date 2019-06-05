@@ -64,25 +64,6 @@ export class TaskDetailComponent implements OnInit {
     return moment(comment.createdAt, 'YYYY-MM-DD\'T\'HH:mm:ss.SSS').fromNow();
   }
 
-  saveTask() {
-    if (Strings.isBlank(this.taskFormModel.title)) {
-      this.taskFormModel.title = this.task.title;
-    }
-    if (!this.taskFormModel.equals(this.task)) {
-      this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task));
-    }
-  }
-
-  createComment() {
-    if (!Strings.isBlank(this.commentFormModel.commentText)) {
-      this.commentFormModel.createdAt = new Date();
-      this.taskCommentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
-        this.comments.unshift(comment);
-        this.commentForm.resetForm();
-      });
-    }
-  }
-
   private setTaskModel(task) {
     this.taskFormModel = task;
     this.task = task.clone();
@@ -100,5 +81,24 @@ export class TaskDetailComponent implements OnInit {
   private endTitleEditing() {
     this.saveTask();
     this.titleEditing = false;
+  }
+
+  private saveTask() {
+    if (Strings.isBlank(this.taskFormModel.title)) {
+      this.taskFormModel.title = this.task.title;
+    }
+    if (!this.taskFormModel.equals(this.task)) {
+      this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task));
+    }
+  }
+
+  private createComment() {
+    if (!Strings.isBlank(this.commentFormModel.commentText)) {
+      this.commentFormModel.createdAt = new Date();
+      this.taskCommentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
+        this.comments.unshift(comment);
+        this.commentForm.resetForm();
+      });
+    }
   }
 }

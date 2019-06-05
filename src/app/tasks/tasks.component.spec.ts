@@ -50,7 +50,7 @@ describe('TasksComponent', () => {
 
     const taskService = fixture.debugElement.injector.get(TaskService);
     spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
-    spyOn(taskService, 'saveTask').and.callFake(task => of(task));
+    spyOn(taskService, 'saveTask').and.callFake(task => of(new Task().deserialize(task)));
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -63,16 +63,22 @@ describe('TasksComponent', () => {
 
   it('should create task', () => {
     const taskTitle = 'New task';
-    component.formModel.title = taskTitle;
-    component.createTask();
-    expect(component.tasks.length).toEqual(3);
-    expect(component.tasks[2].title).toEqual(taskTitle);
+    fixture.whenStable().then(() => {
+      component.formModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(component.tasks.length).toEqual(3);
+      expect(component.tasks[2].title).toEqual(taskTitle);
+    });
   });
 
   it('should not create task with blank title', () => {
-    component.formModel.title = ' ';
-    component.createTask();
-    expect(component.tasks.length).toEqual(2);
+    fixture.whenStable().then(() => {
+      component.formModel.title = ' ';
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(component.tasks.length).toEqual(2);
+    });
   });
 
   it('should complete task', () => {
@@ -80,10 +86,13 @@ describe('TasksComponent', () => {
     const task2 = tasks[1];
 
     const task1Copy = new Task().deserialize(task1);
-    component.completeTask(task1Copy);
 
-    expect(task1Copy.completed).toBeTruthy();
-    expect(component.tasks.length).toEqual(1);
-    expect(component.tasks[0].id).toEqual(task2.id);
+    fixture.whenStable().then(() => {
+      component.onTaskCompleteCheckboxChange(task1Copy);
+      fixture.detectChanges();
+      expect(task1Copy.completed).toBeTruthy();
+      expect(component.tasks.length).toEqual(1);
+      expect(component.tasks[0].id).toEqual(task2.id);
+    });
   });
 });

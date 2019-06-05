@@ -63,8 +63,9 @@ describe('TaskDetailComponent', () => {
     });
     spyOn(taskCommentService, 'getCommentsForTaskId').and.returnValue(of([comment]));
     spyOn(taskCommentService, 'createComment').and.callFake(c => {
-      c.id = 2;
-      return of(c);
+      const result = new TaskComment().deserialize(c);
+      result.id = 2;
+      return of(result);
     });
 
     component = fixture.componentInstance;
@@ -76,24 +77,23 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should begin title editing on title span click', () => {
-    const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title span'));
     fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
+      component.onTitleTextClick();
       fixture.detectChanges();
       expect(component.titleEditing).toBeTruthy();
     });
   });
 
   it('should end title editing on title input blur', () => {
-    component.titleEditing = true;
-    fixture.detectChanges();
     fixture.whenStable().then(() => {
-      component.titleElement.nativeElement.dispatchEvent(new Event('blur'));
+      component.titleEditing = true;
+      component.onTitleInputBlur();
+      fixture.detectChanges();
       expect(component.titleEditing).toBeFalsy();
     });
   });
 
-  it('should hide title span when title editing is begun', () => {
+  it('should hide title text element on click', () => {
     const spanSelector = By.css('.mat-card-header .mat-card-title span');
     let titleSpan = fixture.debugElement.query(spanSelector);
     fixture.whenStable().then(() => {
@@ -104,7 +104,7 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should show title form when title editing is begun', () => {
+  it('should show title form on title text element click', () => {
     const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title span'));
     fixture.whenStable().then(() => {
       titleSpan.nativeElement.click();
@@ -114,39 +114,81 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should save task when title is changed', () => {
-    component.taskFormModel.title = 'New task';
-    component.saveTask();
+  it('should save task on title input blur', () => {
     const taskService = fixture.debugElement.injector.get(TaskService);
-    expect(taskService.saveTask).toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New title';
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(taskService.saveTask).toHaveBeenCalled();
+    });
   });
 
   it('should not save task with blank title', () => {
-    component.taskFormModel.title = ' ';
-    component.saveTask();
     const taskService = fixture.debugElement.injector.get(TaskService);
-    expect(taskService.saveTask).not.toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = ' ';
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(taskService.saveTask).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on description input blur', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    fixture.whenStable().then(() => {
+      component.taskFormModel.description = 'New description';
+      component.onDescriptionInputBlur();
+      fixture.detectChanges();
+      expect(taskService.saveTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should enable comment form when comment text is not blank', () => {
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = 'New comment';
+      component.onCommentInputKeyUp();
+      fixture.detectChanges();
+      expect(component.commentFormEnabled).toBeTruthy();
+    });
+  });
+
+  it('should disable comment form when comment text is blank', () => {
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = ' ';
+      component.onCommentInputKeyUp();
+      fixture.detectChanges();
+      expect(component.commentFormEnabled).toBeFalsy();
+    });
   });
 
   it('should create comment', () => {
-    component.commentFormModel.commentText = 'New comment';
-    component.createComment();
     const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
-    expect(taskCommentService.createComment).toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = 'New comment';
+      component.onCommentFormSubmit();
+      fixture.detectChanges();
+      expect(taskCommentService.createComment).toHaveBeenCalled();
+    });
   });
 
   it('should place new comment at top of comment list', () => {
     const commentText = 'New comment';
-    component.commentFormModel.commentText = commentText;
-    component.createComment();
-    expect(component.comments.length).toBe(2);
-    expect(component.comments[0].commentText).toEqual(commentText);
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = commentText;
+      component.onCommentFormSubmit();
+      expect(component.comments.length).toBe(2);
+      expect(component.comments[0].commentText).toEqual(commentText);
+    });
   });
 
   it('should not create comment with blank comment text', () => {
-    component.commentFormModel.commentText = ' ';
-    component.createComment();
     const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
-    expect(taskCommentService.createComment).not.toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = ' ';
+      component.onCommentFormSubmit();
+      fixture.detectChanges();
+      expect(taskCommentService.createComment).not.toHaveBeenCalled();
+    });
   });
 });

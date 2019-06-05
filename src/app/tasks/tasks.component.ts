@@ -25,7 +25,15 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  createTask() {
+  onTaskFormSubmit() {
+    this.createTask();
+  }
+
+  onTaskCompleteCheckboxChange(task: Task) {
+    this.completeTask(task);
+  }
+
+  private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
       this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
@@ -34,7 +42,7 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  completeTask(task: Task) {
+  private completeTask(task: Task) {
     task.completed = true;
     this.taskService.saveTask(task).subscribe(savedTask => {
       this.tasks = this.tasks.filter(e => e.id !== savedTask.id);
