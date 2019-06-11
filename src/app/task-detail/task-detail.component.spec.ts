@@ -10,6 +10,8 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {of} from 'rxjs';
 
+import * as moment from 'moment';
+
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 import {TaskDetailComponent} from './task-detail.component';
@@ -56,10 +58,11 @@ describe('TaskDetailComponent', () => {
     spyOn(taskService, 'saveTask').and.callFake(t => of(t));
 
     const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
+    const oneDayAgo = moment().utc().subtract(1, 'days');
     const comment = new TaskComment().deserialize({
       id: 1,
       commentText: 'Test comment',
-      createdAt: '2019-05-26T23:07:15.154827'
+      createdAt: oneDayAgo.format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
     });
     spyOn(taskCommentService, 'getCommentsForTaskId').and.returnValue(of([comment]));
     spyOn(taskCommentService, 'createComment').and.callFake(c => {
@@ -189,6 +192,13 @@ describe('TaskDetailComponent', () => {
       component.onCommentFormSubmit();
       fixture.detectChanges();
       expect(taskCommentService.createComment).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should render relative comment date in Russian', () => {
+    fixture.whenStable().then(() => {
+      const relativeDate = component.getRelativeCommentDate(component.comments[0]);
+      expect(relativeDate).toEqual('день назад');
     });
   });
 });

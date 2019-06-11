@@ -61,7 +61,7 @@ export class TaskDetailComponent implements OnInit {
   }
 
   getRelativeCommentDate(comment: TaskComment) {
-    return moment(comment.createdAt, 'YYYY-MM-DD\'T\'HH:mm:ss.SSS').fromNow();
+    return moment(comment.createdAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).fromNow();
   }
 
   private setTaskModel(task) {
