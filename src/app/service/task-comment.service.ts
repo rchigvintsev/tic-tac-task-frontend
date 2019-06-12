@@ -15,8 +15,8 @@ const httpOptions = {
 })
 export class TaskCommentService {
   // TODO: save base URL somewhere in the application settings
-  private taskUrl = '//localhost:8080/tasks';
-  private taskCommentUrl = '//localhost:8080/taskComments';
+  taskUrl = '//localhost:8080/tasks';
+  taskCommentUrl = '//localhost:8080/taskComments';
 
   constructor(private http: HttpClient) {
   }
