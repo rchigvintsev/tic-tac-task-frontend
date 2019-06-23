@@ -5,15 +5,19 @@
     </mat-toolbar>
   </header>
 
-  <main>
-    <router-outlet></router-outlet>
+  <main fxLayout="row" class="zero">
+    <div fxFlex="70" fxFlexOffset="15">
+      <router-outlet></router-outlet>
+    </div>
+
+    <div fxFlex></div>
   </main>
 
   <footer>
     <div class="language-switcher">
-        <a mat-button [routerLink]="'/en'" class="en-link">en</a>
-        <span>|</span>
-        <a mat-button [routerLink]="'/ru'" class="ru-link">ru</a>
+      <a mat-button [routerLink]="'/en'" class="en-link">en</a>
+      <span>|</span>
+      <a mat-button [routerLink]="'/ru'" class="ru-link">ru</a>
     </div>
   </footer>
 </div>

@@ -12,6 +12,7 @@ import {
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
@@ -47,6 +48,7 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     MatToolbarModule,
     MatListModule,
     MatInputModule,
+    FlexLayoutModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
