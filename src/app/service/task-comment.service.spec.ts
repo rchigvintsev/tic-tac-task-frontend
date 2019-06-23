@@ -61,9 +61,7 @@ describe('TaskCommentService', () => {
     const commentJson = {
       id: 1,
       commentText: 'Test comment',
-      createdAt: moment()
-        .utc()
-        .format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      createdAt: moment().utc().format(DATE_FORMAT)
     };
     const testComment = new TaskComment().deserialize(commentJson);
     const taskId = 1;
@@ -84,9 +82,7 @@ describe('TaskCommentService', () => {
   it('should save comment', () => {
     const testComment = new TaskComment().deserialize({
       commentText: 'Test comment',
-      createdAt: moment()
-        .utc()
-        .format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      createdAt: moment().utc().format(DATE_FORMAT)
     });
 
     taskCommentService.saveComment(testComment).subscribe(comment => {
@@ -96,5 +92,14 @@ describe('TaskCommentService', () => {
     const request = httpMock.expectOne(taskCommentService.taskCommentUrl);
     expect(request.request.method).toBe('POST');
     request.flush(testComment);
+  });
+
+  it('should delete comment', () => {
+    const commentId = 1;
+    taskCommentService.deleteComment(commentId).subscribe(() => {});
+
+    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/${commentId}`);
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
   });
 });
