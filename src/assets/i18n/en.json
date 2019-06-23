@@ -5,5 +5,7 @@
   "title": "Title",
   "description": "Description",
   "leave_comment": "Leave comment",
-  "post": "Post"
+  "post": "Post",
+  "yes": "Yes",
+  "no": "No"
 }

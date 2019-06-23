@@ -5,6 +5,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDialogModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
@@ -22,6 +23,7 @@ import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
+import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
@@ -34,6 +36,7 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     DashboardComponent,
     TasksComponent,
     TaskDetailComponent,
+    ConfirmationDialogComponent,
     NotBlankValidatorDirective
   ],
   imports: [
@@ -44,10 +47,11 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatIconModule,
-    MatToolbarModule,
-    MatListModule,
     MatInputModule,
+    MatListModule,
+    MatToolbarModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
@@ -59,7 +63,8 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     })
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ConfirmationDialogComponent]
 })
 export class AppModule {
 }

@@ -5,6 +5,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
@@ -29,6 +30,7 @@ describe('TaskDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
+        MatDialogModule,
         HttpClientTestingModule,
         RouterTestingModule.withRoutes(routes),
         TranslateModule.forRoot({

@@ -1,7 +1,7 @@
 <mat-card *ngIf="taskFormModel">
   <div class="mat-card-header">
-    <a mat-icon-button [routerLink]="'/'">
-      <mat-icon aria-label="Back button">arrow_back</mat-icon>
+    <a mat-icon-button [routerLink]="'/'" aria-label="Back button">
+      <mat-icon>arrow_back</mat-icon>
     </a>
 
     <div class="mat-card-title">
@@ -73,8 +73,16 @@
 
     <mat-card-content *ngFor="let comment of comments">
       <div class="comment-wrapper">
-        <div class="comment-date-wrapper">
-          <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
+        <div class="comment-header">
+          <div class="comment-date-wrapper">
+            <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
+          </div>
+
+          <div class="header-buttons">
+            <a mat-mini-fab class="mat-micro-fab" aria-label="Delete comment button" (click)="onDeleteCommentButtonClick()">
+              <mat-icon [inline]="false">remove_circle_outline</mat-icon>
+            </a>
+          </div>
         </div>
         <span>{{ comment.commentText }}</span>
       </div>

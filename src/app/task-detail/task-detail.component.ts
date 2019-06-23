@@ -1,9 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
+import {MatDialog} from '@angular/material';
 
 import * as moment from 'moment';
 
+import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Task} from '../model/task';
 import {TaskComment} from '../model/task-comment';
 import {TaskService} from '../service/task.service';
@@ -30,7 +32,8 @@ export class TaskDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private taskService: TaskService,
-              private taskCommentService: TaskCommentService) {
+              private taskCommentService: TaskCommentService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -58,6 +61,14 @@ export class TaskDetailComponent implements OnInit {
 
   onCommentFormSubmit() {
     this.createComment();
+  }
+
+  onDeleteCommentButtonClick() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {title: 'Achtung!', content: 'Do you really want to delete the selected comment?'}
+    });
+    // TODO: remove comment if yes
+    dialogRef.afterClosed().subscribe(() => console.log('ok'));
   }
 
   getRelativeCommentDate(comment: TaskComment) {
