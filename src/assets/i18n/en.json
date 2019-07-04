@@ -7,5 +7,7 @@
   "leave_comment": "Leave comment",
   "post": "Post",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "attention": "Attention!",
+  "delete_comment_question": "Do you really want to delete the selected comment?"
 }

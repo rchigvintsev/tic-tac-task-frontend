@@ -95,10 +95,9 @@ describe('TaskCommentService', () => {
   });
 
   it('should delete comment', () => {
-    const commentId = 1;
-    taskCommentService.deleteComment(commentId).subscribe(() => {});
-
-    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/${commentId}`);
+    const testComment = new TaskComment().deserialize({id: 1});
+    taskCommentService.deleteComment(testComment).subscribe(() => {});
+    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/${testComment.id}`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
   });

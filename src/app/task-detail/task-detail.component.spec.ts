@@ -5,7 +5,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
@@ -21,6 +21,14 @@ import {Task} from '../model/task';
 import {TaskComment} from '../model/task-comment';
 import {TaskService} from '../service/task.service';
 import {TaskCommentService} from '../service/task-comment.service';
+
+class MatDialogMock {
+  open() {
+    return {
+      afterClosed: () => of(true)
+    };
+  }
+}
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -42,7 +50,8 @@ describe('TaskDetailComponent', () => {
         })
       ],
       declarations: [DashboardComponent, TaskDetailComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{provide: MatDialog, useClass: MatDialogMock}]
     }).compileComponents();
   }));
 
@@ -59,19 +68,19 @@ describe('TaskDetailComponent', () => {
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'saveTask').and.callFake(t => of(t));
 
-    const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
-    const oneDayAgo = moment().utc().subtract(1, 'days');
-    const comment = new TaskComment().deserialize({
-      id: 1,
-      commentText: 'Test comment',
-      createdAt: oneDayAgo.format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
-    });
-    spyOn(taskCommentService, 'getCommentsForTaskId').and.returnValue(of([comment]));
-    spyOn(taskCommentService, 'createComment').and.callFake(c => {
+    const commentService = fixture.debugElement.injector.get(TaskCommentService);
+    const createdAt = moment().utc().subtract(1, 'days').format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+    const comments = [];
+    for (let i = 0; i < 3; i++) {
+      comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
+    }
+    spyOn(commentService, 'getCommentsForTaskId').and.returnValue(of(comments));
+    spyOn(commentService, 'createComment').and.callFake(c => {
       const result = new TaskComment().deserialize(c);
-      result.id = 2;
+      result.id = 4;
       return of(result);
     });
+    spyOn(commentService, 'deleteComment').and.returnValue(of(null));
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -168,32 +177,23 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should create comment', () => {
-    const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
-    fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = 'New comment';
-      component.onCommentFormSubmit();
-      fixture.detectChanges();
-      expect(taskCommentService.createComment).toHaveBeenCalled();
-    });
-  });
-
-  it('should place new comment at top of comment list', () => {
     const commentText = 'New comment';
     fixture.whenStable().then(() => {
       component.commentFormModel.commentText = commentText;
       component.onCommentFormSubmit();
-      expect(component.comments.length).toBe(2);
+      fixture.detectChanges();
+      expect(component.comments.length).toBe(4);
       expect(component.comments[0].commentText).toEqual(commentText);
     });
   });
 
   it('should not create comment with blank comment text', () => {
-    const taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
+    const commentService = fixture.debugElement.injector.get(TaskCommentService);
     fixture.whenStable().then(() => {
       component.commentFormModel.commentText = ' ';
       component.onCommentFormSubmit();
       fixture.detectChanges();
-      expect(taskCommentService.createComment).not.toHaveBeenCalled();
+      expect(commentService.createComment).not.toHaveBeenCalled();
     });
   });
 
@@ -201,6 +201,16 @@ describe('TaskDetailComponent', () => {
     fixture.whenStable().then(() => {
       const relativeDate = component.getRelativeCommentDate(component.comments[0]);
       expect(relativeDate).toEqual('день назад');
+    });
+  });
+
+  it('should delete comment', () => {
+    fixture.whenStable().then(() => {
+      const commentToDelete = component.comments[0];
+      component.onDeleteCommentButtonClick(commentToDelete);
+      fixture.detectChanges();
+      expect(component.comments.length).toBe(2);
+      expect(component.comments[0]).not.toEqual(commentToDelete);
     });
   });
 });

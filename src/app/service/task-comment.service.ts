@@ -56,7 +56,7 @@ export class TaskCommentService {
     );
   }
 
-  deleteComment(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.taskCommentUrl}/${id}`).pipe(map(() => EMPTY));
+  deleteComment(comment: TaskComment): Observable<any> {
+    return this.http.delete<any>(`${this.taskCommentUrl}/${comment.id}`).pipe(map(() => EMPTY));
   }
 }

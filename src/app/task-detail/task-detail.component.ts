@@ -3,6 +3,8 @@ import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 
+import {TranslateService} from '@ngx-translate/core';
+
 import * as moment from 'moment';
 
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
@@ -31,8 +33,9 @@ export class TaskDetailComponent implements OnInit {
   private task: Task;
 
   constructor(private route: ActivatedRoute,
+              private translate: TranslateService,
               private taskService: TaskService,
-              private taskCommentService: TaskCommentService,
+              private commentService: TaskCommentService,
               private dialog: MatDialog) {
   }
 
@@ -40,7 +43,7 @@ export class TaskDetailComponent implements OnInit {
     this.setCommentModel(new TaskComment());
     const taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task));
-    this.taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
+    this.commentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
   }
 
   onTitleTextClick() {
@@ -63,12 +66,19 @@ export class TaskDetailComponent implements OnInit {
     this.createComment();
   }
 
-  onDeleteCommentButtonClick() {
+  onDeleteCommentButtonClick(comment: TaskComment) {
+    const title = this.translate.instant('attention');
+    const content = this.translate.instant('delete_comment_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {title: 'Achtung!', content: 'Do you really want to delete the selected comment?'}
+      width: '400px',
+      restoreFocus: false,
+      data: {title, content}
     });
-    // TODO: remove comment if yes
-    dialogRef.afterClosed().subscribe(() => console.log('ok'));
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteComment(comment);
+      }
+    });
   }
 
   getRelativeCommentDate(comment: TaskComment) {
@@ -106,10 +116,16 @@ export class TaskDetailComponent implements OnInit {
   private createComment() {
     if (!Strings.isBlank(this.commentFormModel.commentText)) {
       this.commentFormModel.createdAt = new Date();
-      this.taskCommentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
+      this.commentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
         this.comments.unshift(comment);
         this.commentForm.resetForm();
       });
     }
+  }
+
+  private deleteComment(comment: TaskComment) {
+    this.commentService.deleteComment(comment).subscribe(() => {
+      this.comments = this.comments.filter(e => e.id !== comment.id);
+    });
   }
 }
