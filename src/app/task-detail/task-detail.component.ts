@@ -63,7 +63,7 @@ export class TaskDetailComponent implements OnInit {
   }
 
   onCommentFormSubmit() {
-    this.createComment();
+    this.saveComment();
   }
 
   onDeleteCommentButtonClick(comment: TaskComment) {
@@ -113,10 +113,11 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
-  private createComment() {
+  private saveComment() {
     if (!Strings.isBlank(this.commentFormModel.commentText)) {
+      this.commentFormModel.taskId = this.task.id;
       this.commentFormModel.createdAt = new Date();
-      this.commentService.createComment(this.commentFormModel, this.task.id).subscribe(comment => {
+      this.commentService.saveComment(this.commentFormModel).subscribe(comment => {
         this.comments.unshift(comment);
         this.commentForm.resetForm();
       });

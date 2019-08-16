@@ -1,8 +1,6 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
-import {of} from 'rxjs';
-
 import * as moment from 'moment';
 
 import {TaskCommentService} from './task-comment.service';
@@ -29,10 +27,12 @@ describe('TaskCommentService', () => {
   });
 
   it('should return comments for task id', () => {
+    const taskId = 1;
     const testComments = [];
 
     testComments.push(new TaskComment().deserialize({
       id: 2,
+      taskId,
       commentText: 'Comment 1',
       createdAt: moment().utc().subtract(1, 'hours').format(DATE_FORMAT),
       updatedAt: moment().utc().format(DATE_FORMAT)
@@ -40,43 +40,20 @@ describe('TaskCommentService', () => {
 
     testComments.push(new TaskComment().deserialize({
       id: 1,
+      taskId,
       commentText: 'Comment 2',
       createdAt: moment().utc().subtract({days: 1, hours: 1}).format(DATE_FORMAT),
       updatedAt: moment().utc().subtract(1, 'days').format(DATE_FORMAT)
     }));
-
-    const taskId = 1;
 
     taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => {
       expect(comments.length).toBe(2);
       expect(comments).toEqual(testComments);
     });
 
-    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/search/findByTaskId?taskId=${taskId}`);
+    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}?taskId=${taskId}`);
     expect(request.request.method).toBe('GET');
-    request.flush({_embedded: {taskComments: testComments}});
-  });
-
-  it('should create comment', () => {
-    const commentJson = {
-      id: 1,
-      commentText: 'Test comment',
-      createdAt: moment().utc().format(DATE_FORMAT)
-    };
-    const testComment = new TaskComment().deserialize(commentJson);
-    const taskId = 1;
-
-    spyOn(taskCommentService, 'saveComment').and.returnValue(of(commentJson));
-
-    taskCommentService.createComment(testComment, taskId).subscribe(comment => {
-      expect(comment).toEqual(testComment);
-    });
-
-    expect(taskCommentService.saveComment).toHaveBeenCalled();
-
-    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/${testComment.id}/task`);
-    expect(request.request.method).toBe('PUT');
-    request.flush({});
+    request.flush(testComments);
   });
 
   it('should save comment', () => {

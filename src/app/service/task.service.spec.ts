@@ -28,14 +28,14 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', completed: false}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', completed: false}));
 
-    taskService.getTasks().subscribe(tasks => {
+    taskService.getTasks(false).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.taskUrl}/search/findByCompleted?completed=false`);
+    const request = httpMock.expectOne(`${taskService.taskUrl}?completed=false`);
     expect(request.request.method).toBe('GET');
-    request.flush({_embedded: {tasks: testTasks}});
+    request.flush(testTasks);
   });
 
   it('should return task by id', () => {

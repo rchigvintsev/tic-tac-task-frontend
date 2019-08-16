@@ -75,7 +75,7 @@ describe('TaskDetailComponent', () => {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
     spyOn(commentService, 'getCommentsForTaskId').and.returnValue(of(comments));
-    spyOn(commentService, 'createComment').and.callFake(c => {
+    spyOn(commentService, 'saveComment').and.callFake(c => {
       const result = new TaskComment().deserialize(c);
       result.id = 4;
       return of(result);
@@ -193,7 +193,7 @@ describe('TaskDetailComponent', () => {
       component.commentFormModel.commentText = ' ';
       component.onCommentFormSubmit();
       fixture.detectChanges();
-      expect(commentService.createComment).not.toHaveBeenCalled();
+      expect(commentService.saveComment).not.toHaveBeenCalled();
     });
   });
 
