@@ -187,6 +187,17 @@ describe('TaskDetailComponent', () => {
     });
   });
 
+  it('should create comment on Ctrl + Enter', () => {
+    const commentText = 'New comment';
+    fixture.whenStable().then(() => {
+      component.commentFormModel.commentText = commentText;
+      component.onCommentInputKeyDown({ctrlKey: true, code: 'Enter'});
+      fixture.detectChanges();
+      expect(component.comments.length).toBe(4);
+      expect(component.comments[0].commentText).toEqual(commentText);
+    });
+  });
+
   it('should not create comment with blank comment text', () => {
     const commentService = fixture.debugElement.injector.get(TaskCommentService);
     fixture.whenStable().then(() => {

@@ -52,6 +52,7 @@
                     name="comment"
                     [(ngModel)]="commentFormModel.commentText"
                     (keyup)="onCommentInputKeyUp()"
+                    (keydown)="onCommentInputKeyDown($event)"
                     placeholder="{{ 'leave_comment' | translate }}"
                     maxlength="10000">
           </textarea>

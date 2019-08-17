@@ -62,6 +62,12 @@ export class TaskDetailComponent implements OnInit {
     this.commentFormEnabled = !Strings.isBlank(this.commentFormModel.commentText);
   }
 
+  onCommentInputKeyDown(e) {
+    if (e.ctrlKey && e.code === 'Enter') {
+      this.saveComment();
+    }
+  }
+
   onCommentFormSubmit() {
     this.saveComment();
   }
