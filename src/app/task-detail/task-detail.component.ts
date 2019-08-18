@@ -24,10 +24,12 @@ export class TaskDetailComponent implements OnInit {
   titleElement: ElementRef;
   titleEditing = false;
   taskFormModel: Task;
-  @ViewChild('commentForm')
-  commentForm: NgForm;
-  commentFormModel: TaskComment;
-  commentFormEnabled: boolean;
+  @ViewChild('newCommentForm')
+  newCommentForm: NgForm;
+  newCommentFormModel: TaskComment;
+  newCommentFormEnabled: boolean;
+  editCommentFormModel: TaskComment;
+  editCommentFormEnabled: boolean;
   comments: Array<TaskComment>;
 
   private task: Task;
@@ -40,7 +42,7 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setCommentModel(new TaskComment());
+    this.setNewCommentFormModel(new TaskComment());
     const taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task));
     this.commentService.getCommentsForTaskId(taskId).subscribe(comments => this.comments = comments);
@@ -58,18 +60,35 @@ export class TaskDetailComponent implements OnInit {
     this.saveTask();
   }
 
-  onCommentInputKeyUp() {
-    this.commentFormEnabled = !Strings.isBlank(this.commentFormModel.commentText);
+  onNewCommentInputKeyUp() {
+    this.newCommentFormEnabled = !Strings.isBlank(this.newCommentFormModel.commentText);
   }
 
-  onCommentInputKeyDown(e) {
+  onEditCommentInputKeyUp() {
+    this.editCommentFormEnabled = !Strings.isBlank(this.editCommentFormModel.commentText);
+  }
+
+  onNewCommentInputKeyDown(e) {
     if (e.ctrlKey && e.code === 'Enter') {
-      this.saveComment();
+      this.createComment(this.newCommentFormModel);
     }
   }
 
-  onCommentFormSubmit() {
-    this.saveComment();
+  onNewCommentFormSubmit() {
+    this.createComment(this.newCommentFormModel);
+  }
+
+  onEditCommentFormSubmit() {
+    this.saveComment(this.editCommentFormModel);
+  }
+
+  onEditCommentButtonClick(comment: TaskComment) {
+      this.setEditCommentFormModel(new TaskComment(comment));
+      this.editCommentFormEnabled = true;
+  }
+
+  onCancelEditCommentButtonClick() {
+    this.setEditCommentFormModel(null);
   }
 
   onDeleteCommentButtonClick(comment: TaskComment) {
@@ -96,8 +115,12 @@ export class TaskDetailComponent implements OnInit {
     this.task = task.clone();
   }
 
-  private setCommentModel(comment) {
-    this.commentFormModel = comment;
+  private setNewCommentFormModel(comment) {
+    this.newCommentFormModel = comment;
+  }
+
+  private setEditCommentFormModel(comment) {
+    this.editCommentFormModel = comment;
   }
 
   private beginTitleEditing() {
@@ -119,13 +142,27 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
-  private saveComment() {
-    if (!Strings.isBlank(this.commentFormModel.commentText)) {
-      this.commentFormModel.taskId = this.task.id;
-      this.commentFormModel.createdAt = new Date();
-      this.commentService.saveComment(this.commentFormModel).subscribe(comment => {
-        this.comments.unshift(comment);
-        this.commentForm.resetForm();
+  private createComment(comment: TaskComment) {
+    if (!Strings.isBlank(comment.commentText)) {
+      comment.taskId = this.task.id;
+      comment.createdAt = new Date();
+      this.commentService.saveComment(comment).subscribe(savedComment => {
+        this.comments.unshift(savedComment);
+        this.newCommentForm.resetForm();
+      });
+    }
+  }
+
+  private saveComment(comment: TaskComment) {
+    if (!Strings.isBlank(comment.commentText)) {
+      comment.updatedAt = new Date();
+      this.commentService.saveComment(comment).subscribe(savedComment => {
+        const idx = this.comments.findIndex(e => e.id === savedComment.id);
+        if (idx < 0) {
+          throw new Error(`Comment with id ${savedComment.id} is not found`);
+        }
+        this.comments[idx] = savedComment;
+        this.setEditCommentFormModel(null);
       });
     }
   }

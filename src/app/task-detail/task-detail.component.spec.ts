@@ -77,7 +77,9 @@ describe('TaskDetailComponent', () => {
     spyOn(commentService, 'getCommentsForTaskId').and.returnValue(of(comments));
     spyOn(commentService, 'saveComment').and.callFake(c => {
       const result = new TaskComment().deserialize(c);
-      result.id = 4;
+      if (!c.id) {
+        result.id = 4;
+      }
       return of(result);
     });
     spyOn(commentService, 'deleteComment').and.returnValue(of(null));
@@ -158,29 +160,29 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should enable comment form when comment text is not blank', () => {
+  it('should enable new comment form when comment text is not blank', () => {
     fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = 'New comment';
-      component.onCommentInputKeyUp();
+      component.newCommentFormModel.commentText = 'New comment';
+      component.onNewCommentInputKeyUp();
       fixture.detectChanges();
-      expect(component.commentFormEnabled).toBeTruthy();
+      expect(component.newCommentFormEnabled).toBeTruthy();
     });
   });
 
-  it('should disable comment form when comment text is blank', () => {
+  it('should disable new comment form when comment text is blank', () => {
     fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = ' ';
-      component.onCommentInputKeyUp();
+      component.newCommentFormModel.commentText = ' ';
+      component.onNewCommentInputKeyUp();
       fixture.detectChanges();
-      expect(component.commentFormEnabled).toBeFalsy();
+      expect(component.newCommentFormEnabled).toBeFalsy();
     });
   });
 
   it('should create comment', () => {
     const commentText = 'New comment';
     fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = commentText;
-      component.onCommentFormSubmit();
+      component.newCommentFormModel.commentText = commentText;
+      component.onNewCommentFormSubmit();
       fixture.detectChanges();
       expect(component.comments.length).toBe(4);
       expect(component.comments[0].commentText).toEqual(commentText);
@@ -190,8 +192,8 @@ describe('TaskDetailComponent', () => {
   it('should create comment on Ctrl + Enter', () => {
     const commentText = 'New comment';
     fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = commentText;
-      component.onCommentInputKeyDown({ctrlKey: true, code: 'Enter'});
+      component.newCommentFormModel.commentText = commentText;
+      component.onNewCommentInputKeyDown({ctrlKey: true, code: 'Enter'});
       fixture.detectChanges();
       expect(component.comments.length).toBe(4);
       expect(component.comments[0].commentText).toEqual(commentText);
@@ -201,10 +203,83 @@ describe('TaskDetailComponent', () => {
   it('should not create comment with blank comment text', () => {
     const commentService = fixture.debugElement.injector.get(TaskCommentService);
     fixture.whenStable().then(() => {
-      component.commentFormModel.commentText = ' ';
-      component.onCommentFormSubmit();
+      component.newCommentFormModel.commentText = ' ';
+      component.onNewCommentFormSubmit();
       fixture.detectChanges();
       expect(commentService.saveComment).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should hide comment text element on edit comment button click', () => {
+    const commentId = component.comments[0].id;
+    const spanSelector = By.css('.comment-' + commentId + ' .comment-body span');
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(spanSelector)).toBeFalsy();
+    });
+  });
+
+  it('should show edit comment form on edit comment button click', () => {
+    const commentId = component.comments[0].id;
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      fixture.detectChanges();
+      const commentForm = fixture.debugElement.query(By.css('.comment-' + commentId + ' .comment-body form'));
+      expect(commentForm).toBeTruthy();
+    });
+  });
+
+  it('should enable edit comment form when comment text is not blank', () => {
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      component.editCommentFormModel.commentText = 'Edited comment';
+      component.onEditCommentInputKeyUp();
+      fixture.detectChanges();
+      expect(component.editCommentFormEnabled).toBeTruthy();
+    });
+  });
+
+  it('should disable edit comment form when comment text is blank', () => {
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      component.editCommentFormModel.commentText = ' ';
+      component.onEditCommentInputKeyUp();
+      fixture.detectChanges();
+      expect(component.editCommentFormEnabled).toBeFalsy();
+    });
+  });
+
+  it('should edit comment', () => {
+    const commentText = 'Edited comment';
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      component.editCommentFormModel.commentText = commentText;
+      component.onEditCommentFormSubmit();
+      fixture.detectChanges();
+      expect(component.comments[0].commentText).toEqual(commentText);
+    });
+  });
+
+  it('should not save edited comment with blank comment text', () => {
+    const commentText = component.comments[0].commentText;
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      component.editCommentFormModel.commentText = ' ';
+      component.onEditCommentFormSubmit();
+      fixture.detectChanges();
+      expect(component.comments[0].commentText).toEqual(commentText);
+    });
+  });
+
+  it('should restore original comment text on cancel edit comment button click', () => {
+    const commentText = component.comments[0].commentText;
+    fixture.whenStable().then(() => {
+      component.onEditCommentButtonClick(component.comments[0]);
+      component.editCommentFormModel.commentText = 'Edited comment';
+      component.onCancelEditCommentButtonClick();
+      fixture.detectChanges();
+      expect(component.comments[0].commentText).toEqual(commentText);
     });
   });
 
