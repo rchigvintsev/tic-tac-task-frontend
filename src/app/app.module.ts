@@ -25,6 +25,7 @@ import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
+import {TaskCommentsComponent} from './task-comments/task-comments.component';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -37,7 +38,8 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     TasksComponent,
     TaskDetailComponent,
     ConfirmationDialogComponent,
-    NotBlankValidatorDirective
+    NotBlankValidatorDirective,
+    TaskCommentsComponent
   ],
   imports: [
     BrowserModule,
