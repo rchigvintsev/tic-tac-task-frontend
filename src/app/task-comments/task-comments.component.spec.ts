@@ -20,6 +20,7 @@ import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
+import {LoginComponent} from "../login/login.component";
 
 class MatDialogMock {
   open() {
@@ -48,7 +49,7 @@ describe('TaskCommentsComponent', () => {
           }
         })
       ],
-      declarations: [DashboardComponent, TaskDetailComponent, TaskCommentsComponent],
+      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, TaskCommentsComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{provide: MatDialog, useClass: MatDialogMock}]
     }).compileComponents();

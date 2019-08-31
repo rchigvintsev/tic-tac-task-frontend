@@ -1,12 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
+import {AbstractComponent} from '../abstract-component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
@@ -17,7 +18,7 @@ import {Strings} from '../util/strings';
   templateUrl: './task-comments.component.html',
   styleUrls: ['./task-comments.component.styl']
 })
-export class TaskCommentsComponent implements OnInit {
+export class TaskCommentsComponent extends AbstractComponent implements OnInit {
   @ViewChild('newCommentForm')
   newCommentForm: NgForm;
   newCommentFormModel: TaskComment;
@@ -27,15 +28,19 @@ export class TaskCommentsComponent implements OnInit {
   comments: Array<TaskComment>;
   taskId: number;
 
-  constructor(private route: ActivatedRoute,
-              private translate: TranslateService,
+  constructor(router: Router,
+              translate: TranslateService,
+              private route: ActivatedRoute,
               private commentService: TaskCommentService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog) {
+    super(router, translate);
+  }
 
   ngOnInit() {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
-    this.commentService.getCommentsForTaskId(this.taskId).subscribe(comments => this.comments = comments);
+    this.commentService.getCommentsForTaskId(this.taskId)
+      .subscribe(comments => this.comments = comments, error => this.onServiceCallError(error));
   }
 
   onNewCommentInputKeyUp() {
@@ -103,7 +108,7 @@ export class TaskCommentsComponent implements OnInit {
       this.commentService.saveComment(comment).subscribe(savedComment => {
         this.comments.unshift(savedComment);
         this.newCommentForm.resetForm();
-      });
+      }, error => this.onServiceCallError(error));
     }
   }
 
@@ -117,13 +122,13 @@ export class TaskCommentsComponent implements OnInit {
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      });
+      }, error => this.onServiceCallError(error));
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    });
+    }, error => this.onServiceCallError(error));
   }
 }

@@ -31,7 +31,7 @@ export class TaskService {
         return tasks;
       })
     );
-  };
+  }
 
   getTask(id: number): Observable<Task> {
     return this.http.get<any>(`${this.taskUrl}/${id}`).pipe(

@@ -13,6 +13,7 @@ import {of} from 'rxjs';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 import {TaskDetailComponent} from './task-detail.component';
+import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
@@ -35,7 +36,7 @@ describe('TaskDetailComponent', () => {
           }
         })
       ],
-      declarations: [DashboardComponent, TaskDetailComponent],
+      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

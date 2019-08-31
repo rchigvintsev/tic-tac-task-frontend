@@ -16,6 +16,7 @@ import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
+import {LoginComponent} from "../login/login.component";
 
 describe('TasksComponent', () => {
   let component: TasksComponent;
@@ -36,7 +37,7 @@ describe('TasksComponent', () => {
           }
         })
       ],
-      declarations: [DashboardComponent, TasksComponent, TaskDetailComponent],
+      declarations: [LoginComponent, DashboardComponent, TasksComponent, TaskDetailComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

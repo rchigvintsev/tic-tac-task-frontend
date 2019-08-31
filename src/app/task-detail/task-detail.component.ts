@@ -1,8 +1,9 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
+import {AbstractComponent} from '../abstract-component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 import {Strings} from '../util/strings';
@@ -12,7 +13,7 @@ import {Strings} from '../util/strings';
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.styl']
 })
-export class TaskDetailComponent implements OnInit {
+export class TaskDetailComponent extends AbstractComponent implements OnInit {
   @ViewChild('title')
   titleElement: ElementRef;
   titleEditing = false;
@@ -20,14 +21,17 @@ export class TaskDetailComponent implements OnInit {
 
   private task: Task;
 
-  constructor(private route: ActivatedRoute,
-              private translate: TranslateService,
+  constructor(router: Router,
+              translate: TranslateService,
+              private route: ActivatedRoute,
               private taskService: TaskService) {
+    super(router, translate);
   }
 
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
-    this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task));
+    this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task),
+        error => this.onServiceCallError(error));
   }
 
   onTitleTextClick() {
@@ -62,7 +66,8 @@ export class TaskDetailComponent implements OnInit {
       this.taskFormModel.title = this.task.title;
     }
     if (!this.taskFormModel.equals(this.task)) {
-      this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task));
+      this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task),
+          error => this.onServiceCallError(error));
     }
   }
 }
