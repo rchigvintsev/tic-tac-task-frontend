@@ -30,8 +30,7 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
 
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
-    this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task),
-        error => this.onServiceCallError(error));
+    this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
   }
 
   onTitleTextClick() {
@@ -67,7 +66,7 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
     }
     if (!this.taskFormModel.equals(this.task)) {
       this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task),
-          error => this.onServiceCallError(error));
+        this.onServiceCallError.bind(this));
     }
   }
 }

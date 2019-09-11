@@ -25,7 +25,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.taskService.getTasks(false).subscribe(tasks => this.tasks = tasks, error => this.onServiceCallError(error));
+    this.taskService.getTasks(false).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
   }
 
   onTaskFormSubmit() {
@@ -41,7 +41,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
       this.taskService.saveTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
         this.taskForm.resetForm();
-      }, error => this.onServiceCallError(error));
+      }, this.onServiceCallError.bind(this));
     }
   }
 
@@ -49,6 +49,6 @@ export class TasksComponent extends AbstractComponent implements OnInit {
     task.completed = true;
     this.taskService.saveTask(task).subscribe(savedTask => {
       this.tasks = this.tasks.filter(e => e.id !== savedTask.id);
-    }, error => this.onServiceCallError(error));
+    }, this.onServiceCallError.bind(this));
   }
 }

@@ -40,7 +40,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
     this.commentService.getCommentsForTaskId(this.taskId)
-      .subscribe(comments => this.comments = comments, error => this.onServiceCallError(error));
+      .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
   }
 
   onNewCommentInputKeyUp() {
@@ -108,7 +108,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
       this.commentService.saveComment(comment).subscribe(savedComment => {
         this.comments.unshift(savedComment);
         this.newCommentForm.resetForm();
-      }, error => this.onServiceCallError(error));
+      }, this.onServiceCallError.bind(this));
     }
   }
 
@@ -122,13 +122,13 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      }, error => this.onServiceCallError(error));
+      }, this.onServiceCallError.bind(this));
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, error => this.onServiceCallError(error));
+    }, this.onServiceCallError.bind(this));
   }
 }

@@ -13,6 +13,7 @@ import {of} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
+import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments.component';
@@ -20,7 +21,6 @@ import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
-import {LoginComponent} from "../login/login.component";
 
 class MatDialogMock {
   open() {
