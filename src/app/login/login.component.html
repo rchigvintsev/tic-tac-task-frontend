@@ -1,3 +1,20 @@
-<p class="login-prompt">
-  Please log in
-</p>
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+  <mat-card
+    style="display: flex; justify-content: center; align-items: center; min-width: 320px; flex-direction: column">
+    <mat-card-header>
+      <mat-card-title>Please sign in</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div>
+        <!-- TODO: get backend and frontend addresses from the settings -->
+        <a mat-raised-button style="padding-left: 9px"
+           [href]="'//localhost:8080/oauth2/authorization/google?client-redirect-uri=http://localhost:4200/' + translate.currentLang + '/login/callback'">
+          <mat-icon style="transform: scale(1.5); margin-top: -3px; margin-right: 14px"
+                    svgIcon="logo-google"></mat-icon>
+          Sign in with Google
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
