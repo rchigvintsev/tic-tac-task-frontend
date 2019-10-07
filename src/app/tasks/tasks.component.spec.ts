@@ -16,6 +16,8 @@ import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
+import {NotFoundComponent} from '../not-found/not-found.component';
+import {DummyComponent} from '../dummy/dummy.component';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
 
@@ -38,7 +40,14 @@ describe('TasksComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TasksComponent, TaskDetailComponent],
+      declarations: [
+        LoginComponent,
+        DashboardComponent,
+        TasksComponent,
+        TaskDetailComponent,
+        NotFoundComponent,
+        DummyComponent
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 

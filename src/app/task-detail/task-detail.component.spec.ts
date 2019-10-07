@@ -15,6 +15,8 @@ import {routes} from '../app-routing.module';
 import {TaskDetailComponent} from './task-detail.component';
 import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
+import {NotFoundComponent} from '../not-found/not-found.component';
+import {DummyComponent} from '../dummy/dummy.component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 
@@ -36,7 +38,7 @@ describe('TaskDetailComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent],
+      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

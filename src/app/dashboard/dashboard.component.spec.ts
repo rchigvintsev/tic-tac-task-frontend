@@ -13,6 +13,8 @@ import {routes} from '../app-routing.module';
 import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from './dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
+import {NotFoundComponent} from '../not-found/not-found.component';
+import {DummyComponent} from '../dummy/dummy.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -32,7 +34,7 @@ describe('DashboardComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent],
+      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

@@ -17,6 +17,8 @@ import {LoginComponent} from '../login/login.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments.component';
+import {NotFoundComponent} from '../not-found/not-found.component';
+import {DummyComponent} from '../dummy/dummy.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {routes} from '../app-routing.module';
@@ -49,7 +51,14 @@ describe('TaskCommentsComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, TaskCommentsComponent],
+      declarations: [
+        LoginComponent,
+        DashboardComponent,
+        TaskDetailComponent,
+        TaskCommentsComponent,
+        NotFoundComponent,
+        DummyComponent
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{provide: MatDialog, useClass: MatDialogMock}]
     }).compileComponents();
