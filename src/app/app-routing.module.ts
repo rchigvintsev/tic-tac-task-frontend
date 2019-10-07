@@ -7,19 +7,38 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
 
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {LoginComponent} from './login/login.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
+import {LoginComponent} from './login/login.component';
+import {NotFoundComponent} from './not-found/not-found.component';
+import {DummyComponent} from './dummy/dummy.component';
+import {
+  AuthenticatedOnlyRouteGuard,
+  LocalizedRouteGuard,
+  LoginCallbackRouteGuard,
+  UnauthenticatedOnlyRouteGuard
+} from './route.guard';
+import {AVAILABLE_LANGUAGES} from './language';
 
 export const routes: Routes = [
-  {path: '', component: DashboardComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'task/:id', component: TaskDetailComponent}
+  {
+    path: '', canActivate: [AuthenticatedOnlyRouteGuard], children: [
+      {path: '', component: DashboardComponent},
+      {path: 'task/:id', component: TaskDetailComponent}
+    ]
+  },
+  {
+    path: 'login', component: LoginComponent, canActivate: [UnauthenticatedOnlyRouteGuard], children: [
+      {path: 'callback', component: DummyComponent, canActivate: [LoginCallbackRouteGuard]}
+    ]
+  },
+  {path: '404', component: NotFoundComponent},
+  {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];
 
 export function LocalizeHttpLoaderFactory(translate: TranslateService,
                                           location: Location,
                                           settings: LocalizeRouterSettings) {
-  return new ManualParserLoader(translate, location, settings, ['en', 'ru']);
+  return new ManualParserLoader(translate, location, settings, AVAILABLE_LANGUAGES);
 }
 
 @NgModule({

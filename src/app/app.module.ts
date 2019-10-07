@@ -17,6 +17,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {JwtModule} from '@auth0/angular-jwt';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -27,6 +28,9 @@ import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-di
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {LoginComponent} from './login/login.component';
+import {NotFoundComponent} from './not-found/not-found.component';
+import {DummyComponent} from './dummy/dummy.component';
+import {getAccessToken} from './access-token';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -41,7 +45,9 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
     ConfirmationDialogComponent,
     NotBlankValidatorDirective,
     TaskCommentsComponent,
-    LoginComponent
+    LoginComponent,
+    NotFoundComponent,
+    DummyComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +69,12 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
         provide: TranslateLoader,
         useFactory: TranslateHttpLoaderFactory,
         deps: [HttpClient]
+      }
+    }),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: getAccessToken,
+        whitelistedDomains: ['localhost:8080'], // TODO: get backend address from the settings
       }
     })
   ],
