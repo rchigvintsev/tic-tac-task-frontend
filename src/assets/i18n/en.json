@@ -10,5 +10,6 @@
   "yes": "Yes",
   "no": "No",
   "attention": "Attention!",
-  "delete_comment_question": "Do you really want to delete the selected comment?"
+  "delete_comment_question": "Do you really want to delete the selected comment?",
+  "page_not_found": "Page is not found :("
 }
