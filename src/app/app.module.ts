@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {
   MatButtonModule,
@@ -30,10 +30,17 @@ import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {LoginComponent} from './login/login.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
+import {ConfigService} from './service/config.service';
 import {getAccessToken} from './access-token';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
+}
+
+function loadConfig(configService: ConfigService) {
+  return (): Promise<void> => {
+    return configService.init();
+  };
 }
 
 @NgModule({
@@ -78,7 +85,14 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: loadConfig,
+      multi: true,
+      deps: [ConfigService]
+    }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmationDialogComponent]
 })
