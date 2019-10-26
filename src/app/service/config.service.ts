@@ -24,6 +24,11 @@ export class ConfigService {
     return this.config.apiBaseUrl;
   }
 
+  get selfBaseUrl() {
+    this.assertInitialized();
+    return this.config.selfBaseUrl;
+  }
+
   private assertNotInitialized() {
     if (this.config != null) {
       throw new Error('Service is already initialized');
