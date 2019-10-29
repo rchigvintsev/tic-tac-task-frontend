@@ -12,11 +12,15 @@ export class ConfigService {
   constructor(private http: HttpClient) {
   }
 
-  init(): Promise<void> {
-    this.assertNotInitialized();
+  loadConfig(): Promise<void> {
     return this.http.get<any>('/assets/config.json').toPromise().then(response => {
-      this.config = new Config().deserialize(response);
+      this.setConfig(new Config().deserialize(response));
     });
+  }
+
+  setConfig(config: Config) {
+    this.assertNotInitialized();
+    this.config = config.clone();
   }
 
   get apiBaseUrl() {

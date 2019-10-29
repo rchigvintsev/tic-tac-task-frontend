@@ -39,7 +39,7 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
 
 function loadConfig(configService: ConfigService) {
   return (): Promise<void> => {
-    return configService.init();
+    return configService.loadConfig();
   };
 }
 

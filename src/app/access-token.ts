@@ -5,5 +5,7 @@ export function getAccessToken() {
 export function setAccessToken(accessToken: string) {
   if (accessToken) {
     localStorage.setItem('access-token', accessToken);
+  } else {
+    localStorage.removeItem('access-token');
   }
 }

@@ -14,6 +14,8 @@ import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
+import {ConfigService} from '../service/config.service';
+import {Config} from '../model/config';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -40,6 +42,10 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
+
+    const configService = fixture.debugElement.injector.get(ConfigService);
+    configService.setConfig(new Config());
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
