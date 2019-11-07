@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {CookieService} from 'ngx-cookie-service';
 
-const ACCESS_TOKEN_COOKIE_NAME = 'ATP';
+export const ACCESS_TOKEN_COOKIE_NAME = 'ATP';
 
 @Injectable({
   providedIn: 'root'

@@ -7,8 +7,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-
-import {JwtModule} from '@auth0/angular-jwt';
+import {CookieService} from 'ngx-cookie-service';
 
 import {AuthenticatedOnlyRouteGuard, LocalizedRouteGuard, UnauthenticatedOnlyRouteGuard} from './route.guard';
 import {routes} from './app-routing.module';
@@ -19,7 +18,6 @@ import {LoginComponent} from './login/login.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {AuthenticationService} from './service/authentication.service';
-import {getAccessToken} from './access-token';
 
 describe('RouteGuard', () => {
   let guard;
@@ -36,12 +34,6 @@ describe('RouteGuard', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        }),
-        JwtModule.forRoot({
-          config: {
-            tokenGetter: getAccessToken,
-            whitelistedDomains: ['localhost:8080']
-          }
         })
       ],
       declarations: [
@@ -51,6 +43,7 @@ describe('RouteGuard', () => {
         DummyComponent,
         NotFoundComponent
       ],
+      providers: [CookieService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
