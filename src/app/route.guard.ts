@@ -4,7 +4,6 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSeg
 import {TranslateService} from '@ngx-translate/core';
 
 import {AuthenticationService} from './service/authentication.service';
-import {setAccessToken} from './access-token';
 import {AVAILABLE_LANGUAGES} from './language';
 
 @Injectable({
@@ -50,15 +49,11 @@ export class LocalizedRouteGuard implements CanActivate {
 @Injectable({
   providedIn: 'root'
 })
-export class LoginCallbackRouteGuard implements CanActivate {
+export class LoginSuccessRouteGuard implements CanActivate {
   constructor(private translate: TranslateService, private router: Router) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const accessToken = route.queryParamMap.get('access-token');
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
     this.router.navigate([this.translate.currentLang]).then();
     return true;
   }

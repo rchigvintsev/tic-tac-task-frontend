@@ -30,7 +30,7 @@ export class LoginComponent extends AbstractComponent {
   }
 
   buildAuthorizationUri(provider: string): string {
-    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/login/callback`;
+    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/login/success`;
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${redirectUri}`;
   }
 }
