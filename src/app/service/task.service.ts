@@ -6,8 +6,11 @@ import {map} from 'rxjs/operators';
 
 import {Task} from '../model/task';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
+const commonHttpOptions = {withCredentials: true};
+
+const appJsonHttpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
+  withCredentials: true
 };
 
 @Injectable({
@@ -21,7 +24,7 @@ export class TaskService {
   }
 
   getTasks(completed: boolean) {
-    const options = {params: new HttpParams().set('completed', String(completed))};
+    const options = {params: new HttpParams().set('completed', String(completed)), withCredentials: true};
     return this.http.get<any>(this.taskUrl, options).pipe(
       map(response => {
         const tasks = [];
@@ -34,7 +37,7 @@ export class TaskService {
   }
 
   getTask(id: number): Observable<Task> {
-    return this.http.get<any>(`${this.taskUrl}/${id}`).pipe(
+    return this.http.get<any>(`${this.taskUrl}/${id}`, commonHttpOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -42,7 +45,7 @@ export class TaskService {
   }
 
   saveTask(task: Task): Observable<Task> {
-    return this.http.post<Task>(this.taskUrl, task, httpOptions).pipe(
+    return this.http.post<Task>(this.taskUrl, task, appJsonHttpOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })

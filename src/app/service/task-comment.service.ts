@@ -6,8 +6,11 @@ import {map} from 'rxjs/operators';
 
 import {TaskComment} from '../model/task-comment';
 
-const appJsonOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
+const commonHttpOptions = {withCredentials: true};
+
+const appJsonHttpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
+  withCredentials: true
 };
 
 @Injectable({
@@ -21,7 +24,7 @@ export class TaskCommentService {
   }
 
   getCommentsForTaskId(taskId: number): Observable<TaskComment[]> {
-    const options = {params: new HttpParams().set('taskId', String(taskId))};
+    const options = {params: new HttpParams().set('taskId', String(taskId)), withCredentials: true};
     return this.http.get<any>(this.taskCommentUrl, options).pipe(
       map(response => {
         const comments = [];
@@ -34,7 +37,7 @@ export class TaskCommentService {
   }
 
   saveComment(comment: TaskComment): Observable<TaskComment> {
-    return this.http.post<TaskComment>(this.taskCommentUrl, comment, appJsonOptions).pipe(
+    return this.http.post<TaskComment>(this.taskCommentUrl, comment, appJsonHttpOptions).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
@@ -42,6 +45,6 @@ export class TaskCommentService {
   }
 
   deleteComment(comment: TaskComment): Observable<any> {
-    return this.http.delete<any>(`${this.taskCommentUrl}/${comment.id}`).pipe(map(() => EMPTY));
+    return this.http.delete<any>(`${this.taskCommentUrl}/${comment.id}`, commonHttpOptions).pipe(map(() => EMPTY));
   }
 }
