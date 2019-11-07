@@ -17,7 +17,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {JwtModule} from '@auth0/angular-jwt';
+import {CookieService} from 'ngx-cookie-service';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -31,7 +31,6 @@ import {LoginComponent} from './login/login.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {ConfigService} from './service/config.service';
-import {getAccessToken} from './access-token';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -77,12 +76,6 @@ function loadConfig(configService: ConfigService) {
         useFactory: TranslateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    }),
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: getAccessToken,
-        whitelistedDomains: ['localhost:8080'], // TODO: get backend address from the settings
-      }
     })
   ],
   providers: [
@@ -91,7 +84,8 @@ function loadConfig(configService: ConfigService) {
       useFactory: loadConfig,
       multi: true,
       deps: [ConfigService]
-    }
+    },
+    CookieService
   ],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmationDialogComponent]

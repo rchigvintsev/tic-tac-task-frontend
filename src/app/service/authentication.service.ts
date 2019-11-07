@@ -1,17 +1,26 @@
 import {Injectable} from '@angular/core';
 
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {CookieService} from 'ngx-cookie-service';
 
-import {getAccessToken} from '../access-token';
+const ACCESS_TOKEN_COOKIE_NAME = 'ATP';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  constructor(private jwtHelper: JwtHelperService) {}
+  private jwtHelper = new JwtHelperService();
+
+  constructor(private cookieService: CookieService) {}
 
   isUserAuthenticated(): boolean {
-    const accessToken = getAccessToken();
-    return accessToken && !this.jwtHelper.isTokenExpired(accessToken);
+    const accessTokenValue = this.getAccessTokenValue();
+    return accessTokenValue && !this.jwtHelper.isTokenExpired(this.getAccessTokenValue());
+  }
+
+  private getAccessTokenValue(): string {
+    const value = this.cookieService.get(ACCESS_TOKEN_COOKIE_NAME);
+    // JwtHelperService expects two dots
+    return value ? `.${value}.` : null;
   }
 }
