@@ -22,7 +22,7 @@
       <mat-list-item *ngFor="let task of tasks">
         <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
-        <div id="title_column" [routerLink]="['task/', task.id]">
+        <div id="title_column" [routerLink]="['/', translate.currentLang, 'task', task.id]">
           <span>{{ task.title }}</span>
         </div>
       </mat-list-item>
