@@ -2,6 +2,11 @@
   <header>
     <mat-toolbar color="primary">
       <span>{{ title }}</span>
+      <span class="space-filler"></span>
+      <div *ngIf="user" class="profile-info-container">
+        <img [src]="user.imageUrl" alt="avatar" class="avatar"/>
+        <span>{{ user.fullName }}</span>
+      </div>
     </mat-toolbar>
   </header>
 

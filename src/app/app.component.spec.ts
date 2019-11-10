@@ -5,9 +5,12 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {CookieService} from 'ngx-cookie-service';
 
 import {AppComponent} from './app.component';
 import {TranslateHttpLoaderFactory} from './app.module';
+import {ACCESS_TOKEN_COOKIE_NAME, AuthenticationService, CURRENT_USER} from './service/authentication.service';
+import {TestAccessToken} from './test-access-token';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -23,6 +26,14 @@ describe('AppComponent', () => {
           }
         })
       ],
+      providers: [
+        {
+          provide: CURRENT_USER,
+          useFactory: AuthenticationService.getCurrentUser,
+          deps: [AuthenticationService]
+        },
+        CookieService
+      ],
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -30,8 +41,12 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     const injector = getTestBed();
+
     const translateService = injector.get(TranslateService);
     translateService.currentLang = 'ru';
+
+    const cookieService = injector.get(CookieService);
+    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.VALID);
   });
 
   it('should create the app', () => {
@@ -51,5 +66,29 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.page > header > mat-toolbar > span').textContent).toContain('Orchestra');
+  });
+
+  it('should render current user\'s full name in a toolbar', () => {
+    const injector = getTestBed();
+    const currentUser = injector.get(CURRENT_USER);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > span');
+    expect(element.textContent).toContain(currentUser.fullName);
+  });
+
+  it('should render current user\'s avatar in a toolbar', () => {
+    const injector = getTestBed();
+    const currentUser = injector.get(CURRENT_USER);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > img.avatar');
+    expect(element.getAttribute('src')).toEqual(currentUser.imageUrl);
   });
 });

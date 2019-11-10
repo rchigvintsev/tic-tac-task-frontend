@@ -31,6 +31,7 @@ import {LoginComponent} from './login/login.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {ConfigService} from './service/config.service';
+import {AuthenticationService, CURRENT_USER} from './service/authentication.service';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -84,6 +85,11 @@ function loadConfig(configService: ConfigService) {
       useFactory: loadConfig,
       multi: true,
       deps: [ConfigService]
+    },
+    {
+      provide: CURRENT_USER,
+      useFactory: AuthenticationService.getCurrentUser,
+      deps: [AuthenticationService]
     },
     CookieService
   ],
