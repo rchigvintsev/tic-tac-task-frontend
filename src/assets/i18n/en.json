@@ -13,5 +13,6 @@
   "delete_comment_question": "Do you really want to delete the selected comment?",
   "page_not_found": "Page is not found :(",
   "sing_in_prompt": "Please sign in",
-  "sign_in_with": "Sign in with"
+  "sign_in_with": "Sign in with",
+  "sign_out": "Sign out"
 }

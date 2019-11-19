@@ -11,6 +11,7 @@ import {
   MatListModule,
   MatToolbarModule
 } from '@angular/material';
+import {MatMenuModule} from '@angular/material/menu';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -69,6 +70,7 @@ function loadConfig(configService: ConfigService) {
     MatInputModule,
     MatListModule,
     MatToolbarModule,
+    MatMenuModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({

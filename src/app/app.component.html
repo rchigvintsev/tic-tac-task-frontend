@@ -5,7 +5,13 @@
       <span class="space-filler"></span>
       <div *ngIf="user" class="profile-info-container">
         <img [src]="user.imageUrl" alt="avatar" class="avatar"/>
-        <span>{{ user.fullName }}</span>
+        <button mat-button [matMenuTriggerFor]="profileActions">{{ user.fullName }}</button>
+
+        <mat-menu #profileActions="matMenu">
+          <button mat-menu-item id="sign_out_menu_item" (click)="onSignOutButtonClick()">
+            {{ 'sign_out' | translate }}
+          </button>
+        </mat-menu>
       </div>
     </mat-toolbar>
   </header>

@@ -69,7 +69,7 @@ export class UnauthenticatedOnlyRouteGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (this.authenticationService.isUserAuthenticated()) {
+    if (this.authenticationService.isSignedIn()) {
       this.router.navigate([this.translate.currentLang]).then();
       return false;
     }
@@ -87,7 +87,7 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!this.authenticationService.isUserAuthenticated()) {
+    if (!this.authenticationService.isSignedIn()) {
       this.router.navigate([this.translate.currentLang, 'login']).then();
       return false;
     }

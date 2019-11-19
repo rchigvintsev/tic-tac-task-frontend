@@ -96,13 +96,13 @@ describe('RouteGuard', () => {
     });
 
     it('should deny access when current user is authenticated', () => {
-      spyOn(authenticationService, 'isUserAuthenticated').and.returnValue(true);
+      spyOn(authenticationService, 'isSignedIn').and.returnValue(true);
       expect(guard.canActivate(null, null)).toBeFalsy();
       expect(router.navigate).toHaveBeenCalledWith(['en']);
     });
 
     it('should allow access when current user is not authenticated', () => {
-      spyOn(authenticationService, 'isUserAuthenticated').and.returnValue(false);
+      spyOn(authenticationService, 'isSignedIn').and.returnValue(false);
       expect(guard.canActivate(null, null)).toBeTruthy();
     });
   });
@@ -125,13 +125,13 @@ describe('RouteGuard', () => {
     });
 
     it('should deny access when current user is not authenticated', () => {
-      spyOn(authenticationService, 'isUserAuthenticated').and.returnValue(false);
+      spyOn(authenticationService, 'isSignedIn').and.returnValue(false);
       expect(guard.canActivate(null, null)).toBeFalsy();
       expect(router.navigate).toHaveBeenCalledWith(['en', 'login']);
     });
 
     it('should allow access when current user is authenticated', () => {
-      spyOn(authenticationService, 'isUserAuthenticated').and.returnValue(true);
+      spyOn(authenticationService, 'isSignedIn').and.returnValue(true);
       expect(guard.canActivate(null, null)).toBeTruthy();
     });
   });
