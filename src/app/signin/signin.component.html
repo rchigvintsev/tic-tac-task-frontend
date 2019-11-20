@@ -1,19 +1,20 @@
-<div class="login-container content-align-center">
+<div class="signin-container content-align-center">
   <mat-card class="content-align-center">
     <mat-card-header>
-      <mat-card-title>{{ 'sing_in_prompt' | translate }}</mat-card-title>
+      <mat-card-title>{{ 'sign_in_prompt' | translate }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
         <div>
-          <a mat-raised-button [href]="buildAuthorizationUri('google')" class="button-login button-login-google">
+          <a mat-raised-button [href]="buildAuthorizationUri('google')" class="button-sign-in button-sign-in-google">
             <mat-icon class="logo-google" svgIcon="logo-google"></mat-icon>
             <span>{{ 'sign_in_with' | translate }} Google</span>
           </a>
         </div>
 
         <div>
-          <a mat-raised-button [href]="buildAuthorizationUri('facebook')" class="button-login button-login-facebook">
+          <a mat-raised-button [href]="buildAuthorizationUri('facebook')"
+             class="button-sign-in button-sign-in-facebook">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216 216" color="#FFFFFF" class="logo-facebook">
               <path fill="#FFFFFF" d="M204.1 0H11.9C5.3 0 0 5.3 0 11.9v192.2c0 6.6 5.3 11.9 11.9
             11.9h103.5v-83.6H87.2V99.8h28.1v-24c0-27.9 17-43.1 41.9-43.1

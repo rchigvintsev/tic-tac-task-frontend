@@ -8,13 +8,13 @@ import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualPars
 
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
-import {LoginComponent} from './login/login.component';
+import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,
-  LoginSuccessRouteGuard,
+  OAuth2AuthorizationSuccessRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
 import {AVAILABLE_LANGUAGES} from './language';
@@ -26,10 +26,11 @@ export const routes: Routes = [
       {path: 'task/:id', component: TaskDetailComponent}
     ]
   },
+  {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
-    path: 'login', component: LoginComponent, canActivate: [UnauthenticatedOnlyRouteGuard], children: [
-      {path: 'success', component: DummyComponent, canActivate: [LoginSuccessRouteGuard]}
-    ]
+    path: 'oauth2/authorization/success',
+    component: DummyComponent,
+    canActivate: [OAuth2AuthorizationSuccessRouteGuard]
   },
   {path: '404', component: NotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}

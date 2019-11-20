@@ -12,7 +12,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
-import {LoginComponent} from '../login/login.component';
+import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
@@ -41,7 +41,7 @@ describe('TasksComponent', () => {
         })
       ],
       declarations: [
-        LoginComponent,
+        SigninComponent,
         DashboardComponent,
         TasksComponent,
         TaskDetailComponent,
@@ -129,13 +129,13 @@ describe('TasksComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should render login page', () => {
+    it('should render signin page', () => {
       const injector = getTestBed();
       const router = injector.get(Router);
       const translate = injector.get(TranslateService);
       fixture.whenStable().then(() => {
         fixture.detectChanges();
-        expect(router.navigate).toHaveBeenCalledWith([translate.currentLang, 'login']);
+        expect(router.navigate).toHaveBeenCalledWith([translate.currentLang, 'signin']);
       });
     });
   });

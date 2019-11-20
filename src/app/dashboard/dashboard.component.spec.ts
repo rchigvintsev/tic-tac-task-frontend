@@ -10,7 +10,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 
-import {LoginComponent} from '../login/login.component';
+import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from './dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../not-found/not-found.component';
@@ -34,7 +34,7 @@ describe('DashboardComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

@@ -115,8 +115,8 @@ describe('AppComponent', () => {
     expect(component.user).toBeNull();
   });
 
-  it('should navigate to login page on sign out', () => {
+  it('should navigate to signin page after user being signed out', () => {
     component.onSignOutButtonClick();
-    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'login']);
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'signin']);
   });
 });

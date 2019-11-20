@@ -13,7 +13,7 @@ import {of} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
-import {LoginComponent} from '../login/login.component';
+import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments.component';
@@ -52,7 +52,7 @@ describe('TaskCommentsComponent', () => {
         })
       ],
       declarations: [
-        LoginComponent,
+        SigninComponent,
         DashboardComponent,
         TaskDetailComponent,
         TaskCommentsComponent,

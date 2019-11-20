@@ -49,7 +49,7 @@ export class LocalizedRouteGuard implements CanActivate {
 @Injectable({
   providedIn: 'root'
 })
-export class LoginSuccessRouteGuard implements CanActivate {
+export class OAuth2AuthorizationSuccessRouteGuard implements CanActivate {
   constructor(private translate: TranslateService, private router: Router) {
   }
 
@@ -88,7 +88,7 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!this.authenticationService.isSignedIn()) {
-      this.router.navigate([this.translate.currentLang, 'login']).then();
+      this.router.navigate([this.translate.currentLang, 'signin']).then();
       return false;
     }
     return true;

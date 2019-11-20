@@ -13,7 +13,7 @@ import {of} from 'rxjs';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 import {TaskDetailComponent} from './task-detail.component';
-import {LoginComponent} from '../login/login.component';
+import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {NotFoundComponent} from '../not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
@@ -38,7 +38,7 @@ describe('TaskDetailComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

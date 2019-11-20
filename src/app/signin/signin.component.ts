@@ -9,11 +9,11 @@ import {AbstractComponent} from '../abstract-component';
 import {ConfigService} from '../service/config.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.styl']
+  selector: 'app-signin',
+  templateUrl: './signin.component.html',
+  styleUrls: ['./signin.component.styl']
 })
-export class LoginComponent extends AbstractComponent {
+export class SigninComponent extends AbstractComponent {
   config: ConfigService;
 
   constructor(
@@ -30,7 +30,7 @@ export class LoginComponent extends AbstractComponent {
   }
 
   buildAuthorizationUri(provider: string): string {
-    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/login/success`;
+    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/oauth2/authorization/success`;
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${redirectUri}`;
   }
 }

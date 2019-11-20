@@ -9,7 +9,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
-import {LoginComponent} from './login.component';
+import {SigninComponent} from './signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../not-found/not-found.component';
@@ -17,9 +17,9 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {ConfigService} from '../service/config.service';
 import {Config} from '../model/config';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('SigninComponent', () => {
+  let component: SigninComponent;
+  let fixture: ComponentFixture<SigninComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,13 +35,13 @@ describe('LoginComponent', () => {
           }
         })
       ],
-      declarations: [LoginComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(SigninComponent);
 
     const configService = fixture.debugElement.injector.get(ConfigService);
     configService.setConfig(new Config());

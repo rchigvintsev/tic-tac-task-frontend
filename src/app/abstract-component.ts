@@ -23,13 +23,13 @@ export class AbstractComponent implements OnInit {
 
   onServiceCallError(error) {
     if (HttpErrors.isUnauthorized(error)) {
-      this.navigateToLoginPage();
+      this.navigateToSigninPage();
     } else {
       AbstractComponent.logError(error);
     }
   }
 
-  navigateToLoginPage() {
-    this.router.navigate([this.translate.currentLang, 'login']).then();
+  navigateToSigninPage() {
+    this.router.navigate([this.translate.currentLang, 'signin']).then();
   }
 }

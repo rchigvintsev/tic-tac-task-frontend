@@ -28,7 +28,7 @@ import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
-import {LoginComponent} from './login/login.component';
+import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {ConfigService} from './service/config.service';
@@ -53,7 +53,7 @@ function loadConfig(configService: ConfigService) {
     ConfirmationDialogComponent,
     NotBlankValidatorDirective,
     TaskCommentsComponent,
-    LoginComponent,
+    SigninComponent,
     NotFoundComponent,
     DummyComponent
   ],

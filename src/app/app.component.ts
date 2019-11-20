@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   onSignOutButtonClick() {
     this.authenticationService.signOut().subscribe(() => {
       this.user = null;
-      this.router.navigate([this.translate.currentLang, 'login']).then();
+      this.router.navigate([this.translate.currentLang, 'signin']).then();
     });
   }
 }

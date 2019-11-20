@@ -14,7 +14,7 @@ import {routes} from './app-routing.module';
 import {TranslateHttpLoaderFactory} from './app.module';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
-import {LoginComponent} from './login/login.component';
+import {SigninComponent} from './signin/signin.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {AuthenticationService} from './service/authentication.service';
@@ -39,7 +39,7 @@ describe('RouteGuard', () => {
       declarations: [
         DashboardComponent,
         TaskDetailComponent,
-        LoginComponent,
+        SigninComponent,
         DummyComponent,
         NotFoundComponent
       ],
@@ -127,7 +127,7 @@ describe('RouteGuard', () => {
     it('should deny access when current user is not authenticated', () => {
       spyOn(authenticationService, 'isSignedIn').and.returnValue(false);
       expect(guard.canActivate(null, null)).toBeFalsy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'login']);
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin']);
     });
 
     it('should allow access when current user is authenticated', () => {
