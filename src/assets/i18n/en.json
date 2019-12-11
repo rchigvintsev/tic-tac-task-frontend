@@ -14,5 +14,6 @@
   "page_not_found": "Page is not found :(",
   "sign_in_prompt": "Please sign in",
   "sign_in_with": "Sign in with",
-  "sign_out": "Sign out"
+  "sign_out": "Sign out",
+  "sign_in_error": "Something went wrong during signing in"
 }

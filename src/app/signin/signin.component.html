@@ -4,6 +4,8 @@
       <mat-card-title>{{ 'sign_in_prompt' | translate }}</mat-card-title>
     </mat-card-header>
 
+    <app-alert class="signin-alert"></app-alert>
+
     <mat-card-content>
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('google')" class="button-sign-in button-sign-in-google">

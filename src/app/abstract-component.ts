@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
@@ -6,7 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {HttpErrors} from './util/http-errors';
 
 @Injectable()
-export class AbstractComponent implements OnInit {
+export class AbstractComponent {
   constructor(private router: Router, protected translate: TranslateService) {
   }
 
@@ -16,9 +16,6 @@ export class AbstractComponent implements OnInit {
     } else {
       console.error(error);
     }
-  }
-
-  ngOnInit(): void {
   }
 
   onServiceCallError(error) {
