@@ -31,6 +31,7 @@ import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
+import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';
 import {AuthenticationService, CURRENT_USER} from './service/authentication.service';
 
@@ -55,7 +56,8 @@ function loadConfig(configService: ConfigService) {
     TaskCommentsComponent,
     SigninComponent,
     NotFoundComponent,
-    DummyComponent
+    DummyComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
