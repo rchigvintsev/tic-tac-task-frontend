@@ -9,7 +9,12 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {CookieService} from 'ngx-cookie-service';
 
-import {AuthenticatedOnlyRouteGuard, LocalizedRouteGuard, UnauthenticatedOnlyRouteGuard} from './route.guard';
+import {
+  AuthenticatedOnlyRouteGuard,
+  LocalizedRouteGuard,
+  OAuth2AuthorizationCallbackRouteGuard,
+  UnauthenticatedOnlyRouteGuard
+} from './route.guard';
 import {routes} from './app-routing.module';
 import {TranslateHttpLoaderFactory} from './app.module';
 import {DashboardComponent} from './dashboard/dashboard.component';
@@ -21,6 +26,8 @@ import {AuthenticationService} from './service/authentication.service';
 
 describe('RouteGuard', () => {
   let guard;
+  let injector;
+  let router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -48,18 +55,18 @@ describe('RouteGuard', () => {
     }).compileComponents();
   }));
 
+  beforeEach(() => {
+    injector = getTestBed();
+
+    router = injector.get(Router);
+    router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
+
+    const translateService = injector.get(TranslateService);
+    translateService.currentLang = 'en';
+  });
+
   describe('Localized', () => {
-    let router;
-
     beforeEach(() => {
-      const injector = getTestBed();
-
-      router = injector.get(Router);
-      router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
-
-      const translateService = injector.get(TranslateService);
-      translateService.currentLang = 'en';
-
       guard = injector.get(LocalizedRouteGuard);
     });
 
@@ -80,18 +87,9 @@ describe('RouteGuard', () => {
 
   describe('UnauthenticatedOnly', () => {
     let authenticationService;
-    let router;
 
     beforeEach(() => {
-      const injector = getTestBed();
       authenticationService = injector.get(AuthenticationService);
-
-      router = injector.get(Router);
-      router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
-
-      const translateService = injector.get(TranslateService);
-      translateService.currentLang = 'en';
-
       guard = injector.get(UnauthenticatedOnlyRouteGuard);
     });
 
@@ -109,18 +107,9 @@ describe('RouteGuard', () => {
 
   describe('AuthenticatedOnly', () => {
     let authenticationService;
-    let router;
 
     beforeEach(() => {
-      const injector = getTestBed();
       authenticationService = injector.get(AuthenticationService);
-
-      router = injector.get(Router);
-      router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
-
-      const translateService = injector.get(TranslateService);
-      translateService.currentLang = 'en';
-
       guard = injector.get(AuthenticatedOnlyRouteGuard);
     });
 
@@ -133,6 +122,27 @@ describe('RouteGuard', () => {
     it('should allow access when current user is authenticated', () => {
       spyOn(authenticationService, 'isSignedIn').and.returnValue(true);
       expect(guard.canActivate(null, null)).toBeTruthy();
+    });
+  });
+
+  describe('OAuth2AuthorizationCallback', () => {
+    beforeEach(() => {
+      guard = injector.get(OAuth2AuthorizationCallbackRouteGuard);
+    });
+
+    it('should navigate to signin page when error is occurred', () => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('/', null)];
+      snapshotMock.queryParams =  {error: 'true'};
+      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'], {queryParams: {error: true}});
+    });
+
+    it('should navigate to root page when there is no error', () => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('/', null)];
+      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
+      expect(router.navigate).toHaveBeenCalledWith(['en']);
     });
   });
 });

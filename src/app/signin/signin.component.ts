@@ -33,7 +33,7 @@ export class SigninComponent extends AbstractComponent {
   }
 
   buildAuthorizationUri(provider: string): string {
-    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/oauth2/authorization/success`;
+    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/oauth2/authorization/callback`;
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${redirectUri}`;
   }
 }

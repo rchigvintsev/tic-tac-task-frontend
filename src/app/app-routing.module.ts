@@ -14,7 +14,7 @@ import {DummyComponent} from './dummy/dummy.component';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,
-  OAuth2AuthorizationSuccessRouteGuard,
+  OAuth2AuthorizationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
 import {AVAILABLE_LANGUAGES} from './language';
@@ -28,9 +28,9 @@ export const routes: Routes = [
   },
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
-    path: 'oauth2/authorization/success',
+    path: 'oauth2/authorization/callback',
     component: DummyComponent,
-    canActivate: [OAuth2AuthorizationSuccessRouteGuard]
+    canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
   {path: '404', component: NotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
