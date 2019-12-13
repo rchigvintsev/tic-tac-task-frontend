@@ -11,8 +11,9 @@ import {Message} from '../model/message';
   styleUrls: ['./alert.component.styl']
 })
 export class AlertComponent implements OnInit, OnDestroy {
+  message: Message;
+
   private messageSubscription: Subscription;
-  private message: Message;
 
   constructor(private alertService: AlertService) {
   }
