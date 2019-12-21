@@ -29,7 +29,7 @@ import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-di
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {SigninComponent} from './signin/signin.component';
-import {NotFoundComponent} from './not-found/not-found.component';
+import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';

@@ -16,7 +16,7 @@ import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
-import {NotFoundComponent} from '../not-found/not-found.component';
+import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';

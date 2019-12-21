@@ -21,7 +21,7 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {SigninComponent} from './signin/signin.component';
 import {DummyComponent} from './dummy/dummy.component';
-import {NotFoundComponent} from './not-found/not-found.component';
+import {NotFoundComponent} from './error/not-found/not-found.component';
 import {AuthenticationService} from './service/authentication.service';
 
 describe('RouteGuard', () => {
@@ -70,11 +70,11 @@ describe('RouteGuard', () => {
       guard = injector.get(LocalizedRouteGuard);
     });
 
-    it('should navigate to 404 page when valid language is present in URL', () => {
+    it('should navigate to 404 error page when valid language is present in URL', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('en', null)];
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', '404']);
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'error', '404']);
     });
 
     it('should prepend language to target URL when valid language is not present', () => {

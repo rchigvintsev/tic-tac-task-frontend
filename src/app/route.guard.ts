@@ -42,7 +42,7 @@ export class LocalizedRouteGuard implements CanActivate {
   }
 
   private navigateTo404Page(language: string) {
-    this.router.navigate([language, '404']).then();
+    this.router.navigate([language, 'error', '404']).then();
   }
 }
 

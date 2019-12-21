@@ -9,7 +9,7 @@ import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualPars
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {SigninComponent} from './signin/signin.component';
-import {NotFoundComponent} from './not-found/not-found.component';
+import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {
   AuthenticatedOnlyRouteGuard,
@@ -32,7 +32,7 @@ export const routes: Routes = [
     component: DummyComponent,
     canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
-  {path: '404', component: NotFoundComponent},
+  {path: 'error/404', component: NotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];
 

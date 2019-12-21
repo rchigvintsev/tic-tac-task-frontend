@@ -14,7 +14,7 @@ import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
-import {NotFoundComponent} from '../not-found/not-found.component';
+import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 

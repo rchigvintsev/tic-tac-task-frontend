@@ -15,7 +15,7 @@ import {routes} from '../app-routing.module';
 import {SigninComponent} from './signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
-import {NotFoundComponent} from '../not-found/not-found.component';
+import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
