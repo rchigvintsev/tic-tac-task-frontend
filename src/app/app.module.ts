@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {
   MatButtonModule,
   MatCardModule,
@@ -34,6 +34,7 @@ import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';
 import {AuthenticationService, CURRENT_USER} from './service/authentication.service';
+import {NotFoundErrorInterceptor} from './interceptor/not-found-error.interceptor';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -94,6 +95,11 @@ export function loadConfig(configService: ConfigService) {
       provide: CURRENT_USER,
       useFactory: AuthenticationService.getCurrentUser,
       deps: [AuthenticationService]
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NotFoundErrorInterceptor,
+      multi: true
     },
     CookieService
   ],

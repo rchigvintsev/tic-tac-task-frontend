@@ -1,16 +1,18 @@
 <div class="error-container">
-  <div class="error-code">
-    <h1>404</h1>
-  </div>
+  <div class="error-subcontainer">
+    <div class="error-code">
+      <h1>404</h1>
+    </div>
 
-  <div class="error-text content-align-center">
-    <h2>{{ 'page_not_found' | translate }}</h2>
-    <p>{{ 'page_not_found_description' | translate }}</p>
-  </div>
+    <div class="error-text content-align-center">
+      <h2>{{ 'page_not_found' | translate }}</h2>
+      <p>{{ 'page_not_found_description' | translate }}</p>
+    </div>
 
-  <div class="button-container content-align-center">
-    <a mat-raised-button [routerLink]="['/', translate.currentLang]" color="primary">
-      {{ 'back_to_home_page' | translate }}
-    </a>
+    <div class="button-container content-align-center">
+      <a mat-raised-button [routerLink]="['/', translate.currentLang]" color="primary">
+        {{ 'back_to_home_page' | translate }}
+      </a>
+    </div>
   </div>
 </div>

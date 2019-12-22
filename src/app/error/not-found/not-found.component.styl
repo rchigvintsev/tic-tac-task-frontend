@@ -1,44 +1,52 @@
 .error-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   background-color: #ffffff;
   box-shadow: 10px 5px 3px #cecece;
   border-radius: 4px;
   text-transform: uppercase;
   padding: 0 16px 16px 16px;
 
-  .error-code {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  .error-subcontainer {
+    max-width: 800px;
 
-    h1 {
-      margin: 0;
-      font-size: 250px;
-      font-weight: 900;
-      color: transparent;
-      background-color: #cecece;
-      background-clip: text;
-      text-shadow: 10px 5px 3px rgba(255, 255, 255, 0.8);
-    }
-  }
+    .error-code {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
 
-  .error-text {
-    display: flex;
-    flex-direction: column;
-
-    h2 {
-      font-size: 40px;
-      font-weight: 900;
-      margin: 0;
+      h1 {
+        margin: 0;
+        font-size: 250px;
+        font-weight: 900;
+        color: transparent;
+        background-color: #cecece;
+        background-clip: text;
+        text-shadow: 10px 5px 3px rgba(255, 255, 255, 0.8);
+      }
     }
 
-    p {
-      font-size: 16px;
-      font-weight: 400;
-      margin-top: 16px;
-    }
-  }
+    .error-text {
+      display: flex;
+      flex-direction: column;
 
-  .button-container {
-    display: flex;
+      h2 {
+        font-size: 30px;
+        font-weight: 900;
+        margin: 0;
+      }
+
+      p {
+        font-size: 16px;
+        font-weight: 400;
+        margin-top: 16px;
+        text-align: center;
+      }
+    }
+
+    .button-container {
+      display: flex;
+    }
   }
 }
