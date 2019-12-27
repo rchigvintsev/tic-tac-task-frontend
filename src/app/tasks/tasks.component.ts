@@ -38,7 +38,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
 
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
-      this.taskService.saveTask(this.formModel).subscribe(task => {
+      this.taskService.createTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
         this.taskForm.resetForm();
       }, this.onServiceCallError.bind(this));
@@ -47,7 +47,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
 
   private completeTask(task: Task) {
     task.completed = true;
-    this.taskService.saveTask(task).subscribe(savedTask => {
+    this.taskService.updateTask(task).subscribe(savedTask => {
       this.tasks = this.tasks.filter(e => e.id !== savedTask.id);
     }, this.onServiceCallError.bind(this));
   }

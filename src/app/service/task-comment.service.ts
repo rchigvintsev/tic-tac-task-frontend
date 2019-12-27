@@ -5,6 +5,7 @@ import {EMPTY, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {TaskComment} from '../model/task-comment';
+import {ConfigService} from './config.service';
 
 const commonHttpOptions = {withCredentials: true};
 
@@ -17,15 +18,15 @@ const appJsonHttpOptions = {
   providedIn: 'root'
 })
 export class TaskCommentService {
-  // TODO: save base URL somewhere in the application settings
-  taskCommentUrl = '//localhost:8080/taskComments';
+  readonly baseUrl: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private config: ConfigService) {
+    this.baseUrl = `${this.config.apiBaseUrl}/taskComments`;
   }
 
   getCommentsForTaskId(taskId: number): Observable<TaskComment[]> {
     const options = {params: new HttpParams().set('taskId', String(taskId)), withCredentials: true};
-    return this.http.get<any>(this.taskCommentUrl, options).pipe(
+    return this.http.get<any>(this.baseUrl, options).pipe(
       map(response => {
         const comments = [];
         for (const json of response) {
@@ -37,7 +38,7 @@ export class TaskCommentService {
   }
 
   saveComment(comment: TaskComment): Observable<TaskComment> {
-    return this.http.post<TaskComment>(this.taskCommentUrl, comment, appJsonHttpOptions).pipe(
+    return this.http.post<TaskComment>(this.baseUrl, comment, appJsonHttpOptions).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
@@ -45,6 +46,6 @@ export class TaskCommentService {
   }
 
   deleteComment(comment: TaskComment): Observable<any> {
-    return this.http.delete<any>(`${this.taskCommentUrl}/${comment.id}`, commonHttpOptions).pipe(map(() => EMPTY));
+    return this.http.delete<any>(`${this.baseUrl}/${comment.id}`, commonHttpOptions).pipe(map(() => EMPTY));
   }
 }

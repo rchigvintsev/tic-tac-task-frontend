@@ -19,6 +19,7 @@ import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
+import {ConfigService} from '../service/config.service';
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -39,7 +40,8 @@ describe('TaskDetailComponent', () => {
         })
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     }).compileComponents();
   }));
 
@@ -54,7 +56,7 @@ describe('TaskDetailComponent', () => {
       completed: false
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
-    spyOn(taskService, 'saveTask').and.callFake(t => of(t));
+    spyOn(taskService, 'updateTask').and.callFake(t => of(t));
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -108,7 +110,7 @@ describe('TaskDetailComponent', () => {
       component.taskFormModel.title = 'New title';
       component.onTitleInputBlur();
       fixture.detectChanges();
-      expect(taskService.saveTask).toHaveBeenCalled();
+      expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
 
@@ -118,7 +120,7 @@ describe('TaskDetailComponent', () => {
       component.taskFormModel.title = ' ';
       component.onTitleInputBlur();
       fixture.detectChanges();
-      expect(taskService.saveTask).not.toHaveBeenCalled();
+      expect(taskService.updateTask).not.toHaveBeenCalled();
     });
   });
 
@@ -128,7 +130,7 @@ describe('TaskDetailComponent', () => {
       component.taskFormModel.description = 'New description';
       component.onDescriptionInputBlur();
       fixture.detectChanges();
-      expect(taskService.saveTask).toHaveBeenCalled();
+      expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
 });

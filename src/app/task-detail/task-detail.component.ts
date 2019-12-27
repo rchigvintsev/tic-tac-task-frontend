@@ -65,8 +65,8 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
       this.taskFormModel.title = this.task.title;
     }
     if (!this.taskFormModel.equals(this.task)) {
-      this.taskService.saveTask(this.taskFormModel).subscribe(task => this.setTaskModel(task),
-        this.onServiceCallError.bind(this));
+      this.taskService.updateTask(this.taskFormModel)
+        .subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
     }
   }
 }

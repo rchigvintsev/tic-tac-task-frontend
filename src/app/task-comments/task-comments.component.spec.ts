@@ -21,6 +21,7 @@ import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
+import {ConfigService} from '../service/config.service';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
 
@@ -60,7 +61,10 @@ describe('TaskCommentsComponent', () => {
         DummyComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{provide: MatDialog, useClass: MatDialogMock}]
+      providers: [
+        {provide: MatDialog, useClass: MatDialogMock},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}
+      ]
     }).compileComponents();
   }));
 

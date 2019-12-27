@@ -18,6 +18,7 @@ import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
+import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
 
@@ -48,7 +49,8 @@ describe('TasksComponent', () => {
         NotFoundComponent,
         DummyComponent
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     }).compileComponents();
 
     const injector = getTestBed();
@@ -70,7 +72,8 @@ describe('TasksComponent', () => {
 
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
-      spyOn(taskService, 'saveTask').and.callFake(task => of(new Task().deserialize(task)));
+      spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
+      spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
 
       component = fixture.componentInstance;
       fixture.detectChanges();

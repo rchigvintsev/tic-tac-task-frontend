@@ -4,6 +4,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import * as moment from 'moment';
 
 import {TaskCommentService} from './task-comment.service';
+import {ConfigService} from './config.service';
 import {TaskComment} from '../model/task-comment';
 
 const DATE_FORMAT = moment.HTML5_FMT.DATETIME_LOCAL_MS;
@@ -14,7 +15,10 @@ describe('TaskCommentService', () => {
   let taskCommentService: TaskCommentService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+    });
     injector = getTestBed();
     httpMock = injector.get(HttpTestingController);
     taskCommentService = injector.get(TaskCommentService);
@@ -51,7 +55,7 @@ describe('TaskCommentService', () => {
       expect(comments).toEqual(testComments);
     });
 
-    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}?taskId=${taskId}`);
+    const request = httpMock.expectOne(`${taskCommentService.baseUrl}?taskId=${taskId}`);
     expect(request.request.method).toBe('GET');
     request.flush(testComments);
   });
@@ -66,7 +70,7 @@ describe('TaskCommentService', () => {
       expect(comment).toEqual(testComment);
     });
 
-    const request = httpMock.expectOne(taskCommentService.taskCommentUrl);
+    const request = httpMock.expectOne(taskCommentService.baseUrl);
     expect(request.request.method).toBe('POST');
     request.flush(testComment);
   });
@@ -74,7 +78,7 @@ describe('TaskCommentService', () => {
   it('should delete comment', () => {
     const testComment = new TaskComment().deserialize({id: 1});
     taskCommentService.deleteComment(testComment).subscribe(() => {});
-    const request = httpMock.expectOne(`${taskCommentService.taskCommentUrl}/${testComment.id}`);
+    const request = httpMock.expectOne(`${taskCommentService.baseUrl}/${testComment.id}`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
   });

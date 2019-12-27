@@ -1,6 +1,7 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
+import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {Task} from '../model/task';
 
@@ -10,7 +11,10 @@ describe('TaskService', () => {
   let taskService: TaskService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+    });
     injector = getTestBed();
     httpMock = injector.get(HttpTestingController);
     taskService = injector.get(TaskService);
@@ -28,38 +32,58 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', completed: false}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', completed: false}));
 
-    taskService.getTasks(false).subscribe(tasks => {
+    const subscription = taskService.getTasks(false).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.taskUrl}?completed=false`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}?completed=false`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
+
+    return subscription;
   });
 
   it('should return task by id', () => {
     const id = 1;
     const testTask = new Task().deserialize({id, title: 'Test task', completed: false});
 
-    taskService.getTask(id).subscribe(task => {
+    const subscription = taskService.getTask(id).subscribe(task => {
       expect(task).toEqual(testTask);
     });
 
-    const request = httpMock.expectOne(`${taskService.taskUrl}/${id}`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${id}`);
     expect(request.request.method).toBe('GET');
     request.flush(testTask);
+
+    return subscription;
   });
 
-  it('should save task', () => {
+  it('should create task', () => {
     const testTask = new Task().deserialize({title: 'Test task', completed: false});
 
-    taskService.saveTask(testTask).subscribe(task => {
+    const subscription = taskService.createTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);
     });
 
-    const request = httpMock.expectOne(taskService.taskUrl);
+    const request = httpMock.expectOne(taskService.baseUrl);
     expect(request.request.method).toBe('POST');
     request.flush(testTask);
+
+    return subscription;
+  });
+
+  it('should update task', () => {
+    const testTask = new Task().deserialize({id: 1, title: 'Updated test task', completed: false});
+
+    const subscription = taskService.updateTask(testTask).subscribe(task => {
+      expect(task).toEqual(testTask);
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(testTask);
+
+    return subscription;
   });
 });
