@@ -39,7 +39,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
   ngOnInit() {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
-    this.commentService.getCommentsForTaskId(this.taskId)
+    this.commentService.getComments(this.taskId)
       .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
   }
 
@@ -62,7 +62,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
   }
 
   onEditCommentFormSubmit() {
-    this.saveComment(this.editCommentFormModel);
+    this.updateComment(this.editCommentFormModel);
   }
 
   onEditCommentButtonClick(comment: TaskComment) {
@@ -104,18 +104,16 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
   private createComment(comment: TaskComment) {
     if (!Strings.isBlank(comment.commentText)) {
       comment.taskId = this.taskId;
-      comment.createdAt = new Date();
-      this.commentService.saveComment(comment).subscribe(savedComment => {
-        this.comments.unshift(savedComment);
+      this.commentService.createComment(comment).subscribe(createdComment => {
+        this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
       }, this.onServiceCallError.bind(this));
     }
   }
 
-  private saveComment(comment: TaskComment) {
+  private updateComment(comment: TaskComment) {
     if (!Strings.isBlank(comment.commentText)) {
-      comment.updatedAt = new Date();
-      this.commentService.saveComment(comment).subscribe(savedComment => {
+      this.commentService.updateComment(comment).subscribe(savedComment => {
         const idx = this.comments.findIndex(e => e.id === savedComment.id);
         if (idx < 0) {
           throw new Error(`Comment with id ${savedComment.id} is not found`);

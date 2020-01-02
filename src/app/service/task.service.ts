@@ -8,11 +8,7 @@ import {Task} from '../model/task';
 import {ConfigService} from './config.service';
 
 const commonHttpOptions = {withCredentials: true};
-
-const appJsonHttpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-  withCredentials: true
-};
+const postOptions = Object.assign({headers: new HttpHeaders({'Content-Type': 'application/json'})}, commonHttpOptions);
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +21,7 @@ export class TaskService {
   }
 
   getTasks(completed: boolean) {
-    const options = {params: new HttpParams().set('completed', String(completed)), withCredentials: true};
+    const options = Object.assign({params: new HttpParams().set('completed', String(completed))}, commonHttpOptions);
     return this.http.get<any>(this.baseUrl, options).pipe(
       map(response => {
         const tasks = [];
@@ -46,7 +42,7 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    return this.http.post<Task>(this.baseUrl, task, appJsonHttpOptions).pipe(
+    return this.http.post<Task>(this.baseUrl, task, postOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -54,7 +50,7 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
-    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task, appJsonHttpOptions).pipe(
+    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task, postOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })

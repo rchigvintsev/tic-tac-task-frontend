@@ -50,7 +50,7 @@ describe('TaskCommentService', () => {
       updatedAt: moment().utc().subtract(1, 'days').format(DATE_FORMAT)
     }));
 
-    taskCommentService.getCommentsForTaskId(taskId).subscribe(comments => {
+    taskCommentService.getComments(taskId).subscribe(comments => {
       expect(comments.length).toBe(2);
       expect(comments).toEqual(testComments);
     });
@@ -60,18 +60,31 @@ describe('TaskCommentService', () => {
     request.flush(testComments);
   });
 
-  it('should save comment', () => {
+  it('should create comment', () => {
     const testComment = new TaskComment().deserialize({
-      commentText: 'Test comment',
-      createdAt: moment().utc().format(DATE_FORMAT)
+      taskId: 1,
+      commentText: 'New test comment'
     });
-
-    taskCommentService.saveComment(testComment).subscribe(comment => {
+    taskCommentService.createComment(testComment).subscribe(comment => {
       expect(comment).toEqual(testComment);
     });
 
-    const request = httpMock.expectOne(taskCommentService.baseUrl);
+    const request = httpMock.expectOne(`${taskCommentService.baseUrl}?taskId=${testComment.taskId}`);
     expect(request.request.method).toBe('POST');
+    request.flush(testComment);
+  });
+
+  it('should update comment', () => {
+    const testComment = new TaskComment().deserialize({
+      id: 1,
+      commentText: 'Updated test comment'
+    });
+    taskCommentService.updateComment(testComment).subscribe(comment => {
+      expect(comment).toEqual(testComment);
+    });
+
+    const request = httpMock.expectOne(`${taskCommentService.baseUrl}/${testComment.id}`);
+    expect(request.request.method).toBe('PUT');
     request.flush(testComment);
   });
 

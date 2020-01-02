@@ -23,7 +23,9 @@ export class TaskComment implements Serializable<TaskComment> {
     this.id = input.id;
     this.taskId = input.taskId;
     this.commentText = input.commentText;
-    this.createdAt = moment.utc(input.createdAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).toDate();
+    if (input.createdAt) {
+      this.createdAt = moment.utc(input.createdAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).toDate();
+    }
     if (input.updatedAt) {
       this.updatedAt = moment.utc(input.updatedAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).toDate();
     }

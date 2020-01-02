@@ -8,11 +8,7 @@ import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 
 const commonHttpOptions = {withCredentials: true};
-
-const appJsonHttpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-  withCredentials: true
-};
+const postOptions = Object.assign({headers: new HttpHeaders({'Content-Type': 'application/json'})}, commonHttpOptions);
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +20,8 @@ export class TaskCommentService {
     this.baseUrl = `${this.config.apiBaseUrl}/taskComments`;
   }
 
-  getCommentsForTaskId(taskId: number): Observable<TaskComment[]> {
-    const options = {params: new HttpParams().set('taskId', String(taskId)), withCredentials: true};
+  getComments(taskId: number): Observable<TaskComment[]> {
+    const options = Object.assign({params: new HttpParams().set('taskId', String(taskId))}, commonHttpOptions);
     return this.http.get<any>(this.baseUrl, options).pipe(
       map(response => {
         const comments = [];
@@ -37,8 +33,17 @@ export class TaskCommentService {
     );
   }
 
-  saveComment(comment: TaskComment): Observable<TaskComment> {
-    return this.http.post<TaskComment>(this.baseUrl, comment, appJsonHttpOptions).pipe(
+  createComment(comment: TaskComment): Observable<TaskComment> {
+    const options = Object.assign({params: new HttpParams().set('taskId', String(comment.taskId))}, postOptions);
+    return this.http.post<TaskComment>(this.baseUrl, comment, options).pipe(
+      map(response => {
+        return new TaskComment().deserialize(response);
+      })
+    );
+  }
+
+  updateComment(comment: TaskComment): Observable<TaskComment> {
+    return this.http.put<TaskComment>(`${this.baseUrl}/${comment.id}`, comment, postOptions).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
