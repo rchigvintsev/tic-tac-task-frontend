@@ -27,6 +27,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
   editCommentFormEnabled: boolean;
   comments: Array<TaskComment>;
   taskId: number;
+  selectedComment: TaskComment;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -87,6 +88,14 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
         this.deleteComment(comment);
       }
     });
+  }
+
+  onCommentContainerMouseHover(comment: TaskComment) {
+    this.selectedComment = comment;
+  }
+
+  onCommentContainerMouseLeave(_: TaskComment) {
+    this.selectedComment = null;
   }
 
   getRelativeCommentDate(comment: TaskComment) {
