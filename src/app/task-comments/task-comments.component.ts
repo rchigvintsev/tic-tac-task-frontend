@@ -90,7 +90,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
     });
   }
 
-  onCommentContainerMouseHover(comment: TaskComment) {
+  onCommentContainerMouseOver(comment: TaskComment) {
     this.selectedComment = comment;
   }
 

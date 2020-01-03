@@ -28,13 +28,14 @@
       <mat-divider></mat-divider>
     </div>
 
-    <div class="comment-wrapper">
+    <div class="comment-wrapper" (mouseover)="onCommentContainerMouseOver(comment)"
+         (mouseout)="onCommentContainerMouseLeave(comment)">
       <div class="comment-header">
         <div class="comment-date-wrapper">
           <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
         </div>
 
-        <div class="header-buttons">
+        <div class="header-buttons" [hidden]="comment.id !== selectedComment?.id">
           <a mat-mini-fab class="mat-micro-fab" color="primary" aria-label="Edit comment button"
              (click)="onEditCommentButtonClick(comment)">
             <mat-icon class="edit-icon" [inline]="false">edit_circle_outline</mat-icon>
