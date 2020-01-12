@@ -50,13 +50,20 @@ export class LocalizedRouteGuard implements CanActivate {
   providedIn: 'root'
 })
 export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
-  constructor(private translate: TranslateService, private router: Router) {
+  constructor(private authenticationService: AuthenticationService,
+              private translate: TranslateService,
+              private router: Router) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (route.queryParamMap.get('error')) {
       this.router.navigate([this.translate.currentLang, 'signin'], {queryParams: {error: true}}).then();
     } else {
+      const encodedClaims = route.queryParamMap.get('claims');
+      if (encodedClaims) {
+        const principal = this.authenticationService.createPrincipal(encodedClaims);
+        AuthenticationService.setPrincipal(principal);
+      }
       this.router.navigate([this.translate.currentLang]).then();
     }
     return true;
@@ -91,10 +98,10 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!this.authenticationService.isSignedIn()) {
-      this.router.navigate([this.translate.currentLang, 'signin']).then();
-      return false;
+    if (this.authenticationService.isSignedIn()) {
+      return true;
     }
-    return true;
+    this.router.navigate([this.translate.currentLang, 'signin']).then();
+    return false;
   }
 }

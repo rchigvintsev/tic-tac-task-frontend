@@ -1,12 +1,14 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
-import {CookieService} from 'ngx-cookie-service';
+import * as moment from 'moment';
 
-import {ACCESS_TOKEN_COOKIE_NAME, AuthenticationService} from './authentication.service';
-import {TestAccessToken} from '../test-access-token';
+import {AuthenticationService} from './authentication.service';
 import {ConfigService} from './config.service';
 import {Config} from '../model/config';
+import {User} from '../model/user';
+
+const PRINCIPAL_KEY = 'principal';
 
 describe('AuthenticationService', () => {
   let injector: TestBed;
@@ -15,8 +17,7 @@ describe('AuthenticationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CookieService]
+      imports: [HttpClientTestingModule]
     });
 
     injector = getTestBed();
@@ -31,42 +32,48 @@ describe('AuthenticationService', () => {
   });
 
   afterEach(() => {
-    const cookieService = injector.get(CookieService);
-    cookieService.delete(ACCESS_TOKEN_COOKIE_NAME);
+    localStorage.removeItem(PRINCIPAL_KEY);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should treat current user authenticated when valid access token is present', () => {
-    const cookieService = injector.get(CookieService);
-    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.VALID);
+  it('should treat current user authenticated when valid authenticated principal is present', () => {
+    const nextDay = moment().utc().add(1, 'days');
+    const user = new User().deserialize({
+      email: 'john.doe@mail.com',
+      validUntilSeconds: Math.round(nextDay.toDate().getTime() / 1000)
+    });
+    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
     expect(service.isSignedIn()).toBeTruthy();
   });
 
-  it('should treat current user unauthenticated when access token is expired', () => {
-    const cookieService = injector.get(CookieService);
-    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.EXPIRED);
+  it('should treat current user unauthenticated when authenticated principal is not set', () => {
     expect(service.isSignedIn()).toBeFalsy();
   });
 
-  it('should return current user', () => {
-    const cookieService = injector.get(CookieService);
-    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.VALID);
-    const user = AuthenticationService.getCurrentUser(service);
-    expect(user).not.toBeNull();
+  it('should treat current user unauthenticated when authenticated principal is invalid', () => {
+    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(new User()));
+    expect(service.isSignedIn()).toBeFalsy();
   });
 
-  it('should return null on get current user when access token is expired', () => {
-    const cookieService = injector.get(CookieService);
-    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.EXPIRED);
-    const user = AuthenticationService.getCurrentUser(service);
-    expect(user).toBeNull();
+  it('should return authenticated principal', () => {
+    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(new User()));
+    expect(AuthenticationService.getPrincipal()).not.toBeNull();
+  });
+
+  it('should return null on principal get when authenticated principal is not set', () => {
+    expect(AuthenticationService.getPrincipal()).toBeNull();
+  });
+
+  it('should throw error on principal set when principal is null', () => {
+    expect(() => AuthenticationService.setPrincipal(null)).toThrowError('Principal must not be null or undefined');
   });
 
   it('should sign out', () => {
-    service.signOut().subscribe(() => {});
+    service.signOut().subscribe(() => {
+    });
     const configService = injector.get(ConfigService);
     const request = httpMock.expectOne(`${configService.apiBaseUrl}/logout`);
     expect(request.request.method).toBe('POST');

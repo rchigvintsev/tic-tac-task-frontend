@@ -8,12 +8,11 @@ import {Router} from '@angular/router';
 
 import {of} from 'rxjs';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {CookieService} from 'ngx-cookie-service';
 
 import {AppComponent} from './app.component';
 import {TranslateHttpLoaderFactory} from './app.module';
-import {ACCESS_TOKEN_COOKIE_NAME, AuthenticationService, CURRENT_USER} from './service/authentication.service';
-import {TestAccessToken} from './test-access-token';
+import {AuthenticationService} from './service/authentication.service';
+import {User} from './model/user';
 
 const CURRENT_LANG = 'ru';
 
@@ -36,14 +35,6 @@ describe('AppComponent', () => {
           }
         })
       ],
-      providers: [
-        {
-          provide: CURRENT_USER,
-          useFactory: AuthenticationService.getCurrentUser,
-          deps: [AuthenticationService]
-        },
-        CookieService
-      ],
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -58,14 +49,16 @@ describe('AppComponent', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    const cookieService = injector.get(CookieService);
-    cookieService.set(ACCESS_TOKEN_COOKIE_NAME, TestAccessToken.VALID);
-
     const authenticationService = injector.get(AuthenticationService);
     spyOn(authenticationService, 'signOut').and.returnValue(of(true));
 
     router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
+
+    const user = new User();
+    user.fullName = 'John Doe';
+    user.imageUrl = 'http://example.com/avatar.png';
+    AuthenticationService.setPrincipal(user);
   });
 
   it('should create the app', () => {
@@ -82,26 +75,22 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('.page > header > mat-toolbar > span').textContent).toContain('Orchestra');
   });
 
-  it('should render current user\'s full name in a toolbar', () => {
-    const injector = getTestBed();
-    const currentUser = injector.get(CURRENT_USER);
-
+  it('should render current user\'s name in a toolbar', () => {
+    const principal = AuthenticationService.getPrincipal();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > button');
-    expect(element.textContent).toEqual(currentUser.fullName);
+    expect(element.textContent).toEqual(principal.getName());
   });
 
   it('should render current user\'s avatar in a toolbar', () => {
-    const injector = getTestBed();
-    const currentUser = injector.get(CURRENT_USER);
-
+    const principal = AuthenticationService.getPrincipal();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > img.avatar');
-    expect(element.getAttribute('src')).toEqual(currentUser.imageUrl);
+    expect(element.getAttribute('src')).toEqual(principal.getPicture());
   });
 
   it('should sign out on corresponding menu item select', () => {
@@ -110,9 +99,9 @@ describe('AppComponent', () => {
     expect(authenticationService.signOut).toHaveBeenCalled();
   });
 
-  it('should set current user to null on sign out', () => {
+  it('should set principal to null on sign out', () => {
     component.onSignOutButtonClick();
-    expect(component.user).toBeNull();
+    expect(component.principal).toBeNull();
   });
 
   it('should navigate to signin page after user being signed out', () => {

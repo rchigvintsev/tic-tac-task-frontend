@@ -1,24 +1,25 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, DoCheck, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
+
 import * as moment from 'moment';
 
-import {User} from './model/user';
-import {AuthenticationService, CURRENT_USER} from './service/authentication.service';
+import {AuthenticationService} from './service/authentication.service';
+import {AuthenticatedPrincipal} from './security/authenticated-principal';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.styl']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, DoCheck {
   title = 'Orchestra';
+  principal: AuthenticatedPrincipal;
 
   constructor(private router: Router,
               private translate: TranslateService,
-              private authenticationService: AuthenticationService,
-              @Inject(CURRENT_USER) public user: User) {
+              private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -28,9 +29,15 @@ export class AppComponent implements OnInit {
     });
   }
 
+  ngDoCheck(): void {
+    if (!this.principal) {
+      this.principal = AuthenticationService.getPrincipal();
+    }
+  }
+
   onSignOutButtonClick() {
     this.authenticationService.signOut().subscribe(() => {
-      this.user = null;
+      this.principal = null;
       this.router.navigate([this.translate.currentLang, 'signin']).then();
     });
   }

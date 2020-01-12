@@ -7,7 +7,8 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {CookieService} from 'ngx-cookie-service';
+
+import * as moment from 'moment';
 
 import {
   AuthenticatedOnlyRouteGuard,
@@ -50,7 +51,6 @@ describe('RouteGuard', () => {
         DummyComponent,
         NotFoundComponent
       ],
-      providers: [CookieService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
@@ -143,6 +143,29 @@ describe('RouteGuard', () => {
       snapshotMock.url = [new UrlSegment('/', null)];
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
       expect(router.navigate).toHaveBeenCalledWith(['en']);
+    });
+
+    it('should set authenticated principal', () => {
+      const nextDay = moment().utc().add(1, 'days');
+      const claims = {
+        sub: 'john.doe@mail.com',
+        name: 'John Doe',
+        picture: 'http://example.com/avatar.png',
+        exp: Math.round(nextDay.toDate().getTime() / 1000)
+      };
+
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('/', null)];
+      snapshotMock.queryParams =  {claims: btoa(JSON.stringify(claims))};
+
+      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
+
+      const principal = AuthenticationService.getPrincipal();
+      expect(principal).not.toBeNull();
+      expect(principal.isValid()).toBeTruthy();
+      expect(principal.getSubject()).toEqual(claims.sub);
+      expect(principal.getName()).toEqual(claims.name);
+      expect(principal.getPicture()).toEqual(claims.picture);
     });
   });
 });

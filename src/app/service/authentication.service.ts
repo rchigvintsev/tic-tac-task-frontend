@@ -2,19 +2,19 @@ import {Injectable, InjectionToken} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
+
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {CookieService} from 'ngx-cookie-service';
 
 import {User} from '../model/user';
 import {ConfigService} from './config.service';
+import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 
-export const ACCESS_TOKEN_COOKIE_NAME = 'ATP';
-export const CURRENT_USER = new InjectionToken<User>('Current user');
+export const PRINCIPAL = new InjectionToken<AuthenticatedPrincipal>('Authenticated principal');
 
-const appJsonHttpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-  withCredentials: true
-};
+const PRINCIPAL_KEY = 'principal';
+
+const postOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
 @Injectable({
   providedIn: 'root'
@@ -22,34 +22,49 @@ const appJsonHttpOptions = {
 export class AuthenticationService {
   private jwtHelper = new JwtHelperService();
 
-  constructor(private httpClient: HttpClient,
-              private cookieService: CookieService,
-              private config: ConfigService) {}
+  constructor(private httpClient: HttpClient, private config: ConfigService) {
+  }
 
-  static getCurrentUser(authenticationService: AuthenticationService): User {
-    if (authenticationService.isSignedIn()) {
-      const accessTokenValue = authenticationService.getAccessTokenValue();
-      const decodedToken = authenticationService.jwtHelper.decodeToken(accessTokenValue);
-      const user = new User();
-      user.fullName = decodedToken.name;
-      user.imageUrl = decodedToken.picture;
-      return user;
+  static getPrincipal(): AuthenticatedPrincipal {
+    const principal = localStorage.getItem(PRINCIPAL_KEY);
+    if (principal) {
+      return new User().deserialize(JSON.parse(principal));
     }
     return null;
   }
 
+  static setPrincipal(principal: AuthenticatedPrincipal) {
+    if (!principal) {
+      throw new Error('Principal must not be null or undefined');
+    }
+    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(principal));
+  }
+
+  static removePrincipal() {
+    localStorage.removeItem(PRINCIPAL_KEY);
+  }
+
+  createPrincipal(encodedClaims: string): AuthenticatedPrincipal {
+    const claims = JSON.parse(this.jwtHelper.urlBase64Decode(encodedClaims));
+    const user = new User();
+    user.email = claims.sub;
+    user.fullName = claims.name;
+    user.imageUrl = claims.picture;
+    user.validUntilSeconds = claims.exp;
+    return user;
+  }
+
   isSignedIn(): boolean {
-    const accessTokenValue = this.getAccessTokenValue();
-    return accessTokenValue && !this.jwtHelper.isTokenExpired(accessTokenValue);
+    const principal = AuthenticationService.getPrincipal();
+    return principal ? principal.isValid() : false;
   }
 
   signOut(): Observable<any> {
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, appJsonHttpOptions);
-  }
-
-  private getAccessTokenValue(): string {
-    const value = this.cookieService.get(ACCESS_TOKEN_COOKIE_NAME);
-    // JwtHelperService expects two dots
-    return value ? `.${value}.` : null;
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, postOptions)
+      .pipe(
+        tap(() => {
+          AuthenticationService.removePrincipal();
+        })
+      );
   }
 }

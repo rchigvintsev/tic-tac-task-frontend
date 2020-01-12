@@ -3,9 +3,9 @@
     <mat-toolbar color="primary">
       <span>{{ title }}</span>
       <span class="space-filler"></span>
-      <div *ngIf="user" class="profile-info-container">
-        <img [src]="user.imageUrl" alt="avatar" class="avatar"/>
-        <button mat-button [matMenuTriggerFor]="profileActions">{{ user.fullName }}</button>
+      <div *ngIf="principal" class="profile-info-container">
+        <img [src]="principal.getPicture()" alt="avatar" class="avatar"/>
+        <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
 
         <mat-menu #profileActions="matMenu">
           <button mat-menu-item id="sign_out_menu_item" (click)="onSignOutButtonClick()">

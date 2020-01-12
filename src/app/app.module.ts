@@ -33,7 +33,7 @@ import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';
-import {AuthenticationService, CURRENT_USER} from './service/authentication.service';
+import {AuthenticationService, PRINCIPAL} from './service/authentication.service';
 import {NotFoundErrorInterceptor} from './interceptor/not-found-error.interceptor';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
@@ -92,8 +92,8 @@ export function loadConfig(configService: ConfigService) {
       deps: [ConfigService]
     },
     {
-      provide: CURRENT_USER,
-      useFactory: AuthenticationService.getCurrentUser,
+      provide: PRINCIPAL,
+      useFactory: AuthenticationService.getPrincipal,
       deps: [AuthenticationService]
     },
     {
