@@ -94,7 +94,7 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
     this.selectedComment = comment;
   }
 
-  onCommentContainerMouseLeave(_: TaskComment) {
+  onCommentContainerMouseOut(_: TaskComment) {
     this.selectedComment = null;
   }
 

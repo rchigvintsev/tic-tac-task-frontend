@@ -146,6 +146,27 @@ describe('TaskCommentsComponent', () => {
     });
   });
 
+  it('should show comment header buttons on comment container mouse over', () => {
+    const commentId = component.comments[0].id;
+    const buttonsSelector = By.css('.comment-' + commentId + ' .comment-header .header-buttons');
+    fixture.whenStable().then(() => {
+      component.onCommentContainerMouseOver(component.comments[0]);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(buttonsSelector).nativeElement.getAttribute('hidden')).toBeNull();
+    });
+  });
+
+  it('should hide comment header buttons on comment container mouse out', () => {
+    const commentId = component.comments[0].id;
+    const buttonsSelector = By.css('.comment-' + commentId + ' .comment-header .header-buttons');
+    component.onCommentContainerMouseOver(component.comments[0]);
+    fixture.whenStable().then(() => {
+      component.onCommentContainerMouseOut(null);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(buttonsSelector).nativeElement.getAttribute('hidden')).toEqual('');
+    });
+  });
+
   it('should hide comment text element on edit comment button click', () => {
     const commentId = component.comments[0].id;
     const spanSelector = By.css('.comment-' + commentId + ' .comment-body span');
