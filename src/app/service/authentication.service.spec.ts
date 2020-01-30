@@ -46,16 +46,16 @@ describe('AuthenticationService', () => {
       validUntilSeconds: Math.round(nextDay.toDate().getTime() / 1000)
     });
     localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
-    expect(service.isSignedIn()).toBeTruthy();
+    expect(service.isUserSignedIn()).toBeTruthy();
   });
 
   it('should treat current user unauthenticated when authenticated principal is not set', () => {
-    expect(service.isSignedIn()).toBeFalsy();
+    expect(service.isUserSignedIn()).toBeFalsy();
   });
 
   it('should treat current user unauthenticated when authenticated principal is invalid', () => {
     localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(new User()));
-    expect(service.isSignedIn()).toBeFalsy();
+    expect(service.isUserSignedIn()).toBeFalsy();
   });
 
   it('should return authenticated principal', () => {

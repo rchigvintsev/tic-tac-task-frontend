@@ -54,9 +54,8 @@ export class AuthenticationService {
     return user;
   }
 
-  isSignedIn(): boolean {
-    const principal = AuthenticationService.getPrincipal();
-    return principal ? principal.isValid() : false;
+  isUserSignedIn(): boolean {
+    return AuthenticationService.getPrincipal() != null;
   }
 
   signOut(): Observable<any> {
