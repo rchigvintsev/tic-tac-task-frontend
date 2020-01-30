@@ -28,7 +28,11 @@ export class AuthenticationService {
   static getPrincipal(): AuthenticatedPrincipal {
     const principal = localStorage.getItem(PRINCIPAL_KEY);
     if (principal) {
-      return new User().deserialize(JSON.parse(principal));
+      const user = new User().deserialize(JSON.parse(principal));
+      if (user.isValid()) {
+        return user;
+      }
+      AuthenticationService.removePrincipal();
     }
     return null;
   }
