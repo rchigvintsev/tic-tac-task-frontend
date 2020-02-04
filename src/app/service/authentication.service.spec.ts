@@ -59,7 +59,8 @@ describe('AuthenticationService', () => {
   });
 
   it('should return authenticated principal', () => {
-    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(new User()));
+    const user = new User().deserialize({validUntilSeconds: Math.round(Date.now() / 1000) + 60 * 60});
+    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
     expect(AuthenticationService.getPrincipal()).not.toBeNull();
   });
 

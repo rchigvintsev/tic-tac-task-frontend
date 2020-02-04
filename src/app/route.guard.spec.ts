@@ -7,6 +7,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import * as moment from 'moment';
 
@@ -42,7 +43,8 @@ describe('RouteGuard', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         DashboardComponent,

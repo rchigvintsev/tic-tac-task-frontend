@@ -8,6 +8,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {Subject} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {AlertService} from './alert.service';
 import {DashboardComponent} from '../dashboard/dashboard.component';
@@ -33,7 +34,8 @@ describe('AlertService', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         DashboardComponent,

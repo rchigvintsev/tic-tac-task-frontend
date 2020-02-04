@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {throwError} from 'rxjs';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -36,7 +37,8 @@ describe('NotFoundErrorInterceptor', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         DashboardComponent,

@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {TranslateHttpLoaderFactory} from '../../app.module';
 import {NotFoundComponent} from './not-found.component';
@@ -31,7 +32,8 @@ describe('NotFoundComponent', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         NotFoundComponent,

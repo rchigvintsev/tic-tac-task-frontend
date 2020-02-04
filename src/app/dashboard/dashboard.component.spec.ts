@@ -9,6 +9,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from './dashboard.component';
@@ -32,7 +33,8 @@ describe('DashboardComponent', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

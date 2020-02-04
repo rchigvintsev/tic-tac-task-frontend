@@ -58,6 +58,7 @@ describe('AppComponent', () => {
     const user = new User();
     user.fullName = 'John Doe';
     user.imageUrl = 'http://example.com/avatar.png';
+    user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
     AuthenticationService.setPrincipal(user);
   });
 

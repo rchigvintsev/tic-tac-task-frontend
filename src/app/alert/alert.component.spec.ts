@@ -5,6 +5,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {AlertComponent} from './alert.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
@@ -32,7 +33,8 @@ describe('AlertComponent', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         AlertComponent,

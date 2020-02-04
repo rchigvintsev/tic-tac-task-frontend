@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {of} from 'rxjs';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
@@ -37,7 +38,8 @@ describe('SigninComponent', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

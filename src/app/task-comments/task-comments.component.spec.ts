@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import {of} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {SigninComponent} from '../signin/signin.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
@@ -50,7 +51,8 @@ describe('TaskCommentsComponent', () => {
             useFactory: TranslateHttpLoaderFactory,
             deps: [HttpClient]
           }
-        })
+        }),
+        NgxMatDatetimePickerModule
       ],
       declarations: [
         SigninComponent,
