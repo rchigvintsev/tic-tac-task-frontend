@@ -29,6 +29,7 @@
     "localize-router": "^2.0.0-RC.3",
     "moment": "^2.24.0",
     "ngx-cookie-service": "^2.3.0",
+    "ngx-mat-datetime-picker": "^1.0.2",
     "rxjs": "~6.3.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.8.26"
