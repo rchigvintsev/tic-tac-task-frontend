@@ -4,6 +4,7 @@
   "new_task": "New task",
   "title": "Title",
   "description": "Description",
+  "deadline": "Deadline",
   "leave_comment": "Leave comment",
   "post": "Post",
   "cancel": "Cancel",

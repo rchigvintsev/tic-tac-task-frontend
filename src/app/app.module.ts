@@ -11,6 +11,8 @@ import {
   MatListModule,
   MatToolbarModule
 } from '@angular/material';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
@@ -19,6 +21,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {CookieService} from 'ngx-cookie-service';
+import {NgxMatDatetimePickerModule, NgxMatTimepickerModule} from 'ngx-mat-datetime-picker';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -74,6 +77,10 @@ export function loadConfig(configService: ConfigService) {
     MatListModule,
     MatToolbarModule,
     MatMenuModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
+    NgxMatTimepickerModule,
+    NgxMatDatetimePickerModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
