@@ -43,10 +43,10 @@
 
       <mat-form-field class="deadline-form-field">
         <label>
-          <input matInput [ngxMatDatetimePicker]="deadlinePicker" placeholder="{{ 'deadline' | translate }}">
+          <input matInput [ngxMatDatetimePicker]="deadlinePicker" placeholder="{{ 'deadline' | translate }}" disabled>
         </label>
         <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #deadlinePicker></ngx-mat-datetime-picker>
+        <ngx-mat-datetime-picker #deadlinePicker disabled="false"></ngx-mat-datetime-picker>
       </mat-form-field>
     </form>
   </mat-card-content>
