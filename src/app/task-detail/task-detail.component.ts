@@ -39,9 +39,9 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
     this.dateAdapter.setLocale(this.translate.currentLang);
   }
 
-  @HostListener('document:click', ['$event'])
-  onMouseClick(event) {
-    this.closeDateTimePickerOnMouseClickOutside(event);
+  @HostListener('document:mousedown', ['$event'])
+  onMouseDown(event) {
+    this.closeDateTimePickerOnMouseDownOutside(event);
   }
 
   onTitleTextClick() {
@@ -81,7 +81,7 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
     }
   }
 
-  private closeDateTimePickerOnMouseClickOutside(event) {
+  private closeDateTimePickerOnMouseDownOutside(event) {
     const datePickerContent = window.document.getElementsByClassName('mat-datepicker-content')[0];
     if (datePickerContent && !datePickerContent.contains(event.target)) {
       this.deadlinePickerElement.close();
