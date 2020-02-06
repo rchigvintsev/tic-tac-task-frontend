@@ -35,7 +35,7 @@ export class TaskCommentService {
 
   createComment(comment: TaskComment): Observable<TaskComment> {
     const options = Object.assign({params: new HttpParams().set('taskId', String(comment.taskId))}, postOptions);
-    return this.http.post<TaskComment>(this.baseUrl, comment, options).pipe(
+    return this.http.post<TaskComment>(this.baseUrl, comment.serialize(), options).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
@@ -43,7 +43,7 @@ export class TaskCommentService {
   }
 
   updateComment(comment: TaskComment): Observable<TaskComment> {
-    return this.http.put<TaskComment>(`${this.baseUrl}/${comment.id}`, comment, postOptions).pipe(
+    return this.http.put<TaskComment>(`${this.baseUrl}/${comment.id}`, comment.serialize(), postOptions).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })

@@ -4,12 +4,15 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {of} from 'rxjs';
+
+import * as moment from 'moment';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
@@ -29,6 +32,7 @@ describe('TaskDetailComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        BrowserAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
         RouterTestingModule.withRoutes(routes),
@@ -133,6 +137,37 @@ describe('TaskDetailComponent', () => {
       component.onDescriptionInputBlur();
       fixture.detectChanges();
       expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on deadline date input change', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    fixture.whenStable().then(() => {
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.onDeadlineDateInputChange();
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should close deadline date picker on mouse down outside date picker', () => {
+    spyOn(component.deadlinePickerElement, 'close').and.callThrough();
+    component.deadlinePickerElement.open();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      component.onMouseDown({target: fixture.debugElement.nativeElement});
+      expect(component.deadlinePickerElement.close).toHaveBeenCalled();
+    });
+  });
+
+  it('should not close deadline date picker on mouse down on date picker itself', () => {
+    spyOn(component.deadlinePickerElement, 'close').and.callThrough();
+    component.deadlinePickerElement.open();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const datePickerContent = fixture.debugElement.query(By.css('ngx-mat-datetime-content'));
+      component.onMouseDown({target: datePickerContent.nativeElement});
+      expect(component.deadlinePickerElement.close).not.toHaveBeenCalled();
     });
   });
 });

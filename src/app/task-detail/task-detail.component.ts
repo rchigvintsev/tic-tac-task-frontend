@@ -56,6 +56,10 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
     this.saveTask();
   }
 
+  onDeadlineDateInputChange() {
+    this.saveTask();
+  }
+
   private setTaskModel(task) {
     this.taskFormModel = task;
     this.task = task.clone();

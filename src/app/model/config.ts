@@ -1,7 +1,6 @@
-import {Serializable} from './serializable';
-import {Cloneable} from './cloneable';
+import {AbstractEntity} from './abstract-entity';
 
-export class Config implements Serializable<Config>, Cloneable<Config> {
+export class Config extends AbstractEntity<Config> {
   apiBaseUrl: string;
   selfBaseUrl: string;
 

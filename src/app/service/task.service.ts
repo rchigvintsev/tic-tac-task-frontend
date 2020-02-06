@@ -42,7 +42,7 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    return this.http.post<Task>(this.baseUrl, task, postOptions).pipe(
+    return this.http.post<Task>(this.baseUrl, task.serialize(), postOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -50,7 +50,7 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
-    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task, postOptions).pipe(
+    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), postOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })

@@ -1,7 +1,7 @@
-import {Serializable} from './serializable';
+import {AbstractEntity} from './abstract-entity';
 import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 
-export class User implements AuthenticatedPrincipal, Serializable<User> {
+export class User extends AbstractEntity<User> implements AuthenticatedPrincipal {
   email: string;
   fullName: string;
   imageUrl: string;
@@ -29,5 +29,14 @@ export class User implements AuthenticatedPrincipal, Serializable<User> {
     this.imageUrl = input.imageUrl;
     this.validUntilSeconds = input.validUntilSeconds;
     return this;
+  }
+
+  clone(): User {
+    const clone = new User();
+    clone.email = this.email;
+    clone.fullName = this.fullName;
+    clone.imageUrl = this.imageUrl;
+    clone.validUntilSeconds = this.validUntilSeconds;
+    return clone;
   }
 }
