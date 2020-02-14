@@ -5,17 +5,20 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {HttpErrors} from './util/http-errors';
 import {AuthenticationService} from './service/authentication.service';
+import {LogService} from './service/log.service';
 
 @Injectable()
 export class AbstractComponent {
-  constructor(private router: Router, protected translate: TranslateService) {
+  constructor(private router: Router, protected translate: TranslateService, protected log: LogService) {
   }
 
-  private static logError(error: any) {
-    if (error.message) {
-      console.error(error.message);
+  private logError(error: any) {
+    if (error.errors) {
+      for (const message of error.errors) {
+        this.log.error(message);
+      }
     } else {
-      console.error(error);
+      this.log.error(error);
     }
   }
 
@@ -24,7 +27,7 @@ export class AbstractComponent {
       AuthenticationService.removePrincipal();
       this.navigateToSigninPage();
     } else {
-      AbstractComponent.logError(error);
+      this.logError(error);
     }
   }
 

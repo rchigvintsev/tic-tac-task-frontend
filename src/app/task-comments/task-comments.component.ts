@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import {AbstractComponent} from '../abstract-component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
+import {LogService} from '../service/log.service';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../util/strings';
 
@@ -31,10 +32,11 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
 
   constructor(router: Router,
               translate: TranslateService,
+              log: LogService,
               private route: ActivatedRoute,
               private commentService: TaskCommentService,
               private dialog: MatDialog) {
-    super(router, translate);
+    super(router, translate, log);
   }
 
   ngOnInit() {

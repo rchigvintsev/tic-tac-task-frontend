@@ -7,6 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {AbstractComponent} from '../abstract-component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
+import {LogService} from '../service/log.service';
 import {Strings} from '../util/strings';
 
 @Component({
@@ -20,8 +21,8 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   formModel = new Task();
   tasks: Array<Task>;
 
-  constructor(router: Router, translate: TranslateService, private taskService: TaskService) {
-    super(router, translate);
+  constructor(router: Router, translate: TranslateService, log: LogService, private taskService: TaskService) {
+    super(router, translate, log);
   }
 
   ngOnInit() {

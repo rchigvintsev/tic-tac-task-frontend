@@ -8,6 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {AbstractComponent} from '../abstract-component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
+import {LogService} from '../service/log.service';
 
 @Component({
   selector: 'app-signin',
@@ -23,10 +24,11 @@ export class SigninComponent extends AbstractComponent implements OnInit {
     config: ConfigService,
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
+    log: LogService,
     private activatedRoute: ActivatedRoute,
     private alertService: AlertService
   ) {
-    super(router, translate);
+    super(router, translate, log);
     this.config = config;
     iconRegistry.addSvgIcon('logo-google',
       domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/btn_google_light_normal.svg'));
