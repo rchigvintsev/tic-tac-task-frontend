@@ -37,7 +37,9 @@ import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';
 import {AuthenticationService, PRINCIPAL} from './service/authentication.service';
-import {NotFoundErrorInterceptor} from './interceptor/not-found-error.interceptor';
+import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
+import {NotFoundErrorHandler} from './error/handler/not-found-error.handler';
+import {HTTP_ERROR_HANDLERS} from './error/handler/http-error.handler';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -105,9 +107,10 @@ export function loadConfig(configService: ConfigService) {
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: NotFoundErrorInterceptor,
+      useClass: HttpErrorInterceptor,
       multi: true
     },
+    {provide: HTTP_ERROR_HANDLERS, useClass: NotFoundErrorHandler, multi: true},
     CookieService
   ],
   bootstrap: [AppComponent],

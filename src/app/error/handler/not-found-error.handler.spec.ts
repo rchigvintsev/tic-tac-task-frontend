@@ -5,25 +5,24 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
-
-import {throwError} from 'rxjs';
+import {MatInputModule} from '@angular/material/input';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
-import {routes} from '../app-routing.module';
-import {TranslateHttpLoaderFactory} from '../app.module';
-import {DashboardComponent} from '../dashboard/dashboard.component';
-import {TaskDetailComponent} from '../task-detail/task-detail.component';
-import {SigninComponent} from '../signin/signin.component';
-import {DummyComponent} from '../dummy/dummy.component';
-import {NotFoundComponent} from '../error/not-found/not-found.component';
-import {NotFoundErrorInterceptor} from './not-found-error.interceptor';
+import {routes} from '../../app-routing.module';
+import {TranslateHttpLoaderFactory} from '../../app.module';
+import {DashboardComponent} from '../../dashboard/dashboard.component';
+import {NotFoundComponent} from '../not-found/not-found.component';
+import {DummyComponent} from '../../dummy/dummy.component';
+import {SigninComponent} from '../../signin/signin.component';
+import {TaskDetailComponent} from '../../task-detail/task-detail.component';
+import {NotFoundErrorHandler} from './not-found-error.handler';
 
-describe('NotFoundErrorInterceptor', () => {
+describe('NotFoundErrorHandler', () => {
   let injector: TestBed;
   let router;
-  let interceptor;
+  let handler;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,6 +37,7 @@ describe('NotFoundErrorInterceptor', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -58,26 +58,16 @@ describe('NotFoundErrorInterceptor', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = 'en';
 
-    interceptor = injector.get(NotFoundErrorInterceptor);
+    handler = injector.get(NotFoundErrorHandler);
   });
 
   it('should navigate to 404 error page when response status is "404 Not found"', () => {
-    return interceptor.intercept(null, {
-      handle: () => {
-        return throwError({status: 404});
-      }
-    }).subscribe(() => {
+    return handler.handle(null).subscribe(() => {
       expect(router.navigate).toHaveBeenCalledWith(['en', 'error', '404']);
     });
   });
 
-  it('should ignore error when response status is not "404 Not found"', () => {
-    return interceptor.intercept(null, {
-      handle: () => {
-        return throwError({status: 500});
-      }
-    }).subscribe(() => fail('An error was expected'), error => {
-      expect(error.status).toEqual(500);
-    });
+  it('should support only not "404 Not found" error', () => {
+    expect(handler.supports({status: 500})).toBeFalsy();
   });
 });
