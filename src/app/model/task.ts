@@ -26,7 +26,7 @@ export class Task extends AbstractEntity<Task> {
       title: this.title,
       description: this.description,
       completed: this.completed,
-      deadline: moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS) : null
     };
   }
 
