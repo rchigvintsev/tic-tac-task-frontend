@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 
 import {AbstractEntity} from './abstract-entity';
+import {Objects} from '../util/objects';
 
 export class Task extends AbstractEntity<Task> {
   id: number;
@@ -41,10 +42,10 @@ export class Task extends AbstractEntity<Task> {
   }
 
   equals(other: Task): boolean {
-    return this.id === other.id
-      && this.title === other.title
-      && this.description === other.description
-      && this.completed === other.completed
-      && this.deadline === other.deadline;
+    return Objects.equals(this.id, other.id)
+      && Objects.equals(this.title, other.title)
+      && Objects.equals(this.description, other.description)
+      && Objects.equals(this.completed, other.completed)
+      && Objects.equals(this.deadline, other.deadline);
   }
 }
