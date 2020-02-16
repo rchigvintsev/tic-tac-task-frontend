@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatInputModule} from '@angular/material/input';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
@@ -34,6 +35,7 @@ describe('AlertComponent', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [

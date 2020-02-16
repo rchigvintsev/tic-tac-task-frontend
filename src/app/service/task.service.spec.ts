@@ -30,7 +30,12 @@ describe('TaskService', () => {
   it('should return tasks', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', completed: false}));
-    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', completed: false}));
+    testTasks.push(new Task().deserialize({
+      id: 2,
+      title: 'Task 2',
+      completed: false,
+      deadline: '2120-02-16T11:46:10.234'
+    }));
 
     const subscription = taskService.getTasks(false).subscribe(tasks => {
       expect(tasks.length).toBe(2);
@@ -60,7 +65,11 @@ describe('TaskService', () => {
   });
 
   it('should create task', () => {
-    const testTask = new Task().deserialize({title: 'Test task', completed: false});
+    const testTask = new Task().deserialize({
+      title: 'Test task',
+      completed: false,
+      deadline: '2120-02-16T11:49:37.581'
+    });
 
     const subscription = taskService.createTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);

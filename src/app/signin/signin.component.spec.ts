@@ -5,6 +5,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
 
 import {of} from 'rxjs';
 
@@ -39,6 +40,7 @@ describe('SigninComponent', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],

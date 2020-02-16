@@ -1,5 +1,12 @@
 export class HttpErrors {
-  static isUnauthorized(error: any): boolean {
-    return error.status === 401;
+  private constructor() {
+  }
+
+  static isUnauthorized(response: any): boolean {
+    return response.status === 401;
+  }
+
+  static isBadRequest(response: any): boolean {
+    return response.status === 400;
   }
 }

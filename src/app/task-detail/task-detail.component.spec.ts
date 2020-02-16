@@ -6,11 +6,12 @@ import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatInputModule} from '@angular/material/input';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import * as moment from 'moment';
 
@@ -24,6 +25,7 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 import {ConfigService} from '../service/config.service';
+import {LogService} from '../service/log.service';
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -43,6 +45,7 @@ describe('TaskDetailComponent', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
@@ -63,6 +66,9 @@ describe('TaskDetailComponent', () => {
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
+
+    const logService = fixture.debugElement.injector.get(LogService);
+    spyOn(logService, 'error').and.callThrough();
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -90,7 +96,7 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should hide title text element on click', () => {
-    const spanSelector = By.css('.mat-card-header .mat-card-title span');
+    const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
     let titleSpan = fixture.debugElement.query(spanSelector);
     fixture.whenStable().then(() => {
       titleSpan.nativeElement.click();
@@ -101,7 +107,7 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should show title form on title text element click', () => {
-    const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title span'));
+    const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title .title-text'));
     fixture.whenStable().then(() => {
       titleSpan.nativeElement.click();
       fixture.detectChanges();
@@ -168,6 +174,54 @@ describe('TaskDetailComponent', () => {
       const datePickerContent = fixture.debugElement.query(By.css('ngx-mat-datetime-content'));
       component.onMouseDown({target: datePickerContent.nativeElement});
       expect(component.deadlinePickerElement.close).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should display server validation error', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    (taskService.updateTask as jasmine.Spy).and.callFake(() => {
+      return throwError({status: 400, error: {fieldErrors: {deadline: 'Must be valid'}}});
+    });
+    fixture.whenStable().then(() => {
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.onDeadlineDateInputChange();
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      const deadlineError = compiled.querySelector('.deadline-form-field mat-error');
+      expect(deadlineError).toBeTruthy();
+      expect(deadlineError.textContent.trim()).toEqual('Must be valid');
+    });
+  });
+
+  it('should ignore validation error when field is not found', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    (taskService.updateTask as jasmine.Spy).and.callFake(() => {
+      return throwError({status: 400, error: {fieldErrors: {absent: 'Must be present'}}});
+    });
+    fixture.whenStable().then(() => {
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.onDeadlineDateInputChange();
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      const deadlineError = compiled.querySelector('mat-error');
+      expect(deadlineError).toBeFalsy();
+    });
+  });
+
+  it('should log service call error error when field is not found', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    (taskService.updateTask as jasmine.Spy).and.callFake(() => {
+      return throwError({status: 500, error: {errors: ['Something went wrong']}});
+    });
+    const logService = fixture.debugElement.injector.get(LogService);
+
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New title';
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(logService.error).toHaveBeenCalled();
     });
   });
 });

@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatInputModule} from '@angular/material/input';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
@@ -34,6 +35,7 @@ describe('DashboardComponent', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],

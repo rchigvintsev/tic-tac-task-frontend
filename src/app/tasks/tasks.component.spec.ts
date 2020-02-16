@@ -5,6 +5,8 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatInputModule} from '@angular/material/input';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {of, throwError} from 'rxjs';
 
@@ -41,7 +43,9 @@ describe('TasksComponent', () => {
             deps: [HttpClient]
           }
         }),
-        NgxMatDatetimePickerModule
+        MatInputModule,
+        NgxMatDatetimePickerModule,
+        BrowserAnimationsModule
       ],
       declarations: [
         SigninComponent,
@@ -172,7 +176,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getTasks').and.callFake(() => throwError({status: 500, message: errorMessage}));
+      spyOn(taskService, 'getTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
       spyOn(window.console, 'error');
 
       component = fixture.componentInstance;

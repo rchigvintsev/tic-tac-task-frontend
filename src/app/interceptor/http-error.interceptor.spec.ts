@@ -50,14 +50,15 @@ describe('HttpErrorInterceptor', () => {
   });
 
   it('should throw error when error handler is not found', () => {
-    const errorInterceptor = new HttpErrorInterceptor([]);
+    const errorHandler = new DummyErrorHandler(false);
+    const errorInterceptor = new HttpErrorInterceptor([errorHandler]);
     return errorInterceptor.intercept(null, {
       handle: () => throwError({status: 500})
     }).subscribe(() => fail('An error was expected'), error => expect(error.status).toEqual(500));
   });
 
   it('should delegate error handling', () => {
-    const errorHandler = new DummyErrorHandler();
+    const errorHandler = new DummyErrorHandler(true);
     spyOn(errorHandler, 'handle').and.callThrough();
 
     const errorInterceptor = new HttpErrorInterceptor([errorHandler]);
@@ -68,8 +69,11 @@ describe('HttpErrorInterceptor', () => {
 });
 
 class DummyErrorHandler implements HttpErrorHandler {
+  constructor(private supportEverything: boolean) {
+  }
+
   supports(error: any): boolean {
-    return true;
+    return this.supportEverything;
   }
 
   handle(error: any, req: HttpRequest<any>): Observable<HttpEvent<any>> {

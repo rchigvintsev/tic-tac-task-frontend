@@ -6,6 +6,8 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {MatDialog, MatDialogModule} from '@angular/material';
+import {MatInputModule} from '@angular/material/input';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import * as moment from 'moment';
 
@@ -52,7 +54,9 @@ describe('TaskCommentsComponent', () => {
             deps: [HttpClient]
           }
         }),
-        NgxMatDatetimePickerModule
+        MatInputModule,
+        NgxMatDatetimePickerModule,
+        BrowserAnimationsModule
       ],
       declarations: [
         SigninComponent,
@@ -171,7 +175,7 @@ describe('TaskCommentsComponent', () => {
 
   it('should hide comment text element on edit comment button click', () => {
     const commentId = component.comments[0].id;
-    const spanSelector = By.css('.comment-' + commentId + ' .comment-body span');
+    const spanSelector = By.css('.comment-' + commentId + ' .comment-body .comment-text');
     fixture.whenStable().then(() => {
       component.onEditCommentButtonClick(component.comments[0]);
       fixture.detectChanges();

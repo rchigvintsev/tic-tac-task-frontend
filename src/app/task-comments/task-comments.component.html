@@ -73,7 +73,7 @@
           </div>
         </form>
 
-        <span *ngIf="editCommentFormModel?.id != comment.id">{{ comment.commentText }}</span>
+        <span *ngIf="editCommentFormModel?.id != comment.id" class="comment-text">{{ comment.commentText }}</span>
       </div>
     </div>
   </mat-card-content>

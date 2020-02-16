@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {NavigationStart, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatInputModule} from '@angular/material/input';
 
 import {Subject} from 'rxjs';
 
@@ -35,6 +36,7 @@ describe('AlertService', () => {
             deps: [HttpClient]
           }
         }),
+        MatInputModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [

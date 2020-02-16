@@ -22,23 +22,27 @@
         </mat-form-field>
       </form>
 
-      <span *ngIf="!titleEditing" (click)="onTitleTextClick()">{{ taskFormModel.title }}</span>
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ taskFormModel.title }}</span>
     </div>
   </div>
 
   <mat-card-content>
-    <form>
+    <form #taskDetailForm>
       <mat-form-field>
         <label>
           <textarea matInput
                     id="description"
                     name="description"
                     [(ngModel)]="taskFormModel.description"
+                    [errorStateMatcher]="errorStateMatchers.get('description')"
                     (blur)="onDescriptionInputBlur()"
                     placeholder="{{ 'description' | translate }}"
                     maxlength="10000">
           </textarea>
         </label>
+        <mat-error *ngIf="errorStateMatchers.get('description').errorState">
+          {{ getFieldErrorMessage('description') }}
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="deadline-form-field">
@@ -47,12 +51,16 @@
                  name="deadline"
                  [(ngModel)]="taskFormModel.deadline"
                  [ngxMatDatetimePicker]="deadlinePicker"
+                 [errorStateMatcher]="errorStateMatchers.get('deadline')"
                  (dateChange)="onDeadlineDateInputChange()"
                  placeholder="{{ 'deadline' | translate }}"
                  disabled>
         </label>
         <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker #deadlinePicker disabled="false"></ngx-mat-datetime-picker>
+        <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
+          {{ getFieldErrorMessage('deadline') }}
+        </mat-error>
       </mat-form-field>
     </form>
   </mat-card-content>
