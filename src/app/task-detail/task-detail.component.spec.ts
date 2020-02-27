@@ -62,7 +62,8 @@ describe('TaskDetailComponent', () => {
       id: 1,
       title: 'Test task',
       description: 'Test description',
-      completed: false
+      completed: false,
+      deadline: moment(Date.now()).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
@@ -210,7 +211,7 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should log service call error error when field is not found', () => {
+  it('should log service call error when field is not found', () => {
     const taskService = fixture.debugElement.injector.get(TaskService);
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError({status: 500, error: {errors: ['Something went wrong']}});
@@ -222,6 +223,16 @@ describe('TaskDetailComponent', () => {
       component.onTitleInputBlur();
       fixture.detectChanges();
       expect(logService.error).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on deadline date input clear', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    fixture.whenStable().then(() => {
+      component.onClearDeadlineButtonClick();
+      fixture.detectChanges();
+      expect(component.taskFormModel.deadline).toBeNull();
+      expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
 });

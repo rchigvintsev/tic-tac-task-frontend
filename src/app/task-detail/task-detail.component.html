@@ -56,6 +56,14 @@
                  placeholder="{{ 'deadline' | translate }}"
                  disabled>
         </label>
+        <button mat-button
+                *ngIf="taskFormModel.deadline"
+                matSuffix
+                mat-icon-button
+                aria-label="Clear deadline"
+                (click)="onClearDeadlineButtonClick()">
+          <mat-icon>close</mat-icon>
+        </button>
         <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker #deadlinePicker disabled="false"></ngx-mat-datetime-picker>
         <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">

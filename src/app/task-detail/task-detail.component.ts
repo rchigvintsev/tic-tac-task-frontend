@@ -73,6 +73,11 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
     this.saveTask();
   }
 
+  onClearDeadlineButtonClick() {
+    this.taskFormModel.deadline = null;
+    this.saveTask();
+  }
+
   getFieldErrorMessage(fieldName: string): string {
     const control = this.taskDetailForm.controls[fieldName];
     return control ? control.getError('valid') : null;
