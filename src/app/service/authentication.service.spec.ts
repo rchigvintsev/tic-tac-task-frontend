@@ -16,9 +16,7 @@ describe('AuthenticationService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
-    });
+    TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
 
     injector = getTestBed();
 

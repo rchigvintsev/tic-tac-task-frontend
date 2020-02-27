@@ -8,7 +8,9 @@ import {Task} from '../model/task';
 import {ConfigService} from './config.service';
 
 const commonHttpOptions = {withCredentials: true};
-const postOptions = Object.assign({headers: new HttpHeaders({'Content-Type': 'application/json'})}, commonHttpOptions);
+const jsonContentOptions = Object.assign({
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+}, commonHttpOptions);
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +44,7 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    return this.http.post<Task>(this.baseUrl, task.serialize(), postOptions).pipe(
+    return this.http.post<Task>(this.baseUrl, task.serialize(), jsonContentOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -50,10 +52,14 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
-    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), postOptions).pipe(
+    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), jsonContentOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
     );
+  }
+
+  completeTask(task: Task): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${task.id}/complete`, null, jsonContentOptions);
   }
 }

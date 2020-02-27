@@ -95,4 +95,16 @@ describe('TaskService', () => {
 
     return subscription;
   });
+
+  it('should complete task', () => {
+    const testTask = new Task().deserialize({id: 1, title: 'Updated test task', completed: false});
+
+    const subscription = taskService.completeTask(testTask).subscribe(_ => {});
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/complete`);
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+
+    return subscription;
+  });
 });

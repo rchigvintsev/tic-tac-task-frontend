@@ -34,7 +34,10 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   }
 
   onTaskCompleteCheckboxChange(task: Task) {
-    this.completeTask(task);
+    // Let animation to complete
+    setTimeout(() => {
+      this.completeTask(task);
+    }, 300);
   }
 
   private createTask() {
@@ -47,9 +50,8 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   }
 
   private completeTask(task: Task) {
-    task.completed = true;
-    this.taskService.updateTask(task).subscribe(savedTask => {
-      this.tasks = this.tasks.filter(e => e.id !== savedTask.id);
+    this.taskService.completeTask(task).subscribe(_ => {
+      this.tasks = this.tasks.filter(e => e.id !== task.id);
     }, this.onServiceCallError.bind(this));
   }
 }

@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
@@ -80,6 +80,7 @@ describe('TasksComponent', () => {
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
+      spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
 
       component = fixture.componentInstance;
       fixture.detectChanges();
@@ -110,20 +111,18 @@ describe('TasksComponent', () => {
       });
     });
 
-    it('should complete task', () => {
+    it('should complete task', fakeAsync(() => {
       const task1 = tasks[0];
       const task2 = tasks[1];
 
-      const task1Copy = new Task().deserialize(task1);
-
       fixture.whenStable().then(() => {
-        component.onTaskCompleteCheckboxChange(task1Copy);
+        component.onTaskCompleteCheckboxChange(task1);
+        tick(400);
         fixture.detectChanges();
-        expect(task1Copy.completed).toBeTruthy();
         expect(component.tasks.length).toEqual(1);
         expect(component.tasks[0].id).toEqual(task2.id);
       });
-    });
+    }));
   });
 
   describe('when authentication is required', () => {

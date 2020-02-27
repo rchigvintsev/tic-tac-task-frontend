@@ -47,14 +47,7 @@ describe('AlertService', () => {
         NotFoundComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: Router,
-          useValue: {
-            events: new Subject()
-          }
-        }
-      ]
+      providers: [{provide: Router, useValue: {events: new Subject()}}]
     });
     injector = getTestBed();
     service = injector.get(AlertService);
