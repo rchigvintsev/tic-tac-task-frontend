@@ -74,6 +74,7 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
   }
 
   onClearDeadlineButtonClick() {
+    this.errorStateMatchers.get('deadline').errorState = false;
     this.taskFormModel.deadline = null;
     this.saveTask();
   }
@@ -103,7 +104,11 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
       this.taskFormModel.title = this.task.title;
     }
     if (!this.taskFormModel.equals(this.task)) {
-      this.taskService.updateTask(this.taskFormModel).subscribe(task => this.setTaskModel(task), response => {
+      this.taskService.updateTask(this.taskFormModel).subscribe(task => {
+        this.clearErrors();
+        this.setTaskModel(task);
+      }, response => {
+        this.clearErrors();
         if (HttpErrors.isBadRequest(response)) {
           this.handleBadRequestError(response);
         } else {
@@ -134,5 +139,9 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
         }
       }
     }
+  }
+
+  private clearErrors() {
+    this.errorStateMatchers.forEach(matcher => matcher.errorState = false);
   }
 }
