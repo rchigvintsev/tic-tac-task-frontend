@@ -14,6 +14,7 @@ import {
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -82,6 +83,7 @@ export function loadConfig(configService: ConfigService) {
     MatMenuModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatSidenavModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
     FlexLayoutModule,

@@ -16,6 +16,7 @@ import {AuthenticatedPrincipal} from './security/authenticated-principal';
 export class AppComponent implements OnInit, DoCheck {
   title = 'Orchestra';
   principal: AuthenticatedPrincipal;
+  sidenavOpened = true;
 
   constructor(private router: Router,
               private translate: TranslateService,

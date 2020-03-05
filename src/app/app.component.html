@@ -16,19 +16,34 @@
     </mat-toolbar>
   </header>
 
-  <main fxLayout="row" class="zero">
-    <div fxFlex="70" fxFlexOffset="15">
-      <router-outlet></router-outlet>
-    </div>
+  <mat-sidenav-container autosize>
+    <mat-sidenav mode="side" opened>
+      <mat-nav-list>
+        <mat-list-item>
+          <button mat-icon-button (click)="sidenavOpened = !sidenavOpened">
+            <mat-icon *ngIf="sidenavOpened">chevron_left</mat-icon>
+            <mat-icon *ngIf="!sidenavOpened">chevron_right</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
 
-    <div fxFlex></div>
-  </main>
+    <mat-sidenav-content>
+      <main fxLayout="row" class="zero">
+        <div fxFlex="70" fxFlexOffset="15">
+          <router-outlet></router-outlet>
+        </div>
 
-  <footer>
-    <div class="language-switcher">
-      <a mat-button [routerLink]="'/en'" class="en-link">en</a>
-      <span>|</span>
-      <a mat-button [routerLink]="'/ru'" class="ru-link">ru</a>
-    </div>
-  </footer>
+        <div fxFlex></div>
+      </main>
+
+      <footer>
+        <div class="language-switcher">
+          <a mat-button [routerLink]="'/en'" class="en-link">en</a>
+          <span>|</span>
+          <a mat-button [routerLink]="'/ru'" class="ru-link">ru</a>
+        </div>
+      </footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

@@ -23,25 +23,40 @@
     }
   }
 
-  main {
+  mat-sidenav-container {
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    padding-top: 16px;
 
-    > *:not(router-outlet) {
-      display: block;
+    mat-sidenav-content {
+      display: flex;
+      flex-direction: column;
       flex: 1;
-    }
-  }
 
-  footer {
-    margin-top: auto;
-    padding: 1rem 16px 1rem 16px;
+      main {
+        flex: 1;
+        padding-top: 16px;
 
-    .language-switcher {
-      float: right;
+        > *:not(router-outlet) {
+          display: block;
+          flex: 1;
+        }
+      }
 
-      a {
-        min-width: 32px;
+      footer {
+        margin-top: auto;
+        padding: 1rem 16px 1rem 16px;
+
+        .language-switcher {
+          display: flex;
+          width: 100%;
+          align-items: center;
+          justify-content: flex-end;
+
+          a {
+            min-width: 32px;
+          }
+        }
       }
     }
   }
