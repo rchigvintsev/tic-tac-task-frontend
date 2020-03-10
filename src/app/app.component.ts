@@ -17,6 +17,8 @@ export class AppComponent implements OnInit, DoCheck {
   title = 'Orchestra';
   principal: AuthenticatedPrincipal;
   sidenavOpened = true;
+  todayDate = moment().date();
+  tomorrowDate = moment().add(1, 'days').date();
 
   constructor(private router: Router,
               private translate: TranslateService,

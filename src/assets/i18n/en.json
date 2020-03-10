@@ -18,5 +18,11 @@
   "sign_in_prompt": "Please sign in",
   "sign_in_with": "Sign in with",
   "sign_out": "Sign out",
-  "sign_in_error": "Something went wrong during signing in"
+  "sign_in_error": "Something went wrong during signing in",
+  "inbox": "Inbox",
+  "scheduled_for": "Scheduled for",
+  "scheduled_for_today": "Today",
+  "scheduled_for_tomorrow": "Tomorrow",
+  "scheduled_for_this_week": "This week",
+  "scheduled_for_some_day": "Some day"
 }

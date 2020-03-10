@@ -25,6 +25,55 @@
             <mat-icon *ngIf="!sidenavOpened">chevron_right</mat-icon>
           </button>
         </mat-list-item>
+
+        <mat-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>inbox</mat-icon>
+            <p matLine *ngIf="sidenavOpened">{{ 'inbox' | translate }}</p>
+          </mat-list-item>
+
+          <mat-divider *ngIf="sidenavOpened"></mat-divider>
+
+          <mat-list-item *ngIf="!sidenavOpened">
+            <mat-icon mat-list-icon>today</mat-icon>
+          </mat-list-item>
+
+          <ng-container *ngIf="sidenavOpened">
+            <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
+
+            <mat-list-item>
+              <mat-icon mat-list-icon class="mat-date-icon">
+                calendar_today
+                <span>{{ todayDate }}</span>
+              </mat-icon>
+              <p matLine>{{ 'scheduled_for_today' | translate }}</p>
+            </mat-list-item>
+
+            <mat-list-item>
+              <mat-icon mat-list-icon class="mat-date-icon">
+                calendar_today
+                <span>{{ tomorrowDate }}</span>
+              </mat-icon>
+              <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
+            </mat-list-item>
+
+            <mat-list-item>
+              <mat-icon mat-list-icon class="mat-date-icon">
+                calendar_today
+                <span>W</span>
+              </mat-icon>
+              <p matLine>{{ 'scheduled_for_this_week' | translate }}</p>
+            </mat-list-item>
+
+            <mat-list-item>
+              <mat-icon mat-list-icon class="mat-date-icon">
+                calendar_today
+                <span>?</span>
+              </mat-icon>
+              <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
+            </mat-list-item>
+          </ng-container>
+        </mat-list>
       </mat-nav-list>
     </mat-sidenav>
 
