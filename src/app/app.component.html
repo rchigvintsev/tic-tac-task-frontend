@@ -1,6 +1,10 @@
 <div class="page">
   <header>
     <mat-toolbar color="primary">
+      <button mat-icon-button *ngIf="principal" (click)="onSidenavToggleButtonClick()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
       <span>{{ title }}</span>
       <span class="space-filler"></span>
       <div *ngIf="principal" class="profile-info-container">
@@ -17,28 +21,20 @@
   </header>
 
   <mat-sidenav-container autosize>
-    <mat-sidenav mode="side" opened>
+    <mat-sidenav #sidenav
+                 *ngIf="principal"
+                 [mode]="mobileQuery.matches ? 'over' : 'side'"
+                 [opened]="!mobileQuery.matches">
       <mat-nav-list>
-        <mat-list-item>
-          <button mat-icon-button (click)="sidenavOpened = !sidenavOpened">
-            <mat-icon *ngIf="sidenavOpened">chevron_left</mat-icon>
-            <mat-icon *ngIf="!sidenavOpened">chevron_right</mat-icon>
-          </button>
-        </mat-list-item>
-
         <mat-list>
           <mat-list-item>
             <mat-icon mat-list-icon>inbox</mat-icon>
-            <p matLine *ngIf="sidenavOpened">{{ 'inbox' | translate }}</p>
+            <p matLine>{{ 'inbox' | translate }}</p>
           </mat-list-item>
 
-          <mat-divider *ngIf="sidenavOpened"></mat-divider>
+          <mat-divider></mat-divider>
 
-          <mat-list-item *ngIf="!sidenavOpened">
-            <mat-icon mat-list-icon>today</mat-icon>
-          </mat-list-item>
-
-          <ng-container *ngIf="sidenavOpened">
+          <ng-container>
             <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
 
             <mat-list-item>

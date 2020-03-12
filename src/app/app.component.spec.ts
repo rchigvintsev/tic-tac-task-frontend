@@ -109,4 +109,13 @@ describe('AppComponent', () => {
     component.onSignOutButtonClick();
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'signin']);
   });
+
+  it('should toggle sidenav', () => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      component.sidenav.toggle = jasmine.createSpy('toggle').and.callFake(() => Promise.resolve());
+      component.onSidenavToggleButtonClick();
+      expect(component.sidenav.toggle).toHaveBeenCalled();
+    });
+  });
 });

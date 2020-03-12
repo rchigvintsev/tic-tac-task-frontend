@@ -1,5 +1,7 @@
-import {Component, DoCheck, OnInit} from '@angular/core';
+import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
+import {MediaMatcher} from '@angular/cdk/layout';
+import {MatSidenav} from '@angular/material/sidenav';
 
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
@@ -14,15 +16,20 @@ import {AuthenticatedPrincipal} from './security/authenticated-principal';
   styleUrls: ['./app.component.styl']
 })
 export class AppComponent implements OnInit, DoCheck {
+  @ViewChild('sidenav')
+  sidenav: MatSidenav;
+
   title = 'Orchestra';
   principal: AuthenticatedPrincipal;
-  sidenavOpened = true;
   todayDate = moment().date();
   tomorrowDate = moment().add(1, 'days').date();
+  mobileQuery: MediaQueryList;
 
   constructor(private router: Router,
               private translate: TranslateService,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
   }
 
   ngOnInit() {
@@ -43,5 +50,9 @@ export class AppComponent implements OnInit, DoCheck {
       this.principal = null;
       this.router.navigate([this.translate.currentLang, 'signin']).then();
     });
+  }
+
+  onSidenavToggleButtonClick() {
+    this.sidenav.toggle().then();
   }
 }
