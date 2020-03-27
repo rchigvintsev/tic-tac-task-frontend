@@ -26,7 +26,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.taskService.getTasks(false).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    this.taskService.getUnprocessedTasks().subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
   }
 
   onTaskFormSubmit() {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -22,9 +22,8 @@ export class TaskService {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
   }
 
-  getTasks(completed: boolean) {
-    const options = Object.assign({params: new HttpParams().set('completed', String(completed))}, commonHttpOptions);
-    return this.http.get<any>(this.baseUrl, options).pipe(
+  getUnprocessedTasks() {
+    return this.http.get<any>(`${this.baseUrl}/unprocessed`, commonHttpOptions).pipe(
       map(response => {
         const tasks = [];
         for (const json of response) {

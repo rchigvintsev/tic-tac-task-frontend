@@ -77,7 +77,7 @@ describe('TasksComponent', () => {
       tasks.push(new Task().deserialize({id: 2, title: 'Task 2', completed: false}));
 
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
+      spyOn(taskService, 'getUnprocessedTasks').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
@@ -115,9 +115,10 @@ describe('TasksComponent', () => {
       const task1 = tasks[0];
       const task2 = tasks[1];
 
+      component.onTaskCompleteCheckboxChange(task1);
+      tick(400);
+
       fixture.whenStable().then(() => {
-        component.onTaskCompleteCheckboxChange(task1);
-        tick(400);
         fixture.detectChanges();
         expect(component.tasks.length).toEqual(1);
         expect(component.tasks[0].id).toEqual(task2.id);
@@ -129,7 +130,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getTasks').and.callFake(() => {
+      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => {
         return throwError({status: 401});
       });
 
@@ -154,7 +155,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getTasks').and.callFake(() => throwError(error));
+      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => throwError(error));
       spyOn(window.console, 'error');
 
       component = fixture.componentInstance;
@@ -175,7 +176,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
+      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
       spyOn(window.console, 'error');
 
       component = fixture.componentInstance;

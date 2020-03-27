@@ -7,14 +7,14 @@ export class Task extends AbstractEntity<Task> {
   id: number;
   title: string;
   description: string;
-  completed: boolean;
+  status: string;
   deadline: Date;
 
   deserialize(input: any): Task {
     this.id = input.id;
     this.title = input.title;
     this.description = input.description;
-    this.completed = input.completed;
+    this.status = input.status;
     if (input.deadline) {
       this.deadline = moment.utc(input.deadline, moment.HTML5_FMT.DATETIME_LOCAL_MS).toDate();
     }
@@ -26,7 +26,7 @@ export class Task extends AbstractEntity<Task> {
       id: this.id,
       title: this.title,
       description: this.description,
-      completed: this.completed,
+      status: this.status,
       deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS) : null
     };
   }
@@ -36,7 +36,7 @@ export class Task extends AbstractEntity<Task> {
     clone.id = this.id;
     clone.title = this.title;
     clone.description = this.description;
-    clone.completed = this.completed;
+    clone.status = this.status;
     clone.deadline = this.deadline;
     return clone;
   }
@@ -45,7 +45,7 @@ export class Task extends AbstractEntity<Task> {
     return Objects.equals(this.id, other.id)
       && Objects.equals(this.title, other.title)
       && Objects.equals(this.description, other.description)
-      && Objects.equals(this.completed, other.completed)
+      && Objects.equals(this.status, other.status)
       && Objects.equals(this.deadline, other.deadline);
   }
 }

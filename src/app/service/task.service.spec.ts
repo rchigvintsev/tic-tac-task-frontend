@@ -27,22 +27,22 @@ describe('TaskService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return tasks', () => {
+  it('should return unprocessed tasks', () => {
     const testTasks = [];
-    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', completed: false}));
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', processed: false, completed: false}));
     testTasks.push(new Task().deserialize({
       id: 2,
       title: 'Task 2',
-      completed: false,
+      status: 'UNPROCESSED',
       deadline: '2120-02-16T11:46:10.234'
     }));
 
-    const subscription = taskService.getTasks(false).subscribe(tasks => {
+    const subscription = taskService.getUnprocessedTasks().subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}?completed=false`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
 
