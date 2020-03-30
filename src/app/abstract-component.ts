@@ -9,7 +9,7 @@ import {LogService} from './service/log.service';
 
 @Injectable()
 export class AbstractComponent {
-  constructor(private router: Router, protected translate: TranslateService, protected log: LogService) {
+  constructor(protected router: Router, protected translate: TranslateService, protected log: LogService) {
   }
 
   private logError(error: any) {

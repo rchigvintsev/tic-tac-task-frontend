@@ -22,12 +22,22 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   formModel = new Task();
   tasks: Array<Task>;
 
-  constructor(router: Router, translate: TranslateService, log: LogService, private taskService: TaskService) {
+  constructor(router: Router,
+              translate: TranslateService,
+              log: LogService,
+              private route: ActivatedRoute,
+              private taskService: TaskService) {
     super(router, translate, log);
   }
 
   ngOnInit() {
     this.taskService.getUnprocessedTasks().subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    this.route.fragment.subscribe((fragment: string) => {
+      const taskGroup = TaskGroup.valueOf(fragment);
+      if (!taskGroup) {
+        this.router.navigate(['/'], {fragment: 'today'}).then();
+      }
+    });
   }
 
   onTaskFormSubmit() {
