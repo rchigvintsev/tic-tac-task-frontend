@@ -17,7 +17,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {SigninComponent} from '../signin/signin.component';
-import {DashboardComponent} from '../dashboard/dashboard.component';
+import {TasksComponent} from '../tasks/tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
@@ -60,7 +60,7 @@ describe('TaskCommentsComponent', () => {
       ],
       declarations: [
         SigninComponent,
-        DashboardComponent,
+        TasksComponent,
         TaskDetailComponent,
         TaskCommentsComponent,
         NotFoundComponent,

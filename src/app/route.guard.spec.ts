@@ -20,7 +20,7 @@ import {
 } from './route.guard';
 import {routes} from './app-routing.module';
 import {TranslateHttpLoaderFactory} from './app.module';
-import {DashboardComponent} from './dashboard/dashboard.component';
+import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {SigninComponent} from './signin/signin.component';
 import {DummyComponent} from './dummy/dummy.component';
@@ -49,7 +49,7 @@ describe('RouteGuard', () => {
         NgxMatDatetimePickerModule
       ],
       declarations: [
-        DashboardComponent,
+        TasksComponent,
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,

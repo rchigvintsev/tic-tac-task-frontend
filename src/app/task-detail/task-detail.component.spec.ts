@@ -17,9 +17,9 @@ import * as moment from 'moment';
 
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
+import {TasksComponent} from '../tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail.component';
 import {SigninComponent} from '../signin/signin.component';
-import {DashboardComponent} from '../dashboard/dashboard.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {Task} from '../model/task';
@@ -48,7 +48,7 @@ describe('TaskDetailComponent', () => {
         MatInputModule,
         NgxMatDatetimePickerModule
       ],
-      declarations: [SigninComponent, DashboardComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [SigninComponent, TasksComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     }).compileComponents();

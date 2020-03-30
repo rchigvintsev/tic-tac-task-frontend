@@ -9,7 +9,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
 import {AlertComponent} from './alert.component';
-import {DashboardComponent} from '../dashboard/dashboard.component';
+import {TasksComponent} from '../tasks/tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
@@ -40,7 +40,7 @@ describe('AlertComponent', () => {
       ],
       declarations: [
         AlertComponent,
-        DashboardComponent,
+        TasksComponent,
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,

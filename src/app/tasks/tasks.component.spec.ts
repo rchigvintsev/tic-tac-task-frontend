@@ -16,7 +16,6 @@ import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 import {SigninComponent} from '../signin/signin.component';
-import {DashboardComponent} from '../dashboard/dashboard.component';
 import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
@@ -49,7 +48,6 @@ describe('TasksComponent', () => {
       ],
       declarations: [
         SigninComponent,
-        DashboardComponent,
         TasksComponent,
         TaskDetailComponent,
         NotFoundComponent,

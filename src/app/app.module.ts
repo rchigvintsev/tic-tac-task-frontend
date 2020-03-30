@@ -26,7 +26,6 @@ import {NgxMatDatetimePickerModule, NgxMatTimepickerModule} from 'ngx-mat-dateti
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {DashboardComponent} from './dashboard/dashboard.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
@@ -56,7 +55,6 @@ export function loadConfig(configService: ConfigService) {
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
     TasksComponent,
     TaskDetailComponent,
     ConfirmationDialogComponent,
