@@ -27,47 +27,57 @@
                  [opened]="!mobileQuery.matches">
       <mat-nav-list>
         <mat-list>
-          <mat-list-item>
+          <a mat-list-item [href]="anchorFor(TaskGroup.INBOX)"
+             (click)="onSidenavListItemClick(TaskGroup.INBOX)"
+             [ngClass]="isTaskGroupSelected(TaskGroup.INBOX) ? 'mat-list-item-selected' : ''">
             <mat-icon mat-list-icon>inbox</mat-icon>
-            <p matLine>{{ 'inbox' | translate }}</p>
-          </mat-list-item>
+            <span matLine>{{ 'inbox' | translate }}</span>
+          </a>
 
           <mat-divider></mat-divider>
 
           <ng-container>
             <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
 
-            <mat-list-item>
+            <a mat-list-item [href]="anchorFor(TaskGroup.TODAY)"
+               (click)="onSidenavListItemClick(TaskGroup.TODAY)"
+               [ngClass]="isTaskGroupSelected(TaskGroup.TODAY) ? 'mat-list-item-selected' : ''">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>{{ todayDate }}</span>
               </mat-icon>
               <p matLine>{{ 'scheduled_for_today' | translate }}</p>
-            </mat-list-item>
+            </a>
 
-            <mat-list-item>
+            <a mat-list-item [href]="anchorFor(TaskGroup.TOMORROW)"
+               (click)="onSidenavListItemClick(TaskGroup.TOMORROW)"
+               [ngClass]="isTaskGroupSelected(TaskGroup.TOMORROW) ? 'mat-list-item-selected' : ''">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>{{ tomorrowDate }}</span>
               </mat-icon>
               <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
-            </mat-list-item>
+            </a>
 
-            <mat-list-item>
+            <a mat-list-item [href]="anchorFor(TaskGroup.WEEK)"
+               (click)="onSidenavListItemClick(TaskGroup.WEEK)"
+               [ngClass]="isTaskGroupSelected(TaskGroup.WEEK) ? 'mat-list-item-selected' : ''">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>W</span>
               </mat-icon>
               <p matLine>{{ 'scheduled_for_this_week' | translate }}</p>
-            </mat-list-item>
+            </a>
 
-            <mat-list-item>
+            <a mat-list-item [href]="anchorFor(TaskGroup.SOME_DAY)"
+               (click)="onSidenavListItemClick(TaskGroup.SOME_DAY)"
+               [ngClass]="isTaskGroupSelected(TaskGroup.SOME_DAY) ? 'mat-list-item-selected' : ''">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>?</span>
               </mat-icon>
               <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
-            </mat-list-item>
+            </a>
           </ng-container>
         </mat-list>
       </mat-nav-list>

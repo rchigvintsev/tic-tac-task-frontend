@@ -1,5 +1,5 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -9,6 +9,7 @@ import * as moment from 'moment';
 
 import {AuthenticationService} from './service/authentication.service';
 import {AuthenticatedPrincipal} from './security/authenticated-principal';
+import {TaskGroup} from './tasks/task-group';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,12 @@ export class AppComponent implements OnInit, DoCheck {
   tomorrowDate = moment().add(1, 'days').date();
   mobileQuery: MediaQueryList;
 
+  TaskGroup = TaskGroup;
+
+  private selectedTaskGroup = TaskGroup.INBOX;
+
   constructor(private router: Router,
+              private route: ActivatedRoute,
               private translate: TranslateService,
               private authenticationService: AuthenticationService,
               media: MediaMatcher) {
@@ -36,6 +42,15 @@ export class AppComponent implements OnInit, DoCheck {
     moment.locale(this.translate.currentLang);
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       moment.locale(event.lang);
+    });
+    this.route.fragment.subscribe((fragment: string) => {
+      if (fragment) {
+        let taskGroup = TaskGroup.valueOf(fragment);
+        if (!taskGroup) {
+          taskGroup = TaskGroup.TODAY;
+        }
+        this.selectedTaskGroup = taskGroup;
+      }
     });
   }
 
@@ -55,4 +70,17 @@ export class AppComponent implements OnInit, DoCheck {
   onSidenavToggleButtonClick() {
     this.sidenav.toggle().then();
   }
+
+  onSidenavListItemClick(selectedTaskGroup: TaskGroup) {
+    this.selectedTaskGroup = selectedTaskGroup;
+  }
+
+  anchorFor(taskGroup: TaskGroup) {
+    return `/${this.translate.currentLang}#${taskGroup.value}`;
+  }
+
+  isTaskGroupSelected(taskGroup: TaskGroup) {
+    return this.selectedTaskGroup === taskGroup;
+  }
 }
+
