@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background-color: #ffffff;
-  box-shadow: 10px 5px 3px #cecece;
-  border-radius: 4px;
-  text-transform: uppercase;
-  padding: 0 16px 16px 16px;
 
   .error-subcontainer {
-    max-width: 800px;
+    background-color: #ffffff;
+    box-shadow: 10px 5px 3px #cecece;
+    border-radius: 4px;
+    text-transform: uppercase;
+    padding: 0 48px 48px 48px;
+    max-width: 500px;
 
     .error-code {
       display: flex;
@@ -17,13 +17,20 @@
       justify-content: center;
 
       h1 {
+        font-size: 200px;
         margin: 0;
-        font-size: 250px;
         font-weight: 900;
         color: transparent;
         background-color: #cecece;
         background-clip: text;
         text-shadow: 10px 5px 3px rgba(255, 255, 255, 0.8);
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 100px;
+          text-shadow: 5px 2px 1px rgba(255, 255, 255, 0.8);
+        }
       }
     }
 
@@ -32,9 +39,10 @@
       flex-direction: column;
 
       h2 {
-        font-size: 30px;
+        font-size: 20px;
         font-weight: 900;
         margin: 0;
+        text-align: center;
       }
 
       p {
