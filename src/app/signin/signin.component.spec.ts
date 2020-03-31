@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
@@ -57,14 +57,15 @@ describe('SigninComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SigninComponent);
+    const injector = getTestBed();
 
-    const configService = fixture.debugElement.injector.get(ConfigService);
+    const configService = injector.get(ConfigService);
     configService.setConfig(new Config());
 
-    const alertService = fixture.debugElement.injector.get(AlertService);
+    const alertService = injector.get(AlertService);
     spyOn(alertService, 'error').and.stub();
 
+    fixture = TestBed.createComponent(SigninComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

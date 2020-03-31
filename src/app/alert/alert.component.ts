@@ -12,6 +12,7 @@ import {Message} from '../model/message';
 })
 export class AlertComponent implements OnInit, OnDestroy {
   message: Message;
+  alertClass = 'alert';
 
   private messageSubscription: Subscription;
 
@@ -26,21 +27,19 @@ export class AlertComponent implements OnInit, OnDestroy {
     this.messageSubscription.unsubscribe();
   }
 
-  getClass(): string {
+  private onMessage(message: Message) {
+    this.message = message;
+
     const classes = ['alert'];
-    if (this.message) {
-      if (this.message.isInfo()) {
+    if (message) {
+      if (message.isInfo()) {
         classes.push('alert-info');
-      } else if (this.message.isWarning()) {
+      } else if (message.isWarning()) {
         classes.push('alert-warn');
-      } else if (this.message.isError()) {
+      } else if (message.isError()) {
         classes.push('alert-error');
       }
     }
-    return classes.join(' ');
-  }
-
-  private onMessage(message: Message) {
-    this.message = message;
+    this.alertClass = classes.join(' ');
   }
 }

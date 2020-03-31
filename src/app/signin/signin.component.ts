@@ -18,6 +18,8 @@ import {LogService} from '../service/log.service';
 export class SigninComponent extends AbstractComponent implements OnInit {
   config: ConfigService;
 
+  private readonly redirectUri: string;
+
   constructor(
     router: Router,
     translate: TranslateService,
@@ -29,7 +31,10 @@ export class SigninComponent extends AbstractComponent implements OnInit {
     private alertService: AlertService
   ) {
     super(router, translate, log);
+
     this.config = config;
+    this.redirectUri = `${config.selfBaseUrl}/${translate.currentLang}/oauth2/authorization/callback`;
+
     iconRegistry.addSvgIcon('logo-google',
       domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/btn_google_light_normal.svg'));
     iconRegistry.addSvgIcon('logo-facebook', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/FB_Logo.svg'));
@@ -46,7 +51,6 @@ export class SigninComponent extends AbstractComponent implements OnInit {
   }
 
   buildAuthorizationUri(provider: string): string {
-    const redirectUri = `${this.config.selfBaseUrl}/${this.translate.currentLang}/oauth2/authorization/callback`;
-    return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${redirectUri}`;
+    return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${this.redirectUri}`;
   }
 }

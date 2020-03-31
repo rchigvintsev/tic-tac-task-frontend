@@ -1,5 +1,5 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterEvent} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   onRouterEvent(event: RouterEvent) {
-    if (event.url) {
+    if (event instanceof NavigationEnd && event.url) {
       this.showSidenav = this.principal && !AppComponent.isErrorPage(event.url);
     }
   }
