@@ -29,7 +29,7 @@
         <mat-list>
           <a mat-list-item [href]="anchorFor(TaskGroup.INBOX)"
              (click)="onSidenavListItemClick(TaskGroup.INBOX)"
-             [ngClass]="isTaskGroupSelected(TaskGroup.INBOX) ? 'mat-list-item-selected' : ''">
+             [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.INBOX)">
             <mat-icon mat-list-icon>inbox</mat-icon>
             <span matLine>{{ 'inbox' | translate }}</span>
           </a>
@@ -41,7 +41,7 @@
 
             <a mat-list-item [href]="anchorFor(TaskGroup.TODAY)"
                (click)="onSidenavListItemClick(TaskGroup.TODAY)"
-               [ngClass]="isTaskGroupSelected(TaskGroup.TODAY) ? 'mat-list-item-selected' : ''">
+               [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TODAY)">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>{{ todayDate }}</span>
@@ -51,7 +51,7 @@
 
             <a mat-list-item [href]="anchorFor(TaskGroup.TOMORROW)"
                (click)="onSidenavListItemClick(TaskGroup.TOMORROW)"
-               [ngClass]="isTaskGroupSelected(TaskGroup.TOMORROW) ? 'mat-list-item-selected' : ''">
+               [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TOMORROW)">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>{{ tomorrowDate }}</span>
@@ -61,7 +61,7 @@
 
             <a mat-list-item [href]="anchorFor(TaskGroup.WEEK)"
                (click)="onSidenavListItemClick(TaskGroup.WEEK)"
-               [ngClass]="isTaskGroupSelected(TaskGroup.WEEK) ? 'mat-list-item-selected' : ''">
+               [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.WEEK)">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>W</span>
@@ -71,7 +71,7 @@
 
             <a mat-list-item [href]="anchorFor(TaskGroup.SOME_DAY)"
                (click)="onSidenavListItemClick(TaskGroup.SOME_DAY)"
-               [ngClass]="isTaskGroupSelected(TaskGroup.SOME_DAY) ? 'mat-list-item-selected' : ''">
+               [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.SOME_DAY)">
               <mat-icon mat-list-icon class="mat-date-icon">
                 calendar_today
                 <span>?</span>
