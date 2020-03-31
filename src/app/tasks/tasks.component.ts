@@ -35,7 +35,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
     this.route.fragment.subscribe((fragment: string) => {
       const taskGroup = TaskGroup.valueOf(fragment);
       if (!taskGroup) {
-        this.router.navigate(['/'], {fragment: 'today'}).then();
+        this.router.navigate([this.translate.currentLang], {fragment: 'today'}).then();
       }
     });
   }
