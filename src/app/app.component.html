@@ -1,7 +1,7 @@
 <div class="page">
   <header>
     <mat-toolbar color="primary">
-      <button mat-icon-button *ngIf="principal" (click)="onSidenavToggleButtonClick()">
+      <button mat-icon-button *ngIf="showSidenav" (click)="onSidenavToggleButtonClick()">
         <mat-icon>menu</mat-icon>
       </button>
 
@@ -22,7 +22,7 @@
 
   <mat-sidenav-container autosize>
     <mat-sidenav #sidenav
-                 *ngIf="principal"
+                 *ngIf="showSidenav"
                  [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [opened]="!mobileQuery.matches">
       <mat-nav-list>

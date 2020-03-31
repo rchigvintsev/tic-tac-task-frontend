@@ -1,5 +1,5 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterEvent} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -25,6 +25,7 @@ export class AppComponent implements OnInit, DoCheck {
   todayDate = moment().date();
   tomorrowDate = moment().add(1, 'days').date();
   mobileQuery: MediaQueryList;
+  showSidenav = false;
 
   TaskGroup = TaskGroup;
 
@@ -38,20 +39,17 @@ export class AppComponent implements OnInit, DoCheck {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
   }
 
+  private static isErrorPage(url: string): boolean {
+    return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
+  }
+
   ngOnInit() {
     moment.locale(this.translate.currentLang);
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       moment.locale(event.lang);
     });
-    this.route.fragment.subscribe((fragment: string) => {
-      if (fragment) {
-        let taskGroup = TaskGroup.valueOf(fragment);
-        if (!taskGroup) {
-          taskGroup = TaskGroup.TODAY;
-        }
-        this.selectedTaskGroup = taskGroup;
-      }
-    });
+    this.route.fragment.subscribe((fragment: string) => this.onUrlFragmentChange(fragment));
+    this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
   }
 
   ngDoCheck(): void {
@@ -73,6 +71,22 @@ export class AppComponent implements OnInit, DoCheck {
 
   onSidenavListItemClick(selectedTaskGroup: TaskGroup) {
     this.selectedTaskGroup = selectedTaskGroup;
+  }
+
+  onUrlFragmentChange(fragment: string) {
+    if (fragment) {
+      let taskGroup = TaskGroup.valueOf(fragment);
+      if (!taskGroup) {
+        taskGroup = TaskGroup.TODAY;
+      }
+      this.selectedTaskGroup = taskGroup;
+    }
+  }
+
+  onRouterEvent(event: RouterEvent) {
+    if (event.url) {
+      this.showSidenav = this.principal && !AppComponent.isErrorPage(event.url);
+    }
   }
 
   anchorFor(taskGroup: TaskGroup) {
