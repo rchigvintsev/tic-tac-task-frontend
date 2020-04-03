@@ -4,7 +4,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MatMenuModule} from '@angular/material/menu';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 
 import {of} from 'rxjs';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import {AppComponent} from './app.component';
 import {TranslateHttpLoaderFactory} from './app.module';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
+import {TaskGroup} from './tasks/task-group';
 
 const CURRENT_LANG = 'ru';
 
@@ -43,6 +44,7 @@ describe('AppComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+    component.showSidenav = true;
 
     const injector = getTestBed();
 
@@ -117,5 +119,26 @@ describe('AppComponent', () => {
       component.onSidenavToggleButtonClick();
       expect(component.sidenav.toggle).toHaveBeenCalled();
     });
+  });
+
+  it('should hide sidenav on error page', () => {
+    component.ngDoCheck(); // Initialize authenticated principal
+    component.onRouterEvent(new NavigationEnd(1, '/error/404', null));
+    expect(component.showSidenav).toBeFalsy();
+  });
+
+  it('should change selected task group on sidenav item click', () => {
+    component.onSidenavListItemClick(TaskGroup.TOMORROW);
+    expect(component.isTaskGroupSelected(TaskGroup.TOMORROW)).toBeTruthy();
+  });
+
+  it('should change selected task group on URL fragment change', () => {
+    component.onUrlFragmentChange('week');
+    expect(component.isTaskGroupSelected(TaskGroup.WEEK)).toBeTruthy();
+  });
+
+  it('should select TODAY task group by default when changed URL fragment is not valid', () => {
+    component.onUrlFragmentChange('century');
+    expect(component.isTaskGroupSelected(TaskGroup.TODAY)).toBeTruthy();
   });
 });
