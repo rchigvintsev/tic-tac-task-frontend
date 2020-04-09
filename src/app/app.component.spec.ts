@@ -56,6 +56,7 @@ describe('AppComponent', () => {
 
     router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
+    router.navigateByUrl = jasmine.createSpy('navigateByUrl').and.callFake(() => Promise.resolve());
 
     const user = new User();
     user.fullName = 'John Doe';
@@ -137,8 +138,17 @@ describe('AppComponent', () => {
     expect(component.isTaskGroupSelected(TaskGroup.WEEK)).toBeTruthy();
   });
 
-  it('should select TODAY task group by default when changed URL fragment is not valid', () => {
+  it('should select "TODAY" task group by default when changed URL fragment is not valid', () => {
     component.onUrlFragmentChange('century');
     expect(component.isTaskGroupSelected(TaskGroup.TODAY)).toBeTruthy();
+  });
+
+  it('should switch language', () => {
+    component.onLanguageSwitchButtonClick('en');
+    expect(router.navigateByUrl).toHaveBeenCalled();
+    // @ts-ignore
+    const callArg = router.navigateByUrl.calls.mostRecent().args[0];
+    expect(callArg).not.toBeNull();
+    expect(callArg.toString()).toEqual('/en');
   });
 });

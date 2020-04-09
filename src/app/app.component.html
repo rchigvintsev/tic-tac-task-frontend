@@ -94,9 +94,9 @@
 
       <footer>
         <div class="language-switcher">
-          <a mat-button [routerLink]="'/en'" class="en-link">en</a>
+          <a mat-button class="en-link" (click)="onLanguageSwitchButtonClick('en')">en</a>
           <span>|</span>
-          <a mat-button [routerLink]="'/ru'" class="ru-link">ru</a>
+          <a mat-button class="ru-link" (click)="onLanguageSwitchButtonClick('ru')">ru</a>
         </div>
       </footer>
     </mat-sidenav-content>

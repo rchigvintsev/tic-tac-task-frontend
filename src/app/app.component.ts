@@ -1,5 +1,13 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {
+  ActivatedRoute,
+  DefaultUrlSerializer,
+  NavigationEnd,
+  PRIMARY_OUTLET,
+  Router,
+  RouterEvent,
+  UrlSegment
+} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -10,6 +18,7 @@ import * as moment from 'moment';
 import {AuthenticationService} from './service/authentication.service';
 import {AuthenticatedPrincipal} from './security/authenticated-principal';
 import {TaskGroup} from './tasks/task-group';
+import {AVAILABLE_LANGUAGES} from './language';
 
 @Component({
   selector: 'app-root',
@@ -73,6 +82,10 @@ export class AppComponent implements OnInit, DoCheck {
     this.selectedTaskGroup = selectedTaskGroup;
   }
 
+  onLanguageSwitchButtonClick(language: string) {
+    this.switchLanguage(language);
+  }
+
   onUrlFragmentChange(fragment: string) {
     if (fragment) {
       let taskGroup = TaskGroup.valueOf(fragment);
@@ -95,6 +108,30 @@ export class AppComponent implements OnInit, DoCheck {
 
   isTaskGroupSelected(taskGroup: TaskGroup) {
     return this.selectedTaskGroup === taskGroup;
+  }
+
+  private switchLanguage(language: string) {
+    let languageChanged = false;
+    const urlSerializer = new DefaultUrlSerializer();
+    let urlTree = urlSerializer.parse(this.router.url);
+    if (urlTree.root.numberOfChildren === 0) {
+      urlTree = this.router.createUrlTree([language], {fragment: urlTree.fragment, queryParams: urlTree.queryParams});
+      languageChanged = true;
+    } else {
+      const segmentGroup = urlTree.root.children[PRIMARY_OUTLET];
+      const currentLanguage = segmentGroup.segments[0].path;
+      if (!AVAILABLE_LANGUAGES.includes(currentLanguage)) {
+        segmentGroup.segments.unshift(new UrlSegment(language, {}));
+        languageChanged = true;
+      } else if (currentLanguage !== language) {
+        segmentGroup.segments[0] = new UrlSegment(language, {});
+        languageChanged = true;
+      }
+    }
+
+    if (languageChanged) {
+      this.router.navigateByUrl(urlTree).then();
+    }
   }
 }
 
