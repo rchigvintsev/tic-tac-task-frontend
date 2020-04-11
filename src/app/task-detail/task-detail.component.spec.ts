@@ -62,7 +62,7 @@ describe('TaskDetailComponent', () => {
       id: 1,
       title: 'Test task',
       description: 'Test description',
-      completed: false,
+      status: 'PROCESSED',
       deadline: moment(Date.now()).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));

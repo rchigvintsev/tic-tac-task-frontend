@@ -20,6 +20,8 @@ import {TasksComponent} from './tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
+import {TaskGroup} from '../service/task-group';
+import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
@@ -54,7 +56,10 @@ describe('TasksComponent', () => {
         DummyComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [
+        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
+      ]
     }).compileComponents();
 
     const injector = getTestBed();
@@ -71,11 +76,11 @@ describe('TasksComponent', () => {
       fixture = TestBed.createComponent(TasksComponent);
 
       tasks = [];
-      tasks.push(new Task().deserialize({id: 1, title: 'Task 1', completed: false}));
-      tasks.push(new Task().deserialize({id: 2, title: 'Task 2', completed: false}));
+      tasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
+      tasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getUnprocessedTasks').and.returnValue(of(tasks));
+      spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
@@ -128,7 +133,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => {
+      spyOn(taskService, 'getTasks').and.callFake(() => {
         return throwError({status: 401});
       });
 
@@ -153,7 +158,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => throwError(error));
+      spyOn(taskService, 'getTasks').and.callFake(() => throwError(error));
       spyOn(window.console, 'error');
 
       component = fixture.componentInstance;
@@ -174,7 +179,7 @@ describe('TasksComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
-      spyOn(taskService, 'getUnprocessedTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
+      spyOn(taskService, 'getTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
       spyOn(window.console, 'error');
 
       component = fixture.componentInstance;

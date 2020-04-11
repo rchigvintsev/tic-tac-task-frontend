@@ -6,7 +6,8 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {AbstractComponent} from '../abstract-component';
 import {Task} from '../model/task';
-import {TaskGroup} from './task-group';
+import {TaskGroup} from '../service/task-group';
+import {TaskGroupService} from '../service/task-group.service';
 import {TaskService} from '../service/task.service';
 import {LogService} from '../service/log.service';
 import {Strings} from '../util/strings';
@@ -26,18 +27,14 @@ export class TasksComponent extends AbstractComponent implements OnInit {
               translate: TranslateService,
               log: LogService,
               private route: ActivatedRoute,
-              private taskService: TaskService) {
+              private taskService: TaskService,
+              private taskGroupService: TaskGroupService) {
     super(router, translate, log);
   }
 
   ngOnInit() {
-    this.taskService.getUnprocessedTasks().subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
-    this.route.fragment.subscribe((fragment: string) => {
-      const taskGroup = TaskGroup.valueOf(fragment);
-      if (!taskGroup) {
-        this.router.navigate([this.translate.currentLang], {fragment: 'today'}).then();
-      }
-    });
+    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
   }
 
   onTaskFormSubmit() {
@@ -49,6 +46,19 @@ export class TasksComponent extends AbstractComponent implements OnInit {
     setTimeout(() => {
       this.completeTask(task);
     }, 300);
+  }
+
+  private onTaskGroupSelect(taskGroup: TaskGroup) {
+    if (taskGroup != null) {
+      this.taskService.getTasks(taskGroup).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    }
+  }
+
+  private onUrlFragmentChange(fragment: string) {
+    const taskGroup = TaskGroup.valueOf(fragment);
+    if (!taskGroup) {
+      this.router.navigate([this.translate.currentLang], {fragment: 'today'}).then();
+    }
   }
 
   private createTask() {

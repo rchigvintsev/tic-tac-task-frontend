@@ -1,13 +1,5 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {
-  ActivatedRoute,
-  DefaultUrlSerializer,
-  NavigationEnd,
-  PRIMARY_OUTLET,
-  Router,
-  RouterEvent,
-  UrlSegment
-} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -15,15 +7,17 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
+import {TaskGroup} from './service/task-group';
+import {TaskGroupService} from './service/task-group.service';
 import {AuthenticationService} from './service/authentication.service';
 import {AuthenticatedPrincipal} from './security/authenticated-principal';
-import {TaskGroup} from './tasks/task-group';
 import {AVAILABLE_LANGUAGES} from './language';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.styl']
+  styleUrls: ['./app.component.styl'],
+  providers: [TaskGroupService]
 })
 export class AppComponent implements OnInit, DoCheck {
   @ViewChild('sidenav')
@@ -44,6 +38,7 @@ export class AppComponent implements OnInit, DoCheck {
               private route: ActivatedRoute,
               private translate: TranslateService,
               private authenticationService: AuthenticationService,
+              private taskGroupService: TaskGroupService,
               media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
   }
@@ -57,6 +52,7 @@ export class AppComponent implements OnInit, DoCheck {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       moment.locale(event.lang);
     });
+    this.taskGroupService.notifyTaskGroupSelected(this.selectedTaskGroup);
     this.route.fragment.subscribe((fragment: string) => this.onUrlFragmentChange(fragment));
     this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
   }
@@ -78,8 +74,8 @@ export class AppComponent implements OnInit, DoCheck {
     this.sidenav.toggle().then();
   }
 
-  onSidenavListItemClick(selectedTaskGroup: TaskGroup) {
-    this.selectedTaskGroup = selectedTaskGroup;
+  onSidenavListItemClick(taskGroup: TaskGroup) {
+    this.setSelectedTaskGroup(taskGroup);
   }
 
   onLanguageSwitchButtonClick(language: string) {
@@ -92,7 +88,7 @@ export class AppComponent implements OnInit, DoCheck {
       if (!taskGroup) {
         taskGroup = TaskGroup.TODAY;
       }
-      this.selectedTaskGroup = taskGroup;
+      this.setSelectedTaskGroup(taskGroup);
     }
   }
 
@@ -110,10 +106,16 @@ export class AppComponent implements OnInit, DoCheck {
     return this.selectedTaskGroup === taskGroup;
   }
 
+  private setSelectedTaskGroup(taskGroup: TaskGroup) {
+    if (this.selectedTaskGroup !== taskGroup) {
+      this.selectedTaskGroup = taskGroup;
+      this.taskGroupService.notifyTaskGroupSelected(taskGroup);
+    }
+  }
+
   private switchLanguage(language: string) {
     let languageChanged = false;
-    const urlSerializer = new DefaultUrlSerializer();
-    let urlTree = urlSerializer.parse(this.router.url);
+    let urlTree = this.router.parseUrl(this.router.url);
     if (urlTree.root.numberOfChildren === 0) {
       urlTree = this.router.createUrlTree([language], {fragment: urlTree.fragment, queryParams: urlTree.queryParams});
       languageChanged = true;

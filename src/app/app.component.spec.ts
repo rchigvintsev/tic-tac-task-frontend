@@ -13,7 +13,7 @@ import {AppComponent} from './app.component';
 import {TranslateHttpLoaderFactory} from './app.module';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
-import {TaskGroup} from './tasks/task-group';
+import {TaskGroup} from './service/task-group';
 
 const CURRENT_LANG = 'ru';
 
@@ -150,5 +150,40 @@ describe('AppComponent', () => {
     const callArg = router.navigateByUrl.calls.mostRecent().args[0];
     expect(callArg).not.toBeNull();
     expect(callArg.toString()).toEqual('/en');
+  });
+
+  describe('when router URL is "/test"', () => {
+    beforeEach(() => {
+      spyOnProperty(router, 'url', 'get').and.returnValue('/test');
+    });
+
+    it('should switch language', () => {
+      component.onLanguageSwitchButtonClick('en');
+      expect(router.navigateByUrl).toHaveBeenCalled();
+      // @ts-ignore
+      const callArg = router.navigateByUrl.calls.mostRecent().args[0];
+      expect(callArg).not.toBeNull();
+      expect(callArg.toString()).toEqual('/en/test');
+    });
+  });
+
+  describe('when router URL is "/en/test"', () => {
+    beforeEach(() => {
+      spyOnProperty(router, 'url', 'get').and.returnValue('/en/test');
+    });
+
+    it('should switch language', () => {
+      component.onLanguageSwitchButtonClick('ru');
+      expect(router.navigateByUrl).toHaveBeenCalled();
+      // @ts-ignore
+      const callArg = router.navigateByUrl.calls.mostRecent().args[0];
+      expect(callArg).not.toBeNull();
+      expect(callArg.toString()).toEqual('/ru/test');
+    });
+
+    it('should do nothing on language switch button click when language is not changed', () => {
+      component.onLanguageSwitchButtonClick('en');
+      expect(router.navigateByUrl).not.toHaveBeenCalled();
+    });
   });
 });

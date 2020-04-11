@@ -4,8 +4,11 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
+import * as moment from 'moment';
+
 import {Task} from '../model/task';
 import {ConfigService} from './config.service';
+import {TaskGroup} from './task-group';
 
 const commonHttpOptions = {withCredentials: true};
 const jsonContentOptions = Object.assign({
@@ -22,8 +25,27 @@ export class TaskService {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
   }
 
-  getUnprocessedTasks() {
-    return this.http.get<any>(`${this.baseUrl}/unprocessed`, commonHttpOptions).pipe(
+  getTasks(taskGroup: TaskGroup) {
+    let url;
+    if (taskGroup === TaskGroup.INBOX) {
+      url = `${this.baseUrl}/unprocessed`;
+    } else if (taskGroup === TaskGroup.TODAY) {
+      const deadlineFrom = moment().startOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      const deadlineTo = moment().endOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+    } else if (taskGroup === TaskGroup.TOMORROW) {
+      const deadlineFrom = moment().add(1, 'd').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      const deadlineTo = moment().add(1, 'd').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+    } else if (taskGroup === TaskGroup.WEEK) {
+      const deadlineFrom = moment().startOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      const deadlineTo = moment().add(1, 'w').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+    } else if (taskGroup === TaskGroup.SOME_DAY) {
+      url = `${this.baseUrl}/processed?deadlineFrom=&deadlineTo=`;
+    }
+
+    return this.http.get<any>(url, commonHttpOptions).pipe(
       map(response => {
         const tasks = [];
         for (const json of response) {

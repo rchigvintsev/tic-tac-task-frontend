@@ -4,6 +4,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {Task} from '../model/task';
+import {TaskGroup} from './task-group';
 
 describe('TaskService', () => {
   let injector: TestBed;
@@ -27,17 +28,12 @@ describe('TaskService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return unprocessed tasks', () => {
+  it('should return tasks for "INBOX" group', () => {
     const testTasks = [];
-    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', processed: false, completed: false}));
-    testTasks.push(new Task().deserialize({
-      id: 2,
-      title: 'Task 2',
-      status: 'UNPROCESSED',
-      deadline: '2120-02-16T11:46:10.234'
-    }));
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    const subscription = taskService.getUnprocessedTasks().subscribe(tasks => {
+    const subscription = taskService.getTasks(TaskGroup.INBOX).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -49,9 +45,86 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should return tasks for "TODAY" group', () => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+
+    const subscription = taskService.getTasks(TaskGroup.TODAY).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
+        && /\?deadlineFrom=[0-9T\-:.]+&deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
+    });
+    request.flush(testTasks);
+
+    return subscription;
+  });
+
+  it('should return tasks for "TOMORROW" group', () => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+
+    const subscription = taskService.getTasks(TaskGroup.TOMORROW).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
+        && /\?deadlineFrom=[0-9T\-:.]+&deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
+    });
+    request.flush(testTasks);
+
+    return subscription;
+  });
+
+  it('should return tasks for "WEEK" group', () => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+
+    const subscription = taskService.getTasks(TaskGroup.WEEK).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
+        && /\?deadlineFrom=[0-9T\-:.]+&deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
+    });
+    request.flush(testTasks);
+
+    return subscription;
+  });
+
+  it('should return tasks for "SOME_DAY" group', () => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+
+    const subscription = taskService.getTasks(TaskGroup.SOME_DAY).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/processed?deadlineFrom=&deadlineTo=`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks);
+
+    return subscription;
+  });
+
   it('should return task by id', () => {
     const id = 1;
-    const testTask = new Task().deserialize({id, title: 'Test task', completed: false});
+    const testTask = new Task().deserialize({id, title: 'Test task'});
 
     const subscription = taskService.getTask(id).subscribe(task => {
       expect(task).toEqual(testTask);
@@ -65,12 +138,7 @@ describe('TaskService', () => {
   });
 
   it('should create task', () => {
-    const testTask = new Task().deserialize({
-      title: 'Test task',
-      completed: false,
-      deadline: '2120-02-16T11:49:37.581'
-    });
-
+    const testTask = new Task().deserialize({title: 'Test task'});
     const subscription = taskService.createTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);
     });
@@ -83,7 +151,7 @@ describe('TaskService', () => {
   });
 
   it('should update task', () => {
-    const testTask = new Task().deserialize({id: 1, title: 'Updated test task', completed: false});
+    const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
 
     const subscription = taskService.updateTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);
@@ -97,7 +165,7 @@ describe('TaskService', () => {
   });
 
   it('should complete task', () => {
-    const testTask = new Task().deserialize({id: 1, title: 'Updated test task', completed: false});
+    const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
 
     const subscription = taskService.completeTask(testTask).subscribe(_ => {});
 
