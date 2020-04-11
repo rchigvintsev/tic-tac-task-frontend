@@ -58,7 +58,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineFrom=[0-9T\-:.]+&deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
     });
     request.flush(testTasks);
 
@@ -98,7 +98,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineFrom=[0-9T\-:.]+&deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9T\-:.]+/.test(httpReq.url);
     });
     request.flush(testTasks);
 

@@ -30,17 +30,15 @@ export class TaskService {
     if (taskGroup === TaskGroup.INBOX) {
       url = `${this.baseUrl}/unprocessed`;
     } else if (taskGroup === TaskGroup.TODAY) {
-      const deadlineFrom = moment().startOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
       const deadlineTo = moment().endOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+      url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
     } else if (taskGroup === TaskGroup.TOMORROW) {
       const deadlineFrom = moment().add(1, 'd').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
       const deadlineTo = moment().add(1, 'd').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
       url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
     } else if (taskGroup === TaskGroup.WEEK) {
-      const deadlineFrom = moment().startOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
       const deadlineTo = moment().add(1, 'w').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+      url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
     } else if (taskGroup === TaskGroup.SOME_DAY) {
       url = `${this.baseUrl}/processed?deadlineFrom=&deadlineTo=`;
     }
