@@ -22,6 +22,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   taskForm: NgForm;
   formModel = new Task();
   tasks: Array<Task>;
+  title: string;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -30,6 +31,22 @@ export class TasksComponent extends AbstractComponent implements OnInit {
               private taskService: TaskService,
               private taskGroupService: TaskGroupService) {
     super(router, translate, log);
+  }
+
+  private static getTitle(taskGroup: TaskGroup): string {
+    switch (taskGroup) {
+      case TaskGroup.INBOX:
+        return 'inbox';
+      case TaskGroup.TODAY:
+        return 'scheduled_for_today';
+      case TaskGroup.TOMORROW:
+        return 'scheduled_for_tomorrow';
+      case TaskGroup.WEEK:
+        return 'scheduled_for_this_week';
+      case TaskGroup.SOME_DAY:
+        return 'scheduled_for_some_day';
+    }
+    return null;
   }
 
   ngOnInit() {
@@ -51,6 +68,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     if (taskGroup != null) {
       this.taskService.getTasks(taskGroup).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+      this.title = TasksComponent.getTitle(taskGroup);
     }
   }
 

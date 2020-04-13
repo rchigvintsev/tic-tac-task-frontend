@@ -122,6 +122,10 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should throw error when task group is null', () => {
+    expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
+  });
+
   it('should return task by id', () => {
     const id = 1;
     const testTask = new Task().deserialize({id, title: 'Test task'});

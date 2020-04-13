@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-title [translate]="'tasks'">Tasks</mat-card-title>
+  <mat-card-title>{{ title | translate }}</mat-card-title>
 
   <form #taskForm="ngForm" (ngSubmit)="onTaskFormSubmit()">
     <mat-form-field>

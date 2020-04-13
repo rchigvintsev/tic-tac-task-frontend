@@ -127,6 +127,12 @@ describe('TasksComponent', () => {
         expect(component.tasks[0].id).toEqual(task2.id);
       });
     }));
+
+    it('should render task list title depending on selected task group', () => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('inbox');
+    });
   });
 
   describe('when authentication is required', () => {

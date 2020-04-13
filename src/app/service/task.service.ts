@@ -26,6 +26,10 @@ export class TaskService {
   }
 
   getTasks(taskGroup: TaskGroup) {
+    if (!taskGroup) {
+      throw new Error('Task group must not be null or undefined');
+    }
+
     let url;
     if (taskGroup === TaskGroup.INBOX) {
       url = `${this.baseUrl}/unprocessed`;
@@ -41,6 +45,8 @@ export class TaskService {
       url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
     } else if (taskGroup === TaskGroup.SOME_DAY) {
       url = `${this.baseUrl}/processed?deadlineFrom=&deadlineTo=`;
+    } else {
+      throw new Error(`Unsupported task group: ${taskGroup.value}`);
     }
 
     return this.http.get<any>(url, commonHttpOptions).pipe(
