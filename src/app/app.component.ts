@@ -1,5 +1,5 @@
 import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
+import {NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
@@ -7,7 +7,6 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {TaskGroup} from './service/task-group';
 import {TaskGroupService} from './service/task-group.service';
 import {AuthenticationService} from './service/authentication.service';
 import {AuthenticatedPrincipal} from './security/authenticated-principal';
@@ -25,17 +24,10 @@ export class AppComponent implements OnInit, DoCheck {
 
   title = 'Orchestra';
   principal: AuthenticatedPrincipal;
-  todayDate = moment().date();
-  tomorrowDate = moment().add(1, 'days').date();
   mobileQuery: MediaQueryList;
   showSidenav = false;
 
-  TaskGroup = TaskGroup;
-
-  private selectedTaskGroup = TaskGroup.INBOX;
-
   constructor(private router: Router,
-              private route: ActivatedRoute,
               private translate: TranslateService,
               private authenticationService: AuthenticationService,
               private taskGroupService: TaskGroupService,
@@ -52,8 +44,6 @@ export class AppComponent implements OnInit, DoCheck {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       moment.locale(event.lang);
     });
-    this.taskGroupService.notifyTaskGroupSelected(this.selectedTaskGroup);
-    this.route.fragment.subscribe((fragment: string) => this.onUrlFragmentChange(fragment));
     this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
   }
 
@@ -74,42 +64,13 @@ export class AppComponent implements OnInit, DoCheck {
     this.sidenav.toggle().then();
   }
 
-  onSidenavListItemClick(taskGroup: TaskGroup) {
-    this.setSelectedTaskGroup(taskGroup);
-  }
-
   onLanguageSwitchButtonClick(language: string) {
     this.switchLanguage(language);
-  }
-
-  onUrlFragmentChange(fragment: string) {
-    if (fragment) {
-      let taskGroup = TaskGroup.valueOf(fragment);
-      if (!taskGroup) {
-        taskGroup = TaskGroup.TODAY;
-      }
-      this.setSelectedTaskGroup(taskGroup);
-    }
   }
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
       this.showSidenav = this.principal && !AppComponent.isErrorPage(event.url);
-    }
-  }
-
-  anchorFor(taskGroup: TaskGroup) {
-    return `/${this.translate.currentLang}#${taskGroup.value}`;
-  }
-
-  isTaskGroupSelected(taskGroup: TaskGroup) {
-    return this.selectedTaskGroup === taskGroup;
-  }
-
-  private setSelectedTaskGroup(taskGroup: TaskGroup) {
-    if (this.selectedTaskGroup !== taskGroup) {
-      this.selectedTaskGroup = taskGroup;
-      this.taskGroupService.notifyTaskGroupSelected(taskGroup);
     }
   }
 

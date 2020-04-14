@@ -1,0 +1,56 @@
+<mat-nav-list>
+  <mat-list>
+    <a mat-list-item [href]="anchorFor(TaskGroup.INBOX)"
+       (click)="onListItemClick(TaskGroup.INBOX)"
+       [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.INBOX)">
+      <mat-icon mat-list-icon>inbox</mat-icon>
+      <span matLine>{{ 'inbox' | translate }}</span>
+    </a>
+
+    <mat-divider></mat-divider>
+
+    <ng-container>
+      <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
+
+      <a mat-list-item [href]="anchorFor(TaskGroup.TODAY)"
+         (click)="onListItemClick(TaskGroup.TODAY)"
+         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TODAY)">
+        <mat-icon mat-list-icon class="mat-date-icon">
+          calendar_today
+          <span>{{ todayDate }}</span>
+        </mat-icon>
+        <p matLine>{{ 'scheduled_for_today' | translate }}</p>
+      </a>
+
+      <a mat-list-item [href]="anchorFor(TaskGroup.TOMORROW)"
+         (click)="onListItemClick(TaskGroup.TOMORROW)"
+         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TOMORROW)">
+        <mat-icon mat-list-icon class="mat-date-icon">
+          calendar_today
+          <span>{{ tomorrowDate }}</span>
+        </mat-icon>
+        <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
+      </a>
+
+      <a mat-list-item [href]="anchorFor(TaskGroup.WEEK)"
+         (click)="onListItemClick(TaskGroup.WEEK)"
+         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.WEEK)">
+        <mat-icon mat-list-icon class="mat-date-icon">
+          calendar_today
+          <span>W</span>
+        </mat-icon>
+        <p matLine>{{ 'scheduled_for_this_week' | translate }}</p>
+      </a>
+
+      <a mat-list-item [href]="anchorFor(TaskGroup.SOME_DAY)"
+         (click)="onListItemClick(TaskGroup.SOME_DAY)"
+         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.SOME_DAY)">
+        <mat-icon mat-list-icon class="mat-date-icon">
+          calendar_today
+          <span>?</span>
+        </mat-icon>
+        <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
+      </a>
+    </ng-container>
+  </mat-list>
+</mat-nav-list>

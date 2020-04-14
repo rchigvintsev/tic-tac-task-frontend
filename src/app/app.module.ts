@@ -26,11 +26,12 @@ import {NgxMatDatetimePickerModule, NgxMatTimepickerModule} from 'ngx-mat-dateti
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {TaskGroupsComponent} from './task-groups/task-groups.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
+import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
-import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
@@ -55,11 +56,12 @@ export function loadConfig(configService: ConfigService) {
 @NgModule({
   declarations: [
     AppComponent,
+    TaskGroupsComponent,
     TasksComponent,
     TaskDetailComponent,
+    TaskCommentsComponent,
     ConfirmationDialogComponent,
     NotBlankValidatorDirective,
-    TaskCommentsComponent,
     SigninComponent,
     NotFoundComponent,
     DummyComponent,

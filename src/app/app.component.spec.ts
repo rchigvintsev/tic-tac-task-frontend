@@ -13,7 +13,6 @@ import {AppComponent} from './app.component';
 import {TranslateHttpLoaderFactory} from './app.module';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
-import {TaskGroup} from './service/task-group';
 
 const CURRENT_LANG = 'ru';
 
@@ -126,21 +125,6 @@ describe('AppComponent', () => {
     component.ngDoCheck(); // Initialize authenticated principal
     component.onRouterEvent(new NavigationEnd(1, '/error/404', null));
     expect(component.showSidenav).toBeFalsy();
-  });
-
-  it('should change selected task group on sidenav item click', () => {
-    component.onSidenavListItemClick(TaskGroup.TOMORROW);
-    expect(component.isTaskGroupSelected(TaskGroup.TOMORROW)).toBeTruthy();
-  });
-
-  it('should change selected task group on URL fragment change', () => {
-    component.onUrlFragmentChange('week');
-    expect(component.isTaskGroupSelected(TaskGroup.WEEK)).toBeTruthy();
-  });
-
-  it('should select "TODAY" task group by default when changed URL fragment is not valid', () => {
-    component.onUrlFragmentChange('century');
-    expect(component.isTaskGroupSelected(TaskGroup.TODAY)).toBeTruthy();
   });
 
   it('should switch language', () => {
