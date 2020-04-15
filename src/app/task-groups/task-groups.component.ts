@@ -31,10 +31,6 @@ export class TaskGroupsComponent implements OnInit {
     this.route.fragment.subscribe((fragment: string) => this.onUrlFragmentChange(fragment));
   }
 
-  anchorFor(taskGroup: TaskGroup) {
-    return `/${this.translate.currentLang}#${taskGroup.value}`;
-  }
-
   isTaskGroupSelected(taskGroup: TaskGroup) {
     return this.selectedTaskGroup === taskGroup;
   }

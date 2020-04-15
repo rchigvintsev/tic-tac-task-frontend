@@ -1,6 +1,6 @@
 <mat-nav-list>
   <mat-list>
-    <a mat-list-item [href]="anchorFor(TaskGroup.INBOX)"
+    <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.INBOX.value"
        (click)="onListItemClick(TaskGroup.INBOX)"
        [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.INBOX)">
       <mat-icon mat-list-icon>inbox</mat-icon>
@@ -12,7 +12,7 @@
     <ng-container>
       <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
 
-      <a mat-list-item [href]="anchorFor(TaskGroup.TODAY)"
+      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.TODAY.value"
          (click)="onListItemClick(TaskGroup.TODAY)"
          [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TODAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
@@ -22,7 +22,7 @@
         <p matLine>{{ 'scheduled_for_today' | translate }}</p>
       </a>
 
-      <a mat-list-item [href]="anchorFor(TaskGroup.TOMORROW)"
+      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.TOMORROW.value"
          (click)="onListItemClick(TaskGroup.TOMORROW)"
          [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TOMORROW)">
         <mat-icon mat-list-icon class="mat-date-icon">
@@ -32,7 +32,7 @@
         <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
       </a>
 
-      <a mat-list-item [href]="anchorFor(TaskGroup.WEEK)"
+      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.WEEK.value"
          (click)="onListItemClick(TaskGroup.WEEK)"
          [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.WEEK)">
         <mat-icon mat-list-icon class="mat-date-icon">
@@ -42,7 +42,7 @@
         <p matLine>{{ 'scheduled_for_this_week' | translate }}</p>
       </a>
 
-      <a mat-list-item [href]="anchorFor(TaskGroup.SOME_DAY)"
+      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.SOME_DAY.value"
          (click)="onListItemClick(TaskGroup.SOME_DAY)"
          [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.SOME_DAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
