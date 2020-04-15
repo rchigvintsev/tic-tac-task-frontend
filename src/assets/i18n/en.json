@@ -23,6 +23,6 @@
   "scheduled_for": "Scheduled for",
   "scheduled_for_today": "Today",
   "scheduled_for_tomorrow": "Tomorrow",
-  "scheduled_for_this_week": "This week",
+  "scheduled_for_week": "Week",
   "scheduled_for_some_day": "Some day"
 }

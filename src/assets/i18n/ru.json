@@ -23,6 +23,6 @@
   "scheduled_for": "Запланированные",
   "scheduled_for_today": "На сегодня",
   "scheduled_for_tomorrow": "На завтра",
-  "scheduled_for_this_week": "На эту неделю",
+  "scheduled_for_week": "На неделю",
   "scheduled_for_some_day": "На когда-нибудь"
 }

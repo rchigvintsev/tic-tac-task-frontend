@@ -42,7 +42,7 @@ export class TasksComponent extends AbstractComponent implements OnInit {
       case TaskGroup.TOMORROW:
         return 'scheduled_for_tomorrow';
       case TaskGroup.WEEK:
-        return 'scheduled_for_this_week';
+        return 'scheduled_for_week';
       case TaskGroup.SOME_DAY:
         return 'scheduled_for_some_day';
     }
