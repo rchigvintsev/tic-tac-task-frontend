@@ -20,6 +20,7 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
   let router: Router;
+  let authenticationService: AuthenticationService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,7 +51,7 @@ describe('AppComponent', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    const authenticationService = injector.get(AuthenticationService);
+    authenticationService = injector.get(AuthenticationService);
     spyOn(authenticationService, 'signOut').and.returnValue(of(true));
 
     router = injector.get(Router);
@@ -61,7 +62,7 @@ describe('AppComponent', () => {
     user.fullName = 'John Doe';
     user.imageUrl = 'http://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
-    AuthenticationService.setPrincipal(user);
+    authenticationService.setPrincipal(user);
   });
 
   it('should create the app', () => {
@@ -79,7 +80,7 @@ describe('AppComponent', () => {
   });
 
   it('should render current user\'s name in a toolbar', () => {
-    const principal = AuthenticationService.getPrincipal();
+    const principal = authenticationService.getPrincipal();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -88,7 +89,7 @@ describe('AppComponent', () => {
   });
 
   it('should render current user\'s avatar in a toolbar', () => {
-    const principal = AuthenticationService.getPrincipal();
+    const principal = authenticationService.getPrincipal();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -97,7 +98,6 @@ describe('AppComponent', () => {
   });
 
   it('should sign out on corresponding menu item select', () => {
-    const authenticationService = fixture.debugElement.injector.get(AuthenticationService);
     component.onSignOutButtonClick();
     expect(authenticationService.signOut).toHaveBeenCalled();
   });

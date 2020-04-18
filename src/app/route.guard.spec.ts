@@ -130,7 +130,10 @@ describe('RouteGuard', () => {
   });
 
   describe('OAuth2AuthorizationCallback', () => {
+    let authenticationService;
+
     beforeEach(() => {
+      authenticationService = injector.get(AuthenticationService);
       guard = injector.get(OAuth2AuthorizationCallbackRouteGuard);
     });
 
@@ -164,7 +167,7 @@ describe('RouteGuard', () => {
 
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
 
-      const principal = AuthenticationService.getPrincipal();
+      const principal = authenticationService.getPrincipal();
       expect(principal).not.toBeNull();
       expect(principal.isValid()).toBeTruthy();
       expect(principal.getSubject()).toEqual(claims.sub);

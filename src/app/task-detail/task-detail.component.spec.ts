@@ -26,6 +26,8 @@ import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
+import {TaskGroupService} from "../service/task-group.service";
+import {TaskGroup} from "../service/task-group";
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -50,7 +52,10 @@ describe('TaskDetailComponent', () => {
       ],
       declarations: [SigninComponent, TasksComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [
+        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
+      ]
     }).compileComponents();
   }));
 

@@ -8,8 +8,11 @@ import {AuthenticationService} from './service/authentication.service';
 import {LogService} from './service/log.service';
 
 @Injectable()
-export class AbstractComponent {
-  constructor(protected router: Router, protected translate: TranslateService, protected log: LogService) {
+export class WebServiceBasedComponent {
+  constructor(protected router: Router,
+              protected translate: TranslateService,
+              protected authenticationService: AuthenticationService,
+              protected log: LogService) {
   }
 
   private logError(error: any) {
@@ -24,7 +27,7 @@ export class AbstractComponent {
 
   onServiceCallError(error) {
     if (HttpErrors.isUnauthorized(error)) {
-      AuthenticationService.removePrincipal();
+      this.authenticationService.removePrincipal();
       this.navigateToSigninPage();
     } else {
       this.logError(error);

@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, DoCheck {
 
   ngDoCheck(): void {
     if (!this.principal) {
-      this.principal = AuthenticationService.getPrincipal();
+      this.principal = this.authenticationService.getPrincipal();
     }
   }
 

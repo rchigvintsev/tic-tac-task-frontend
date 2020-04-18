@@ -4,11 +4,12 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import {AbstractComponent} from '../abstract-component';
+import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskService} from '../service/task.service';
+import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {Strings} from '../util/strings';
 
@@ -17,20 +18,22 @@ import {Strings} from '../util/strings';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.styl']
 })
-export class TasksComponent extends AbstractComponent implements OnInit {
+export class TasksComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('taskForm')
   taskForm: NgForm;
+
   formModel = new Task();
   tasks: Array<Task>;
   title: string;
 
   constructor(router: Router,
               translate: TranslateService,
+              authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService) {
-    super(router, translate, log);
+    super(router, translate, authenticationService, log);
   }
 
   private static getTitle(taskGroup: TaskGroup): string {
@@ -73,10 +76,12 @@ export class TasksComponent extends AbstractComponent implements OnInit {
   }
 
   private onUrlFragmentChange(fragment: string) {
-    const taskGroup = TaskGroup.valueOf(fragment);
+    let taskGroup = TaskGroup.valueOf(fragment);
     if (!taskGroup) {
-      this.router.navigate([this.translate.currentLang], {fragment: 'today'}).then();
+      taskGroup = TaskGroup.TODAY;
+      this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
     }
+    this.taskGroupService.notifyTaskGroupSelected(taskGroup);
   }
 
   private createTask() {

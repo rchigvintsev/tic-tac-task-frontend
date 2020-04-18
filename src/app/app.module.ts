@@ -37,7 +37,6 @@ import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
 import {ConfigService} from './service/config.service';
-import {AuthenticationService, PRINCIPAL} from './service/authentication.service';
 import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {NotFoundErrorHandler} from './error/handler/not-found-error.handler';
@@ -98,7 +97,6 @@ export function loadConfig(configService: ConfigService) {
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
-    {provide: PRINCIPAL, useFactory: AuthenticationService.getPrincipal, deps: [AuthenticationService]},
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
     {provide: HTTP_ERROR_HANDLERS, useClass: NotFoundErrorHandler, multi: true},

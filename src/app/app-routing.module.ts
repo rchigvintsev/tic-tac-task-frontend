@@ -20,12 +20,9 @@ import {
 import {AVAILABLE_LANGUAGES} from './language';
 
 export const routes: Routes = [
-  {
-    path: '', canActivate: [AuthenticatedOnlyRouteGuard], children: [
-      {path: '', component: TasksComponent},
-      {path: 'task/:id', component: TaskDetailComponent}
-    ]
-  },
+  {path: '', redirectTo: 'task', pathMatch: 'full'},
+  {path: 'task', component: TasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'task/:id', component: TaskDetailComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'oauth2/authorization/callback',

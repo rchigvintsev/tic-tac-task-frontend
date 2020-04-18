@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -19,16 +18,15 @@ export class TaskGroupsComponent implements OnInit {
   todayDate = moment().date();
   tomorrowDate = moment().add(1, 'days').date();
 
-  private selectedTaskGroup = TaskGroup.INBOX;
+  private selectedTaskGroup;
 
-  constructor(private route: ActivatedRoute,
-              private translate: TranslateService,
-              private taskGroupService: TaskGroupService) {
+  constructor(private translate: TranslateService,
+              private taskGroupService: TaskGroupService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit() {
-    this.taskGroupService.notifyTaskGroupSelected(this.selectedTaskGroup);
-    this.route.fragment.subscribe((fragment: string) => this.onUrlFragmentChange(fragment));
+    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
   }
 
   isTaskGroupSelected(taskGroup: TaskGroup) {
@@ -39,20 +37,17 @@ export class TaskGroupsComponent implements OnInit {
     this.setSelectedTaskGroup(taskGroup);
   }
 
-  onUrlFragmentChange(fragment: string) {
-    if (fragment) {
-      let taskGroup = TaskGroup.valueOf(fragment);
-      if (!taskGroup) {
-        taskGroup = TaskGroup.TODAY;
-      }
-      this.setSelectedTaskGroup(taskGroup);
-    }
+  private onTaskGroupSelect(taskGroup: TaskGroup) {
+    this.setSelectedTaskGroup(taskGroup, false);
   }
 
-  private setSelectedTaskGroup(taskGroup: TaskGroup) {
+  private setSelectedTaskGroup(taskGroup: TaskGroup, sendNotification: boolean = true) {
     if (this.selectedTaskGroup !== taskGroup) {
       this.selectedTaskGroup = taskGroup;
-      this.taskGroupService.notifyTaskGroupSelected(taskGroup);
+      this.cdr.detectChanges();
+      if (sendNotification) {
+        this.taskGroupService.notifyTaskGroupSelected(taskGroup);
+      }
     }
   }
 }

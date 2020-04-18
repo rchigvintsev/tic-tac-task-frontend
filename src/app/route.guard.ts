@@ -62,7 +62,7 @@ export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
       const encodedClaims = route.queryParamMap.get('claims');
       if (encodedClaims) {
         const principal = this.authenticationService.createPrincipal(encodedClaims);
-        AuthenticationService.setPrincipal(principal);
+        this.authenticationService.setPrincipal(principal);
       }
       this.router.navigate([this.translate.currentLang]).then();
     }

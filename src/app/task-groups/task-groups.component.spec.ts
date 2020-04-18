@@ -36,7 +36,7 @@ describe('TaskGroupsComponent', () => {
       ],
       declarations: [TaskGroupsComponent],
       providers: [
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
       ]
     }).compileComponents();
   }));
@@ -54,15 +54,5 @@ describe('TaskGroupsComponent', () => {
   it('should change selected task group on list item click', () => {
     component.onListItemClick(TaskGroup.TOMORROW);
     expect(component.isTaskGroupSelected(TaskGroup.TOMORROW)).toBeTruthy();
-  });
-
-  it('should change selected task group on URL fragment change', () => {
-    component.onUrlFragmentChange('week');
-    expect(component.isTaskGroupSelected(TaskGroup.WEEK)).toBeTruthy();
-  });
-
-  it('should select "TODAY" task group by default when changed URL fragment is not valid', () => {
-    component.onUrlFragmentChange('century');
-    expect(component.isTaskGroupSelected(TaskGroup.TODAY)).toBeTruthy();
   });
 });

@@ -58,7 +58,7 @@ describe('TasksComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
       ]
     }).compileComponents();
 
@@ -72,6 +72,8 @@ describe('TasksComponent', () => {
   }));
 
   describe('normally', () => {
+    let taskGroupService: TaskGroupService;
+
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
 
@@ -84,6 +86,8 @@ describe('TasksComponent', () => {
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
+
+      taskGroupService = fixture.debugElement.injector.get(TaskGroupService);
 
       component = fixture.componentInstance;
       fixture.detectChanges();
@@ -128,10 +132,28 @@ describe('TasksComponent', () => {
       });
     }));
 
-    it('should render task list title depending on selected task group', () => {
-      fixture.detectChanges();
+    it('should render correct task list title depending on selected task group', () => {
       const compiled = fixture.debugElement.nativeElement;
+
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
+      fixture.detectChanges();
       expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('inbox');
+
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
+      fixture.detectChanges();
+      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_today');
+
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
+      fixture.detectChanges();
+      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_tomorrow');
+
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
+      fixture.detectChanges();
+      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_week');
+
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
+      fixture.detectChanges();
+      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_some_day');
     });
   });
 

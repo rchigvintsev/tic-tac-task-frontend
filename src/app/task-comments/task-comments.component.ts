@@ -7,9 +7,10 @@ import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {AbstractComponent} from '../abstract-component';
+import {WebServiceBasedComponent} from '../web-service-based.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
+import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../util/strings';
@@ -19,7 +20,7 @@ import {Strings} from '../util/strings';
   templateUrl: './task-comments.component.html',
   styleUrls: ['./task-comments.component.styl']
 })
-export class TaskCommentsComponent extends AbstractComponent implements OnInit {
+export class TaskCommentsComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('newCommentForm')
   newCommentForm: NgForm;
   newCommentFormModel: TaskComment;
@@ -32,11 +33,12 @@ export class TaskCommentsComponent extends AbstractComponent implements OnInit {
 
   constructor(router: Router,
               translate: TranslateService,
+              authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
               private commentService: TaskCommentService,
               private dialog: MatDialog) {
-    super(router, translate, log);
+    super(router, translate, authenticationService, log);
   }
 
   ngOnInit() {

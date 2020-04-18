@@ -6,9 +6,12 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {NgxMatDatetimePicker} from 'ngx-mat-datetime-picker';
 
-import {AbstractComponent} from '../abstract-component';
+import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
+import {TaskGroup} from '../service/task-group';
+import {TaskGroupService} from '../service/task-group.service';
 import {TaskService} from '../service/task.service';
+import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {ServerErrorStateMatcher} from '../error/server-error-state-matcher';
 import {Strings} from '../util/strings';
@@ -19,7 +22,7 @@ import {HttpErrors} from '../util/http-errors';
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.styl']
 })
-export class TaskDetailComponent extends AbstractComponent implements OnInit {
+export class TaskDetailComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('title')
   titleElement: ElementRef;
   @ViewChild('taskDetailForm', {read: NgForm})
@@ -29,6 +32,7 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
 
   titleEditing = false;
   taskFormModel: Task;
+  selectedTaskGroup: TaskGroup;
 
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
@@ -36,16 +40,19 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
 
   constructor(router: Router,
               translate: TranslateService,
+              authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
               private taskService: TaskService,
+              private taskGroupService: TaskGroupService,
               private dateAdapter: DateAdapter<any>) {
-    super(router, translate, log);
+    super(router, translate, authenticationService, log);
   }
 
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
+    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.dateAdapter.setLocale(this.translate.currentLang);
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
@@ -82,6 +89,10 @@ export class TaskDetailComponent extends AbstractComponent implements OnInit {
   getFieldErrorMessage(fieldName: string): string {
     const control = this.taskDetailForm.controls[fieldName];
     return control ? control.getError('valid') : null;
+  }
+
+  private onTaskGroupSelect(taskGroup: TaskGroup) {
+    this.selectedTaskGroup = taskGroup;
   }
 
   private setTaskModel(task) {

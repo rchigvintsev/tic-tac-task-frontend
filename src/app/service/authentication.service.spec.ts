@@ -59,15 +59,15 @@ describe('AuthenticationService', () => {
   it('should return authenticated principal', () => {
     const user = new User().deserialize({validUntilSeconds: Math.round(Date.now() / 1000) + 60 * 60});
     localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
-    expect(AuthenticationService.getPrincipal()).not.toBeNull();
+    expect(service.getPrincipal()).not.toBeNull();
   });
 
   it('should return null on principal get when authenticated principal is not set', () => {
-    expect(AuthenticationService.getPrincipal()).toBeNull();
+    expect(service.getPrincipal()).toBeNull();
   });
 
   it('should throw error on principal set when principal is null', () => {
-    expect(() => AuthenticationService.setPrincipal(null)).toThrowError('Principal must not be null or undefined');
+    expect(() => service.setPrincipal(null)).toThrowError('Principal must not be null or undefined');
   });
 
   it('should sign out', () => {

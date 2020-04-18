@@ -1,4 +1,4 @@
-import {Injectable, InjectionToken} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
@@ -10,8 +10,6 @@ import {User} from '../model/user';
 import {ConfigService} from './config.service';
 import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 
-export const PRINCIPAL = new InjectionToken<AuthenticatedPrincipal>('Authenticated principal');
-
 const PRINCIPAL_KEY = 'principal';
 
 const postOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
@@ -20,32 +18,35 @@ const postOptions = {headers: new HttpHeaders({'Content-Type': 'application/json
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private user: User = null;
   private jwtHelper = new JwtHelperService();
 
   constructor(private httpClient: HttpClient, private config: ConfigService) {
   }
 
-  static getPrincipal(): AuthenticatedPrincipal {
-    const principal = localStorage.getItem(PRINCIPAL_KEY);
-    if (principal) {
-      const user = new User().deserialize(JSON.parse(principal));
-      if (user.isValid()) {
-        return user;
+  getPrincipal(): AuthenticatedPrincipal {
+    if (!this.user) {
+      const principal = localStorage.getItem(PRINCIPAL_KEY);
+      if (principal) {
+        this.user = new User().deserialize(JSON.parse(principal));
       }
-      AuthenticationService.removePrincipal();
     }
-    return null;
+    if (this.user && !this.user.isValid()) {
+      this.removePrincipal();
+    }
+    return this.user;
   }
 
-  static setPrincipal(principal: AuthenticatedPrincipal) {
+  setPrincipal(principal: AuthenticatedPrincipal) {
     if (!principal) {
       throw new Error('Principal must not be null or undefined');
     }
     localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(principal));
   }
 
-  static removePrincipal() {
+  removePrincipal() {
     localStorage.removeItem(PRINCIPAL_KEY);
+    this.user = null;
   }
 
   createPrincipal(encodedClaims: string): AuthenticatedPrincipal {
@@ -59,14 +60,14 @@ export class AuthenticationService {
   }
 
   isUserSignedIn(): boolean {
-    return AuthenticationService.getPrincipal() != null;
+    return this.getPrincipal() != null;
   }
 
   signOut(): Observable<any> {
     return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, postOptions)
       .pipe(
         tap(() => {
-          AuthenticationService.removePrincipal();
+          this.removePrincipal();
         })
       );
   }
