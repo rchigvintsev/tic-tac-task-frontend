@@ -13,6 +13,8 @@ import {of, throwError} from 'rxjs';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
 
+import * as moment from 'moment';
+
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {routes} from '../app-routing.module';
 import {SigninComponent} from '../signin/signin.component';
@@ -25,6 +27,7 @@ import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('TasksComponent', () => {
   let component: TasksComponent;
@@ -53,7 +56,8 @@ describe('TasksComponent', () => {
         TasksComponent,
         TaskDetailComponent,
         NotFoundComponent,
-        DummyComponent
+        DummyComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -67,6 +71,8 @@ describe('TasksComponent', () => {
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
 
+    moment.locale(translate.currentLang);
+
     const router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
   }));
@@ -79,7 +85,12 @@ describe('TasksComponent', () => {
 
       tasks = [];
       tasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
-      tasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
+      tasks.push(new Task().deserialize({
+        id: 2,
+        title: 'Task 2',
+        status: 'PROCESSED',
+        deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      }));
 
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
@@ -154,6 +165,13 @@ describe('TasksComponent', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
       fixture.detectChanges();
       expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_some_day');
+    });
+
+    it('should render task deadline', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      fixture.whenStable().then(() => {
+        expect(compiled.querySelector('.deadline-column span').textContent).toBe('in a month');
+      });
     });
   });
 

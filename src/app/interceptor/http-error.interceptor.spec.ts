@@ -20,6 +20,7 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {HttpErrorInterceptor} from './http-error.interceptor';
 import {HttpErrorHandler} from '../error/handler/http-error.handler';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('HttpErrorInterceptor', () => {
   beforeEach(() => {
@@ -43,7 +44,8 @@ describe('HttpErrorInterceptor', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

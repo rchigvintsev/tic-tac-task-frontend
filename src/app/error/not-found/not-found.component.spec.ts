@@ -15,6 +15,7 @@ import {TasksComponent} from '../../tasks/tasks.component';
 import {TaskDetailComponent} from '../../task-detail/task-detail.component';
 import {SigninComponent} from '../../signin/signin.component';
 import {DummyComponent} from '../../dummy/dummy.component';
+import {LocalizedRelativeDatePipe} from '../../pipe/localized-relative-date.pipe';
 import {routes} from '../../app-routing.module';
 
 describe('NotFoundComponent', () => {
@@ -42,7 +43,8 @@ describe('NotFoundComponent', () => {
         TasksComponent,
         TaskDetailComponent,
         SigninComponent,
-        DummyComponent
+        DummyComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

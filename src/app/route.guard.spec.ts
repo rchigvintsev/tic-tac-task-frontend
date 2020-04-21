@@ -26,6 +26,7 @@ import {SigninComponent} from './signin/signin.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {AuthenticationService} from './service/authentication.service';
+import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
 describe('RouteGuard', () => {
   let guard;
@@ -53,7 +54,8 @@ describe('RouteGuard', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

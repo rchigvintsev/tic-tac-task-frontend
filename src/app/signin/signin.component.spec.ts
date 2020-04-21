@@ -22,6 +22,7 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
 import {Config} from '../model/config';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('SigninComponent', () => {
   let component: SigninComponent;
@@ -43,7 +44,14 @@ describe('SigninComponent', () => {
         MatInputModule,
         NgxMatDatetimePickerModule
       ],
-      declarations: [SigninComponent, TasksComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [
+        SigninComponent,
+        TasksComponent,
+        TaskDetailComponent,
+        NotFoundComponent,
+        DummyComponent,
+        LocalizedRelativeDatePipe
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

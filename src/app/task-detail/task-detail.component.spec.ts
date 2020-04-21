@@ -26,8 +26,9 @@ import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
-import {TaskGroupService} from "../service/task-group.service";
-import {TaskGroup} from "../service/task-group";
+import {TaskGroupService} from '../service/task-group.service';
+import {TaskGroup} from '../service/task-group';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -50,7 +51,14 @@ describe('TaskDetailComponent', () => {
         MatInputModule,
         NgxMatDatetimePickerModule
       ],
-      declarations: [SigninComponent, TasksComponent, TaskDetailComponent, NotFoundComponent, DummyComponent],
+      declarations: [
+        SigninComponent,
+        TasksComponent,
+        TaskDetailComponent,
+        NotFoundComponent,
+        DummyComponent,
+        LocalizedRelativeDatePipe
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},

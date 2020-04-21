@@ -16,6 +16,7 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {AlertService} from '../service/alert.service';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {routes} from '../app-routing.module';
 
 
@@ -44,7 +45,8 @@ describe('AlertComponent', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

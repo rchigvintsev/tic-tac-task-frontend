@@ -18,6 +18,7 @@ import {SigninComponent} from '../../signin/signin.component';
 import {TasksComponent} from '../../tasks/tasks.component';
 import {TaskDetailComponent} from '../../task-detail/task-detail.component';
 import {NotFoundErrorHandler} from './not-found-error.handler';
+import {LocalizedRelativeDatePipe} from '../../pipe/localized-relative-date.pipe';
 
 describe('NotFoundErrorHandler', () => {
   let injector: TestBed;
@@ -45,7 +46,8 @@ describe('NotFoundErrorHandler', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

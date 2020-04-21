@@ -27,6 +27,7 @@ import {TaskCommentService} from '../service/task-comment.service';
 import {ConfigService} from '../service/config.service';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 class MatDialogMock {
   open() {
@@ -64,7 +65,8 @@ describe('TaskCommentsComponent', () => {
         TaskDetailComponent,
         TaskCommentsComponent,
         NotFoundComponent,
-        DummyComponent
+        DummyComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -96,6 +98,8 @@ describe('TaskCommentsComponent', () => {
 
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    moment.locale('ru');
   });
 
   it('should create', () => {

@@ -19,6 +19,7 @@ import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {AcceptLanguageInterceptor} from './accept-language.interceptor';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('AcceptLanguageInterceptor', () => {
   let injector;
@@ -46,7 +47,8 @@ describe('AcceptLanguageInterceptor', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

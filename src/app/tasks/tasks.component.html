@@ -22,8 +22,14 @@
       <mat-list-item *ngFor="let task of tasks">
         <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
-        <div id="title_column" [routerLink]="['/', translate.currentLang, 'task', task.id]">
-          <span>{{ task.title }}</span>
+        <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row">
+          <div class="list-column title-column">
+            <span>{{ task.title }}</span>
+          </div>
+
+          <div *ngIf="task.deadline" class="list-column deadline-column">
+            <span>{{ task.deadline | localizedRelativeDate }}</span>
+          </div>
         </div>
       </mat-list-item>
     </mat-list>

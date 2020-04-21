@@ -17,13 +17,34 @@ form {
       }
     }
 
-    #title_column {
+    .list-row {
       display: flex;
       flex-direction: row;
       align-items: center;
       width: 100%;
       height: 100%;
       cursor: pointer;
+
+      .list-column {
+        flex-grow: 1;
+        flex-basis: 0;
+      }
+
+      .title-column {
+        margin-right: 16px;
+        flex-grow: 7;
+      }
+
+      .deadline-column {
+        min-width: 120px;
+        text-align: right;
+      }
+
+      @media (max-width: 600px) {
+        .deadline-column {
+          min-width: 60px;
+        }
+      }
     }
   }
 }

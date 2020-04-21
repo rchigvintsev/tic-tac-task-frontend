@@ -1,6 +1,8 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {registerLocaleData} from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
 import {
   MatButtonModule,
   MatCardModule,
@@ -41,6 +43,7 @@ import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {NotFoundErrorHandler} from './error/handler/not-found-error.handler';
 import {HTTP_ERROR_HANDLERS} from './error/handler/http-error.handler';
+import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -51,6 +54,8 @@ export function loadConfig(configService: ConfigService) {
     return configService.loadConfig();
   };
 }
+
+registerLocaleData(localeRu, 'ru');
 
 @NgModule({
   declarations: [
@@ -64,7 +69,8 @@ export function loadConfig(configService: ConfigService) {
     SigninComponent,
     NotFoundComponent,
     DummyComponent,
-    AlertComponent
+    AlertComponent,
+    LocalizedRelativeDatePipe
   ],
   imports: [
     BrowserModule,

@@ -18,6 +18,7 @@ import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {TranslateHttpLoaderFactory} from '../app.module';
+import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {routes} from '../app-routing.module';
 
 describe('AlertService', () => {
@@ -44,7 +45,8 @@ describe('AlertService', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{provide: Router, useValue: {events: new Subject()}}]
