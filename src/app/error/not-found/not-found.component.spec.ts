@@ -5,6 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
@@ -15,6 +16,7 @@ import {TasksComponent} from '../../tasks/tasks.component';
 import {TaskDetailComponent} from '../../task-detail/task-detail.component';
 import {SigninComponent} from '../../signin/signin.component';
 import {DummyComponent} from '../../dummy/dummy.component';
+import {LocalizedDatePipe} from '../../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../../pipe/localized-relative-date.pipe';
 import {routes} from '../../app-routing.module';
 
@@ -36,6 +38,7 @@ describe('NotFoundComponent', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -44,6 +47,7 @@ describe('NotFoundComponent', () => {
         TaskDetailComponent,
         SigninComponent,
         DummyComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

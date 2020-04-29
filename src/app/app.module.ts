@@ -17,6 +17,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -43,6 +44,7 @@ import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {NotFoundErrorHandler} from './error/handler/not-found-error.handler';
 import {HTTP_ERROR_HANDLERS} from './error/handler/http-error.handler';
+import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
@@ -70,6 +72,7 @@ registerLocaleData(localeRu, 'ru');
     NotFoundComponent,
     DummyComponent,
     AlertComponent,
+    LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ],
   imports: [
@@ -89,6 +92,7 @@ registerLocaleData(localeRu, 'ru');
     MatNativeDateModule,
     MatDatepickerModule,
     MatSidenavModule,
+    MatTooltipModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
     FlexLayoutModule,

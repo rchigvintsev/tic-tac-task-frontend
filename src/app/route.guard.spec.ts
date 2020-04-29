@@ -6,6 +6,7 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
@@ -26,6 +27,7 @@ import {SigninComponent} from './signin/signin.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {AuthenticationService} from './service/authentication.service';
+import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
 describe('RouteGuard', () => {
@@ -47,6 +49,7 @@ describe('RouteGuard', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -55,6 +58,7 @@ describe('RouteGuard', () => {
         SigninComponent,
         DummyComponent,
         NotFoundComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

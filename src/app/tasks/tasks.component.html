@@ -28,7 +28,9 @@
           </div>
 
           <div *ngIf="task.deadline" class="list-column deadline-column">
-            <span>{{ task.deadline | localizedRelativeDate }}</span>
+            <span [matTooltip]="task.deadline | localizedDate: 'medium'" matTooltipPosition="above">
+              {{ task.deadline | localizedRelativeDate }}
+            </span>
           </div>
         </div>
       </mat-list-item>

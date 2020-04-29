@@ -25,7 +25,7 @@ describe('LocalizedRelativeDate', () => {
     expect(datePipe.transform(null)).toBeNull();
   });
 
-  it('return localized relative date', () => {
+  it('should return localized relative date', () => {
     expect(datePipe.transform(moment().add(1, 'month').toDate())).toBe('in a month');
   });
 });

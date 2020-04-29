@@ -7,6 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {MatDialog, MatDialogModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import * as moment from 'moment';
@@ -27,6 +28,7 @@ import {TaskCommentService} from '../service/task-comment.service';
 import {ConfigService} from '../service/config.service';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
+import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 class MatDialogMock {
@@ -56,6 +58,7 @@ describe('TaskCommentsComponent', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule,
         BrowserAnimationsModule
       ],
@@ -66,6 +69,7 @@ describe('TaskCommentsComponent', () => {
         TaskCommentsComponent,
         NotFoundComponent,
         DummyComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {of, throwError} from 'rxjs';
@@ -27,6 +28,7 @@ import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
+import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('TasksComponent', () => {
@@ -48,6 +50,7 @@ describe('TasksComponent', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule,
         BrowserAnimationsModule
       ],
@@ -57,6 +60,7 @@ describe('TasksComponent', () => {
         TaskDetailComponent,
         NotFoundComponent,
         DummyComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -170,7 +174,9 @@ describe('TasksComponent', () => {
     it('should render task deadline', () => {
       const compiled = fixture.debugElement.nativeElement;
       fixture.whenStable().then(() => {
-        expect(compiled.querySelector('.deadline-column span').textContent).toBe('in a month');
+        const spanContent = compiled.querySelector('.deadline-column span').textContent;
+        expect(spanContent).not.toBeNull();
+        expect(spanContent.trim()).toBe('in a month');
       });
     });
   });

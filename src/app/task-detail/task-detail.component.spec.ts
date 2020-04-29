@@ -7,6 +7,7 @@ import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
@@ -28,6 +29,7 @@ import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskGroup} from '../service/task-group';
+import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('TaskDetailComponent', () => {
@@ -49,6 +51,7 @@ describe('TaskDetailComponent', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -57,6 +60,7 @@ describe('TaskDetailComponent', () => {
         TaskDetailComponent,
         NotFoundComponent,
         DummyComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

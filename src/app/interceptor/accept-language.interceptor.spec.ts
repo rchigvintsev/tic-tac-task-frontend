@@ -5,6 +5,7 @@ import {HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpResponse} from '@an
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {Observable, of} from 'rxjs';
 
@@ -19,6 +20,7 @@ import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {AcceptLanguageInterceptor} from './accept-language.interceptor';
+import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('AcceptLanguageInterceptor', () => {
@@ -40,6 +42,7 @@ describe('AcceptLanguageInterceptor', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -48,6 +51,7 @@ describe('AcceptLanguageInterceptor', () => {
         SigninComponent,
         DummyComponent,
         NotFoundComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

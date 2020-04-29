@@ -6,6 +6,7 @@ import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {of} from 'rxjs';
 
@@ -22,6 +23,7 @@ import {DummyComponent} from '../dummy/dummy.component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
 import {Config} from '../model/config';
+import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
 describe('SigninComponent', () => {
@@ -42,6 +44,7 @@ describe('SigninComponent', () => {
           }
         }),
         MatInputModule,
+        MatTooltipModule,
         NgxMatDatetimePickerModule
       ],
       declarations: [
@@ -50,6 +53,7 @@ describe('SigninComponent', () => {
         TaskDetailComponent,
         NotFoundComponent,
         DummyComponent,
+        LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
