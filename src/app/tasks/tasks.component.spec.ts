@@ -95,6 +95,12 @@ describe('TasksComponent', () => {
         status: 'PROCESSED',
         deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
       }));
+      tasks.push(new Task().deserialize({
+        id: 3,
+        title: 'Task 3',
+        status: 'PROCESSED',
+        deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      }));
 
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
@@ -119,8 +125,8 @@ describe('TasksComponent', () => {
         component.formModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
-        expect(component.tasks.length).toEqual(3);
-        expect(component.tasks[2].title).toEqual(taskTitle);
+        expect(component.tasks.length).toEqual(4);
+        expect(component.tasks[3].title).toEqual(taskTitle);
       });
     });
 
@@ -129,7 +135,7 @@ describe('TasksComponent', () => {
         component.formModel.title = ' ';
         component.onTaskFormSubmit();
         fixture.detectChanges();
-        expect(component.tasks.length).toEqual(2);
+        expect(component.tasks.length).toEqual(3);
       });
     });
 
@@ -142,7 +148,7 @@ describe('TasksComponent', () => {
 
       fixture.whenStable().then(() => {
         fixture.detectChanges();
-        expect(component.tasks.length).toEqual(1);
+        expect(component.tasks.length).toEqual(2);
         expect(component.tasks[0].id).toEqual(task2.id);
       });
     }));
@@ -174,9 +180,16 @@ describe('TasksComponent', () => {
     it('should render task deadline', () => {
       const compiled = fixture.debugElement.nativeElement;
       fixture.whenStable().then(() => {
-        const spanContent = compiled.querySelector('.deadline-column span').textContent;
+        const spanContent = compiled.querySelector('.task-2 .deadline-column span').textContent;
         expect(spanContent).not.toBeNull();
         expect(spanContent.trim()).toBe('in a month');
+      });
+    });
+
+    it('should add "color-accent" class to deadline label when task is overdue', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      fixture.whenStable().then(() => {
+        expect(compiled.querySelector('.task-3 .deadline-column span.color-accent')).not.toBeNull();
       });
     });
   });

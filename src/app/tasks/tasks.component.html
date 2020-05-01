@@ -19,7 +19,7 @@
 
   <mat-card-content>
     <mat-list id="task_list">
-      <mat-list-item *ngFor="let task of tasks">
+      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
         <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
         <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row">
@@ -28,7 +28,9 @@
           </div>
 
           <div *ngIf="task.deadline" class="list-column deadline-column">
-            <span [matTooltip]="task.deadline | localizedDate: 'medium'" matTooltipPosition="above">
+            <span [matTooltip]="task.deadline | localizedDate: 'medium'"
+                  [class]="isTaskOverdue(task) ? 'color-accent' : 'color-primary'"
+                  matTooltipPosition="above">
               {{ task.deadline | localizedRelativeDate }}
             </span>
           </div>
