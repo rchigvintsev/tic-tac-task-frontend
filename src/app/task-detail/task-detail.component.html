@@ -51,6 +51,7 @@
           <input matInput
                  name="deadline"
                  [(ngModel)]="taskFormModel.deadline"
+                 [class.color-accent]="taskFormModel.isOverdue()"
                  [ngxMatDatetimePicker]="deadlinePicker"
                  [errorStateMatcher]="errorStateMatchers.get('deadline')"
                  (dateChange)="onDeadlineDateInputChange()"

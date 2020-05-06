@@ -48,4 +48,11 @@ export class Task extends AbstractEntity<Task> {
       && Objects.equals(this.status, other.status)
       && Objects.equals(this.deadline, other.deadline);
   }
+
+  isOverdue(): boolean {
+    if (this.deadline == null) {
+      return false;
+    }
+    return moment().isAfter(this.deadline, 'second');
+  }
 }

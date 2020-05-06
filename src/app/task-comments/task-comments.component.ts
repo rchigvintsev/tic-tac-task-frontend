@@ -31,14 +31,14 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   taskId: number;
   selectedComment: TaskComment;
 
-  constructor(router: Router,
-              translate: TranslateService,
+  constructor(translate: TranslateService,
+              router: Router,
               authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
               private commentService: TaskCommentService,
               private dialog: MatDialog) {
-    super(router, translate, authenticationService, log);
+    super(translate, router, authenticationService, log);
   }
 
   ngOnInit() {

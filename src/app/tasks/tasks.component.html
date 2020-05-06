@@ -29,7 +29,7 @@
 
           <div *ngIf="task.deadline" class="list-column deadline-column">
             <span [matTooltip]="task.deadline | localizedDate: 'medium'"
-                  [class]="isTaskOverdue(task) ? 'color-accent' : 'color-primary'"
+                  [class]="task.isOverdue() ? 'color-accent' : 'color-primary'"
                   matTooltipPosition="above">
               {{ task.deadline | localizedRelativeDate }}
             </span>

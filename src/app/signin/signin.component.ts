@@ -22,8 +22,8 @@ export class SigninComponent extends WebServiceBasedComponent implements OnInit 
   private readonly redirectUri: string;
 
   constructor(
-    router: Router,
     translate: TranslateService,
+    router: Router,
     authenticationService: AuthenticationService,
     log: LogService,
     config: ConfigService,
@@ -32,7 +32,7 @@ export class SigninComponent extends WebServiceBasedComponent implements OnInit 
     private activatedRoute: ActivatedRoute,
     private alertService: AlertService
   ) {
-    super(router, translate, authenticationService, log);
+    super(translate, router, authenticationService, log);
 
     this.config = config;
     this.redirectUri = `${config.selfBaseUrl}/${translate.currentLang}/oauth2/authorization/callback`;

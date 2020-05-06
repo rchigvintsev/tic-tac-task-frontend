@@ -80,7 +80,7 @@ describe('TaskDetailComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadline: moment(Date.now()).utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
@@ -250,6 +250,13 @@ describe('TaskDetailComponent', () => {
       fixture.detectChanges();
       expect(component.taskFormModel.deadline).toBeNull();
       expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should add "color-accent" class to deadline input when task is overdue', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.whenStable().then(() => {
+      expect(compiled.querySelector('form input[name="deadline"].color-accent')).not.toBeNull();
     });
   });
 });

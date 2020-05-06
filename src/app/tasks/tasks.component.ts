@@ -4,8 +4,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import * as moment from 'moment';
-
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
 import {TaskGroup} from '../service/task-group';
@@ -35,7 +33,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
               private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService) {
-    super(router, translate, authenticationService, log);
+    super(translate, router, authenticationService, log);
   }
 
   private static getTitle(taskGroup: TaskGroup): string {
@@ -68,13 +66,6 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
     setTimeout(() => {
       this.completeTask(task);
     }, 300);
-  }
-
-  isTaskOverdue(task: Task) {
-    if (task.deadline == null) {
-      return false;
-    }
-    return moment().isAfter(task.deadline, 'second');
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {

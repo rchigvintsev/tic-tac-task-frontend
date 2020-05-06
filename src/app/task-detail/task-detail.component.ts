@@ -38,15 +38,15 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
 
   private task: Task;
 
-  constructor(router: Router,
-              translate: TranslateService,
+  constructor(translate: TranslateService,
+              router: Router,
               authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
               private dateAdapter: DateAdapter<any>) {
-    super(router, translate, authenticationService, log);
+    super(translate, router, authenticationService, log);
   }
 
   ngOnInit() {

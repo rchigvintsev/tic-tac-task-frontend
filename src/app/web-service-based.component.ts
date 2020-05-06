@@ -9,8 +9,8 @@ import {LogService} from './service/log.service';
 
 @Injectable()
 export class WebServiceBasedComponent {
-  constructor(protected router: Router,
-              protected translate: TranslateService,
+  constructor(public translate: TranslateService,
+              protected router: Router,
               protected authenticationService: AuthenticationService,
               protected log: LogService) {
   }
