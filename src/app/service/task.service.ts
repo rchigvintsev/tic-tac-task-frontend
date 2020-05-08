@@ -45,6 +45,8 @@ export class TaskService {
       url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
     } else if (taskGroup === TaskGroup.SOME_DAY) {
       url = `${this.baseUrl}/processed?deadlineFrom=&deadlineTo=`;
+    } else if (taskGroup === TaskGroup.ALL) {
+      url = `${this.baseUrl}/uncompleted`;
     } else {
       throw new Error(`Unsupported task group: ${taskGroup.value}`);
     }

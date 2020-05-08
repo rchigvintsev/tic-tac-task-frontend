@@ -13,7 +13,6 @@ import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
 import {TranslateHttpLoaderFactory} from '../app.module';
 
-
 describe('TaskGroupsComponent', () => {
   let component: TaskGroupsComponent;
   let fixture: ComponentFixture<TaskGroupsComponent>;

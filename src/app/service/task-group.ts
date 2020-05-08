@@ -4,6 +4,7 @@ export class TaskGroup {
   public static TOMORROW = new TaskGroup('tomorrow');
   public static WEEK = new TaskGroup('week');
   public static SOME_DAY = new TaskGroup('some-day');
+  public static ALL = new TaskGroup('all');
 
   private constructor(public value: string) {
   }
@@ -20,6 +21,8 @@ export class TaskGroup {
         return TaskGroup.WEEK;
       case TaskGroup.SOME_DAY.value:
         return TaskGroup.SOME_DAY;
+      case TaskGroup.ALL.value:
+        return TaskGroup.ALL;
     }
     return null;
   }

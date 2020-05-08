@@ -122,6 +122,23 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should return tasks for "ALL" group', () => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
+
+    const subscription = taskService.getTasks(TaskGroup.ALL).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks);
+
+    return subscription;
+  });
+
   it('should throw error when task group is null', () => {
     expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
   });

@@ -20,7 +20,7 @@ export class TaskGroupsComponent implements OnInit {
 
   private selectedTaskGroup;
 
-  constructor(private translate: TranslateService,
+  constructor(public translate: TranslateService,
               private taskGroupService: TaskGroupService,
               private cdr: ChangeDetectorRef) {
   }

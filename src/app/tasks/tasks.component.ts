@@ -48,6 +48,8 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
         return 'scheduled_for_week';
       case TaskGroup.SOME_DAY:
         return 'scheduled_for_some_day';
+      case TaskGroup.ALL:
+        return 'all_tasks';
     }
     return null;
   }

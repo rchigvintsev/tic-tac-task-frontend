@@ -52,5 +52,14 @@
         <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
       </a>
     </ng-container>
+
+    <mat-divider></mat-divider>
+
+    <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.ALL.value"
+       (click)="onListItemClick(TaskGroup.ALL)"
+       [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.ALL)">
+      <mat-icon mat-list-icon>assignment</mat-icon>
+      <p matLine>{{ 'all_tasks' | translate }}</p>
+    </a>
   </mat-list>
 </mat-nav-list>
