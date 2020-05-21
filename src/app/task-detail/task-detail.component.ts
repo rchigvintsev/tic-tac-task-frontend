@@ -1,10 +1,9 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DateAdapter} from '@angular/material/core';
 import {NgForm} from '@angular/forms';
 
 import {TranslateService} from '@ngx-translate/core';
-import {NgxMatDatetimePicker} from 'ngx-mat-datetime-picker';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
@@ -27,12 +26,12 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   titleElement: ElementRef;
   @ViewChild('taskDetailForm', {read: NgForm})
   taskDetailForm: NgForm;
-  @ViewChild('deadlinePicker')
-  deadlinePickerElement: NgxMatDatetimePicker<any>;
 
   titleEditing = false;
   taskFormModel: Task;
   selectedTaskGroup: TaskGroup;
+  deadlineTime: string;
+  deadlineTimeEnabled = false;
 
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
@@ -57,11 +56,6 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
-  }
-
-  @HostListener('document:mousedown', ['$event'])
-  onMouseDown(event) {
-    this.closeDateTimePickerOnMouseDownOutside(event);
   }
 
   onTitleTextClick() {
@@ -95,9 +89,14 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.selectedTaskGroup = taskGroup;
   }
 
-  private setTaskModel(task) {
+  private setTaskModel(task: Task) {
     this.taskFormModel = task;
     this.task = task.clone();
+    if (task.deadline != null) {
+      this.deadlineTime = task.deadline.getHours() + ':' + task.deadline.getMinutes();
+    } else {
+      this.deadlineTime = '00:00';
+    }
   }
 
   private beginTitleEditing() {
@@ -126,13 +125,6 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
           this.onServiceCallError(response);
         }
       });
-    }
-  }
-
-  private closeDateTimePickerOnMouseDownOutside(event) {
-    const datePickerContent = window.document.getElementsByClassName('mat-datepicker-content')[0];
-    if (datePickerContent && !datePickerContent.contains(event.target)) {
-      this.deadlinePickerElement._cancel();
     }
   }
 

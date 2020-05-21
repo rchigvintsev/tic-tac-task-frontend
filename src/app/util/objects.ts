@@ -6,6 +6,9 @@ export class Objects {
     if (Objects.isNullOrUndefined(v1)) {
       return this.isNullOrUndefined(v2);
     }
+    if (v1 instanceof Date && v2 instanceof Date) {
+      return v1.getTime() === v2.getTime();
+    }
     return v1 === v2;
   }
 

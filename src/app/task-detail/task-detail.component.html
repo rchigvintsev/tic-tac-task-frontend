@@ -46,32 +46,62 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="deadline-form-field">
-        <label>
-          <input matInput
-                 name="deadline"
-                 [(ngModel)]="taskFormModel.deadline"
-                 [class.color-accent]="taskFormModel.isOverdue()"
-                 [ngxMatDatetimePicker]="deadlinePicker"
-                 [errorStateMatcher]="errorStateMatchers.get('deadline')"
-                 (dateChange)="onDeadlineDateInputChange()"
-                 placeholder="{{ 'deadline' | translate }}"
-                 disabled>
-        </label>
-        <button mat-button
-                *ngIf="taskFormModel.deadline"
-                matSuffix
-                mat-icon-button
-                aria-label="Clear deadline"
-                (click)="onClearDeadlineButtonClick()">
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #deadlinePicker disabled="false"></ngx-mat-datetime-picker>
-        <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
-          {{ getFieldErrorMessage('deadline') }}
-        </mat-error>
-      </mat-form-field>
+      <div class="deadline-container">
+        <mat-form-field class="deadline-date-form-field">
+          <label>
+            <input matInput
+                   name="deadline"
+                   [(ngModel)]="taskFormModel.deadline"
+                   [class.color-warn]="taskFormModel.isOverdue()"
+                   [matDatepicker]="deadlineDatepicker"
+                   [errorStateMatcher]="errorStateMatchers.get('deadline')"
+                   (dateChange)="onDeadlineDateInputChange()"
+                   placeholder="{{ 'deadline' | translate }}"
+                   readonly>
+          </label>
+          <button mat-button
+                  *ngIf="taskFormModel.deadline"
+                  matSuffix
+                  mat-icon-button
+                  aria-label="Clear deadline"
+                  (click)="onClearDeadlineButtonClick()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-datepicker-toggle matSuffix [for]="deadlineDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #deadlineDatepicker></mat-datepicker>
+          <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
+            {{ getFieldErrorMessage('deadline') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox" [(ngModel)]="deadlineTimeEnabled">
+          {{ 'time' | translate }}
+        </mat-checkbox>
+
+        <mat-form-field class="deadline-time-form-field">
+          <label>
+            <input matInput
+                   name="deadlineTime"
+                   [ngxTimepicker]="deadlineTimepicker"
+                   [(ngModel)]="deadlineTime"
+                   [format]="24"
+                   [disabled]="!deadlineTimeEnabled"
+                   readonly>
+          </label>
+          <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">
+            <mat-icon ngxMaterialTimepickerToggleIcon>access_time</mat-icon>
+          </ngx-material-timepicker-toggle>
+          <ngx-material-timepicker #deadlineTimepicker
+                                   [cancelBtnTmpl]="deadlineTimeCancelBtn"
+                                   [confirmBtnTmpl]="deadlineTimeConfirmBtn"></ngx-material-timepicker>
+          <ng-template #deadlineTimeCancelBtn>
+            <button mat-raised-button color="primary" class="cancel-button">{{ 'cancel' | translate }}</button>
+          </ng-template>
+          <ng-template #deadlineTimeConfirmBtn>
+            <button mat-raised-button class="ok-button">OK</button>
+          </ng-template>
+        </mat-form-field>
+      </div>
     </form>
   </mat-card-content>
 

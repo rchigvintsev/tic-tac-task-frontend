@@ -5,17 +5,18 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatDialog, MatDialogModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import * as moment from 'moment';
 
 import {of} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import {SigninComponent} from '../signin/signin.component';
 import {TasksComponent} from '../tasks/tasks.component';
@@ -59,7 +60,8 @@ describe('TaskCommentsComponent', () => {
         }),
         MatInputModule,
         MatTooltipModule,
-        NgxMatDatetimePickerModule,
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule,
         BrowserAnimationsModule
       ],
       declarations: [

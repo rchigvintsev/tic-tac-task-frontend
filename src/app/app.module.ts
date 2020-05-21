@@ -25,7 +25,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {CookieService} from 'ngx-cookie-service';
-import {NgxMatDatetimePickerModule, NgxMatTimepickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -93,10 +93,9 @@ registerLocaleData(localeRu, 'ru');
     MatDatepickerModule,
     MatSidenavModule,
     MatTooltipModule,
-    NgxMatTimepickerModule,
-    NgxMatDatetimePickerModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
+    NgxMaterialTimepickerModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

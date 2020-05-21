@@ -5,14 +5,15 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {of, throwError} from 'rxjs';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import * as moment from 'moment';
 
@@ -51,7 +52,8 @@ describe('TasksComponent', () => {
         }),
         MatInputModule,
         MatTooltipModule,
-        NgxMatDatetimePickerModule,
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule,
         BrowserAnimationsModule
       ],
       declarations: [
@@ -186,10 +188,10 @@ describe('TasksComponent', () => {
       });
     });
 
-    it('should add "color-accent" class to deadline label when task is overdue', () => {
+    it('should add "color-warn" class to deadline label when task is overdue', () => {
       const compiled = fixture.debugElement.nativeElement;
       fixture.whenStable().then(() => {
-        expect(compiled.querySelector('.task-3 .deadline-column span.color-accent')).not.toBeNull();
+        expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
       });
     });
   });

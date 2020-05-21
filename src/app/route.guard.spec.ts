@@ -7,9 +7,10 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import * as moment from 'moment';
 
@@ -50,7 +51,8 @@ describe('RouteGuard', () => {
         }),
         MatInputModule,
         MatTooltipModule,
-        NgxMatDatetimePickerModule
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule
       ],
       declarations: [
         TasksComponent,

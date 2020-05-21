@@ -25,5 +25,6 @@
   "scheduled_for_tomorrow": "На завтра",
   "scheduled_for_week": "На неделю",
   "scheduled_for_some_day": "На когда-нибудь",
-  "all_tasks": "Все задачи"
+  "all_tasks": "Все задачи",
+  "time": "Время"
 }

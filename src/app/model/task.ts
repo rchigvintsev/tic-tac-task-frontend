@@ -37,7 +37,7 @@ export class Task extends AbstractEntity<Task> {
     clone.title = this.title;
     clone.description = this.description;
     clone.status = this.status;
-    clone.deadline = this.deadline;
+    clone.deadline = this.deadline != null ? new Date(this.deadline.getTime()) : null;
     return clone;
   }
 

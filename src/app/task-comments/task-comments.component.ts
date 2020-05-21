@@ -71,7 +71,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   }
 
   onEditCommentButtonClick(comment: TaskComment) {
-    this.setEditCommentFormModel(new TaskComment(comment));
+    this.setEditCommentFormModel(comment.clone());
     this.editCommentFormEnabled = true;
   }
 

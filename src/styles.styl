@@ -64,4 +64,30 @@ body {
       max-height: none;
     }
   }
+
+  .timepicker {
+    .timepicker__header {
+      background-color: color-primary !important;
+    }
+
+    .timepicker__body {
+      .clock-face__clock-hand {
+        background-color: color-primary !important;
+
+        &::after {
+          background-color: color-primary !important;
+        }
+
+        &::before {
+          border-color: color-primary !important;
+        }
+      }
+
+      .clock-face__number {
+        > span.active {
+          background-color: color-primary !important;
+        }
+      }
+    }
+  }
 }

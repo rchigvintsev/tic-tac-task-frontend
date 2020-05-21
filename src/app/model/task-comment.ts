@@ -9,17 +9,6 @@ export class TaskComment extends AbstractEntity<TaskComment> {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(other: TaskComment = null) {
-    super();
-    if (other) {
-      this.id = other.id;
-      this.taskId = other.taskId;
-      this.commentText = other.commentText;
-      this.createdAt = other.createdAt;
-      this.updatedAt = other.updatedAt;
-    }
-  }
-
   deserialize(input: any): TaskComment {
     this.id = input.id;
     this.taskId = input.taskId;
@@ -38,8 +27,8 @@ export class TaskComment extends AbstractEntity<TaskComment> {
     clone.id = this.id;
     clone.taskId = this.taskId;
     clone.commentText = this.commentText;
-    clone.createdAt = this.createdAt;
-    clone.updatedAt = this.updatedAt;
+    clone.createdAt = this.createdAt != null ? new Date(this.createdAt.getTime()) : null;
+    clone.updatedAt = this.updatedAt != null ? new Date(this.updatedAt.getTime()) : null;
     return clone;
   }
 }

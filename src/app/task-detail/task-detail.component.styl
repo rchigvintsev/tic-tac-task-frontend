@@ -19,8 +19,43 @@ mat-card {
 
   .mat-card-content {
     form {
-      .deadline-form-field {
-        max-width: 200px;
+      .deadline-container {
+        display: flex;
+        flex-direction: row;
+
+        .deadline-time-checkbox {
+          padding: 1.1em 0;
+          color: rgba(0, 0, 0, 0.54);
+          margin-left: 16px;
+        }
+
+        .deadline-date-form-field {
+          max-width: 160px;
+        }
+
+        .deadline-time-form-field {
+          max-width: 70px;
+          margin-left: 8px;
+
+          ngx-material-timepicker-toggle {
+            position: relative;
+            bottom: -4px;
+
+            mat-icon {
+              color: rgba(0, 0, 0, .54);
+              margin-top: -2px;
+              height: 20px;
+            }
+          }
+
+          button {
+            min-width: 82px;
+          }
+
+          .cancel-button {
+            margin-right: 8px;
+          }
+        }
       }
     }
   }

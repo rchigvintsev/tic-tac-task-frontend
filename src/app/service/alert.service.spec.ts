@@ -6,11 +6,12 @@ import {NavigationStart, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {Subject} from 'rxjs';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import {AlertService} from './alert.service';
 import {TasksComponent} from '../tasks/tasks.component';
@@ -41,7 +42,8 @@ describe('AlertService', () => {
         }),
         MatInputModule,
         MatTooltipModule,
-        NgxMatDatetimePickerModule
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule
       ],
       declarations: [
         TasksComponent,

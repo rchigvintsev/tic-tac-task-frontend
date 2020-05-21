@@ -6,9 +6,10 @@ import {FormsModule} from '@angular/forms';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {NgxMatDatetimePickerModule} from 'ngx-mat-datetime-picker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import {TranslateHttpLoaderFactory} from '../../app.module';
 import {NotFoundComponent} from './not-found.component';
@@ -39,7 +40,8 @@ describe('NotFoundComponent', () => {
         }),
         MatInputModule,
         MatTooltipModule,
-        NgxMatDatetimePickerModule
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule
       ],
       declarations: [
         NotFoundComponent,
