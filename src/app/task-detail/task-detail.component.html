@@ -75,7 +75,6 @@
         </mat-form-field>
 
         <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox" [(ngModel)]="deadlineTimeEnabled">
-          {{ 'time' | translate }}
         </mat-checkbox>
 
         <mat-form-field class="deadline-time-form-field">
@@ -86,6 +85,7 @@
                    [(ngModel)]="deadlineTime"
                    [format]="24"
                    [disabled]="!deadlineTimeEnabled"
+                   placeholder="{{ 'time' | translate }}"
                    readonly>
           </label>
           <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">

@@ -95,7 +95,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     if (task.deadline != null) {
       this.deadlineTime = task.deadline.getHours() + ':' + task.deadline.getMinutes();
     } else {
-      this.deadlineTime = '00:00';
+      this.deadlineTime = '';
     }
   }
 
