@@ -26,5 +26,8 @@
   "scheduled_for_week": "Week",
   "scheduled_for_some_day": "Some day",
   "all_tasks": "All tasks",
-  "time": "Time"
+  "time": "Time",
+  "yesterday": "Yesterday",
+  "today": "Today",
+  "tomorrow": "Tomorrow"
 }
