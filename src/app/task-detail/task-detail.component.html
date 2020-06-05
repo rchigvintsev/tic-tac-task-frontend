@@ -50,27 +50,27 @@
         <mat-form-field class="deadline-date-form-field">
           <label>
             <input matInput
-                   name="deadline"
-                   [(ngModel)]="taskFormModel.deadline"
+                   name="deadlineDate"
+                   [(ngModel)]="taskFormModel.deadlineDate"
                    [class.color-warn]="taskFormModel.isOverdue()"
                    [matDatepicker]="deadlineDatepicker"
-                   [errorStateMatcher]="errorStateMatchers.get('deadline')"
+                   [errorStateMatcher]="errorStateMatchers.get('deadlineDate')"
                    (dateChange)="onDeadlineDateInputChange()"
                    placeholder="{{ 'deadline' | translate }}"
                    readonly>
           </label>
           <button mat-button
-                  *ngIf="taskFormModel.deadline"
+                  *ngIf="taskFormModel.deadlineDate"
                   matSuffix
                   mat-icon-button
-                  aria-label="Clear deadline"
-                  (click)="onClearDeadlineButtonClick()">
+                  aria-label="Clear deadline date"
+                  (click)="onClearDeadlineDateButtonClick()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-datepicker-toggle matSuffix [for]="deadlineDatepicker"></mat-datepicker-toggle>
           <mat-datepicker #deadlineDatepicker></mat-datepicker>
-          <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
-            {{ getFieldErrorMessage('deadline') }}
+          <mat-error *ngIf="errorStateMatchers.get('deadlineDate').errorState">
+            {{ getFieldErrorMessage('deadlineDate') }}
           </mat-error>
         </mat-form-field>
 

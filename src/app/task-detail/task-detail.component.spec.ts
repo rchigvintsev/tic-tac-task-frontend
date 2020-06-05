@@ -87,7 +87,7 @@ describe('TaskDetailComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE)
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
@@ -174,7 +174,7 @@ describe('TaskDetailComponent', () => {
   it('should save task on deadline date input change', () => {
     const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
       fixture.detectChanges();
       expect(taskService.updateTask).toHaveBeenCalled();
@@ -184,10 +184,10 @@ describe('TaskDetailComponent', () => {
   it('should display server validation error', () => {
     const taskService = fixture.debugElement.injector.get(TaskService);
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {fieldErrors: {deadline: 'Must be valid'}}});
+      return throwError({status: 400, error: {fieldErrors: {deadlineDate: 'Must be valid'}}});
     });
     fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
       fixture.detectChanges();
 
@@ -204,7 +204,7 @@ describe('TaskDetailComponent', () => {
       return throwError({status: 400, error: {fieldErrors: {absent: 'Must be present'}}});
     });
     fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
       fixture.detectChanges();
 
@@ -232,9 +232,9 @@ describe('TaskDetailComponent', () => {
   it('should save task on deadline date input clear', () => {
     const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
-      component.onClearDeadlineButtonClick();
+      component.onClearDeadlineDateButtonClick();
       fixture.detectChanges();
-      expect(component.taskFormModel.deadline).toBeNull();
+      expect(component.taskFormModel.deadlineDate).toBeNull();
       expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
@@ -242,7 +242,7 @@ describe('TaskDetailComponent', () => {
   it('should add "color-warn" class to deadline input when task is overdue', () => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.whenStable().then(() => {
-      expect(compiled.querySelector('form input[name="deadline"].color-warn')).not.toBeNull();
+      expect(compiled.querySelector('form input[name="deadlineDate"].color-warn')).not.toBeNull();
     });
   });
 });

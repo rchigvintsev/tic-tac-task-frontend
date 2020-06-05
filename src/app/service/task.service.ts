@@ -34,17 +34,17 @@ export class TaskService {
     if (taskGroup === TaskGroup.INBOX) {
       url = `${this.baseUrl}/unprocessed`;
     } else if (taskGroup === TaskGroup.TODAY) {
-      const deadlineTo = moment().endOf('d').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
+      const deadlineDateTo = moment().startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      url = `${this.baseUrl}/processed?deadlineDateTo=${deadlineDateTo}`;
     } else if (taskGroup === TaskGroup.TOMORROW) {
-      const deadlineFrom = moment().add(1, 'd').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      const deadlineTo = moment().add(1, 'd').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      url = `${this.baseUrl}/processed?deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+      const deadlineDateFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      const deadlineDateTo = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      url = `${this.baseUrl}/processed?deadlineDateFrom=${deadlineDateFrom}&deadlineDateTo=${deadlineDateTo}`;
     } else if (taskGroup === TaskGroup.WEEK) {
-      const deadlineTo = moment().add(1, 'w').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-      url = `${this.baseUrl}/processed?deadlineTo=${deadlineTo}`;
+      const deadlineDateTo = moment().add(1, 'week').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      url = `${this.baseUrl}/processed?deadlineDateTo=${deadlineDateTo}`;
     } else if (taskGroup === TaskGroup.SOME_DAY) {
-      url = `${this.baseUrl}/processed?deadlineFrom=&deadlineTo=`;
+      url = `${this.baseUrl}/processed?deadlineDateFrom=&deadlineDateTo=`;
     } else if (taskGroup === TaskGroup.ALL) {
       url = `${this.baseUrl}/uncompleted`;
     } else {

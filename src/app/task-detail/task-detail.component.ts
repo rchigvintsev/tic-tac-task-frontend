@@ -55,7 +55,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.dateAdapter.setLocale(this.translate.currentLang);
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
-    this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
+    this.errorStateMatchers.set('deadlineDate', new ServerErrorStateMatcher());
   }
 
   onTitleTextClick() {
@@ -74,9 +74,9 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.saveTask();
   }
 
-  onClearDeadlineButtonClick() {
-    this.errorStateMatchers.get('deadline').errorState = false;
-    this.taskFormModel.deadline = null;
+  onClearDeadlineDateButtonClick() {
+    this.errorStateMatchers.get('deadlineDate').errorState = false;
+    this.taskFormModel.deadlineDate = null;
     this.saveTask();
   }
 
@@ -92,11 +92,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   private setTaskModel(task: Task) {
     this.taskFormModel = task;
     this.task = task.clone();
-    if (task.deadline != null) {
-      this.deadlineTime = task.deadline.getHours() + ':' + task.deadline.getMinutes();
-    } else {
-      this.deadlineTime = '';
-    }
+    this.deadlineTime = '';
   }
 
   private beginTitleEditing() {

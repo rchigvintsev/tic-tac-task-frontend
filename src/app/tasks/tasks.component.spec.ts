@@ -95,13 +95,13 @@ describe('TasksComponent', () => {
         id: 2,
         title: 'Task 2',
         status: 'PROCESSED',
-        deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+        deadlineDate: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATE)
       }));
       tasks.push(new Task().deserialize({
         id: 3,
         title: 'Task 3',
         status: 'PROCESSED',
-        deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+        deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE)
       }));
 
       const taskService = fixture.debugElement.injector.get(TaskService);
