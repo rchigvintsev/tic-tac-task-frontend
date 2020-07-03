@@ -21,39 +21,52 @@ mat-card {
     form {
       .deadline-container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
 
-        .deadline-time-checkbox {
-          padding: 1.1em 0;
-          color: rgba(0, 0, 0, 0.54);
-          margin-left: 16px;
-        }
+        .deadline-form-field-container {
+          display: flex;
+          flex-direction: row;
 
-        .deadline-date-form-field {
-          max-width: 160px;
-        }
+          .deadline-time-checkbox {
+            padding: 1.1em 0;
+            color: rgba(0, 0, 0, 0.54);
+            margin-left: 16px;
+          }
 
-        .deadline-time-form-field {
-          max-width: 80px;
-          margin-left: 8px;
+          .deadline-date-form-field {
+            max-width: 160px;
+          }
 
-          ngx-material-timepicker-toggle {
-            position: relative;
-            bottom: -4px;
+          .deadline-time-form-field {
+            max-width: 80px;
+            margin-left: 8px;
 
-            mat-icon {
-              color: rgba(0, 0, 0, .54);
-              margin-top: -2px;
-              height: 20px;
+            ngx-material-timepicker-toggle {
+              position: relative;
+              bottom: -4px;
+
+              mat-icon {
+                color: rgba(0, 0, 0, .54);
+                margin-top: -2px;
+                height: 20px;
+              }
+            }
+
+            button {
+              min-width: 82px;
+            }
+
+            .cancel-button {
+              margin-right: 8px;
             }
           }
+        }
 
-          button {
-            min-width: 82px;
-          }
+        .deadline-error-container {
+          margin-top: -15px;
 
-          .cancel-button {
-            margin-right: 8px;
+          mat-error {
+            font-size: 75%;
           }
         }
       }

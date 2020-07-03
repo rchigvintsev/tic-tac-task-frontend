@@ -10,7 +10,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
@@ -87,7 +87,8 @@ describe('TaskDetailComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE)
+      deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE),
+      deadlineTime: moment('1970-01-01 12:00').format(moment.HTML5_FMT.TIME)
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
@@ -192,7 +193,7 @@ describe('TaskDetailComponent', () => {
       fixture.detectChanges();
 
       const compiled = fixture.debugElement.nativeElement;
-      const deadlineError = compiled.querySelector('.deadline-date-form-field mat-error');
+      const deadlineError = compiled.querySelector('.deadline-error-container mat-error');
       expect(deadlineError).toBeTruthy();
       expect(deadlineError.textContent.trim()).toEqual('Must be valid');
     });
@@ -239,10 +240,41 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should add "color-warn" class to deadline input when task is overdue', () => {
+  it('should save task on deadline time enabled checkbox change', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+
+    const checkboxChangeEvent = new MatCheckboxChange();
+    checkboxChangeEvent.checked = true;
+
+    fixture.whenStable().then(() => {
+      component.deadlineTime = '11:35';
+      component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on deadline time change', () => {
+    const taskService = fixture.debugElement.injector.get(TaskService);
+    fixture.whenStable().then(() => {
+      component.onDeadlineTimeSet('11:35');
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should add "color-warn" class to deadline date input when task is overdue', () => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.whenStable().then(() => {
       expect(compiled.querySelector('form input[name="deadlineDate"].color-warn')).not.toBeNull();
+    });
+  });
+
+  it('should add "color-warn" class to deadline time input when task is overdue', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(compiled.querySelector('form input[name="deadlineTime"].color-warn')).not.toBeNull();
     });
   });
 });

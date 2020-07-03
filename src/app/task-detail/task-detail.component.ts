@@ -1,9 +1,12 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DateAdapter} from '@angular/material/core';
 import {NgForm} from '@angular/forms';
+import {DateAdapter} from '@angular/material/core';
+import {MatCheckboxChange} from '@angular/material/checkbox';
 
 import {TranslateService} from '@ngx-translate/core';
+
+import * as moment from 'moment';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
@@ -55,7 +58,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.dateAdapter.setLocale(this.translate.currentLang);
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
-    this.errorStateMatchers.set('deadlineDate', new ServerErrorStateMatcher());
+    this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
   }
 
   onTitleTextClick() {
@@ -75,14 +78,33 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   }
 
   onClearDeadlineDateButtonClick() {
-    this.errorStateMatchers.get('deadlineDate').errorState = false;
+    this.errorStateMatchers.get('deadline').errorState = false;
     this.taskFormModel.deadlineDate = null;
     this.saveTask();
   }
 
-  getFieldErrorMessage(fieldName: string): string {
-    const control = this.taskDetailForm.controls[fieldName];
-    return control ? control.getError('valid') : null;
+  onDeadlineTimeEnabledCheckboxChange(event: MatCheckboxChange) {
+    this.deadlineTimeEnabled = event.checked;
+    this.errorStateMatchers.get('deadline').errorState = false;
+    this.saveTask();
+  }
+
+  onDeadlineTimeSet(time) {
+    this.deadlineTime = time;
+    this.saveTask();
+  }
+
+  getFieldErrorMessage(...fieldNames: string[]): string {
+    for (const fieldName of fieldNames) {
+      const control = this.taskDetailForm.controls[fieldName];
+      if (control) {
+        const message = control.getError('valid');
+        if (message) {
+          return message;
+        }
+      }
+    }
+    return null;
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
@@ -92,7 +114,14 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   private setTaskModel(task: Task) {
     this.taskFormModel = task;
     this.task = task.clone();
-    this.deadlineTime = '';
+
+    if (task.deadlineTime) {
+      this.deadlineTime = moment(task.deadlineTime).format(moment.HTML5_FMT.TIME);
+      this.deadlineTimeEnabled = true;
+    } else {
+      this.deadlineTime = '';
+      this.deadlineTimeEnabled = false;
+    }
   }
 
   private beginTitleEditing() {
@@ -109,6 +138,13 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     if (Strings.isBlank(this.taskFormModel.title)) {
       this.taskFormModel.title = this.task.title;
     }
+
+    if (this.deadlineTimeEnabled && !Strings.isBlank(this.deadlineTime)) {
+      this.taskFormModel.deadlineTime = moment(this.deadlineTime, moment.HTML5_FMT.TIME).toDate();
+    } else {
+      this.taskFormModel.deadlineTime = null;
+    }
+
     if (!this.taskFormModel.equals(this.task)) {
       this.taskService.updateTask(this.taskFormModel).subscribe(task => {
         this.clearErrors();
@@ -132,7 +168,11 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
           const message = response.error.fieldErrors[fieldName];
           this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
           control.setErrors({valid: message});
-          this.errorStateMatchers.get(fieldName).errorState = true;
+          if (fieldName === 'deadlineDate' || fieldName === 'deadlineTime') {
+            this.errorStateMatchers.get('deadline').errorState = true;
+          } else {
+            this.errorStateMatchers.get(fieldName).errorState = true;
+          }
         } else {
           this.log.error(`Field ${fieldName} is not found`);
         }
