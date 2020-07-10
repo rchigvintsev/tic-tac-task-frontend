@@ -29,6 +29,7 @@ import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
+import {TaskStatus} from '../model/task-status';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
@@ -68,7 +69,7 @@ describe('TasksComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
       ]
     }).compileComponents();
 
@@ -122,6 +123,7 @@ describe('TasksComponent', () => {
     });
 
     it('should create task', () => {
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
       const taskTitle = 'New task';
       fixture.whenStable().then(() => {
         component.formModel.title = taskTitle;
@@ -129,6 +131,64 @@ describe('TasksComponent', () => {
         fixture.detectChanges();
         expect(component.tasks.length).toEqual(4);
         expect(component.tasks[3].title).toEqual(taskTitle);
+      });
+    });
+
+    it('should create processed task scheduled for today when "TODAY" group is selected', () => {
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
+      const taskTitle = 'For today';
+      fixture.whenStable().then(() => {
+        component.formModel.title = taskTitle;
+        component.onTaskFormSubmit();
+        fixture.detectChanges();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        expect(component.tasks[3].deadlineDate).toEqual(today);
+        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
+      });
+    });
+
+    it('should create processed task scheduled for today when "WEEK" group is selected', () => {
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
+      const taskTitle = 'For today';
+      fixture.whenStable().then(() => {
+        component.formModel.title = taskTitle;
+        component.onTaskFormSubmit();
+        fixture.detectChanges();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        expect(component.tasks[3].deadlineDate).toEqual(today);
+        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
+      });
+    });
+
+    it('should create processed task scheduled for tomorrow when "TOMORROW" group is selected', () => {
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
+      const taskTitle = 'For tomorrow';
+      fixture.whenStable().then(() => {
+        component.formModel.title = taskTitle;
+        component.onTaskFormSubmit();
+        fixture.detectChanges();
+
+        const tomorrow = moment().add(1, 'day').toDate();
+        tomorrow.setHours(0, 0, 0, 0);
+        expect(component.tasks[3].deadlineDate).toEqual(tomorrow);
+        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
+      });
+    });
+
+    it('should create unscheduled processed task when "SOME_DAY" group is selected', () => {
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
+      const taskTitle = 'For some day';
+      fixture.whenStable().then(() => {
+        component.formModel.title = taskTitle;
+        component.onTaskFormSubmit();
+        fixture.detectChanges();
+
+        expect(component.tasks[3].deadlineDate).not.toBeDefined();
+        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
       });
     });
 

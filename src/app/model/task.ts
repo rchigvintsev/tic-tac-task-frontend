@@ -24,7 +24,7 @@ export class Task extends AbstractEntity<Task> {
         .toDate();
     }
     if (input.deadlineTime) {
-      this.deadlineTime = moment.utc(input.deadlineTime, moment.HTML5_FMT.TIME).toDate();
+      this.deadlineTime = moment(input.deadlineTime, moment.HTML5_FMT.TIME).toDate();
     }
     return this;
   }

@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
+import * as moment from 'moment';
+
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
 import {TaskGroup} from '../service/task-group';
@@ -12,6 +14,7 @@ import {TaskService} from '../service/task.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {Strings} from '../util/strings';
+import {TaskStatus} from '../model/task-status';
 
 @Component({
   selector: 'app-tasks',
@@ -22,9 +25,11 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('taskForm')
   taskForm: NgForm;
 
+  title: string;
   formModel = new Task();
   tasks: Array<Task>;
-  title: string;
+
+  private taskGroup: TaskGroup;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -54,6 +59,26 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
     return null;
   }
 
+  private static getDeadlineDate(taskGroup: TaskGroup): Date {
+    if (taskGroup === TaskGroup.TODAY || taskGroup === TaskGroup.WEEK) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    }
+
+    if (taskGroup === TaskGroup.TOMORROW) {
+      const tomorrow = moment().add(1, 'day').toDate();
+      tomorrow.setHours(0, 0, 0, 0);
+      return tomorrow;
+    }
+
+    return null;
+  }
+
+  private static getTaskStatus(taskGroup: TaskGroup): string {
+    return taskGroup === TaskGroup.INBOX ? TaskStatus.UNPROCESSED : TaskStatus.PROCESSED;
+  }
+
   ngOnInit() {
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
@@ -71,6 +96,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
+    this.taskGroup = taskGroup;
     if (taskGroup != null) {
       this.taskService.getTasks(taskGroup).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
       this.title = TasksComponent.getTitle(taskGroup);
@@ -88,6 +114,9 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
 
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
+      this.formModel.deadlineDate = TasksComponent.getDeadlineDate(this.taskGroup);
+      this.formModel.status = TasksComponent.getTaskStatus(this.taskGroup);
+
       this.taskService.createTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
         this.taskForm.resetForm();
