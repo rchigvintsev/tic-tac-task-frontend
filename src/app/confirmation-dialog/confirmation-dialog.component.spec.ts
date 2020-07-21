@@ -1,14 +1,10 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {By} from '@angular/platform-browser';
 
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-
-import {TranslateHttpLoaderFactory} from '../app.module';
 import {ConfirmationDialogComponent} from './confirmation-dialog.component';
+import {ComponentTestSupport} from '../test/component-test-support';
 
 class MatDialogRefMock {
   // noinspection JSUnusedGlobalSymbols
@@ -22,17 +18,8 @@ describe('ConfirmationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
-      ],
-      declarations: [ConfirmationDialogComponent],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialogRef, useClass: MatDialogRefMock},

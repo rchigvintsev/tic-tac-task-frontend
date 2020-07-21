@@ -1,18 +1,14 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {MatMenuModule} from '@angular/material/menu';
 import {NavigationEnd, Router} from '@angular/router';
 
 import {of} from 'rxjs';
-import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslateService} from '@ngx-translate/core';
 
 import {AppComponent} from './app.component';
-import {TranslateHttpLoaderFactory} from './app.module';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
+import {ComponentTestSupport} from './test/component-test-support';
 
 const CURRENT_LANG = 'ru';
 
@@ -24,19 +20,8 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatMenuModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
-      ],
-      declarations: [AppComponent],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

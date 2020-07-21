@@ -1,17 +1,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatListModule} from '@angular/material/list';
-
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {TaskGroupsComponent} from './task-groups.component';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
-import {TranslateHttpLoaderFactory} from '../app.module';
+import {ComponentTestSupport} from '../test/component-test-support';
 
 describe('TaskGroupsComponent', () => {
   let component: TaskGroupsComponent;
@@ -19,21 +11,8 @@ describe('TaskGroupsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatDividerModule,
-        MatListModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
-      ],
-      declarations: [TaskGroupsComponent],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       providers: [
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
       ]

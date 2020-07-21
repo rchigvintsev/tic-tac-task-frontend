@@ -1,31 +1,16 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {FormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {of} from 'rxjs';
 
-import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {TranslateService} from '@ngx-translate/core';
 
-import {TranslateHttpLoaderFactory} from '../app.module';
-import {routes} from '../app-routing.module';
 import {SigninComponent} from './signin.component';
-import {TasksComponent} from '../tasks/tasks.component';
-import {TaskDetailComponent} from '../task-detail/task-detail.component';
-import {NotFoundComponent} from '../error/not-found/not-found.component';
-import {DummyComponent} from '../dummy/dummy.component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
 import {Config} from '../model/config';
-import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
-import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
+import {ComponentTestSupport} from '../test/component-test-support';
 
 describe('SigninComponent', () => {
   let component: SigninComponent;
@@ -33,31 +18,8 @@ describe('SigninComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes(routes),
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        }),
-        MatInputModule,
-        MatTooltipModule,
-        MatDatepickerModule,
-        NgxMaterialTimepickerModule
-      ],
-      declarations: [
-        SigninComponent,
-        TasksComponent,
-        TaskDetailComponent,
-        NotFoundComponent,
-        DummyComponent,
-        LocalizedDatePipe,
-        LocalizedRelativeDatePipe
-      ],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

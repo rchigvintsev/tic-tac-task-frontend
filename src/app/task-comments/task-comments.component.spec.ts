@@ -1,36 +1,16 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatDialog, MatDialogModule} from '@angular/material';
-import {MatInputModule} from '@angular/material/input';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDialog} from '@angular/material';
 
 import * as moment from 'moment';
 
 import {of} from 'rxjs';
-
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
-
-import {SigninComponent} from '../signin/signin.component';
-import {TasksComponent} from '../tasks/tasks.component';
-import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments.component';
-import {NotFoundComponent} from '../error/not-found/not-found.component';
-import {DummyComponent} from '../dummy/dummy.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {ConfigService} from '../service/config.service';
-import {routes} from '../app-routing.module';
-import {TranslateHttpLoaderFactory} from '../app.module';
-import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
-import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
+import {ComponentTestSupport} from '../test/component-test-support';
 
 class MatDialogMock {
   open() {
@@ -46,34 +26,8 @@ describe('TaskCommentsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        MatDialogModule,
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes(routes),
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        }),
-        MatInputModule,
-        MatTooltipModule,
-        MatDatepickerModule,
-        NgxMaterialTimepickerModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [
-        SigninComponent,
-        TasksComponent,
-        TaskDetailComponent,
-        TaskCommentsComponent,
-        NotFoundComponent,
-        DummyComponent,
-        LocalizedDatePipe,
-        LocalizedRelativeDatePipe
-      ],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},

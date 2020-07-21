@@ -1,39 +1,20 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterTestingModule} from '@angular/router/testing';
-import {MatNativeDateModule} from '@angular/material/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
-
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {MatCheckboxChange} from '@angular/material/checkbox';
 
 import {of, throwError} from 'rxjs';
 
 import * as moment from 'moment';
-
-import {TranslateHttpLoaderFactory} from '../app.module';
-import {routes} from '../app-routing.module';
-import {TasksComponent} from '../tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail.component';
-import {SigninComponent} from '../signin/signin.component';
-import {NotFoundComponent} from '../error/not-found/not-found.component';
-import {DummyComponent} from '../dummy/dummy.component';
 import {Task} from '../model/task';
 import {TaskService} from '../service/task.service';
 import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskGroup} from '../service/task-group';
-import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
-import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
+import {ComponentTestSupport} from '../test/component-test-support';
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -41,34 +22,8 @@ describe('TaskDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        FormsModule,
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes(routes),
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: TranslateHttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        }),
-        MatInputModule,
-        MatTooltipModule,
-        MatCheckboxModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        NgxMaterialTimepickerModule
-      ],
-      declarations: [
-        SigninComponent,
-        TasksComponent,
-        TaskDetailComponent,
-        NotFoundComponent,
-        DummyComponent,
-        LocalizedDatePipe,
-        LocalizedRelativeDatePipe
-      ],
+      imports: ComponentTestSupport.IMPORTS,
+      declarations: ComponentTestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
