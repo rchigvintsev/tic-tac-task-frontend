@@ -15,6 +15,8 @@ import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
 import {TaskStatus} from '../model/task-status';
 import {ComponentTestSupport} from '../test/component-test-support';
+import {PageRequest} from '../service/page-request';
+import any = jasmine.any;
 
 describe('TasksComponent', () => {
   let component: TasksComponent;
@@ -45,6 +47,7 @@ describe('TasksComponent', () => {
 
   describe('normally', () => {
     let taskGroupService: TaskGroupService;
+    let taskService: TaskService;
 
     beforeEach(() => {
       fixture = TestBed.createComponent(TasksComponent);
@@ -64,7 +67,7 @@ describe('TasksComponent', () => {
         deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE)
       }));
 
-      const taskService = fixture.debugElement.injector.get(TaskService);
+      taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
@@ -211,6 +214,21 @@ describe('TasksComponent', () => {
       const compiled = fixture.debugElement.nativeElement;
       fixture.whenStable().then(() => {
         expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
+      });
+    });
+
+    it('should load next task page on task list scroll', () => {
+      fixture.whenStable().then(() => {
+        component.onTaskListScroll();
+        expect(taskService.getTasks).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
+      });
+    });
+
+    it('should start loading of tasks from first page when task group changed', () => {
+      fixture.whenStable().then(() => {
+        component.onTaskListScroll();
+        taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
+        expect(taskService.getTasks).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
       });
     });
   });

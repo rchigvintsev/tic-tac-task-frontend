@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import {Task} from '../model/task';
 import {ConfigService} from './config.service';
 import {TaskGroup} from './task-group';
+import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};
 const jsonContentOptions = Object.assign({
@@ -25,31 +26,40 @@ export class TaskService {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
   }
 
-  getTasks(taskGroup: TaskGroup) {
+  getTasks(taskGroup: TaskGroup, pageable: PageRequest = new PageRequest()) {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
 
-    let url;
+    let path;
+    let params = '';
+
     if (taskGroup === TaskGroup.INBOX) {
-      url = `${this.baseUrl}/unprocessed`;
+      path = 'unprocessed';
     } else if (taskGroup === TaskGroup.TODAY) {
       const deadlineDateTo = moment().startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      url = `${this.baseUrl}/processed?deadlineDateTo=${deadlineDateTo}`;
+      path = 'processed';
+      params = `deadlineDateTo=${deadlineDateTo}&`;
     } else if (taskGroup === TaskGroup.TOMORROW) {
       const deadlineDateFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
       const deadlineDateTo = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      url = `${this.baseUrl}/processed?deadlineDateFrom=${deadlineDateFrom}&deadlineDateTo=${deadlineDateTo}`;
+      path = 'processed';
+      params = `deadlineDateFrom=${deadlineDateFrom}&deadlineDateTo=${deadlineDateTo}&`;
     } else if (taskGroup === TaskGroup.WEEK) {
       const deadlineDateTo = moment().add(1, 'week').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      url = `${this.baseUrl}/processed?deadlineDateTo=${deadlineDateTo}`;
+      path = 'processed';
+      params = `deadlineDateTo=${deadlineDateTo}&`;
     } else if (taskGroup === TaskGroup.SOME_DAY) {
-      url = `${this.baseUrl}/processed?deadlineDateFrom=&deadlineDateTo=`;
+      path = 'processed';
+      params = 'deadlineDateFrom=&deadlineDateTo=&';
     } else if (taskGroup === TaskGroup.ALL) {
-      url = `${this.baseUrl}/uncompleted`;
+      path = 'uncompleted';
     } else {
       throw new Error(`Unsupported task group: ${taskGroup.value}`);
     }
+
+    params += pageable.toQueryParameters();
+    const url = `${this.baseUrl}/${path}?${params}`;
 
     return this.http.get<any>(url, commonHttpOptions).pipe(
       map(response => {

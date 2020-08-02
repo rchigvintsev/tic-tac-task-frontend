@@ -19,6 +19,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -53,6 +54,7 @@ export class ComponentTestSupport {
     MatToolbarModule,
     MatSidenavModule,
     BrowserAnimationsModule,
+    InfiniteScrollModule,
     RouterTestingModule.withRoutes(routes),
     TranslateModule.forRoot({
       loader: {

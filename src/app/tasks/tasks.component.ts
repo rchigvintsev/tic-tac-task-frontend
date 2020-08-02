@@ -15,6 +15,7 @@ import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {Strings} from '../util/strings';
 import {TaskStatus} from '../model/task-status';
+import {PageRequest} from '../service/page-request';
 
 @Component({
   selector: 'app-tasks',
@@ -30,6 +31,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
   tasks: Array<Task>;
 
   private taskGroup: TaskGroup;
+  private pageRequest = new PageRequest();
 
   constructor(router: Router,
               translate: TranslateService,
@@ -84,6 +86,12 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
     this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
   }
 
+  onTaskListScroll() {
+    this.pageRequest.page++;
+    this.taskService.getTasks(this.taskGroup, this.pageRequest)
+      .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+  }
+
   onTaskFormSubmit() {
     this.createTask();
   }
@@ -97,8 +105,11 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.taskGroup = taskGroup;
+    this.pageRequest.page = 0;
+
     if (taskGroup != null) {
-      this.taskService.getTasks(taskGroup).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+      this.taskService.getTasks(taskGroup, this.pageRequest)
+        .subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
       this.title = TasksComponent.getTitle(taskGroup);
     }
   }

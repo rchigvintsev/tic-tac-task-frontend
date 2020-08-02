@@ -38,7 +38,7 @@ describe('TaskService', () => {
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
 
@@ -115,7 +115,8 @@ describe('TaskService', () => {
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/processed?deadlineDateFrom=&deadlineDateTo=`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/processed`
+      + '?deadlineDateFrom=&deadlineDateTo=&page=0&size=20');
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
 
@@ -132,7 +133,7 @@ describe('TaskService', () => {
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
 
