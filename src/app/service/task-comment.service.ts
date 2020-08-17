@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
+import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};
 const postOptions = Object.assign({headers: new HttpHeaders({'Content-Type': 'application/json'})}, commonHttpOptions);
@@ -20,8 +21,12 @@ export class TaskCommentService {
     this.baseUrl = `${this.config.apiBaseUrl}/taskComments`;
   }
 
-  getComments(taskId: number): Observable<TaskComment[]> {
-    const options = Object.assign({params: new HttpParams().set('taskId', String(taskId))}, commonHttpOptions);
+  getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
+    const params = new HttpParams()
+      .set('taskId', String(taskId))
+      .set('page', String(pageRequest.page))
+      .set('size', String(pageRequest.size));
+    const options = Object.assign({params}, commonHttpOptions);
     return this.http.get<any>(this.baseUrl, options).pipe(
       map(response => {
         const comments = [];

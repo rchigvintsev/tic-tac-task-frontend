@@ -41,7 +41,6 @@ describe('TaskCommentService', () => {
       createdAt: moment().utc().subtract(1, 'hours').format(DATE_FORMAT),
       updatedAt: moment().utc().format(DATE_FORMAT)
     }));
-
     testComments.push(new TaskComment().deserialize({
       id: 1,
       taskId,
@@ -55,7 +54,7 @@ describe('TaskCommentService', () => {
       expect(comments).toEqual(testComments);
     });
 
-    const request = httpMock.expectOne(`${taskCommentService.baseUrl}?taskId=${taskId}`);
+    const request = httpMock.expectOne(`${taskCommentService.baseUrl}?taskId=${taskId}&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testComments);
   });

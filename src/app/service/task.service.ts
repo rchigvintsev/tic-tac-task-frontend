@@ -26,7 +26,7 @@ export class TaskService {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
   }
 
-  getTasks(taskGroup: TaskGroup, pageable: PageRequest = new PageRequest()) {
+  getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()) {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
@@ -58,7 +58,7 @@ export class TaskService {
       throw new Error(`Unsupported task group: ${taskGroup.value}`);
     }
 
-    params += pageable.toQueryParameters();
+    params += pageRequest.toQueryParameters();
     const url = `${this.baseUrl}/${path}?${params}`;
 
     return this.http.get<any>(url, commonHttpOptions).pipe(

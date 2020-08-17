@@ -22,7 +22,7 @@
   </form>
 </mat-card-content>
 
-<ng-container *ngIf="comments">
+<div *ngIf="comments" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onCommentListScroll()">
   <mat-card-content *ngFor="let comment of comments" [className]="'comment-' + comment.id">
     <div class="divider-wrapper">
       <mat-divider></mat-divider>
@@ -77,4 +77,4 @@
       </div>
     </div>
   </mat-card-content>
-</ng-container>
+</div>

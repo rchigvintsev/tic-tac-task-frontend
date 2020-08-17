@@ -4,13 +4,15 @@ import {By} from '@angular/platform-browser';
 import {MatDialog} from '@angular/material';
 
 import * as moment from 'moment';
-
 import {of} from 'rxjs';
+
 import {TaskCommentsComponent} from './task-comments.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {ConfigService} from '../service/config.service';
 import {ComponentTestSupport} from '../test/component-test-support';
+import {PageRequest} from '../service/page-request';
+import any = jasmine.any;
 
 class MatDialogMock {
   open() {
@@ -23,6 +25,7 @@ class MatDialogMock {
 describe('TaskCommentsComponent', () => {
   let component: TaskCommentsComponent;
   let fixture: ComponentFixture<TaskCommentsComponent>;
+  let taskCommentService: TaskCommentService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -39,22 +42,22 @@ describe('TaskCommentsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskCommentsComponent);
 
-    const commentService = fixture.debugElement.injector.get(TaskCommentService);
+    taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
     const createdAt = moment().utc().subtract(1, 'days').format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
     const comments = [];
     for (let i = 0; i < 3; i++) {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
-    spyOn(commentService, 'getComments').and.returnValue(of(comments));
-    spyOn(commentService, 'createComment').and.callFake(c => {
+    spyOn(taskCommentService, 'getComments').and.returnValue(of(comments));
+    spyOn(taskCommentService, 'createComment').and.callFake(c => {
       const result = new TaskComment().deserialize(c);
       if (!c.id) {
         result.id = 4;
       }
       return of(result);
     });
-    spyOn(commentService, 'updateComment').and.callFake(c => of(new TaskComment().deserialize(c)));
-    spyOn(commentService, 'deleteComment').and.returnValue(of(null));
+    spyOn(taskCommentService, 'updateComment').and.callFake(c => of(new TaskComment().deserialize(c)));
+    spyOn(taskCommentService, 'deleteComment').and.returnValue(of(null));
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -107,12 +110,11 @@ describe('TaskCommentsComponent', () => {
   });
 
   it('should not create comment with blank comment text', () => {
-    const commentService = fixture.debugElement.injector.get(TaskCommentService);
     fixture.whenStable().then(() => {
       component.newCommentFormModel.commentText = ' ';
       component.onNewCommentFormSubmit();
       fixture.detectChanges();
-      expect(commentService.createComment).not.toHaveBeenCalled();
+      expect(taskCommentService.createComment).not.toHaveBeenCalled();
     });
   });
 
@@ -224,6 +226,13 @@ describe('TaskCommentsComponent', () => {
       fixture.detectChanges();
       expect(component.comments.length).toBe(2);
       expect(component.comments[0]).not.toEqual(commentToDelete);
+    });
+  });
+
+  it('should load next task page on task list scroll', () => {
+    fixture.whenStable().then(() => {
+      component.onCommentListScroll();
+      expect(taskCommentService.getComments).toHaveBeenCalledWith(any(Number), new PageRequest(1));
     });
   });
 });

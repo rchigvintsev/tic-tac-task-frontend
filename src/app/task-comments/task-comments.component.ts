@@ -14,6 +14,7 @@ import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../util/strings';
+import {PageRequest} from '../service/page-request';
 
 @Component({
   selector: 'app-task-comments',
@@ -31,6 +32,8 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   taskId: number;
   selectedComment: TaskComment;
 
+  private pageRequest = new PageRequest();
+
   constructor(translate: TranslateService,
               router: Router,
               authenticationService: AuthenticationService,
@@ -44,7 +47,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   ngOnInit() {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
-    this.commentService.getComments(this.taskId)
+    this.commentService.getComments(this.taskId, this.pageRequest)
       .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
   }
 
@@ -100,6 +103,12 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   onCommentContainerMouseOut(_: TaskComment) {
     this.selectedComment = null;
+  }
+
+  onCommentListScroll() {
+    this.pageRequest.page++;
+    this.commentService.getComments(this.taskId, this.pageRequest)
+      .subscribe(comments => this.comments = this.comments.concat(comments), this.onServiceCallError.bind(this));
   }
 
   getRelativeCommentDate(comment: TaskComment) {
