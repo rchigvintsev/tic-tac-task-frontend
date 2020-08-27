@@ -45,6 +45,16 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should return number of tasks for "INBOX" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.INBOX).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed/count`);
+    expect(request.request.method).toBe('GET');
+    request.flush(2);
+
+    return subscription;
+  });
+
   it('should return tasks for "TODAY" group', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
@@ -61,6 +71,19 @@ describe('TaskService', () => {
         && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(testTasks);
+
+    return subscription;
+  });
+
+  it('should return number of tasks for "TODAY" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.TODAY).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
+        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+    });
+    request.flush(2);
 
     return subscription;
   });
@@ -85,6 +108,19 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should return number of tasks for "TOMORROW" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.TOMORROW).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
+        && /\?deadlineDateFrom=[0-9\-]+&deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+    });
+    request.flush(2);
+
+    return subscription;
+  });
+
   it('should return tasks for "WEEK" group', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
@@ -101,6 +137,19 @@ describe('TaskService', () => {
         && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(testTasks);
+
+    return subscription;
+  });
+
+  it('should return number of tasks for "WEEK" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.WEEK).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
+        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+    });
+    request.flush(2);
 
     return subscription;
   });
@@ -123,6 +172,17 @@ describe('TaskService', () => {
     return subscription;
   });
 
+  it('should return number of tasks for "SOME_DAY" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.SOME_DAY).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count`
+      + '?deadlineDateFrom=&deadlineDateTo=');
+    expect(request.request.method).toBe('GET');
+    request.flush(2);
+
+    return subscription;
+  });
+
   it('should return tasks for "ALL" group', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
@@ -140,8 +200,22 @@ describe('TaskService', () => {
     return subscription;
   });
 
-  it('should throw error when task group is null', () => {
+  it('should return number of tasks for "ALL" group', () => {
+    const subscription = taskService.getTaskCount(TaskGroup.ALL).subscribe(count => expect(count).toBe(2));
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+    expect(request.request.method).toBe('GET');
+    request.flush(2);
+
+    return subscription;
+  });
+
+  it('should throw error on get tasks when task group is null', () => {
     expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
+  });
+
+  it('should throw error on get task count when task group is null', () => {
+    expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
   });
 
   it('should return task by id', () => {

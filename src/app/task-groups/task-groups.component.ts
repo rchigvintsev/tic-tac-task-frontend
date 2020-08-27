@@ -6,6 +6,7 @@ import * as moment from 'moment';
 
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
+import {TaskService} from '../service/task.service';
 
 @Component({
   selector: 'app-task-groups',
@@ -19,18 +20,31 @@ export class TaskGroupsComponent implements OnInit {
   tomorrowDate = moment().add(1, 'days').date();
 
   private selectedTaskGroup;
+  private taskCounters = new Map<TaskGroup, number>();
 
   constructor(public translate: TranslateService,
               private taskGroupService: TaskGroupService,
+              private taskService: TaskService,
               private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit() {
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    for (const taskGroup of TaskGroup.values()) {
+      this.taskService.getTaskCount(taskGroup).subscribe(count => this.taskCounters.set(taskGroup, count));
+    }
   }
 
-  isTaskGroupSelected(taskGroup: TaskGroup) {
+  isTaskGroupSelected(taskGroup: TaskGroup): boolean {
     return this.selectedTaskGroup === taskGroup;
+  }
+
+  hasTasks(taskGroup: TaskGroup): boolean {
+    return this.taskCounters.get(taskGroup) > 0;
+  }
+
+  getTaskCount(taskGroup: TaskGroup): number {
+    return this.taskCounters.get(taskGroup);
   }
 
   onListItemClick(taskGroup: TaskGroup) {

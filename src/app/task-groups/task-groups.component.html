@@ -5,6 +5,8 @@
        [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.INBOX)">
       <mat-icon mat-list-icon>inbox</mat-icon>
       <span matLine>{{ 'inbox' | translate }}</span>
+      <span *ngIf="hasTasks(TaskGroup.INBOX)" [matBadge]="getTaskCount(TaskGroup.INBOX) | number"
+            matBadgeOverlap="true" class="right-margin"></span>
     </a>
 
     <mat-divider></mat-divider>
@@ -20,6 +22,8 @@
           <span>{{ todayDate }}</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_today' | translate }}</p>
+        <span *ngIf="hasTasks(TaskGroup.TODAY)" [matBadge]="getTaskCount(TaskGroup.TODAY) | number"
+              matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
       <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.TOMORROW.value"
@@ -30,6 +34,8 @@
           <span>{{ tomorrowDate }}</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
+        <span *ngIf="hasTasks(TaskGroup.TOMORROW)" [matBadge]="getTaskCount(TaskGroup.TOMORROW) | number"
+              matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
       <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.WEEK.value"
@@ -40,6 +46,8 @@
           <span>W</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_week' | translate }}</p>
+        <span *ngIf="hasTasks(TaskGroup.WEEK)" [matBadge]="getTaskCount(TaskGroup.WEEK) | number"
+              matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
       <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.SOME_DAY.value"
@@ -50,6 +58,8 @@
           <span>?</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
+        <span *ngIf="hasTasks(TaskGroup.SOME_DAY)" [matBadge]="getTaskCount(TaskGroup.SOME_DAY) | number"
+              matBadgeOverlap="true" class="right-margin"></span>
       </a>
     </ng-container>
 
@@ -60,6 +70,8 @@
        [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.ALL)">
       <mat-icon mat-list-icon>assignment</mat-icon>
       <p matLine>{{ 'all_tasks' | translate }}</p>
+      <span *ngIf="hasTasks(TaskGroup.ALL)" [matBadge]="getTaskCount(TaskGroup.ALL) | number"
+            matBadgeOverlap="true" class="right-margin"></span>
     </a>
   </mat-list>
 </mat-nav-list>

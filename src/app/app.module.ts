@@ -18,6 +18,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatBadgeModule} from '@angular/material/badge';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -94,6 +95,7 @@ registerLocaleData(localeRu, 'ru');
     MatDatepickerModule,
     MatSidenavModule,
     MatTooltipModule,
+    MatBadgeModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,

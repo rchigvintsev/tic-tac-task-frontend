@@ -9,6 +9,8 @@ import {AppComponent} from './app.component';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
 import {ComponentTestSupport} from './test/component-test-support';
+import {ConfigService} from './service/config.service';
+import {Config} from './model/config';
 
 const CURRENT_LANG = 'ru';
 
@@ -35,6 +37,9 @@ describe('AppComponent', () => {
 
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
+
+    const configService = injector.get(ConfigService);
+    configService.setConfig(new Config());
 
     authenticationService = injector.get(AuthenticationService);
     spyOn(authenticationService, 'signOut').and.returnValue(of(true));

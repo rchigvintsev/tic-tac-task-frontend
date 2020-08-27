@@ -26,39 +26,69 @@ export class TaskService {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
   }
 
+  private static getPathForTaskGroup(taskGroup: TaskGroup): string {
+    if (taskGroup === TaskGroup.INBOX) {
+      return 'unprocessed';
+    }
+    if (taskGroup === TaskGroup.ALL) {
+      return 'uncompleted';
+    }
+    return 'processed';
+  }
+
+  private static getParametersForTaskGroup(taskGroup: TaskGroup): string {
+    if (taskGroup === TaskGroup.TODAY) {
+      const deadlineDateTo = moment().startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      return `deadlineDateTo=${deadlineDateTo}`;
+    }
+
+    if (taskGroup === TaskGroup.TOMORROW) {
+      const deadlineDateFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      const deadlineDateTo = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      return `deadlineDateFrom=${deadlineDateFrom}&deadlineDateTo=${deadlineDateTo}`;
+    }
+
+    if (taskGroup === TaskGroup.WEEK) {
+      const deadlineDateTo = moment().add(1, 'week').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      return `deadlineDateTo=${deadlineDateTo}`;
+    }
+
+    if (taskGroup === TaskGroup.SOME_DAY) {
+      return 'deadlineDateFrom=&deadlineDateTo=';
+    }
+
+    return '';
+  }
+
+  getTaskCount(taskGroup: TaskGroup): Observable<number> {
+    if (!taskGroup) {
+      throw new Error('Task group must not be null or undefined');
+    }
+
+    const path = TaskService.getPathForTaskGroup(taskGroup);
+    let url = `${this.baseUrl}/${path}/count`;
+
+    const params = TaskService.getParametersForTaskGroup(taskGroup);
+    if (params !== '') {
+      url += `?${params}`;
+    }
+
+    return this.http.get<number>(url, commonHttpOptions);
+  }
+
   getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()) {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
 
-    let path;
-    let params = '';
+    const path = TaskService.getPathForTaskGroup(taskGroup);
 
-    if (taskGroup === TaskGroup.INBOX) {
-      path = 'unprocessed';
-    } else if (taskGroup === TaskGroup.TODAY) {
-      const deadlineDateTo = moment().startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      path = 'processed';
-      params = `deadlineDateTo=${deadlineDateTo}&`;
-    } else if (taskGroup === TaskGroup.TOMORROW) {
-      const deadlineDateFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      const deadlineDateTo = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      path = 'processed';
-      params = `deadlineDateFrom=${deadlineDateFrom}&deadlineDateTo=${deadlineDateTo}&`;
-    } else if (taskGroup === TaskGroup.WEEK) {
-      const deadlineDateTo = moment().add(1, 'week').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      path = 'processed';
-      params = `deadlineDateTo=${deadlineDateTo}&`;
-    } else if (taskGroup === TaskGroup.SOME_DAY) {
-      path = 'processed';
-      params = 'deadlineDateFrom=&deadlineDateTo=&';
-    } else if (taskGroup === TaskGroup.ALL) {
-      path = 'uncompleted';
-    } else {
-      throw new Error(`Unsupported task group: ${taskGroup.value}`);
+    let params = TaskService.getParametersForTaskGroup(taskGroup);
+    if (params !== '') {
+      params += '&';
     }
-
     params += pageRequest.toQueryParameters();
+
     const url = `${this.baseUrl}/${path}?${params}`;
 
     return this.http.get<any>(url, commonHttpOptions).pipe(

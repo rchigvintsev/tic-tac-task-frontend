@@ -8,7 +8,7 @@
       <span>{{ title }}</span>
       <span class="space-filler"></span>
       <div *ngIf="principal" class="profile-info-container">
-        <img [src]="principal.getPicture()" alt="avatar" class="avatar"/>
+        <img [src]="principal.getPicture()" alt="avatar" class="avatar right-margin"/>
         <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
 
         <mat-menu #profileActions="matMenu">

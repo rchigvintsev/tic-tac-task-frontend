@@ -26,4 +26,8 @@ export class TaskGroup {
     }
     return null;
   }
+
+  public static values(): Array<TaskGroup> {
+    return [this.INBOX, this.TODAY, this.TOMORROW, this.WEEK, this.SOME_DAY, this.ALL];
+  }
 }

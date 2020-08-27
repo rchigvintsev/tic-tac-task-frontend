@@ -15,6 +15,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatBadgeModule} from '@angular/material/badge';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -53,6 +54,7 @@ export class ComponentTestSupport {
     MatMenuModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatBadgeModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     RouterTestingModule.withRoutes(routes),
