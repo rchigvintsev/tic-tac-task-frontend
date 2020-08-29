@@ -72,6 +72,7 @@ describe('TasksComponent', () => {
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
+      spyOn(taskService, 'updateTaskCounters').and.stub();
 
       taskGroupService = fixture.debugElement.injector.get(TaskGroupService);
 
@@ -163,6 +164,15 @@ describe('TasksComponent', () => {
       });
     });
 
+    it('should update task counters on task create', () => {
+      fixture.whenStable().then(() => {
+        component.formModel.title = 'New task';
+        component.onTaskFormSubmit();
+        fixture.detectChanges();
+        expect(taskService.updateTaskCounters).toHaveBeenCalled();
+      });
+    });
+
     it('should complete task', fakeAsync(() => {
       const task1 = tasks[0];
       const task2 = tasks[1];
@@ -174,6 +184,15 @@ describe('TasksComponent', () => {
         fixture.detectChanges();
         expect(component.tasks.length).toEqual(2);
         expect(component.tasks[0].id).toEqual(task2.id);
+      });
+    }));
+
+    it('should update task counters on task complete', fakeAsync(() => {
+      component.onTaskCompleteCheckboxChange(tasks[0]);
+      tick(400);
+      fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        expect(taskService.updateTaskCounters).toHaveBeenCalled();
       });
     }));
 

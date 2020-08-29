@@ -19,6 +19,7 @@ import {ComponentTestSupport} from '../test/component-test-support';
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
   let fixture: ComponentFixture<TaskDetailComponent>;
+  let taskService: TaskService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,7 +37,7 @@ describe('TaskDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskDetailComponent);
 
-    const taskService = fixture.debugElement.injector.get(TaskService);
+    taskService = fixture.debugElement.injector.get(TaskService);
     const task = new Task().deserialize({
       id: 1,
       title: 'Test task',
@@ -47,6 +48,7 @@ describe('TaskDetailComponent', () => {
     });
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
+    spyOn(taskService, 'updateTaskCounters').and.stub();
 
     const logService = fixture.debugElement.injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -98,7 +100,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on title input blur', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.taskFormModel.title = 'New title';
       component.onTitleInputBlur();
@@ -108,7 +109,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should not save task with blank title', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.taskFormModel.title = ' ';
       component.onTitleInputBlur();
@@ -118,7 +118,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on description input blur', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.taskFormModel.description = 'New description';
       component.onDescriptionInputBlur();
@@ -128,7 +127,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on deadline date input change', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
@@ -138,7 +136,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should display server validation error', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError({status: 400, error: {fieldErrors: {deadlineDate: 'Must be valid'}}});
     });
@@ -155,7 +152,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should ignore validation error when field is not found', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError({status: 400, error: {fieldErrors: {absent: 'Must be present'}}});
     });
@@ -171,7 +167,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should log service call error when field is not found', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError({status: 500, error: {errors: ['Something went wrong']}});
     });
@@ -186,7 +181,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on deadline date input clear', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.onClearDeadlineDateButtonClick();
       fixture.detectChanges();
@@ -196,8 +190,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on deadline time enabled checkbox change', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
-
     const checkboxChangeEvent = new MatCheckboxChange();
     checkboxChangeEvent.checked = true;
 
@@ -210,7 +202,6 @@ describe('TaskDetailComponent', () => {
   });
 
   it('should save task on deadline time change', () => {
-    const taskService = fixture.debugElement.injector.get(TaskService);
     fixture.whenStable().then(() => {
       component.onDeadlineTimeSet('11:35');
       fixture.detectChanges();
@@ -230,6 +221,15 @@ describe('TaskDetailComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(compiled.querySelector('form input[name="deadlineTime"].color-warn')).not.toBeNull();
+    });
+  });
+
+  it('should update task counters on task save', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New title';
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(taskService.updateTaskCounters).toHaveBeenCalled();
     });
   });
 });

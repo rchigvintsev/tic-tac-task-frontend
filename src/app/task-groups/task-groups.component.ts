@@ -3,6 +3,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
+import {Observable} from 'rxjs';
 
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
@@ -20,7 +21,6 @@ export class TaskGroupsComponent implements OnInit {
   tomorrowDate = moment().add(1, 'days').date();
 
   private selectedTaskGroup;
-  private taskCounters = new Map<TaskGroup, number>();
 
   constructor(public translate: TranslateService,
               private taskGroupService: TaskGroupService,
@@ -30,21 +30,18 @@ export class TaskGroupsComponent implements OnInit {
 
   ngOnInit() {
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
-    for (const taskGroup of TaskGroup.values()) {
-      this.taskService.getTaskCount(taskGroup).subscribe(count => this.taskCounters.set(taskGroup, count));
-    }
   }
 
   isTaskGroupSelected(taskGroup: TaskGroup): boolean {
     return this.selectedTaskGroup === taskGroup;
   }
 
-  hasTasks(taskGroup: TaskGroup): boolean {
-    return this.taskCounters.get(taskGroup) > 0;
+  hasTasks(taskGroup: TaskGroup): Observable<boolean> {
+    return this.taskService.hasTasks(taskGroup);
   }
 
-  getTaskCount(taskGroup: TaskGroup): number {
-    return this.taskCounters.get(taskGroup);
+  getTaskCount(taskGroup: TaskGroup): Observable<number> {
+    return this.taskService.getTaskCount(taskGroup);
   }
 
   onListItemClick(taskGroup: TaskGroup) {

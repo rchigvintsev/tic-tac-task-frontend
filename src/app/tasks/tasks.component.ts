@@ -131,6 +131,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
       this.taskService.createTask(this.formModel).subscribe(task => {
         this.tasks.push(task);
         this.taskForm.resetForm();
+        this.taskService.updateTaskCounters();
       }, this.onServiceCallError.bind(this));
     }
   }
@@ -138,6 +139,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
   private completeTask(task: Task) {
     this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
+      this.taskService.updateTaskCounters();
     }, this.onServiceCallError.bind(this));
   }
 }

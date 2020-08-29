@@ -149,6 +149,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
       this.taskService.updateTask(this.taskFormModel).subscribe(task => {
         this.clearErrors();
         this.setTaskModel(task);
+        this.taskService.updateTaskCounters();
       }, response => {
         this.clearErrors();
         if (HttpErrors.isBadRequest(response)) {

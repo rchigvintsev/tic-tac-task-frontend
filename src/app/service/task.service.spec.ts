@@ -1,6 +1,8 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
+import {skip} from 'rxjs/operators';
+
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {Task} from '../model/task';
@@ -46,7 +48,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "INBOX" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.INBOX).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.INBOX)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed/count`);
     expect(request.request.method).toBe('GET');
@@ -76,7 +80,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "TODAY" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.TODAY).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.TODAY)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -109,7 +115,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "TOMORROW" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.TOMORROW).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.TOMORROW)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -142,7 +150,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "WEEK" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.WEEK).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.WEEK)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -173,7 +183,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "SOME_DAY" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.SOME_DAY).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.SOME_DAY)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count`
       + '?deadlineDateFrom=&deadlineDateTo=');
@@ -201,7 +213,9 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "ALL" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.ALL).subscribe(count => expect(count).toBe(2));
+    const subscription = taskService.getTaskCount(TaskGroup.ALL)
+      .pipe(skip(1))
+      .subscribe(count => expect(count).toBe(2));
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
     expect(request.request.method).toBe('GET');

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import * as moment from 'moment';
@@ -22,8 +22,13 @@ const jsonContentOptions = Object.assign({
 export class TaskService {
   readonly baseUrl: string;
 
+  private readonly taskCounters = new Map<TaskGroup, BehaviorSubject<number>>();
+
   constructor(private http: HttpClient, private config: ConfigService) {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
+    for (const taskGroup of TaskGroup.values()) {
+      this.taskCounters.set(taskGroup, new BehaviorSubject<number>(null));
+    }
   }
 
   private static getPathForTaskGroup(taskGroup: TaskGroup): string {
@@ -60,20 +65,29 @@ export class TaskService {
     return '';
   }
 
-  getTaskCount(taskGroup: TaskGroup): Observable<number> {
+  hasTasks(taskGroup: TaskGroup): Observable<boolean> {
+    return this.getTaskCount(taskGroup).pipe(map(count => count > 0));
+  }
+
+  getTaskCount(taskGroup: TaskGroup, forceLoad: boolean = false): Observable<number> {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
-
-    const path = TaskService.getPathForTaskGroup(taskGroup);
-    let url = `${this.baseUrl}/${path}/count`;
-
-    const params = TaskService.getParametersForTaskGroup(taskGroup);
-    if (params !== '') {
-      url += `?${params}`;
+    const counter = this.taskCounters.get(taskGroup);
+    const value = counter.getValue();
+    if (value == null || forceLoad) {
+      if (value == null) {
+        counter.next(0);
+      }
+      this.loadTaskCount(taskGroup).subscribe(count => counter.next(count));
     }
+    return counter;
+  }
 
-    return this.http.get<number>(url, commonHttpOptions);
+  updateTaskCounters() {
+    this.taskCounters.forEach((counter, taskGroup) => {
+      this.loadTaskCount(taskGroup).subscribe(count => counter.next(count));
+    });
   }
 
   getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()) {
@@ -128,5 +142,17 @@ export class TaskService {
 
   completeTask(task: Task): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${task.id}/complete`, null, jsonContentOptions);
+  }
+
+  private loadTaskCount(taskGroup: TaskGroup): Observable<number> {
+    const path = TaskService.getPathForTaskGroup(taskGroup);
+    let url = `${this.baseUrl}/${path}/count`;
+
+    const params = TaskService.getParametersForTaskGroup(taskGroup);
+    if (params !== '') {
+      url += `?${params}`;
+    }
+
+    return this.http.get<number>(url, commonHttpOptions);
   }
 }
