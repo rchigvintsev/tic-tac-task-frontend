@@ -73,5 +73,12 @@
       <span *ngIf="hasTasks(TaskGroup.ALL) | async" [matBadge]="getTaskCount(TaskGroup.ALL) | async | number"
             matBadgeOverlap="true" class="right-margin"></span>
     </a>
+
+    <mat-divider></mat-divider>
+
+    <a mat-list-item [routerLink]="[translate.currentLang, 'tag']">
+      <mat-icon mat-list-icon>label</mat-icon>
+      <p matLine>{{ 'tags' | translate }}</p>
+    </a>
   </mat-list>
 </mat-nav-list>

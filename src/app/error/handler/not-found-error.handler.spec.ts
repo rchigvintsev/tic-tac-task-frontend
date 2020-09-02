@@ -19,6 +19,7 @@ import {DummyComponent} from '../../dummy/dummy.component';
 import {SigninComponent} from '../../signin/signin.component';
 import {TasksComponent} from '../../tasks/tasks.component';
 import {TaskDetailComponent} from '../../task-detail/task-detail.component';
+import {TagsComponent} from '../../tags/tags.component';
 import {NotFoundErrorHandler} from './not-found-error.handler';
 import {LocalizedDatePipe} from '../../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../../pipe/localized-relative-date.pipe';
@@ -52,6 +53,7 @@ describe('NotFoundErrorHandler', () => {
         SigninComponent,
         DummyComponent,
         NotFoundComponent,
+        TagsComponent,
         LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],

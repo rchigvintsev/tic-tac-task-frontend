@@ -34,6 +34,7 @@ import {TaskGroupsComponent} from '../task-groups/task-groups.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
+import {TagsComponent} from '../tags/tags.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
@@ -79,6 +80,7 @@ export class ComponentTestSupport {
     ConfirmationDialogComponent,
     NotFoundComponent,
     DummyComponent,
+    TagsComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ];

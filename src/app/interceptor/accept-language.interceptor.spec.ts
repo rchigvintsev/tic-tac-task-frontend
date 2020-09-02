@@ -20,6 +20,7 @@ import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
+import {TagsComponent} from '../tags/tags.component';
 import {AcceptLanguageInterceptor} from './accept-language.interceptor';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
@@ -53,6 +54,7 @@ describe('AcceptLanguageInterceptor', () => {
         SigninComponent,
         DummyComponent,
         NotFoundComponent,
+        TagsComponent,
         LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],

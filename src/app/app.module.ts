@@ -41,6 +41,7 @@ import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
 import {AlertComponent} from './alert/alert.component';
+import {TagsComponent} from './tags/tags.component';
 import {ConfigService} from './service/config.service';
 import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
@@ -74,6 +75,7 @@ registerLocaleData(localeRu, 'ru');
     NotFoundComponent,
     DummyComponent,
     AlertComponent,
+    TagsComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ],

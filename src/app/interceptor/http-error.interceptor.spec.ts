@@ -20,6 +20,7 @@ import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {SigninComponent} from '../signin/signin.component';
 import {DummyComponent} from '../dummy/dummy.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
+import {TagsComponent} from '../tags/tags.component';
 import {HttpErrorInterceptor} from './http-error.interceptor';
 import {HttpErrorHandler} from '../error/handler/http-error.handler';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
@@ -50,6 +51,7 @@ describe('HttpErrorInterceptor', () => {
         SigninComponent,
         DummyComponent,
         NotFoundComponent,
+        TagsComponent,
         LocalizedDatePipe,
         LocalizedRelativeDatePipe
       ],

@@ -11,6 +11,7 @@ import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
+import {TagsComponent} from './tags/tags.component';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,
@@ -23,6 +24,7 @@ export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
   {path: 'task', component: TasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task/:id', component: TaskDetailComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'tag', component: TagsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'oauth2/authorization/callback',
