@@ -14,7 +14,7 @@ import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
 import {TaskStatus} from '../model/task-status';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 import {PageRequest} from '../service/page-request';
 import any = jasmine.any;
 
@@ -25,8 +25,8 @@ describe('TasksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},

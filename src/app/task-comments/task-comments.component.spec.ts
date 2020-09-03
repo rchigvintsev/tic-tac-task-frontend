@@ -10,7 +10,7 @@ import {TaskCommentsComponent} from './task-comments.component';
 import {TaskComment} from '../model/task-comment';
 import {TaskCommentService} from '../service/task-comment.service';
 import {ConfigService} from '../service/config.service';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 import {PageRequest} from '../service/page-request';
 import any = jasmine.any;
 
@@ -29,8 +29,8 @@ describe('TaskCommentsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},

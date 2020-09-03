@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {By} from '@angular/platform-browser';
 
 import {ConfirmationDialogComponent} from './confirmation-dialog.component';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 
 class MatDialogRefMock {
   // noinspection JSUnusedGlobalSymbols
@@ -18,8 +18,8 @@ describe('ConfirmationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialogRef, useClass: MatDialogRefMock},

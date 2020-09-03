@@ -14,7 +14,7 @@ import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskGroup} from '../service/task-group';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 
 describe('TaskDetailComponent', () => {
   let component: TaskDetailComponent;
@@ -23,8 +23,8 @@ describe('TaskDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},

@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TagsComponent} from './tags.component';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 
 describe('TagsComponent', () => {
   let component: TagsComponent;
@@ -9,8 +9,8 @@ describe('TagsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS
     }).compileComponents();
   }));
 

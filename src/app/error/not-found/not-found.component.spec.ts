@@ -2,7 +2,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NotFoundComponent} from './not-found.component';
-import {ComponentTestSupport} from '../../test/component-test-support';
+import {TestSupport} from '../../test/test-support';
 
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
@@ -10,8 +10,8 @@ describe('NotFoundComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));

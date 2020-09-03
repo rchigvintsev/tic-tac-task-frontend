@@ -6,7 +6,7 @@ import {of} from 'rxjs';
 import {TaskGroupsComponent} from './task-groups.component';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 import {ConfigService} from '../service/config.service';
 import {Config} from '../model/config';
 import {TaskService} from '../service/task.service';
@@ -17,8 +17,8 @@ describe('TaskGroupsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
       ]

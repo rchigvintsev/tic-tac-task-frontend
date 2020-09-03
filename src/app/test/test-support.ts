@@ -38,7 +38,7 @@ import {TagsComponent} from '../tags/tags.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 
-export class ComponentTestSupport {
+export class TestSupport {
   public static readonly IMPORTS = [
     FormsModule,
     HttpClientTestingModule,

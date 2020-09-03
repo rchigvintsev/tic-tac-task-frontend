@@ -10,7 +10,7 @@ import {SigninComponent} from './signin.component';
 import {ConfigService} from '../service/config.service';
 import {AlertService} from '../service/alert.service';
 import {Config} from '../model/config';
-import {ComponentTestSupport} from '../test/component-test-support';
+import {TestSupport} from '../test/test-support';
 
 describe('SigninComponent', () => {
   let component: SigninComponent;
@@ -18,8 +18,8 @@ describe('SigninComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

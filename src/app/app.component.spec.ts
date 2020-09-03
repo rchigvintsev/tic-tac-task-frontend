@@ -8,7 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {AppComponent} from './app.component';
 import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
-import {ComponentTestSupport} from './test/component-test-support';
+import {TestSupport} from './test/test-support';
 import {ConfigService} from './service/config.service';
 import {Config} from './model/config';
 
@@ -22,8 +22,8 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: ComponentTestSupport.IMPORTS,
-      declarations: ComponentTestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
