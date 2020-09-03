@@ -90,7 +90,7 @@ export class TaskService {
     });
   }
 
-  getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()) {
+  getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
