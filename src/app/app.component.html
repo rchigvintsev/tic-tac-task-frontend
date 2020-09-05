@@ -25,7 +25,7 @@
                  *ngIf="showSidenav"
                  [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [opened]="!mobileQuery.matches">
-      <app-task-groups></app-task-groups>
+      <app-sidenav-menu></app-sidenav-menu>
     </mat-sidenav>
 
     <mat-sidenav-content>

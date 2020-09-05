@@ -30,7 +30,7 @@ import {SigninComponent} from '../signin/signin.component';
 import {TasksComponent} from '../tasks/tasks.component';
 import {TaskDetailComponent} from '../task-detail/task-detail.component';
 import {TaskCommentsComponent} from '../task-comments/task-comments.component';
-import {TaskGroupsComponent} from '../task-groups/task-groups.component';
+import {SidenavMenuComponent} from '../sidenav-menu/sidenav-menu.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {NotFoundComponent} from '../error/not-found/not-found.component';
 import {DummyComponent} from '../dummy/dummy.component';
@@ -76,7 +76,7 @@ export class TestSupport {
     TasksComponent,
     TaskDetailComponent,
     TaskCommentsComponent,
-    TaskGroupsComponent,
+    SidenavMenuComponent,
     ConfirmationDialogComponent,
     NotFoundComponent,
     DummyComponent,

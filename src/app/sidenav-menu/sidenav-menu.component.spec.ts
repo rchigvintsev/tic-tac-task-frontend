@@ -1,9 +1,12 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
+import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 
-import {of} from 'rxjs';
+import {of, Subject} from 'rxjs';
 
-import {TaskGroupsComponent} from './task-groups.component';
+import {TranslateService} from '@ngx-translate/core';
+
+import {SidenavMenuComponent} from './sidenav-menu.component';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
 import {TestSupport} from '../test/test-support';
@@ -11,9 +14,10 @@ import {ConfigService} from '../service/config.service';
 import {Config} from '../model/config';
 import {TaskService} from '../service/task.service';
 
-describe('TaskGroupsComponent', () => {
-  let component: TaskGroupsComponent;
-  let fixture: ComponentFixture<TaskGroupsComponent>;
+describe('SidenavMenuComponent', () => {
+  let component: SidenavMenuComponent;
+  let fixture: ComponentFixture<SidenavMenuComponent>;
+  let routerEvents: Subject<RouterEvent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,13 +32,23 @@ describe('TaskGroupsComponent', () => {
   beforeEach(() => {
     const injector = getTestBed();
 
+    const translate = injector.get(TranslateService);
+    translate.currentLang = 'en';
+
     const configService = injector.get(ConfigService);
     configService.setConfig(new Config());
 
     const taskService = injector.get(TaskService);
     spyOn(taskService, 'getTaskCount').and.returnValue(of(3));
 
-    fixture = TestBed.createComponent(TaskGroupsComponent);
+    const taskGroupService = injector.get(TaskGroupService);
+    spyOn(taskGroupService, 'notifyTaskGroupSelected').and.stub();
+
+    routerEvents = new Subject();
+    const router = injector.get(Router);
+    (router as any).events = routerEvents.asObservable();
+
+    fixture = TestBed.createComponent(SidenavMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -45,7 +59,8 @@ describe('TaskGroupsComponent', () => {
 
   it('should change selected task group on list item click', () => {
     component.onListItemClick(TaskGroup.TOMORROW);
-    expect(component.isTaskGroupSelected(TaskGroup.TOMORROW)).toBeTruthy();
+    const taskGroupService = getTestBed().get(TaskGroupService);
+    expect(taskGroupService.notifyTaskGroupSelected).toHaveBeenCalledWith(TaskGroup.TOMORROW);
   });
 
   it('should render task counters for groups of tasks', () => {
@@ -53,6 +68,15 @@ describe('TaskGroupsComponent', () => {
       fixture.detectChanges();
       const badgeSpan = fixture.debugElement.query(By.css('.mat-list .mat-list-item span.mat-badge'));
       expect(badgeSpan).toBeTruthy();
+    });
+  });
+
+  it('should highlight selected menu item', () => {
+    routerEvents.next(new NavigationEnd(1, '/en/tag', null));
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected[href="/en/tag"]'));
+      expect(selectedItem).toBeTruthy();
     });
   });
 });

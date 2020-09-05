@@ -30,7 +30,6 @@ export class AppComponent implements OnInit, DoCheck {
   constructor(private router: Router,
               private translate: TranslateService,
               private authenticationService: AuthenticationService,
-              private taskGroupService: TaskGroupService,
               media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
   }

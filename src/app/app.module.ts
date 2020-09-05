@@ -31,7 +31,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {TaskGroupsComponent} from './task-groups/task-groups.component';
+import {SidenavMenuComponent} from './sidenav-menu/sidenav-menu.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskDetailComponent} from './task-detail/task-detail.component';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
@@ -65,7 +65,7 @@ registerLocaleData(localeRu, 'ru');
 @NgModule({
   declarations: [
     AppComponent,
-    TaskGroupsComponent,
+    SidenavMenuComponent,
     TasksComponent,
     TaskDetailComponent,
     TaskCommentsComponent,

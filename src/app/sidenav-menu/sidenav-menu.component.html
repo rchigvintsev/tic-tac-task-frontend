@@ -1,8 +1,8 @@
 <mat-nav-list>
   <mat-list>
-    <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.INBOX.value"
-       (click)="onListItemClick(TaskGroup.INBOX)"
-       [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.INBOX)">
+    <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.INBOX.value"
+       [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.INBOX.value)"
+       (click)="onListItemClick(TaskGroup.INBOX)">
       <mat-icon mat-list-icon>inbox</mat-icon>
       <span matLine>{{ 'inbox' | translate }}</span>
       <span *ngIf="hasTasks(TaskGroup.INBOX) | async" [matBadge]="getTaskCount(TaskGroup.INBOX) | async | number"
@@ -14,9 +14,9 @@
     <ng-container>
       <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
 
-      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.TODAY.value"
-         (click)="onListItemClick(TaskGroup.TODAY)"
-         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TODAY)">
+      <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.TODAY.value"
+         [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.TODAY.value)"
+         (click)="onListItemClick(TaskGroup.TODAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>{{ todayDate }}</span>
@@ -26,9 +26,9 @@
               matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
-      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.TOMORROW.value"
-         (click)="onListItemClick(TaskGroup.TOMORROW)"
-         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.TOMORROW)">
+      <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.TOMORROW.value"
+         [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.TOMORROW.value)"
+         (click)="onListItemClick(TaskGroup.TOMORROW)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>{{ tomorrowDate }}</span>
@@ -38,9 +38,9 @@
               matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
-      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.WEEK.value"
-         (click)="onListItemClick(TaskGroup.WEEK)"
-         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.WEEK)">
+      <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.WEEK.value"
+         [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.WEEK.value)"
+         (click)="onListItemClick(TaskGroup.WEEK)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>W</span>
@@ -50,9 +50,9 @@
               matBadgeOverlap="true" class="right-margin"></span>
       </a>
 
-      <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.SOME_DAY.value"
-         (click)="onListItemClick(TaskGroup.SOME_DAY)"
-         [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.SOME_DAY)">
+      <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.SOME_DAY.value"
+         [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.SOME_DAY.value)"
+         (click)="onListItemClick(TaskGroup.SOME_DAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>?</span>
@@ -65,9 +65,9 @@
 
     <mat-divider></mat-divider>
 
-    <a mat-list-item [routerLink]="['/', translate.currentLang]" [fragment]="TaskGroup.ALL.value"
-       (click)="onListItemClick(TaskGroup.ALL)"
-       [class.mat-list-item-selected]="isTaskGroupSelected(TaskGroup.ALL)">
+    <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.ALL.value"
+       [class.mat-list-item-selected]="isRouterLinkActive('task', TaskGroup.ALL.value)"
+       (click)="onListItemClick(TaskGroup.ALL)">
       <mat-icon mat-list-icon>assignment</mat-icon>
       <p matLine>{{ 'all_tasks' | translate }}</p>
       <span *ngIf="hasTasks(TaskGroup.ALL) | async" [matBadge]="getTaskCount(TaskGroup.ALL) | async | number"
@@ -76,7 +76,8 @@
 
     <mat-divider></mat-divider>
 
-    <a mat-list-item [routerLink]="[translate.currentLang, 'tag']">
+    <a mat-list-item [routerLink]="[translate.currentLang, 'tag']"
+       [class.mat-list-item-selected]="isRouterLinkActive('tag')">
       <mat-icon mat-list-icon>label</mat-icon>
       <p matLine>{{ 'tags' | translate }}</p>
     </a>
