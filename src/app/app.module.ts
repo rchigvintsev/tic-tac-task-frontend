@@ -19,8 +19,10 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -84,6 +86,7 @@ registerLocaleData(localeRu, 'ru');
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
@@ -98,6 +101,8 @@ registerLocaleData(localeRu, 'ru');
     MatSidenavModule,
     MatTooltipModule,
     MatBadgeModule,
+    MatChipsModule,
+    MatAutocompleteModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,

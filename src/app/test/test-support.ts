@@ -1,4 +1,4 @@
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -16,6 +16,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -41,6 +43,7 @@ import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 export class TestSupport {
   public static readonly IMPORTS = [
     FormsModule,
+    ReactiveFormsModule,
     HttpClientTestingModule,
     MatInputModule,
     MatTooltipModule,
@@ -56,6 +59,8 @@ export class TestSupport {
     MatToolbarModule,
     MatSidenavModule,
     MatBadgeModule,
+    MatChipsModule,
+    MatAutocompleteModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     RouterTestingModule.withRoutes(routes),

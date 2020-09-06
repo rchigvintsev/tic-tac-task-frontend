@@ -5,6 +5,11 @@ export class Tag extends AbstractEntity<Tag> {
   id: number;
   name: string;
 
+  constructor(name: string = null) {
+    super();
+    this.name = name;
+  }
+
   deserialize(input: any): Tag {
     this.id = input.id;
     this.name = input.name;

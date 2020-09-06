@@ -111,6 +111,28 @@
           </mat-error>
         </div>
       </div>
+
+      <mat-form-field>
+        <mat-chip-list #tagList aria-label="Tags">
+          <mat-chip *ngFor="let tag of taskFormModel.tags" (removed)="onTagChipRemoved(tag)">
+            {{ tag.name }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+
+          <label for="tag_input"></label>
+          <input #tagInput id="tag_input" placeholder="{{ 'tags' | translate }}"
+                 [matChipInputFor]="tagList"
+                 [formControl]="tagControl"
+                 [matAutocomplete]="tagAutocomplete"
+                 (matChipInputTokenEnd)="onTagChipInputTokenEnd($event)">
+        </mat-chip-list>
+
+        <mat-autocomplete #tagAutocomplete (optionSelected)="onTagOptionSelected($event)">
+          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.name">
+            {{ tag.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
     </form>
   </mat-card-content>
 

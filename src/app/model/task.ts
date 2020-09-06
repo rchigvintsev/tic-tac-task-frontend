@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 
 import {AbstractEntity} from './abstract-entity';
+import {Tag} from './tag';
 import {Objects} from '../util/objects';
 
 export class Task extends AbstractEntity<Task> {
@@ -10,6 +11,7 @@ export class Task extends AbstractEntity<Task> {
   status: string;
   deadlineDate: Date;
   deadlineTime: Date;
+  tags: Tag[] = [];
 
   deserialize(input: any): Task {
     this.id = input.id;

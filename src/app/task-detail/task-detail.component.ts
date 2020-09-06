@@ -1,18 +1,25 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgForm} from '@angular/forms';
+import {FormControl, NgForm} from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
 import {MatCheckboxChange} from '@angular/material/checkbox';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
+import {map, startWith} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
+import {Tag} from '../model/tag';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskService} from '../service/task.service';
+import {TagService} from '../service/tag.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {ServerErrorStateMatcher} from '../error/server-error-state-matcher';
@@ -29,13 +36,17 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   titleElement: ElementRef;
   @ViewChild('taskDetailForm', {read: NgForm})
   taskDetailForm: NgForm;
+  @ViewChild('tagInput')
+  tagInput: ElementRef<HTMLInputElement>;
 
   titleEditing = false;
   taskFormModel: Task;
   selectedTaskGroup: TaskGroup;
   deadlineTime: string;
   deadlineTimeEnabled = false;
-
+  tagControl = new FormControl();
+  availableTags: Tag[] = [];
+  filteredTags: Observable<Tag[]>;
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
   private task: Task;
@@ -47,8 +58,13 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
               private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
+              private tagService: TagService,
               private dateAdapter: DateAdapter<any>) {
     super(translate, router, authenticationService, log);
+  }
+
+  private static normalizeTagName(name: string): string {
+    return name.toLowerCase().replace(/ё/g, 'е');
   }
 
   ngOnInit() {
@@ -56,6 +72,11 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.dateAdapter.setLocale(this.translate.currentLang);
+
+    this.filteredTags = this.tagControl.valueChanges.pipe(
+      startWith(null),
+      map((tagName: string | null) => tagName ? this.filterTagsByName(tagName) : this.availableTags)
+    );
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
@@ -94,6 +115,24 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     this.saveTask();
   }
 
+  onTagChipInputTokenEnd(event: MatChipInputEvent) {
+    this.addTag(event.value);
+    if (event.input) {
+      event.input.value = '';
+    }
+    this.tagControl.setValue(null);
+  }
+
+  onTagOptionSelected(event: MatAutocompleteSelectedEvent) {
+    this.addTag(event.option.viewValue);
+    this.tagInput.nativeElement.value = '';
+    this.tagControl.setValue(null);
+  }
+
+  onTagChipRemoved(tag: Tag) {
+    this.removeTag(tag);
+  }
+
   getFieldErrorMessage(...fieldNames: string[]): string {
     for (const fieldName of fieldNames) {
       const control = this.taskDetailForm.controls[fieldName];
@@ -122,6 +161,10 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
       this.deadlineTime = '';
       this.deadlineTimeEnabled = false;
     }
+
+    this.tagService.getTags().pipe(
+      map(tags => tags.filter(tag => task.tags.findIndex(taskTag => taskTag.name === tag.name) < 0))
+    ).subscribe(tags => this.availableTags = tags);
   }
 
   private beginTitleEditing() {
@@ -183,5 +226,37 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
 
   private clearErrors() {
     this.errorStateMatchers.forEach(matcher => matcher.errorState = false);
+  }
+
+  private filterTagsByName(tagName: string): Tag[] {
+    const normalizedTagName = TaskDetailComponent.normalizeTagName(tagName);
+    return this.availableTags.filter(tag => {
+      return TaskDetailComponent.normalizeTagName(tag.name).indexOf(normalizedTagName) === 0;
+    });
+  }
+
+  private addTag(tagName: string) {
+    const trimmedName = (tagName || '').trim();
+    if (trimmedName) {
+      const availableTagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
+      if (availableTagIndex >= 0) {
+        this.taskFormModel.tags.push(this.availableTags.splice(availableTagIndex, 1)[0]);
+      } else {
+        const taskTagIndex = this.taskFormModel.tags.findIndex(taskTag => taskTag.name === trimmedName);
+        if (taskTagIndex < 0) {
+          this.taskFormModel.tags.push(new Tag(trimmedName));
+        }
+      }
+    }
+  }
+
+  private removeTag(tag: Tag) {
+    const index = this.taskFormModel.tags.findIndex(t => t.name === tag.name);
+    if (index >= 0) {
+      this.taskFormModel.tags.splice(index, 1);
+      if (tag.id) {
+        this.availableTags.push(tag);
+      }
+    }
   }
 }
