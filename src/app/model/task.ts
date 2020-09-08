@@ -28,6 +28,9 @@ export class Task extends AbstractEntity<Task> {
     if (input.deadlineTime) {
       this.deadlineTime = moment(input.deadlineTime, moment.HTML5_FMT.TIME).toDate();
     }
+    if (input.tags) {
+      this.tags = input.tags;
+    }
     return this;
   }
 
@@ -50,6 +53,7 @@ export class Task extends AbstractEntity<Task> {
     clone.status = this.status;
     clone.deadlineDate = this.deadlineDate != null ? new Date(this.deadlineDate.getTime()) : null;
     clone.deadlineTime = this.deadlineTime != null ? new Date(this.deadlineTime.getTime()) : null;
+    clone.tags = this.tags.slice();
     return clone;
   }
 

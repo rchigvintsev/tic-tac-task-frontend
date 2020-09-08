@@ -6,6 +6,7 @@ import {skip} from 'rxjs/operators';
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {Task} from '../model/task';
+import {Tag} from '../model/tag';
 import {TaskGroup} from './task-group';
 
 describe('TaskService', () => {
@@ -233,16 +234,20 @@ describe('TaskService', () => {
   });
 
   it('should return task by id', () => {
-    const id = 1;
-    const testTask = new Task().deserialize({id, title: 'Test task'});
+    const testTag = new Tag().deserialize({id: 2, name: 'Test tag'});
+    const testTask = new Task().deserialize({id: 1, title: 'Test task', tags: [testTag]});
 
-    const subscription = taskService.getTask(id).subscribe(task => {
+    const subscription = taskService.getTask(testTask.id).subscribe(task => {
       expect(task).toEqual(testTask);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/${id}`);
-    expect(request.request.method).toBe('GET');
-    request.flush(testTask);
+    const taskRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
+    expect(taskRequest.request.method).toBe('GET');
+    taskRequest.flush(testTask);
+
+    const tagRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/tags`);
+    expect(tagRequest.request.method).toBe('GET');
+    tagRequest.flush([testTag]);
 
     return subscription;
   });
