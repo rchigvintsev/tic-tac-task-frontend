@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {BehaviorSubject, forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
 import {Task} from '../model/task';
-import {Tag} from '../model/tag';
 import {ConfigService} from './config.service';
 import {TaskGroup} from './task-group';
 import {PageRequest} from './page-request';
@@ -118,17 +117,9 @@ export class TaskService {
   }
 
   getTask(id: number): Observable<Task> {
-    const taskObservable = this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions);
-    const tagObservable = this.loadTaskTags(id);
-    return forkJoin(taskObservable, tagObservable).pipe(
-      map(responses => {
-        const task = new Task().deserialize(responses[0]);
-        const tags = [];
-        for (const json of responses[1]) {
-          tags.push(new Tag().deserialize(json));
-        }
-        task.tags = tags;
-        return task;
+    return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+      map(response => {
+        return new Task().deserialize(response);
       })
     );
   }
@@ -163,9 +154,5 @@ export class TaskService {
     }
 
     return this.http.get<number>(url, commonHttpOptions);
-  }
-
-  private loadTaskTags(taskId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, commonHttpOptions);
   }
 }

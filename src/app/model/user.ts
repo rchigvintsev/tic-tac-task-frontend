@@ -1,5 +1,6 @@
 import {AbstractEntity} from './abstract-entity';
 import {AuthenticatedPrincipal} from '../security/authenticated-principal';
+import {Objects} from '../util/objects';
 
 export class User extends AbstractEntity<User> implements AuthenticatedPrincipal {
   email: string;
@@ -38,5 +39,12 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
     clone.imageUrl = this.imageUrl;
     clone.validUntilSeconds = this.validUntilSeconds;
     return clone;
+  }
+
+  equals(other: User): boolean {
+    return Objects.equals(this.email, other.email)
+      && Objects.equals(this.fullName, other.fullName)
+      && Objects.equals(this.imageUrl, other.imageUrl)
+      && Objects.equals(this.validUntilSeconds, other.validUntilSeconds);
   }
 }

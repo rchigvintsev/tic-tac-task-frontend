@@ -245,10 +245,6 @@ describe('TaskService', () => {
     expect(taskRequest.request.method).toBe('GET');
     taskRequest.flush(testTask);
 
-    const tagRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/tags`);
-    expect(tagRequest.request.method).toBe('GET');
-    tagRequest.flush([testTag]);
-
     return subscription;
   });
 

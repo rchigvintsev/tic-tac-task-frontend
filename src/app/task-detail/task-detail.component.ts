@@ -241,10 +241,12 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
       const availableTagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
       if (availableTagIndex >= 0) {
         this.taskFormModel.tags.push(this.availableTags.splice(availableTagIndex, 1)[0]);
+        this.saveTask();
       } else {
         const taskTagIndex = this.taskFormModel.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (taskTagIndex < 0) {
           this.taskFormModel.tags.push(new Tag(trimmedName));
+          this.saveTask();
         }
       }
     }
@@ -254,9 +256,8 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
     const index = this.taskFormModel.tags.findIndex(t => t.name === tag.name);
     if (index >= 0) {
       this.taskFormModel.tags.splice(index, 1);
-      if (tag.id) {
-        this.availableTags.push(tag);
-      }
+      this.availableTags.push(tag);
+      this.saveTask();
     }
   }
 }

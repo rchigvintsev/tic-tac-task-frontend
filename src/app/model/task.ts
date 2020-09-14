@@ -29,19 +29,28 @@ export class Task extends AbstractEntity<Task> {
       this.deadlineTime = moment(input.deadlineTime, moment.HTML5_FMT.TIME).toDate();
     }
     if (input.tags) {
-      this.tags = input.tags;
+      const tags = [];
+      for (const tag of input.tags) {
+        tags.push(new Tag().deserialize(tag));
+      }
+      this.tags = tags;
     }
     return this;
   }
 
   serialize(): any {
+    const tags = [];
+    for (const tag of this.tags) {
+      tags.push(tag.serialize());
+    }
     return {
       id: this.id,
       title: this.title,
       description: this.description,
       status: this.status,
       deadlineDate: this.deadlineDate ? moment(this.deadlineDate).utc().format(moment.HTML5_FMT.DATE) : null,
-      deadlineTime: this.deadlineTime ? moment(this.deadlineTime).utc().format(moment.HTML5_FMT.TIME) : null
+      deadlineTime: this.deadlineTime ? moment(this.deadlineTime).utc().format(moment.HTML5_FMT.TIME) : null,
+      tags
     };
   }
 
@@ -63,7 +72,8 @@ export class Task extends AbstractEntity<Task> {
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)
       && Objects.equals(this.deadlineDate, other.deadlineDate)
-      && Objects.equals(this.deadlineTime, other.deadlineTime);
+      && Objects.equals(this.deadlineTime, other.deadlineTime)
+      && Objects.equals(this.tags, other.tags);
   }
 
   isOverdue(): boolean {

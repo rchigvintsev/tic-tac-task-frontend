@@ -9,6 +9,7 @@ import {of, throwError} from 'rxjs';
 import * as moment from 'moment';
 import {TaskDetailComponent} from './task-detail.component';
 import {Task} from '../model/task';
+import {Tag} from '../model/tag';
 import {TaskService} from '../service/task.service';
 import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
@@ -44,8 +45,10 @@ describe('TaskDetailComponent', () => {
       description: 'Test description',
       status: 'PROCESSED',
       deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE),
-      deadlineTime: moment('1970-01-01 12:00').format(moment.HTML5_FMT.TIME)
+      deadlineTime: moment('1970-01-01 12:00').format(moment.HTML5_FMT.TIME),
+      tags: [{name: 'Red'}]
     });
+
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
@@ -130,6 +133,24 @@ describe('TaskDetailComponent', () => {
     fixture.whenStable().then(() => {
       component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on tag add', () => {
+    fixture.whenStable().then(() => {
+      const event = {value: 'Green'} as any;
+      component.onTagChipInputTokenEnd(event);
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on tag remove', () => {
+    fixture.whenStable().then(() => {
+      const tag = new Tag('Red');
+      component.onTagChipRemoved(tag);
       fixture.detectChanges();
       expect(taskService.updateTask).toHaveBeenCalled();
     });
