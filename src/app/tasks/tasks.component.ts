@@ -125,7 +125,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
 
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
-      this.formModel.deadlineDate = TasksComponent.getDeadlineDate(this.taskGroup);
+      this.formModel.deadline = TasksComponent.getDeadlineDate(this.taskGroup);
       this.formModel.status = TasksComponent.getTaskStatus(this.taskGroup);
 
       this.taskService.createTask(this.formModel).subscribe(task => {

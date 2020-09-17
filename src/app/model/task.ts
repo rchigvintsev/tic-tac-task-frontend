@@ -9,8 +9,8 @@ export class Task extends AbstractEntity<Task> {
   title: string;
   description: string;
   status: string;
-  deadlineDate: Date;
-  deadlineTime: Date;
+  deadline: Date;
+  deadlineTimeExplicitlySet = false;
   tags: Tag[] = [];
 
   deserialize(input: any): Task {
@@ -18,16 +18,10 @@ export class Task extends AbstractEntity<Task> {
     this.title = input.title;
     this.description = input.description;
     this.status = input.status;
-    if (input.deadlineDate) {
-      this.deadlineDate = moment.utc(input.deadlineDate, moment.HTML5_FMT.DATE)
-        .endOf('day')
-        .local()
-        .startOf('day')
-        .toDate();
+    if (input.deadline) {
+      this.deadline = moment.utc(input.deadline, moment.HTML5_FMT.DATETIME_LOCAL).local().toDate();
     }
-    if (input.deadlineTime) {
-      this.deadlineTime = moment(input.deadlineTime, moment.HTML5_FMT.TIME).toDate();
-    }
+    this.deadlineTimeExplicitlySet = input.deadlineTimeExplicitlySet;
     if (input.tags) {
       const tags = [];
       for (const tag of input.tags) {
@@ -48,8 +42,8 @@ export class Task extends AbstractEntity<Task> {
       title: this.title,
       description: this.description,
       status: this.status,
-      deadlineDate: this.deadlineDate ? moment(this.deadlineDate).utc().format(moment.HTML5_FMT.DATE) : null,
-      deadlineTime: this.deadlineTime ? moment(this.deadlineTime).utc().format(moment.HTML5_FMT.TIME) : null,
+      deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL) : null,
+      deadlineTimeExplicitlySet: this.deadlineTimeExplicitlySet,
       tags
     };
   }
@@ -60,8 +54,8 @@ export class Task extends AbstractEntity<Task> {
     clone.title = this.title;
     clone.description = this.description;
     clone.status = this.status;
-    clone.deadlineDate = this.deadlineDate != null ? new Date(this.deadlineDate.getTime()) : null;
-    clone.deadlineTime = this.deadlineTime != null ? new Date(this.deadlineTime.getTime()) : null;
+    clone.deadline = this.deadline != null ? new Date(this.deadline.getTime()) : null;
+    clone.deadlineTimeExplicitlySet = this.deadlineTimeExplicitlySet;
     clone.tags = this.tags.slice();
     return clone;
   }
@@ -71,15 +65,15 @@ export class Task extends AbstractEntity<Task> {
       && Objects.equals(this.title, other.title)
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)
-      && Objects.equals(this.deadlineDate, other.deadlineDate)
-      && Objects.equals(this.deadlineTime, other.deadlineTime)
+      && Objects.equals(this.deadline, other.deadline)
+      && Objects.equals(this.deadlineTimeExplicitlySet, other.deadlineTimeExplicitlySet)
       && Objects.equals(this.tags, other.tags);
   }
 
   isOverdue(): boolean {
-    if (this.deadlineDate == null) {
+    if (this.deadline == null) {
       return false;
     }
-    return moment().isAfter(this.deadlineDate, 'days');
+    return moment().isAfter(this.deadline, 'days');
   }
 }

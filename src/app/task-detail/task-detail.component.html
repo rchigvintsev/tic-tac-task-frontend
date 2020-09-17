@@ -42,7 +42,7 @@
           </textarea>
         </label>
         <mat-error *ngIf="errorStateMatchers.get('description').errorState">
-          {{ getFieldErrorMessage('description') }}
+          {{ getFirstFieldErrorMessage('description') }}
         </mat-error>
       </mat-form-field>
 
@@ -52,16 +52,16 @@
             <label>
               <input matInput
                      name="deadlineDate"
-                     [(ngModel)]="taskFormModel.deadlineDate"
+                     [(ngModel)]="taskFormModel.deadline"
                      [class.color-warn]="taskFormModel.isOverdue()"
                      [matDatepicker]="deadlineDatepicker"
-                     [errorStateMatcher]="errorStateMatchers.get('deadlineDate')"
+                     [errorStateMatcher]="errorStateMatchers.get('deadline')"
                      (dateChange)="onDeadlineDateInputChange()"
                      placeholder="{{ 'deadline' | translate }}"
                      readonly>
             </label>
             <button mat-button
-                    *ngIf="taskFormModel.deadlineDate"
+                    *ngIf="taskFormModel.deadline"
                     matSuffix
                     mat-icon-button
                     aria-label="Clear deadline date"
@@ -85,7 +85,7 @@
                      [class.color-warn]="deadlineTimeEnabled && taskFormModel.isOverdue()"
                      [format]="24"
                      [disabled]="!deadlineTimeEnabled"
-                     placeholder="{{ 'time' | translate }}"
+                     [errorStateMatcher]="errorStateMatchers.get('deadline')"
                      readonly>
             </label>
             <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">
@@ -107,7 +107,7 @@
 
         <div class="deadline-error-container">
           <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
-            {{ getFieldErrorMessage('deadlineDate', 'deadlineTime') }}
+            {{ getFirstFieldErrorMessage('deadlineDate', 'deadlineTime') }}
           </mat-error>
         </div>
       </div>

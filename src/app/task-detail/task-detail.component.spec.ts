@@ -44,8 +44,8 @@ describe('TaskDetailComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE),
-      deadlineTime: moment('1970-01-01 12:00').format(moment.HTML5_FMT.TIME),
+      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
+      deadlineTimeExplicitlySet: true,
       tags: [{name: 'Red'}]
     });
 
@@ -129,15 +129,6 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should save task on deadline date input change', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
-      component.onDeadlineDateInputChange();
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
-  });
-
   it('should save task on tag add', () => {
     fixture.whenStable().then(() => {
       const event = {value: 'Green'} as any;
@@ -158,10 +149,10 @@ describe('TaskDetailComponent', () => {
 
   it('should display server validation error', () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {fieldErrors: {deadlineDate: 'Must be valid'}}});
+      return throwError({status: 400, error: {fieldErrors: {deadline: 'Must be valid'}}});
     });
     fixture.whenStable().then(() => {
-      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
       fixture.detectChanges();
 
@@ -177,7 +168,7 @@ describe('TaskDetailComponent', () => {
       return throwError({status: 400, error: {fieldErrors: {absent: 'Must be present'}}});
     });
     fixture.whenStable().then(() => {
-      component.taskFormModel.deadlineDate = moment().add(1, 'days').toDate();
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
       component.onDeadlineDateInputChange();
       fixture.detectChanges();
 
@@ -201,16 +192,50 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should save task on deadline date input clear', () => {
+  it('should save task on "deadlineDate" input change', () => {
     fixture.whenStable().then(() => {
-      component.onClearDeadlineDateButtonClick();
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.onDeadlineDateInputChange();
       fixture.detectChanges();
-      expect(component.taskFormModel.deadlineDate).toBeNull();
       expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
 
-  it('should save task on deadline time enabled checkbox change', () => {
+  it('should set deadline time to end of day on "deadlineDate" input change when "deadlineTime" input is disabled', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+      component.deadlineTimeEnabled = false;
+      component.onDeadlineDateInputChange();
+      fixture.detectChanges();
+      const momentTime = moment(component.taskFormModel.deadline);
+      expect(momentTime.hours()).toEqual(23);
+      expect(momentTime.minutes()).toEqual(59);
+    });
+  });
+
+  it('should set deadline time to end of day on "deadlineTimeEnabled" checkbox uncheck', () => {
+    const checkboxChangeEvent = new MatCheckboxChange();
+    checkboxChangeEvent.checked = false;
+
+    fixture.whenStable().then(() => {
+      component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
+      fixture.detectChanges();
+      const momentTime = moment(component.taskFormModel.deadline);
+      expect(momentTime.hours()).toEqual(23);
+      expect(momentTime.minutes()).toEqual(59);
+    });
+  });
+
+  it('should save task on "deadlineDate" input clear', () => {
+    fixture.whenStable().then(() => {
+      component.onClearDeadlineDateButtonClick();
+      fixture.detectChanges();
+      expect(component.taskFormModel.deadline).toBeNull();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on "deadlineTimeEnabled" checkbox change', () => {
     const checkboxChangeEvent = new MatCheckboxChange();
     checkboxChangeEvent.checked = true;
 
@@ -230,14 +255,14 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should add "color-warn" class to deadline date input when task is overdue', () => {
+  it('should add "color-warn" class to "deadlineDate" input when task is overdue', () => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.whenStable().then(() => {
       expect(compiled.querySelector('form input[name="deadlineDate"].color-warn')).not.toBeNull();
     });
   });
 
-  it('should add "color-warn" class to deadline time input when task is overdue', () => {
+  it('should add "color-warn" class to "deadlineTime" input when task is overdue', () => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.whenStable().then(() => {
       fixture.detectChanges();

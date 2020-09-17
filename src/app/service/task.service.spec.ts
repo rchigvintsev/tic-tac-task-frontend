@@ -73,7 +73,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(testTasks);
 
@@ -88,7 +88,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(2);
 
@@ -108,7 +108,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineDateFrom=[0-9\-]+&deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineFrom=[0-9\-]+&deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(testTasks);
 
@@ -123,7 +123,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineDateFrom=[0-9\-]+&deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineFrom=[0-9\-]+&deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(2);
 
@@ -143,7 +143,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(testTasks);
 
@@ -158,7 +158,7 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineDateTo=[0-9\-]+/.test(httpReq.url);
+        && /\?deadlineTo=[0-9\-]+/.test(httpReq.url);
     });
     request.flush(2);
 
@@ -175,8 +175,7 @@ describe('TaskService', () => {
       expect(tasks).toEqual(testTasks);
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/processed`
-      + '?deadlineDateFrom=&deadlineDateTo=&page=0&size=20');
+    const request = httpMock.expectOne(`${taskService.baseUrl}/processed?deadlineFrom=&deadlineTo=&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
 
@@ -188,8 +187,7 @@ describe('TaskService', () => {
       .pipe(skip(1))
       .subscribe(count => expect(count).toBe(2));
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count`
-      + '?deadlineDateFrom=&deadlineDateTo=');
+    const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count?deadlineFrom=&deadlineTo=`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
 

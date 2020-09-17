@@ -58,13 +58,15 @@ describe('TasksComponent', () => {
         id: 2,
         title: 'Task 2',
         status: 'PROCESSED',
-        deadlineDate: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATE)
+        deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
+        deadlineTimeExplicitlySet: true
       }));
       tasks.push(new Task().deserialize({
         id: 3,
         title: 'Task 3',
         status: 'PROCESSED',
-        deadlineDate: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATE)
+        deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
+        deadlineTimeExplicitlySet: false
       }));
 
       taskService = fixture.debugElement.injector.get(TaskService);
@@ -107,7 +109,7 @@ describe('TasksComponent', () => {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadlineDate).toEqual(today);
+        expect(component.tasks[3].deadline).toEqual(today);
         expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
       });
     });
@@ -122,7 +124,7 @@ describe('TasksComponent', () => {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadlineDate).toEqual(today);
+        expect(component.tasks[3].deadline).toEqual(today);
         expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
       });
     });
@@ -137,7 +139,7 @@ describe('TasksComponent', () => {
 
         const tomorrow = moment().add(1, 'day').toDate();
         tomorrow.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadlineDate).toEqual(tomorrow);
+        expect(component.tasks[3].deadline).toEqual(tomorrow);
         expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
       });
     });
@@ -150,7 +152,7 @@ describe('TasksComponent', () => {
         component.onTaskFormSubmit();
         fixture.detectChanges();
 
-        expect(component.tasks[3].deadlineDate).not.toBeDefined();
+        expect(component.tasks[3].deadline).not.toBeDefined();
         expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
       });
     });
