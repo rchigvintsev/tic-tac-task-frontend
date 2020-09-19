@@ -43,18 +43,18 @@ export class TaskService {
 
   private static getParametersForTaskGroup(taskGroup: TaskGroup): string {
     if (taskGroup === TaskGroup.TODAY) {
-      const deadlineTo = moment().startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
       return `deadlineTo=${deadlineTo}`;
     }
 
     if (taskGroup === TaskGroup.TOMORROW) {
-      const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
-      const deadlineTo = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+      const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
       return `deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
     }
 
     if (taskGroup === TaskGroup.WEEK) {
-      const deadlineTo = moment().add(1, 'week').startOf('day').utc().format(moment.HTML5_FMT.DATE);
+      const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
       return `deadlineTo=${deadlineTo}`;
     }
 
