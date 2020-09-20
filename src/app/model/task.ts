@@ -74,6 +74,6 @@ export class Task extends AbstractEntity<Task> {
     if (this.deadline == null) {
       return false;
     }
-    return moment().isAfter(this.deadline, 'days');
+    return moment().isAfter(this.deadline, 'minutes');
   }
 }
