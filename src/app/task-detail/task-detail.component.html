@@ -72,7 +72,9 @@
             <mat-datepicker #deadlineDatepicker></mat-datepicker>
           </mat-form-field>
 
-          <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox" [checked]="deadlineTimeEnabled"
+          <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox"
+                        [checked]="deadlineTimeEnabled"
+                        [disabled]="taskFormModel.deadline == null"
                         (change)="onDeadlineTimeEnabledCheckboxChange($event)">
           </mat-checkbox>
 

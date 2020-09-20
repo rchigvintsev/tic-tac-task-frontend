@@ -278,4 +278,13 @@ describe('TaskDetailComponent', () => {
       expect(taskService.updateTaskCounters).toHaveBeenCalled();
     });
   });
+
+  it('should disable "deadlineTimeEnabled" checkbox when deadline is not defined', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.whenStable().then(() => {
+      component.taskFormModel.deadline = null;
+      fixture.detectChanges();
+      expect(compiled.querySelector('.deadline-time-checkbox.mat-checkbox-disabled')).not.toBeNull();
+    });
+  });
 });
