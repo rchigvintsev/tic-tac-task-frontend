@@ -6,7 +6,6 @@ import {map} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {Tag} from '../model/tag';
-import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};
 
@@ -20,10 +19,8 @@ export class TagService {
     this.baseUrl = `${this.config.apiBaseUrl}/tags`;
   }
 
-  getTags(pageRequest: PageRequest = new PageRequest()): Observable<Tag[]> {
-    const params = pageRequest.toQueryParameters();
-    const url = `${this.baseUrl}?${params}`;
-    return this.http.get<any>(url, commonHttpOptions).pipe(
+  getTags(): Observable<Tag[]> {
+    return this.http.get<any>(this.baseUrl, commonHttpOptions).pipe(
       map(response => {
         const tags = [];
         for (const json of response) {

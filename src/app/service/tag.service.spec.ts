@@ -26,7 +26,7 @@ describe('TagService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return tags', () => {
+  it('should return all tags', () => {
     const testTags = [];
     testTags.push(new Tag().deserialize({id: 1, name: 'Tag 1'}));
     testTags.push(new Tag().deserialize({id: 2, name: 'Tag 2'}));
@@ -36,7 +36,7 @@ describe('TagService', () => {
       expect(tags).toEqual(testTags);
     });
 
-    const request = httpMock.expectOne(`${tagService.baseUrl}?page=0&size=20`);
+    const request = httpMock.expectOne(`${tagService.baseUrl}`);
     expect(request.request.method).toBe('GET');
     request.flush(testTags);
 

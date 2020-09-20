@@ -1,15 +1,9 @@
-<mat-card>
-  <mat-card-title>{{ 'tags' | translate }}</mat-card-title>
-
-  <mat-card-content>
-    <mat-list id="tag_list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTagListScroll()">
-      <mat-list-item *ngFor="let tag of tags" [ngClass]="'tag-' + tag.id">
-        <div class="list-row">
-          <div class="list-column name-column">
-            <span>{{ tag.name }}</span>
-          </div>
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-</mat-card>
+<mat-list id="tag_list">
+  <mat-list-item *ngFor="let tag of tags" [ngClass]="'tag-' + tag.id">
+    <div class="list-row">
+      <div class="list-column name-column">
+        <span>{{ tag.name }}</span>
+      </div>
+    </div>
+  </mat-list-item>
+</mat-list>

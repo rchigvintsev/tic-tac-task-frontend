@@ -72,10 +72,10 @@ describe('SidenavMenuComponent', () => {
   });
 
   it('should highlight selected menu item', () => {
-    routerEvents.next(new NavigationEnd(1, '/en/tag', null));
+    routerEvents.next(new NavigationEnd(1, '/en/task#all', null));
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected[href="/en/tag"]'));
+      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected[href="/en/task#all"]'));
       expect(selectedItem).toBeTruthy();
     });
   });

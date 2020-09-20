@@ -6,7 +6,7 @@
       <mat-icon mat-list-icon>inbox</mat-icon>
       <span matLine>{{ 'inbox' | translate }}</span>
       <span *ngIf="hasTasks(TaskGroup.INBOX) | async" [matBadge]="getTaskCount(TaskGroup.INBOX) | async | number"
-            matBadgeOverlap="true" class="right-margin"></span>
+            matBadgeOverlap="true" class="right-margin-12"></span>
     </a>
 
     <mat-divider></mat-divider>
@@ -23,7 +23,7 @@
         </mat-icon>
         <p matLine>{{ 'scheduled_for_today' | translate }}</p>
         <span *ngIf="hasTasks(TaskGroup.TODAY) | async" [matBadge]="getTaskCount(TaskGroup.TODAY) | async | number"
-              matBadgeOverlap="true" class="right-margin"></span>
+              matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
       <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.TOMORROW.value"
@@ -35,7 +35,7 @@
         </mat-icon>
         <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
         <span *ngIf="hasTasks(TaskGroup.TOMORROW) | async" [matBadge]="getTaskCount(TaskGroup.TOMORROW) | async | number"
-              matBadgeOverlap="true" class="right-margin"></span>
+              matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
       <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.WEEK.value"
@@ -47,7 +47,7 @@
         </mat-icon>
         <p matLine>{{ 'scheduled_for_week' | translate }}</p>
         <span *ngIf="hasTasks(TaskGroup.WEEK) | async" [matBadge]="getTaskCount(TaskGroup.WEEK) | async | number"
-              matBadgeOverlap="true" class="right-margin"></span>
+              matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
       <a mat-list-item [routerLink]="[translate.currentLang, 'task']" [fragment]="TaskGroup.SOME_DAY.value"
@@ -59,7 +59,7 @@
         </mat-icon>
         <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
         <span *ngIf="hasTasks(TaskGroup.SOME_DAY) | async" [matBadge]="getTaskCount(TaskGroup.SOME_DAY) | async | number"
-              matBadgeOverlap="true" class="right-margin"></span>
+              matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
     </ng-container>
 
@@ -71,15 +71,22 @@
       <mat-icon mat-list-icon>assignment</mat-icon>
       <p matLine>{{ 'all_tasks' | translate }}</p>
       <span *ngIf="hasTasks(TaskGroup.ALL) | async" [matBadge]="getTaskCount(TaskGroup.ALL) | async | number"
-            matBadgeOverlap="true" class="right-margin"></span>
+            matBadgeOverlap="true" class="right-margin-12"></span>
     </a>
 
     <mat-divider></mat-divider>
 
-    <a mat-list-item [routerLink]="[translate.currentLang, 'tag']"
-       [class.mat-list-item-selected]="isRouterLinkActive('tag')">
-      <mat-icon mat-list-icon>label</mat-icon>
-      <p matLine>{{ 'tags' | translate }}</p>
-    </a>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header class="sidenav-expansion-panel-header">
+          <div class="sidenav-expansion-panel-header-content">
+            <mat-icon>label</mat-icon>
+            <span>{{ 'tags' | translate }}</span>
+          </div>
+        </mat-expansion-panel-header>
+
+        <app-tags></app-tags>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-list>
 </mat-nav-list>
