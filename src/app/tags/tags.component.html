@@ -1,8 +1,20 @@
 <mat-list id="tag_list">
-  <mat-list-item *ngFor="let tag of tags" [ngClass]="'tag-' + tag.id">
+  <mat-list-item *ngFor="let tag of tags" [ngClass]="'tag-' + tag.id"
+                 (mouseover)="onTagListItemMouseOver(tag)"
+                 (mouseout)="onTagListItemMouseOut(tag)">
     <div class="list-row">
       <div class="list-column name-column">
         <span>{{ tag.name }}</span>
+      </div>
+
+      <div class="list-column menu-trigger-column" [hidden]="tag.id !== selectedTag?.id">
+        <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu"
+                (mousedown)="onTagMenuTriggerButtonMouseDown($event)" (menuOpened)="onTagMenuOpened(tag)">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #tagMenu="matMenu" xPosition="before" (closed)="onTagMenuClosed(tag)">
+        </mat-menu>
       </div>
     </div>
   </mat-list-item>

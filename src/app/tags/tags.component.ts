@@ -16,6 +16,8 @@ import {WebServiceBasedComponent} from '../web-service-based.component';
 })
 export class TagsComponent extends WebServiceBasedComponent implements OnInit {
   tags: Array<Tag>;
+  selectedTag: Tag;
+  tagMenuOpened: boolean;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -27,5 +29,29 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit {
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
+  }
+
+  onTagMenuTriggerButtonMouseDown(event) {
+    event.stopPropagation(); // To prevent ripples on underlying list item
+  }
+
+  onTagListItemMouseOver(tag: Tag) {
+    this.selectedTag = tag;
+  }
+
+  onTagListItemMouseOut(_: Tag) {
+    if (!this.tagMenuOpened) {
+      this.selectedTag = null;
+    }
+  }
+
+  onTagMenuOpened(tag: Tag) {
+    this.tagMenuOpened = true;
+    this.selectedTag = tag;
+  }
+
+  onTagMenuClosed(_: Tag) {
+    this.tagMenuOpened = false;
+    this.selectedTag = null;
   }
 }
