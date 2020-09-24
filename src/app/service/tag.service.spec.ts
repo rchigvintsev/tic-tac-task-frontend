@@ -42,4 +42,12 @@ describe('TagService', () => {
 
     return subscription;
   });
+
+  it('should delete tag', () => {
+    const testTag = new Tag().deserialize({id: 1});
+    tagService.deleteTag(testTag).subscribe(() => {});
+    const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+  });
 });

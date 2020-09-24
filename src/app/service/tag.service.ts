@@ -30,4 +30,8 @@ export class TagService {
       })
     );
   }
+
+  deleteTag(tag: Tag): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, commonHttpOptions);
+  }
 }

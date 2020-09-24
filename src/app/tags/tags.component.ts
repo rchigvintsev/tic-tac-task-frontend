@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -8,6 +9,7 @@ import {TagService} from '../service/tag.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {WebServiceBasedComponent} from '../web-service-based.component';
+import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-tags',
@@ -23,7 +25,8 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit {
               translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
-              private tagService: TagService) {
+              private tagService: TagService,
+              private dialog: MatDialog) {
     super(translate, router, authenticationService, log);
   }
 
@@ -53,5 +56,25 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit {
   onTagMenuClosed(_: Tag) {
     this.tagMenuOpened = false;
     this.selectedTag = null;
+  }
+
+  onDeleteTagButtonClick(tag: Tag) {
+    const title = this.translate.instant('attention');
+    const content = this.translate.instant('delete_tag_question');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      restoreFocus: false,
+      data: {title, content}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteTag(tag);
+      }
+    });
+  }
+
+  private deleteTag(tag: Tag) {
+    this.tagService.deleteTag(tag).subscribe(_ => this.tags = this.tags.filter(t => t.id !== tag.id),
+      this.onServiceCallError.bind(this));
   }
 }

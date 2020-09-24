@@ -14,6 +14,7 @@
         </button>
 
         <mat-menu #tagMenu="matMenu" xPosition="before" (closed)="onTagMenuClosed(tag)">
+          <button mat-menu-item (click)="onDeleteTagButtonClick(tag)">{{ 'delete' | translate }}</button>
         </mat-menu>
       </div>
     </div>
