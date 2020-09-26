@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
@@ -16,22 +16,35 @@ import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-d
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.styl']
 })
-export class TagsComponent extends WebServiceBasedComponent implements OnInit {
+export class TagsComponent extends WebServiceBasedComponent implements OnInit, AfterViewChecked {
   tags: Array<Tag>;
   selectedTag: Tag;
+  tagFormModel: Tag;
   tagMenuOpened: boolean;
+
+  @ViewChild('tagNameInput')
+  private tagNameInput: ElementRef;
 
   constructor(router: Router,
               translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
               private tagService: TagService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private changeDetector: ChangeDetectorRef) {
     super(translate, router, authenticationService, log);
   }
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.tagFormModel) {
+      this.tagNameInput.nativeElement.focus();
+      // It is required to prevent ExpressionChangedAfterItHasBeenCheckedError
+      this.changeDetector.detectChanges();
+    }
   }
 
   onTagMenuTriggerButtonMouseDown(event) {
@@ -42,20 +55,27 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit {
     this.selectedTag = tag;
   }
 
-  onTagListItemMouseOut(_: Tag) {
+  onTagListItemMouseOut() {
     if (!this.tagMenuOpened) {
       this.selectedTag = null;
     }
   }
 
-  onTagMenuOpened(tag: Tag) {
+  onTagMenuOpened() {
     this.tagMenuOpened = true;
-    this.selectedTag = tag;
   }
 
-  onTagMenuClosed(_: Tag) {
+  onTagMenuClosed() {
     this.tagMenuOpened = false;
     this.selectedTag = null;
+  }
+
+  onTagNameInputBlur() {
+    this.tagFormModel = null;
+  }
+
+  onEditTagButtonClick(tag: Tag) {
+    this.tagFormModel = tag;
   }
 
   onDeleteTagButtonClick(tag: Tag) {

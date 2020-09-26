@@ -1,19 +1,36 @@
 <mat-list id="tag_list">
   <mat-list-item *ngFor="let tag of tags" [ngClass]="'tag-' + tag.id"
                  (mouseover)="onTagListItemMouseOver(tag)"
-                 (mouseout)="onTagListItemMouseOut(tag)">
-    <div class="list-row">
-      <div class="list-column name-column">
+                 (mouseout)="onTagListItemMouseOut()">
+    <div class="list-row tag-list-row">
+      <form *ngIf="tag.id === tagFormModel?.id" class="name-form">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #tagNameInput
+                   name="name"
+                   type="text"
+                   [(ngModel)]="tagFormModel.name"
+                   (blur)="onTagNameInputBlur()"
+                   maxlength="50"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
+
+      <div *ngIf="tag.id !== tagFormModel?.id" class="list-column name-column">
         <span>{{ tag.name }}</span>
       </div>
 
-      <div class="list-column menu-trigger-column" [hidden]="tag.id !== selectedTag?.id">
+      <div [hidden]="tag.id !== selectedTag?.id || tag.id === tagFormModel?.id" class="list-column menu-trigger-column">
         <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu"
-                (mousedown)="onTagMenuTriggerButtonMouseDown($event)" (menuOpened)="onTagMenuOpened(tag)">
+                (mousedown)="onTagMenuTriggerButtonMouseDown($event)" (menuOpened)="onTagMenuOpened()">
           <mat-icon>more_vert</mat-icon>
         </button>
 
-        <mat-menu #tagMenu="matMenu" xPosition="before" (closed)="onTagMenuClosed(tag)">
+        <mat-menu #tagMenu="matMenu" xPosition="before" (closed)="onTagMenuClosed()">
+          <button mat-menu-item (click)="onEditTagButtonClick(tag)">{{ 'edit' | translate }}</button>
           <button mat-menu-item (click)="onDeleteTagButtonClick(tag)">{{ 'delete' | translate }}</button>
         </mat-menu>
       </div>

@@ -65,31 +65,34 @@ describe('TagsComponent', () => {
   });
 
   it('should hide tag menu trigger button on tag list item mouse out', () => {
+    component.selectedTag = component.tags[0];
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
-      component.onTagListItemMouseOut(component.tags[0]);
+      component.onTagListItemMouseOut();
       fixture.detectChanges();
       expect(fixture.debugElement.query(menuTriggerColumnSelector).nativeElement.getAttribute('hidden')).toEqual('');
     });
   });
 
   it('should not hide tag menu trigger button on tag list item mouse out when tag menu is opened', () => {
+    component.selectedTag = component.tags[0];
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
-      component.onTagMenuOpened(component.tags[0]);
-      component.onTagListItemMouseOut(component.tags[0]);
+      component.onTagMenuOpened();
+      component.onTagListItemMouseOut();
       fixture.detectChanges();
       expect(fixture.debugElement.query(menuTriggerColumnSelector).nativeElement.getAttribute('hidden')).toBeNull();
     });
   });
 
   it('should hide tag menu trigger button on tag menu closed', () => {
+    component.selectedTag = component.tags[0];
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
-      component.onTagMenuClosed(component.tags[0]);
+      component.onTagMenuClosed();
       fixture.detectChanges();
       expect(fixture.debugElement.query(menuTriggerColumnSelector).nativeElement.getAttribute('hidden')).toEqual('');
     });
