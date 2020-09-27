@@ -3,7 +3,7 @@
                  (mouseover)="onTagListItemMouseOver(tag)"
                  (mouseout)="onTagListItemMouseOut()">
     <div class="list-row tag-list-row">
-      <form *ngIf="tag.id === tagFormModel?.id" class="name-form">
+      <form *ngIf="tag.id === tagFormModel?.id" class="tag-name-form">
         <mat-form-field>
           <label>
             <input matInput

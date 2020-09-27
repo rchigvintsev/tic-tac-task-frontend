@@ -43,6 +43,17 @@ describe('TagService', () => {
     return subscription;
   });
 
+  it('should update tag', () => {
+    const testTag = new Tag().deserialize({id: 1, name: 'Updated test tag'});
+    tagService.updateTag(testTag).subscribe(tag => {
+      expect(tag).toEqual(testTag);
+    });
+
+    const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(testTag);
+  });
+
   it('should delete tag', () => {
     const testTag = new Tag().deserialize({id: 1});
     tagService.deleteTag(testTag).subscribe(() => {});

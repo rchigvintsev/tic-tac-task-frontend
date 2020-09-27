@@ -38,11 +38,11 @@ describe('ConfigService', () => {
     return result;
   });
 
-  it('should throw exception on attempt to access uninitialized service', () => {
+  it('should throw error on attempt to access uninitialized service', () => {
     expect(() => configService.apiBaseUrl).toThrow(new Error('Service is not initialized'));
   });
 
-  it('should throw exception on attempt to initialize already initialized service', () => {
+  it('should throw error on attempt to initialize already initialized service', () => {
     configService.setConfig(new Config());
     expect(() => configService.setConfig(new Config())).toThrow(new Error('Service is already initialized'));
   });

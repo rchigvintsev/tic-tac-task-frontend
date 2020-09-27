@@ -10,6 +10,7 @@ import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
+import {Strings} from '../util/strings';
 
 @Component({
   selector: 'app-tags',
@@ -21,6 +22,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   selectedTag: Tag;
   tagFormModel: Tag;
   tagMenuOpened: boolean;
+  tagNameInputFocused: boolean;
 
   @ViewChild('tagNameInput')
   private tagNameInput: ElementRef;
@@ -40,8 +42,9 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   }
 
   ngAfterViewChecked(): void {
-    if (this.tagFormModel) {
+    if (this.tagFormModel && !this.tagNameInputFocused) {
       this.tagNameInput.nativeElement.focus();
+      this.tagNameInputFocused = true;
       // It is required to prevent ExpressionChangedAfterItHasBeenCheckedError
       this.changeDetector.detectChanges();
     }
@@ -71,11 +74,12 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   }
 
   onTagNameInputBlur() {
-    this.tagFormModel = null;
+    this.saveTag();
   }
 
   onEditTagButtonClick(tag: Tag) {
-    this.tagFormModel = tag;
+    this.tagFormModel = tag.clone();
+    this.tagNameInputFocused = false;
   }
 
   onDeleteTagButtonClick(tag: Tag) {
@@ -91,6 +95,32 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
         this.deleteTag(tag);
       }
     });
+  }
+
+  private saveTag() {
+    if (this.tagFormModel) {
+      const tagIndex = this.tags.findIndex(t => t.id === this.tagFormModel.id);
+      if (tagIndex < 0) {
+        throw new Error(`Tag is not found by id ${this.tagFormModel.id}`);
+      }
+
+      const tag = this.tags[tagIndex];
+      if (Strings.isBlank(this.tagFormModel.name)) {
+        this.tagFormModel.name = tag.name;
+      }
+
+      if (!this.tagFormModel.equals(tag)) {
+        this.tagService.updateTag(this.tagFormModel).subscribe(savedTag => {
+          this.tagFormModel = null;
+          this.tags[tagIndex] = savedTag;
+        }, error => {
+          this.tagFormModel = null;
+          this.onServiceCallError(error);
+        });
+      } else {
+        this.tagFormModel = null;
+      }
+    }
   }
 
   private deleteTag(tag: Tag) {
