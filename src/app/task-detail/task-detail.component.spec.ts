@@ -11,6 +11,7 @@ import {TaskDetailComponent} from './task-detail.component';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 import {TaskService} from '../service/task.service';
+import {TagService} from '../service/tag.service';
 import {ConfigService} from '../service/config.service';
 import {LogService} from '../service/log.service';
 import {TaskGroupService} from '../service/task-group.service';
@@ -52,6 +53,9 @@ describe('TaskDetailComponent', () => {
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
+
+    const tagService = fixture.debugElement.injector.get(TagService);
+    spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Blue')]));
 
     const logService = fixture.debugElement.injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -129,10 +133,19 @@ describe('TaskDetailComponent', () => {
     });
   });
 
-  it('should save task on tag add', () => {
+  it('should save task on "tagInput" token end', () => {
     fixture.whenStable().then(() => {
-      const event = {value: 'Green'} as any;
+      const event = {value: 'Green', input: {}} as any;
       component.onTagChipInputTokenEnd(event);
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should save task on tag option select', () => {
+    fixture.whenStable().then(() => {
+      const event = {option: {viewValue: 'Blue'}} as any;
+      component.onTagOptionSelected(event);
       fixture.detectChanges();
       expect(taskService.updateTask).toHaveBeenCalled();
     });
