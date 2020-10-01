@@ -31,12 +31,13 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {ColorCircleModule} from 'ngx-color/circle';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SidenavMenuComponent} from './sidenav-menu/sidenav-menu.component';
 import {TasksComponent} from './tasks/tasks.component';
-import {TaskDetailComponent} from './task-detail/task-detail.component';
+import {TaskDetailsComponent} from './task-details/task-details.component';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
@@ -70,7 +71,7 @@ registerLocaleData(localeRu, 'ru');
     AppComponent,
     SidenavMenuComponent,
     TasksComponent,
-    TaskDetailComponent,
+    TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,
     NotBlankValidatorDirective,

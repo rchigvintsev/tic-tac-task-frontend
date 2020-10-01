@@ -7,7 +7,7 @@ import {MatCheckboxChange} from '@angular/material/checkbox';
 import {of, throwError} from 'rxjs';
 
 import * as moment from 'moment';
-import {TaskDetailComponent} from './task-detail.component';
+import {TaskDetailsComponent} from './task-details.component';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 import {TaskService} from '../service/task.service';
@@ -18,9 +18,9 @@ import {TaskGroupService} from '../service/task-group.service';
 import {TaskGroup} from '../service/task-group';
 import {TestSupport} from '../test/test-support';
 
-describe('TaskDetailComponent', () => {
-  let component: TaskDetailComponent;
-  let fixture: ComponentFixture<TaskDetailComponent>;
+describe('TaskDetailsComponent', () => {
+  let component: TaskDetailsComponent;
+  let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
 
   beforeEach(async(() => {
@@ -37,7 +37,7 @@ describe('TaskDetailComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskDetailComponent);
+    fixture = TestBed.createComponent(TaskDetailsComponent);
 
     taskService = fixture.debugElement.injector.get(TaskService);
     const task = new Task().deserialize({

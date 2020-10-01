@@ -30,15 +30,15 @@ const START_OF_DAY_TIME = '00:00';
 const END_OF_DAY_TIME = '23:59';
 
 @Component({
-  selector: 'app-task-detail',
-  templateUrl: './task-detail.component.html',
-  styleUrls: ['./task-detail.component.styl']
+  selector: 'app-task-details',
+  templateUrl: './task-details.component.html',
+  styleUrls: ['./task-details.component.styl']
 })
-export class TaskDetailComponent extends WebServiceBasedComponent implements OnInit {
+export class TaskDetailsComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('title')
   titleElement: ElementRef;
-  @ViewChild('taskDetailForm', {read: NgForm})
-  taskDetailForm: NgForm;
+  @ViewChild('taskDetailsForm', {read: NgForm})
+  taskDetailsForm: NgForm;
   @ViewChild('tagInput')
   tagInput: ElementRef<HTMLInputElement>;
 
@@ -142,7 +142,7 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
 
   getFirstFieldErrorMessage(...fieldNames: string[]): string {
     for (const fieldName of fieldNames) {
-      const control = this.taskDetailForm.controls[fieldName];
+      const control = this.taskDetailsForm.controls[fieldName];
       if (control) {
         const message = control.getError('valid');
         if (message) {
@@ -209,10 +209,10 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
       for (const fieldName of Object.keys(response.error.fieldErrors)) {
         const controls = [];
         if (fieldName === 'deadline') {
-          controls.push(this.taskDetailForm.controls.deadlineDate);
-          controls.push(this.taskDetailForm.controls.deadlineTime);
+          controls.push(this.taskDetailsForm.controls.deadlineDate);
+          controls.push(this.taskDetailsForm.controls.deadlineTime);
         } else {
-          const control = this.taskDetailForm.controls[fieldName];
+          const control = this.taskDetailsForm.controls[fieldName];
           if (control) {
             controls.push(control);
           }
@@ -245,9 +245,9 @@ export class TaskDetailComponent extends WebServiceBasedComponent implements OnI
   }
 
   private filterTagsByName(tagName: string): Tag[] {
-    const normalizedTagName = TaskDetailComponent.normalizeTagName(tagName);
+    const normalizedTagName = TaskDetailsComponent.normalizeTagName(tagName);
     return this.availableTags.filter(tag => {
-      return TaskDetailComponent.normalizeTagName(tag.name).indexOf(normalizedTagName) === 0;
+      return TaskDetailsComponent.normalizeTagName(tag.name).indexOf(normalizedTagName) === 0;
     });
   }
 
