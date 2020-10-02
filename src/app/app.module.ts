@@ -110,6 +110,7 @@ registerLocaleData(localeRu, 'ru');
     BrowserAnimationsModule,
     InfiniteScrollModule,
     NgxMaterialTimepickerModule,
+    ColorCircleModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -19,13 +19,13 @@ import {Strings} from '../util/strings';
 })
 export class TagsComponent extends WebServiceBasedComponent implements OnInit, AfterViewChecked {
   tags: Array<Tag>;
-  selectedTag: Tag;
   tagFormModel: Tag;
   tagMenuOpened: boolean;
   tagNameInputFocused: boolean;
 
   @ViewChild('tagNameInput')
   private tagNameInput: ElementRef;
+  private selectedTag: Tag;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -50,6 +50,14 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     }
   }
 
+  isTagSelected(tag: Tag) {
+    return this.selectedTag && this.selectedTag.id === tag.id;
+  }
+
+  isTagBeingEdited(tag: Tag) {
+    return this.tagFormModel && this.tagFormModel.id === tag.id;
+  }
+
   onTagMenuTriggerButtonMouseDown(event) {
     event.stopPropagation(); // To prevent ripples on underlying list item
   }
@@ -71,10 +79,6 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   onTagMenuClosed() {
     this.tagMenuOpened = false;
     this.selectedTag = null;
-  }
-
-  onTagNameInputBlur() {
-    this.saveTag();
   }
 
   onEditTagButtonClick(tag: Tag) {

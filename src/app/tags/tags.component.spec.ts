@@ -105,13 +105,13 @@ describe('TagsComponent', () => {
     expect(event.stopPropagation).toHaveBeenCalled();
   });
 
-  it('should show tag name form on edit tag button click', () => {
+  it('should show tag form on edit tag button click', () => {
     const tag = component.tags[0];
     fixture.whenStable().then(() => {
       component.onEditTagButtonClick(tag);
       fixture.detectChanges();
-      const tagNameForm = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .tag-name-form`));
-      expect(tagNameForm).toBeTruthy();
+      const tagForm = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .tag-form`));
+      expect(tagForm).toBeTruthy();
     });
   });
 
@@ -122,31 +122,6 @@ describe('TagsComponent', () => {
       fixture.detectChanges();
       const tagNameForm = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .name-column`));
       expect(tagNameForm).toBeFalsy();
-    });
-  });
-
-  it('should save tag on tag name input blur', () => {
-    fixture.whenStable().then(() => {
-      component.tagFormModel = new Tag().deserialize({id: 1, name: 'New name'});
-      component.onTagNameInputBlur();
-      fixture.detectChanges();
-      expect(tagService.updateTag).toHaveBeenCalled();
-    });
-  });
-
-  it('should throw error on tag name input blur when tag is not found by id', () => {
-    fixture.whenStable().then(() => {
-      component.tagFormModel = new Tag().deserialize({id: -1, name: 'New name'});
-      expect(() => component.onTagNameInputBlur()).toThrow(new Error('Tag is not found by id -1'));
-    });
-  });
-
-  it('should not save tag with blank name', () => {
-    fixture.whenStable().then(() => {
-      component.tagFormModel = new Tag().deserialize({id: 1, name: ''});
-      component.onTagNameInputBlur();
-      fixture.detectChanges();
-      expect(tagService.updateTag).not.toHaveBeenCalled();
     });
   });
 
