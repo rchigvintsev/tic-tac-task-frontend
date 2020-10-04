@@ -58,6 +58,10 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     return this.tagFormModel && this.tagFormModel.id === tag.id;
   }
 
+  isTagFormValid() {
+    return this.tagFormModel && !Strings.isBlank(this.tagFormModel.name);
+  }
+
   onTagMenuTriggerButtonMouseDown(event) {
     event.stopPropagation(); // To prevent ripples on underlying list item
   }
@@ -101,26 +105,26 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     });
   }
 
+  onSaveTagButtonClick() {
+    this.saveTag();
+  }
+
+  onCancelTagEditButtonClick() {
+    this.tagFormModel = null;
+  }
+
   private saveTag() {
-    if (this.tagFormModel) {
+    if (this.tagFormModel && !Strings.isBlank(this.tagFormModel.name)) {
       const tagIndex = this.tags.findIndex(t => t.id === this.tagFormModel.id);
       if (tagIndex < 0) {
         throw new Error(`Tag is not found by id ${this.tagFormModel.id}`);
       }
-
       const tag = this.tags[tagIndex];
-      if (Strings.isBlank(this.tagFormModel.name)) {
-        this.tagFormModel.name = tag.name;
-      }
-
       if (!this.tagFormModel.equals(tag)) {
         this.tagService.updateTag(this.tagFormModel).subscribe(savedTag => {
           this.tagFormModel = null;
           this.tags[tagIndex] = savedTag;
-        }, error => {
-          this.tagFormModel = null;
-          this.onServiceCallError(error);
-        });
+        }, this.onServiceCallError.bind(this));
       } else {
         this.tagFormModel = null;
       }

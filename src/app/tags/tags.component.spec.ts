@@ -66,7 +66,7 @@ describe('TagsComponent', () => {
   });
 
   it('should hide tag menu trigger button on tag list item mouse out', () => {
-    component.selectedTag = component.tags[0];
+    component.onTagListItemMouseOver(component.tags[0]);
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
@@ -77,7 +77,7 @@ describe('TagsComponent', () => {
   });
 
   it('should not hide tag menu trigger button on tag list item mouse out when tag menu is opened', () => {
-    component.selectedTag = component.tags[0];
+    component.onTagListItemMouseOver(component.tags[0]);
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
@@ -89,7 +89,7 @@ describe('TagsComponent', () => {
   });
 
   it('should hide tag menu trigger button on tag menu closed', () => {
-    component.selectedTag = component.tags[0];
+    component.onTagListItemMouseOver(component.tags[0]);
     const tagId = component.tags[0].id;
     const menuTriggerColumnSelector = By.css('.tag-' + tagId + ' .menu-trigger-column');
     fixture.whenStable().then(() => {
@@ -115,13 +115,52 @@ describe('TagsComponent', () => {
     });
   });
 
+  it('should hide tag form on "cancelTagButton" click', () => {
+    const tag = component.tags[0];
+    fixture.whenStable().then(() => {
+      component.tagFormModel = tag.clone();
+      component.onCancelTagEditButtonClick();
+      fixture.detectChanges();
+      const tagForm = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .tag-form`));
+      expect(tagForm).toBeFalsy();
+    });
+  });
+
   it('should hide tag name column on edit tag button click', () => {
     const tag = component.tags[0];
     fixture.whenStable().then(() => {
       component.onEditTagButtonClick(tag);
       fixture.detectChanges();
-      const tagNameForm = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .name-column`));
-      expect(tagNameForm).toBeFalsy();
+      const tagNameColumn = fixture.debugElement.query(By.css(`#tag_list .tag-${tag.id} .name-column`));
+      expect(tagNameColumn).toBeFalsy();
+    });
+  });
+
+  it('should save tag on "saveTagButton" click', () => {
+    fixture.whenStable().then(() => {
+      component.tagFormModel = component.tags[0].clone();
+      component.tagFormModel.name = 'New tag';
+      component.onSaveTagButtonClick();
+      fixture.detectChanges();
+      expect(tagService.updateTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should not save tag with blank name on "saveTagButton" click', () => {
+    fixture.whenStable().then(() => {
+      component.tagFormModel = component.tags[0].clone();
+      component.tagFormModel.name = ' ';
+      component.onSaveTagButtonClick();
+      fixture.detectChanges();
+      expect(tagService.updateTag).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should throw error on "saveTagButton" click when tag model is not found by id', () => {
+    fixture.whenStable().then(() => {
+      component.tagFormModel = component.tags[0].clone();
+      component.tagFormModel.id = -1;
+      expect(() => component.onSaveTagButtonClick()).toThrow(new Error('Tag is not found by id -1'));
     });
   });
 
