@@ -5,6 +5,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 
 import {of, throwError} from 'rxjs';
+import {skip} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import {TaskDetailsComponent} from './task-details.component';
@@ -55,7 +56,7 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'updateTaskCounters').and.stub();
 
     const tagService = fixture.debugElement.injector.get(TagService);
-    spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Blue')]));
+    spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
 
     const logService = fixture.debugElement.injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -157,6 +158,16 @@ describe('TaskDetailsComponent', () => {
       component.onTagChipRemoved(tag);
       fixture.detectChanges();
       expect(taskService.updateTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should filter tag options on tag input value change', () => {
+    fixture.whenStable().then(() => {
+      const subscription = component.filteredTags.pipe(skip(1))
+        .subscribe(filteredTags => expect(filteredTags).toEqual([new Tag('Green')]));
+      component.tagControl.setValue('Gr');
+      fixture.detectChanges();
+      return subscription;
     });
   });
 
