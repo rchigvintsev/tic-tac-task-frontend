@@ -27,7 +27,8 @@
               <label>
                 <input matInput type="text" name="dummy" value="I'm dummy" hidden="hidden"/>
               </label>
-              <color-circle></color-circle>
+              <color-circle [color]="tagFormModel.color" (onChangeComplete)="onColorChangeComplete($event)">
+              </color-circle>
             </mat-form-field>
 
             <div class="form-buttons">

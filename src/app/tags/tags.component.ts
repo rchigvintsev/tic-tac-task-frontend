@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslateService} from '@ngx-translate/core';
+import {ColorEvent} from 'ngx-color';
 
 import {Tag} from '../model/tag';
 import {TagService} from '../service/tag.service';
@@ -111,6 +112,10 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   onCancelTagEditButtonClick() {
     this.tagFormModel = null;
+  }
+
+  onColorChangeComplete(e: ColorEvent): void {
+    this.tagFormModel.color = e.color.hex;
   }
 
   private saveTag() {
