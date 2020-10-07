@@ -11,15 +11,19 @@ export class Tag extends AbstractEntity<Tag> {
     this.name = name;
   }
 
+  private static hexStringToNumber(hex: string) {
+    return hex ? parseInt(hex.substring(1), 16) : null;
+  }
+
   deserialize(input: any): Tag {
     this.id = input.id;
     this.name = input.name;
-    this.color = input.color || '';
+    this.color = input.color ? '#' + (input.color as number).toString(16) : '';
     return this;
   }
 
   serialize(): any {
-    return {id: this.id, name: this.name, color: this.color};
+    return {id: this.id, name: this.name, color: Tag.hexStringToNumber(this.color)};
   }
 
   clone(): Tag {
