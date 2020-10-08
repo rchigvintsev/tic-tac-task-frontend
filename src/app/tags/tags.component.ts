@@ -19,6 +19,12 @@ import {Strings} from '../util/strings';
   styleUrls: ['./tags.component.styl']
 })
 export class TagsComponent extends WebServiceBasedComponent implements OnInit, AfterViewChecked {
+  readonly TAG_COLORS = [
+    '#f44336', '#e91e63', '#ba68c8', '#9575cd', '#7986cb',
+    '#2196f3', '#00bcd4', '#009688', '#4caf50', '#cddc39',
+    '#ffeb3b', '#ff9800', '#a1887f', '#e0e0e0', '#607d8b'
+  ];
+
   tags: Array<Tag>;
   tagFormModel: Tag;
   tagMenuOpened: boolean;

@@ -232,8 +232,7 @@ describe('TaskService', () => {
   });
 
   it('should return task by id', () => {
-    const testTag = new Tag().deserialize({id: 2, name: 'Test tag'});
-    const testTask = new Task().deserialize({id: 1, title: 'Test task', tags: [testTag]});
+    const testTask = new Task().deserialize({id: 1, title: 'Test task', tags: [{id: 2, name: 'Test tag'}]});
 
     const subscription = taskService.getTask(testTask.id).subscribe(task => {
       expect(task).toEqual(testTask);
@@ -241,7 +240,7 @@ describe('TaskService', () => {
 
     const taskRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
     expect(taskRequest.request.method).toBe('GET');
-    taskRequest.flush(testTask);
+    taskRequest.flush(testTask.serialize());
 
     return subscription;
   });

@@ -1,10 +1,12 @@
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
+const DEFAULT_TAG_COLOR = '#e0e0e0';
+
 export class Tag extends AbstractEntity<Tag> {
   id: number;
   name: string;
-  color = '';
+  color = DEFAULT_TAG_COLOR;
 
   constructor(name: string = null) {
     super();
@@ -18,7 +20,13 @@ export class Tag extends AbstractEntity<Tag> {
   deserialize(input: any): Tag {
     this.id = input.id;
     this.name = input.name;
-    this.color = input.color ? '#' + (input.color as number).toString(16) : '';
+    if (input.color) {
+      let hex = (input.color as number).toString(16);
+      hex = '000000'.substring(0, 6 - hex.length) + hex;
+      this.color = '#' + hex;
+    } else {
+      this.color = DEFAULT_TAG_COLOR;
+    }
     return this;
   }
 

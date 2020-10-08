@@ -6,42 +6,45 @@
                  [style.height]="isTagBeingEdited(tag) ? '298px' : '48px'"
                  [disableRipple]="isTagBeingEdited(tag)"
                  [class.non-selectable-list-item]="isTagBeingEdited(tag)">
+    <mat-icon *ngIf="!isTagBeingEdited(tag)" mat-list-icon [style.color]="tag.color">label</mat-icon>
+
     <div class="list-row tag-list-row">
-          <form *ngIf="isTagBeingEdited(tag)" class="tag-form">
-            <mat-form-field>
-              <label>
-                <input matInput
-                       #tagNameInput
-                       name="name"
-                       type="text"
-                       [(ngModel)]="tagFormModel.name"
-                       maxlength="50"
-                       placeholder="{{ 'name' | translate }}"
-                       required
-                       notBlank/>
-              </label>
-            </mat-form-field>
+      <form *ngIf="isTagBeingEdited(tag)" class="tag-form">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #tagNameInput
+                   name="name"
+                   type="text"
+                   [(ngModel)]="tagFormModel.name"
+                   maxlength="50"
+                   placeholder="{{ 'name' | translate }}"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'color' | translate }}</mat-label>
-              <label>
-                <input matInput type="text" name="dummy" value="I'm dummy" hidden="hidden"/>
-              </label>
-              <color-circle [color]="tagFormModel.color" (onChangeComplete)="onColorChangeComplete($event)">
-              </color-circle>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'color' | translate }}</mat-label>
+          <label>
+            <input matInput type="text" name="dummy" value="I'm dummy" hidden="hidden"/>
+          </label>
+          <color-circle width="210" [color]="tagFormModel.color" [colors]="TAG_COLORS"
+                        (onChangeComplete)="onColorChangeComplete($event)">
+          </color-circle>
+        </mat-form-field>
 
-            <div class="form-buttons">
-              <button mat-raised-button type="button" color="primary" (click)="onSaveTagButtonClick()"
-                      [disabled]="!isTagFormValid()">
-                {{ 'post' | translate }}
-              </button>
+        <div class="form-buttons">
+          <button mat-raised-button type="button" color="primary" (click)="onSaveTagButtonClick()"
+                  [disabled]="!isTagFormValid()">
+            {{ 'post' | translate }}
+          </button>
 
-              <button mat-raised-button type="button" (click)="onCancelTagEditButtonClick()">
-                {{ 'cancel' | translate }}
-              </button>
-            </div>
-          </form>
+          <button mat-raised-button type="button" (click)="onCancelTagEditButtonClick()">
+            {{ 'cancel' | translate }}
+          </button>
+        </div>
+      </form>
 
       <div *ngIf="!isTagBeingEdited(tag)" class="list-column name-column">
         <span>{{ tag.name }}</span>

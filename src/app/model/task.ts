@@ -33,10 +33,6 @@ export class Task extends AbstractEntity<Task> {
   }
 
   serialize(): any {
-    const tags = [];
-    for (const tag of this.tags) {
-      tags.push(tag.serialize());
-    }
     return {
       id: this.id,
       title: this.title,
@@ -44,7 +40,7 @@ export class Task extends AbstractEntity<Task> {
       status: this.status,
       deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL) : null,
       deadlineTimeExplicitlySet: this.deadlineTimeExplicitlySet,
-      tags
+      tags: this.tags.map(tag => tag.serialize())
     };
   }
 

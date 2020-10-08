@@ -38,7 +38,7 @@ describe('TagService', () => {
 
     const request = httpMock.expectOne(`${tagService.baseUrl}`);
     expect(request.request.method).toBe('GET');
-    request.flush(testTags);
+    request.flush(testTags.map(tag => tag.serialize()));
 
     return subscription;
   });
@@ -51,7 +51,7 @@ describe('TagService', () => {
 
     const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
     expect(request.request.method).toBe('PUT');
-    request.flush(testTag);
+    request.flush(testTag.serialize());
   });
 
   it('should delete tag', () => {
