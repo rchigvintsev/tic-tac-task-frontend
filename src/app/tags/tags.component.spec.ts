@@ -146,6 +146,15 @@ describe('TagsComponent', () => {
     });
   });
 
+  it('should change tag color on color change complete', () => {
+    fixture.whenStable().then(() => {
+      component.tagFormModel = component.tags[0].clone();
+      const colorEvent = {color: {hex: '#0000ff'}} as any;
+      component.onColorChangeComplete(colorEvent);
+      expect(component.tagFormModel.color).toEqual(colorEvent.color.hex);
+    });
+  });
+
   it('should not save tag with blank name on "saveTagButton" click', () => {
     fixture.whenStable().then(() => {
       component.tagFormModel = component.tags[0].clone();
