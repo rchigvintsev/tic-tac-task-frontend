@@ -18,11 +18,11 @@ import {TaskStatus} from '../model/task-status';
 import {PageRequest} from '../service/page-request';
 
 @Component({
-  selector: 'app-tasks',
-  templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.styl']
+  selector: 'app-task-list',
+  templateUrl: './task-list.component.html',
+  styleUrls: ['./task-list.component.styl']
 })
-export class TasksComponent extends WebServiceBasedComponent implements OnInit {
+export class TaskListComponent extends WebServiceBasedComponent implements OnInit {
   @ViewChild('taskForm')
   taskForm: NgForm;
 
@@ -110,7 +110,7 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
     if (taskGroup != null) {
       this.taskService.getTasks(taskGroup, this.pageRequest)
         .subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
-      this.title = TasksComponent.getTitle(taskGroup);
+      this.title = TaskListComponent.getTitle(taskGroup);
     }
   }
 
@@ -125,8 +125,8 @@ export class TasksComponent extends WebServiceBasedComponent implements OnInit {
 
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
-      this.formModel.deadline = TasksComponent.getDeadlineDate(this.taskGroup);
-      this.formModel.status = TasksComponent.getTaskStatus(this.taskGroup);
+      this.formModel.deadline = TaskListComponent.getDeadlineDate(this.taskGroup);
+      this.formModel.status = TaskListComponent.getTaskStatus(this.taskGroup);
 
       this.taskService.createTask(this.formModel).subscribe(task => {
         this.tasks.push(task);

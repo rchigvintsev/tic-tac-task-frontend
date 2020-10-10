@@ -31,7 +31,7 @@ import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../alert/alert.component';
 import {SigninComponent} from '../signin/signin.component';
-import {TasksComponent} from '../tasks/tasks.component';
+import {TaskListComponent} from '../task-list/task-list.component';
 import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {TaskCommentsComponent} from '../task-comments/task-comments.component';
 import {SidenavMenuComponent} from '../sidenav-menu/sidenav-menu.component';
@@ -82,7 +82,7 @@ export class TestSupport {
     AppComponent,
     AlertComponent,
     SigninComponent,
-    TasksComponent,
+    TaskListComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     SidenavMenuComponent,

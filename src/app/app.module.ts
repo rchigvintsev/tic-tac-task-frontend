@@ -36,7 +36,7 @@ import {ColorCircleModule} from 'ngx-color/circle';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SidenavMenuComponent} from './sidenav-menu/sidenav-menu.component';
-import {TasksComponent} from './tasks/tasks.component';
+import {TaskListComponent} from './task-list/task-list.component';
 import {TaskDetailsComponent} from './task-details/task-details.component';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
@@ -70,7 +70,7 @@ registerLocaleData(localeRu, 'ru');
   declarations: [
     AppComponent,
     SidenavMenuComponent,
-    TasksComponent,
+    TaskListComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,

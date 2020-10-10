@@ -7,7 +7,7 @@ import {of, throwError} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
-import {TasksComponent} from './tasks.component';
+import {TaskListComponent} from './task-list.component';
 import {TaskGroup} from '../service/task-group';
 import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
@@ -18,9 +18,9 @@ import {TestSupport} from '../test/test-support';
 import {PageRequest} from '../service/page-request';
 import any = jasmine.any;
 
-describe('TasksComponent', () => {
-  let component: TasksComponent;
-  let fixture: ComponentFixture<TasksComponent>;
+describe('TaskListComponent', () => {
+  let component: TaskListComponent;
+  let fixture: ComponentFixture<TaskListComponent>;
   let tasks: Array<Task>;
 
   beforeEach(async(() => {
@@ -50,7 +50,7 @@ describe('TasksComponent', () => {
     let taskService: TaskService;
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(TasksComponent);
+      fixture = TestBed.createComponent(TaskListComponent);
 
       tasks = [];
       tasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
@@ -256,7 +256,7 @@ describe('TasksComponent', () => {
 
   describe('when authentication is required', () => {
     beforeEach(() => {
-      fixture = TestBed.createComponent(TasksComponent);
+      fixture = TestBed.createComponent(TaskListComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.callFake(() => {
         return throwError({status: 401});
@@ -281,7 +281,7 @@ describe('TasksComponent', () => {
     const error = {status: 500};
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(TasksComponent);
+      fixture = TestBed.createComponent(TaskListComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.callFake(() => throwError(error));
       spyOn(window.console, 'error');
@@ -302,7 +302,7 @@ describe('TasksComponent', () => {
     const errorMessage = 'Something went wrong...';
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(TasksComponent);
+      fixture = TestBed.createComponent(TaskListComponent);
       const taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
       spyOn(window.console, 'error');
