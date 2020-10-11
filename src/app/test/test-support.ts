@@ -32,6 +32,7 @@ import {AppComponent} from '../app.component';
 import {AlertComponent} from '../alert/alert.component';
 import {SigninComponent} from '../signin/signin.component';
 import {TaskListComponent} from '../task-list/task-list.component';
+import {TasksByGroupComponent} from '../tasks-by-group/tasks-by-group.component';
 import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {TaskCommentsComponent} from '../task-comments/task-comments.component';
 import {SidenavMenuComponent} from '../sidenav-menu/sidenav-menu.component';
@@ -83,6 +84,7 @@ export class TestSupport {
     AlertComponent,
     SigninComponent,
     TaskListComponent,
+    TasksByGroupComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     SidenavMenuComponent,

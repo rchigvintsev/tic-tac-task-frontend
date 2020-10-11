@@ -37,6 +37,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SidenavMenuComponent} from './sidenav-menu/sidenav-menu.component';
 import {TaskListComponent} from './task-list/task-list.component';
+import {TasksByGroupComponent} from './tasks-by-group/tasks-by-group.component';
 import {TaskDetailsComponent} from './task-details/task-details.component';
 import {TaskCommentsComponent} from './task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './confirmation-dialog/confirmation-dialog.component';
@@ -71,6 +72,7 @@ registerLocaleData(localeRu, 'ru');
     AppComponent,
     SidenavMenuComponent,
     TaskListComponent,
+    TasksByGroupComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,
