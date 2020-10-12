@@ -1,10 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
-
-import * as moment from 'moment';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../model/task';
@@ -13,8 +10,6 @@ import {TaskGroupService} from '../service/task-group.service';
 import {TaskService} from '../service/task.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
-import {Strings} from '../util/strings';
-import {TaskStatus} from '../model/task-status';
 import {PageRequest} from '../service/page-request';
 
 @Component({
@@ -23,11 +18,6 @@ import {PageRequest} from '../service/page-request';
   styleUrls: ['./task-list.component.styl']
 })
 export class TaskListComponent extends WebServiceBasedComponent implements OnInit {
-  @ViewChild('taskForm')
-  taskForm: NgForm;
-
-  title: string;
-  formModel = new Task();
   tasks: Array<Task>;
 
   private taskGroup: TaskGroup;
@@ -37,63 +27,19 @@ export class TaskListComponent extends WebServiceBasedComponent implements OnIni
               translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
-              private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService) {
     super(translate, router, authenticationService, log);
   }
 
-  private static getTitle(taskGroup: TaskGroup): string {
-    switch (taskGroup) {
-      case TaskGroup.INBOX:
-        return 'inbox';
-      case TaskGroup.TODAY:
-        return 'scheduled_for_today';
-      case TaskGroup.TOMORROW:
-        return 'scheduled_for_tomorrow';
-      case TaskGroup.WEEK:
-        return 'scheduled_for_week';
-      case TaskGroup.SOME_DAY:
-        return 'scheduled_for_some_day';
-      case TaskGroup.ALL:
-        return 'all_tasks';
-    }
-    return null;
-  }
-
-  private static getDeadlineDate(taskGroup: TaskGroup): Date {
-    if (taskGroup === TaskGroup.TODAY || taskGroup === TaskGroup.WEEK) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return today;
-    }
-
-    if (taskGroup === TaskGroup.TOMORROW) {
-      const tomorrow = moment().add(1, 'day').toDate();
-      tomorrow.setHours(0, 0, 0, 0);
-      return tomorrow;
-    }
-
-    return null;
-  }
-
-  private static getTaskStatus(taskGroup: TaskGroup): string {
-    return taskGroup === TaskGroup.INBOX ? TaskStatus.UNPROCESSED : TaskStatus.PROCESSED;
-  }
-
   ngOnInit() {
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
-    this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
   }
 
   onTaskListScroll() {
     this.pageRequest.page++;
     this.taskService.getTasks(this.taskGroup, this.pageRequest)
       .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
-  }
-
-  onTaskFormSubmit() {
-    this.createTask();
   }
 
   onTaskCompleteCheckboxChange(task: Task) {
@@ -110,29 +56,6 @@ export class TaskListComponent extends WebServiceBasedComponent implements OnIni
     if (taskGroup != null) {
       this.taskService.getTasks(taskGroup, this.pageRequest)
         .subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
-      this.title = TaskListComponent.getTitle(taskGroup);
-    }
-  }
-
-  private onUrlFragmentChange(fragment: string) {
-    let taskGroup = TaskGroup.valueOf(fragment);
-    if (!taskGroup) {
-      taskGroup = TaskGroup.TODAY;
-      this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
-    }
-    this.taskGroupService.notifyTaskGroupSelected(taskGroup);
-  }
-
-  private createTask() {
-    if (!Strings.isBlank(this.formModel.title)) {
-      this.formModel.deadline = TaskListComponent.getDeadlineDate(this.taskGroup);
-      this.formModel.status = TaskListComponent.getTaskStatus(this.taskGroup);
-
-      this.taskService.createTask(this.formModel).subscribe(task => {
-        this.tasks.push(task);
-        this.taskForm.resetForm();
-        this.taskService.updateTaskCounters();
-      }, this.onServiceCallError.bind(this));
     }
   }
 

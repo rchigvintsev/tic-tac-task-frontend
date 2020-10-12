@@ -1,41 +1,19 @@
-<mat-card>
-  <mat-card-title>{{ title | translate }}</mat-card-title>
+<mat-list id="task_list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll()">
+  <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
+    <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
-  <form #taskForm="ngForm" (ngSubmit)="onTaskFormSubmit()">
-    <mat-form-field>
-      <label>
-        <input matInput
-               type="text"
-               name="title"
-               [(ngModel)]="formModel.title"
-               placeholder="{{ 'new_task' | translate }}"
-               maxlength="255"
-               required
-               notBlank>
-      </label>
-      <button type="submit" hidden="hidden">Submit</button>
-    </mat-form-field>
-  </form>
+    <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row task-list-row">
+      <div class="list-column title-column">
+        <span>{{ task.title }}</span>
+      </div>
 
-  <mat-card-content>
-    <mat-list id="task_list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll()">
-      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
-        <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
-
-        <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row task-list-row">
-          <div class="list-column title-column">
-            <span>{{ task.title }}</span>
-          </div>
-
-          <div *ngIf="task.deadline" class="list-column deadline-column">
-            <span [matTooltip]="task.deadline | localizedDate"
-                  [class]="task.isOverdue() ? 'color-warn' : 'color-primary'"
-                  matTooltipPosition="above">
-              {{ task.deadline | localizedRelativeDate }}
-            </span>
-          </div>
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-</mat-card>
+      <div *ngIf="task.deadline" class="list-column deadline-column">
+        <span [matTooltip]="task.deadline | localizedDate"
+              [class]="task.isOverdue() ? 'color-warn' : 'color-primary'"
+              matTooltipPosition="above">
+          {{ task.deadline | localizedRelativeDate }}
+        </span>
+      </div>
+    </div>
+  </mat-list-item>
+</mat-list>

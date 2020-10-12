@@ -13,7 +13,6 @@ import {TaskGroupService} from '../service/task-group.service';
 import {ConfigService} from '../service/config.service';
 import {TaskService} from '../service/task.service';
 import {Task} from '../model/task';
-import {TaskStatus} from '../model/task-status';
 import {TestSupport} from '../test/test-support';
 import {PageRequest} from '../service/page-request';
 import any = jasmine.any;
@@ -71,8 +70,6 @@ describe('TaskListComponent', () => {
 
       taskService = fixture.debugElement.injector.get(TaskService);
       spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
-      spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
-      spyOn(taskService, 'updateTask').and.callFake(task => of(new Task().deserialize(task)));
       spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
       spyOn(taskService, 'updateTaskCounters').and.stub();
 
@@ -85,94 +82,6 @@ describe('TaskListComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
       expect(component.tasks.length).toEqual(tasks.length);
-    });
-
-    it('should create task', () => {
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
-      const taskTitle = 'New task';
-      fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-        expect(component.tasks.length).toEqual(4);
-        expect(component.tasks[3].title).toEqual(taskTitle);
-      });
-    });
-
-    it('should create processed task scheduled for today when "TODAY" group is selected', () => {
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
-      const taskTitle = 'For today';
-      fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadline).toEqual(today);
-        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
-      });
-    });
-
-    it('should create processed task scheduled for today when "WEEK" group is selected', () => {
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
-      const taskTitle = 'For today';
-      fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadline).toEqual(today);
-        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
-      });
-    });
-
-    it('should create processed task scheduled for tomorrow when "TOMORROW" group is selected', () => {
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
-      const taskTitle = 'For tomorrow';
-      fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-
-        const tomorrow = moment().add(1, 'day').toDate();
-        tomorrow.setHours(0, 0, 0, 0);
-        expect(component.tasks[3].deadline).toEqual(tomorrow);
-        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
-      });
-    });
-
-    it('should create unscheduled processed task when "SOME_DAY" group is selected', () => {
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
-      const taskTitle = 'For some day';
-      fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-
-        expect(component.tasks[3].deadline).not.toBeDefined();
-        expect(component.tasks[3].status).toEqual(TaskStatus.PROCESSED);
-      });
-    });
-
-    it('should not create task with blank title', () => {
-      fixture.whenStable().then(() => {
-        component.formModel.title = ' ';
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-        expect(component.tasks.length).toEqual(3);
-      });
-    });
-
-    it('should update task counters on task create', () => {
-      fixture.whenStable().then(() => {
-        component.formModel.title = 'New task';
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-        expect(taskService.updateTaskCounters).toHaveBeenCalled();
-      });
     });
 
     it('should complete task', fakeAsync(() => {
@@ -197,30 +106,6 @@ describe('TaskListComponent', () => {
         expect(taskService.updateTaskCounters).toHaveBeenCalled();
       });
     }));
-
-    it('should render correct task list title depending on selected task group', () => {
-      const compiled = fixture.debugElement.nativeElement;
-
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
-      fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('inbox');
-
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
-      fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_today');
-
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
-      fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_tomorrow');
-
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
-      fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_week');
-
-      taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
-      fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_some_day');
-    });
 
     it('should render task deadline', () => {
       const compiled = fixture.debugElement.nativeElement;
