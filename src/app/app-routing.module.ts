@@ -5,8 +5,7 @@ import {Location} from '@angular/common';
 import {TranslateService} from '@ngx-translate/core';
 
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
-
-import {TaskListComponent} from './task-list/task-list.component';
+import {TasksByGroupComponent} from './tasks-by-group/tasks-by-group.component';
 import {TaskDetailsComponent} from './task-details/task-details.component';
 import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
@@ -22,7 +21,7 @@ import {AVAILABLE_LANGUAGES} from './language';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
-  {path: 'task', component: TaskListComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'task', component: TasksByGroupComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task/:id', component: TaskDetailsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'tag', component: TagsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
