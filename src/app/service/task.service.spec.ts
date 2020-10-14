@@ -5,9 +5,9 @@ import {skip} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
+import {TaskGroup} from './task-group';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
-import {TaskGroup} from './task-group';
 
 describe('TaskService', () => {
   let injector: TestBed;
@@ -36,7 +36,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.INBOX).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.INBOX).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -65,7 +65,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.TODAY).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.TODAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -100,7 +100,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.TOMORROW).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.TOMORROW).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -135,7 +135,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.WEEK).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.WEEK).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -170,7 +170,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.SOME_DAY).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.SOME_DAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -199,7 +199,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    const subscription = taskService.getTasks(TaskGroup.ALL).subscribe(tasks => {
+    const subscription = taskService.getTasksByGroup(TaskGroup.ALL).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
     });
@@ -223,12 +223,38 @@ describe('TaskService', () => {
     return subscription;
   });
 
-  it('should throw error on get tasks when task group is null', () => {
-    expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
+  it('should throw error on get tasks by group when task group is null', () => {
+    expect(() => taskService.getTasksByGroup(null)).toThrowError('Task group must not be null or undefined');
   });
 
   it('should throw error on get task count when task group is null', () => {
     expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
+  });
+
+  it('should return tasks filtered by tag', () => {
+    const testTag = new Tag('Test tag');
+    testTag.id = 3;
+
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
+    testTasks[0].tags = [testTag];
+    testTasks[1].tags = [testTag];
+
+    const subscription = taskService.getTasksByTag(testTag).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?tagId=${testTag.id}&page=0&size=20`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks.map(task => task.serialize()));
+
+    return subscription;
+  });
+
+  it('should throw error on get tasks by tag when tag is null', () => {
+    expect(() => taskService.getTasksByTag(null)).toThrowError('Tag must not be null or undefined');
   });
 
   it('should return task by id', () => {

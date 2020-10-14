@@ -34,6 +34,14 @@ export class TagService {
     );
   }
 
+  getTag(id: number): Observable<Tag> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+      map(response => {
+        return new Tag().deserialize(response);
+      })
+    );
+  }
+
   updateTag(tag: Tag): Observable<Tag> {
     return this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), jsonContentOptions).pipe(
       map(response => {

@@ -7,6 +7,7 @@ import {map} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {Task} from '../model/task';
+import {Tag} from '../model/tag';
 import {ConfigService} from './config.service';
 import {TaskGroup} from './task-group';
 import {PageRequest} from './page-request';
@@ -90,7 +91,7 @@ export class TaskService {
     });
   }
 
-  getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
+  getTasksByGroup(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
     if (!taskGroup) {
       throw new Error('Task group must not be null or undefined');
     }
@@ -104,6 +105,25 @@ export class TaskService {
     params += pageRequest.toQueryParameters();
 
     const url = `${this.baseUrl}/${path}?${params}`;
+
+    return this.http.get<any>(url, commonHttpOptions).pipe(
+      map(response => {
+        const tasks = [];
+        for (const json of response) {
+          tasks.push(new Task().deserialize(json));
+        }
+        return tasks;
+      })
+    );
+  }
+
+  getTasksByTag(tag: Tag, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
+    if (!tag) {
+      throw new Error('Tag must not be null or undefined');
+    }
+
+    const params = `tagId=${tag.id}&${pageRequest.toQueryParameters()}`;
+    const url = `${this.baseUrl}/uncompleted?${params}`;
 
     return this.http.get<any>(url, commonHttpOptions).pipe(
       map(response => {
