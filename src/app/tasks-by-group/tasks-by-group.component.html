@@ -18,6 +18,6 @@
   </form>
 
   <mat-card-content>
-    <app-task-list></app-task-list>
+    <app-task-list [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-task-list>
   </mat-card-content>
 </mat-card>

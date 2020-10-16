@@ -7,12 +7,12 @@ import * as moment from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {TaskListComponent} from '../task-list/task-list.component';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 import {TaskService} from '../service/task.service';
 import {TaskGroupService} from '../service/task-group.service';
 import {TaskGroup} from '../service/task-group';
+import {PageRequest} from '../service/page-request';
 import {Task} from '../model/task';
 import {TaskStatus} from '../model/task-status';
 import {Strings} from '../util/strings';
@@ -25,13 +25,13 @@ import {Strings} from '../util/strings';
 export class TasksByGroupComponent extends WebServiceBasedComponent implements OnInit {
   title: string;
   formModel = new Task();
+  tasks: Array<Task>;
 
   @ViewChild('taskForm')
   taskForm: NgForm;
-  @ViewChild(TaskListComponent)
-  taskList: TaskListComponent;
 
   private taskGroup: TaskGroup;
+  private pageRequest = new PageRequest();
 
   constructor(translate: TranslateService,
               router: Router,
@@ -92,8 +92,11 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.taskGroup = taskGroup;
+    this.pageRequest.page = 0;
     if (taskGroup != null) {
       this.title = TasksByGroupComponent.getTitle(taskGroup);
+      this.taskService.getTasksByGroup(taskGroup, this.pageRequest)
+        .subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
     }
   }
 
@@ -106,13 +109,19 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
   }
 
+  onTaskListScroll() {
+    this.pageRequest.page++;
+    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest)
+      .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+  }
+
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
       this.formModel.deadline = TasksByGroupComponent.getDeadlineDate(this.taskGroup);
       this.formModel.status = TasksByGroupComponent.getTaskStatus(this.taskGroup);
 
       this.taskService.createTask(this.formModel).subscribe(task => {
-        this.taskList.tasks.push(task);
+        this.tasks.push(task);
         this.taskForm.resetForm();
         this.taskService.updateTaskCounters();
       }, this.onServiceCallError.bind(this));

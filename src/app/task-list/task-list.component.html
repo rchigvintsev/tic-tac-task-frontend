@@ -1,4 +1,4 @@
-<mat-list id="task_list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll()">
+<mat-list id="task_list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll($event)">
   <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
     <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
