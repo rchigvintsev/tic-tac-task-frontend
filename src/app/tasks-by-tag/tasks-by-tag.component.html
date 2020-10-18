@@ -1,0 +1,7 @@
+<mat-card>
+  <mat-card-title>{{ title | translate }}</mat-card-title>
+
+  <mat-card-content>
+    <app-task-list [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-task-list>
+  </mat-card-content>
+</mat-card>

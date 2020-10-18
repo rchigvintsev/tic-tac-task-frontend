@@ -6,11 +6,11 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
 import {TasksByGroupComponent} from './tasks-by-group/tasks-by-group.component';
+import {TasksByTagComponent} from './tasks-by-tag/tasks-by-tag.component';
 import {TaskDetailsComponent} from './task-details/task-details.component';
 import {SigninComponent} from './signin/signin.component';
 import {NotFoundComponent} from './error/not-found/not-found.component';
 import {DummyComponent} from './dummy/dummy.component';
-import {TagsComponent} from './tags/tags.component';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,
@@ -23,7 +23,7 @@ export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
   {path: 'task', component: TasksByGroupComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task/:id', component: TaskDetailsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
-  {path: 'tag', component: TagsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'tag/:id', component: TasksByTagComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'oauth2/authorization/callback',

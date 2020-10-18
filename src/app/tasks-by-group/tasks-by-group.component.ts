@@ -90,6 +90,12 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
     this.createTask();
   }
 
+  onTaskListScroll() {
+    this.pageRequest.page++;
+    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest)
+      .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+  }
+
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.taskGroup = taskGroup;
     this.pageRequest.page = 0;
@@ -107,12 +113,6 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
       this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
-  }
-
-  onTaskListScroll() {
-    this.pageRequest.page++;
-    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest)
-      .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
   }
 
   private createTask() {
