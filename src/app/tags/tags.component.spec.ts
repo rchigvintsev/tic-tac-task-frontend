@@ -1,8 +1,9 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {By} from '@angular/platform-browser';
 
-import {of} from 'rxjs';
+import {of, Subject} from 'rxjs';
 
 import {TagsComponent} from './tags.component';
 import {TestSupport} from '../test/test-support';
@@ -23,6 +24,7 @@ describe('TagsComponent', () => {
   let component: TagsComponent;
   let fixture: ComponentFixture<TagsComponent>;
   let tagService: TagService;
+  let routerEvents: Subject<RouterEvent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,8 +39,9 @@ describe('TagsComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TagsComponent);
+    const injector = getTestBed();
 
-    tagService = fixture.debugElement.injector.get(TagService);
+    tagService = injector.get(TagService);
     const tags = [];
     for (let i = 0; i < 3; i++) {
       tags.push(new Tag().deserialize({id: i + 1, name: `Test tag ${i + 1}`}));
@@ -46,6 +49,10 @@ describe('TagsComponent', () => {
     spyOn(tagService, 'getTags').and.returnValue(of(tags));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
     spyOn(tagService, 'deleteTag').and.returnValue(of(null));
+
+    routerEvents = new Subject();
+    const router = injector.get(Router);
+    (router as any).events = routerEvents.asObservable();
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -180,6 +187,15 @@ describe('TagsComponent', () => {
       fixture.detectChanges();
       expect(component.tags.length).toBe(2);
       expect(component.tags[0]).not.toEqual(tagToDelete);
+    });
+  });
+
+  it('should highlight selected menu item', () => {
+    routerEvents.next(new NavigationEnd(1, '/en/tag/1', null));
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected.tag-1'));
+      expect(selectedItem).toBeTruthy();
     });
   });
 });

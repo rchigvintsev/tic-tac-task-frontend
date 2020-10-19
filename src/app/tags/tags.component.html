@@ -1,7 +1,8 @@
 <mat-list id="tag_list">
   <mat-list-item *ngFor="let tag of tags"
-                 [ngClass]="'tag-' + tag.id"
                  [routerLink]="[translate.currentLang, 'tag', tag.id]"
+                 [ngClass]="'tag-' + tag.id"
+                 [class.mat-list-item-selected]="isRouterLinkActive('tag/' + tag.id)"
                  (mouseover)="onTagListItemMouseOver(tag)"
                  (mouseout)="onTagListItemMouseOut()"
                  [style.height]="isTagBeingEdited(tag) ? '298px' : '48px'"

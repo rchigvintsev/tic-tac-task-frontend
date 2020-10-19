@@ -1,5 +1,5 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslateService} from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import {LogService} from '../service/log.service';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../util/strings';
+import {PathMatcher} from '../util/path-matcher';
 
 @Component({
   selector: 'app-tags',
@@ -33,6 +34,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   @ViewChild('tagNameInput')
   private tagNameInput: ElementRef;
   private selectedTag: Tag;
+  private pathMatcher: PathMatcher;
 
   constructor(router: Router,
               translate: TranslateService,
@@ -46,6 +48,12 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
+    this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
+    this.router.events.subscribe((event: RouterEvent) => {
+      if (event instanceof NavigationEnd) {
+        this.onNavigationEnd(event);
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -57,16 +65,20 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     }
   }
 
-  isTagSelected(tag: Tag) {
+  isTagSelected(tag: Tag): boolean {
     return this.selectedTag && this.selectedTag.id === tag.id;
   }
 
-  isTagBeingEdited(tag: Tag) {
+  isTagBeingEdited(tag: Tag): boolean {
     return this.tagFormModel && this.tagFormModel.id === tag.id;
   }
 
-  isTagFormValid() {
+  isTagFormValid(): boolean {
     return this.tagFormModel && !Strings.isBlank(this.tagFormModel.name);
+  }
+
+  isRouterLinkActive(path: string): boolean {
+    return this.pathMatcher && this.pathMatcher.matches(path);
   }
 
   onTagMenuTriggerButtonMouseDown(event) {
@@ -122,6 +134,10 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   onColorChangeComplete(e: ColorEvent): void {
     this.tagFormModel.color = e.color.hex;
+  }
+
+  private onNavigationEnd(e: NavigationEnd) {
+    this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(e.url));
   }
 
   private saveTag() {
