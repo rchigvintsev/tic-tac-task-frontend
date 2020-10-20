@@ -48,7 +48,7 @@ describe('TaskDetailsComponent', () => {
       status: 'PROCESSED',
       deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
       deadlineTimeExplicitlySet: true,
-      tags: [{name: 'Red'}]
+      tags: [{name: 'Red', color: 0xff0000}]
     });
 
     spyOn(taskService, 'getTask').and.returnValue(of(task));
@@ -168,6 +168,14 @@ describe('TaskDetailsComponent', () => {
       component.tagControl.setValue('Gr');
       fixture.detectChanges();
       return subscription;
+    });
+  });
+
+  it('should assign background color to tag chip according to tag color', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.whenStable().then(() => {
+      const chip = compiled.querySelector('mat-chip-list mat-chip');
+      expect(chip.style['background-color']).toEqual('rgb(255, 0, 0)');
     });
   });
 
