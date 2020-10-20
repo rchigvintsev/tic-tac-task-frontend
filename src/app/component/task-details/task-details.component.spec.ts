@@ -9,15 +9,15 @@ import {skip} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import {TaskDetailsComponent} from './task-details.component';
-import {Task} from '../model/task';
-import {Tag} from '../model/tag';
-import {TaskService} from '../service/task.service';
-import {TagService} from '../service/tag.service';
-import {ConfigService} from '../service/config.service';
-import {LogService} from '../service/log.service';
-import {TaskGroupService} from '../service/task-group.service';
-import {TaskGroup} from '../service/task-group';
-import {TestSupport} from '../test/test-support';
+import {Task} from '../../model/task';
+import {Tag} from '../../model/tag';
+import {TaskService} from '../../service/task.service';
+import {TagService} from '../../service/tag.service';
+import {ConfigService} from '../../service/config.service';
+import {LogService} from '../../service/log.service';
+import {TaskGroupService} from '../../service/task-group.service';
+import {TaskGroup} from '../../service/task-group';
+import {TestSupport} from '../../test/test-support';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;

@@ -8,13 +8,13 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {TaskComment} from '../model/task-comment';
-import {TaskCommentService} from '../service/task-comment.service';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
+import {TaskComment} from '../../model/task-comment';
+import {TaskCommentService} from '../../service/task-comment.service';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
-import {Strings} from '../util/strings';
-import {PageRequest} from '../service/page-request';
+import {Strings} from '../../util/strings';
+import {PageRequest} from '../../service/page-request';
 
 @Component({
   selector: 'app-task-comments',

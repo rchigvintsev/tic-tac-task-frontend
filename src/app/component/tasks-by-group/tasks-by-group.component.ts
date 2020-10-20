@@ -7,15 +7,15 @@ import * as moment from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
-import {TaskService} from '../service/task.service';
-import {TaskGroupService} from '../service/task-group.service';
-import {TaskGroup} from '../service/task-group';
-import {PageRequest} from '../service/page-request';
-import {Task} from '../model/task';
-import {TaskStatus} from '../model/task-status';
-import {Strings} from '../util/strings';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
+import {TaskService} from '../../service/task.service';
+import {TaskGroupService} from '../../service/task-group.service';
+import {TaskGroup} from '../../service/task-group';
+import {PageRequest} from '../../service/page-request';
+import {Task} from '../../model/task';
+import {TaskStatus} from '../../model/task-status';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-tasks-by-group',

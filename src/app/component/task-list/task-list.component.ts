@@ -4,10 +4,10 @@ import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {Task} from '../model/task';
-import {TaskService} from '../service/task.service';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
+import {Task} from '../../model/task';
+import {TaskService} from '../../service/task.service';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
 
 @Component({
   selector: 'app-task-list',

@@ -6,13 +6,13 @@ import {flatMap, map} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
-import {TagService} from '../service/tag.service';
-import {TaskService} from '../service/task.service';
-import {PageRequest} from '../service/page-request';
-import {Tag} from '../model/tag';
-import {Task} from '../model/task';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
+import {TagService} from '../../service/tag.service';
+import {TaskService} from '../../service/task.service';
+import {PageRequest} from '../../service/page-request';
+import {Tag} from '../../model/tag';
+import {Task} from '../../model/task';
 
 @Component({
   selector: 'app-tasks-by-tag',

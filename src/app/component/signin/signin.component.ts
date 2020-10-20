@@ -6,10 +6,10 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {ConfigService} from '../service/config.service';
-import {AlertService} from '../service/alert.service';
-import {LogService} from '../service/log.service';
-import {AuthenticationService} from '../service/authentication.service';
+import {ConfigService} from '../../service/config.service';
+import {AlertService} from '../../service/alert.service';
+import {LogService} from '../../service/log.service';
+import {AuthenticationService} from '../../service/authentication.service';
 
 @Component({
   selector: 'app-signin',

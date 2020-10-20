@@ -6,10 +6,10 @@ import {By} from '@angular/platform-browser';
 import {of, Subject} from 'rxjs';
 
 import {TagsComponent} from './tags.component';
-import {TestSupport} from '../test/test-support';
-import {ConfigService} from '../service/config.service';
-import {TagService} from '../service/tag.service';
-import {Tag} from '../model/tag';
+import {TestSupport} from '../../test/test-support';
+import {ConfigService} from '../../service/config.service';
+import {TagService} from '../../service/tag.service';
+import {Tag} from '../../model/tag';
 import createSpyObj = jasmine.createSpyObj;
 
 class MatDialogMock {

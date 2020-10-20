@@ -7,11 +7,11 @@ import * as moment from 'moment';
 import {of} from 'rxjs';
 
 import {TaskCommentsComponent} from './task-comments.component';
-import {TaskComment} from '../model/task-comment';
-import {TaskCommentService} from '../service/task-comment.service';
-import {ConfigService} from '../service/config.service';
-import {TestSupport} from '../test/test-support';
-import {PageRequest} from '../service/page-request';
+import {TaskComment} from '../../model/task-comment';
+import {TaskCommentService} from '../../service/task-comment.service';
+import {ConfigService} from '../../service/config.service';
+import {TestSupport} from '../../test/test-support';
+import {PageRequest} from '../../service/page-request';
 import any = jasmine.any;
 
 class MatDialogMock {

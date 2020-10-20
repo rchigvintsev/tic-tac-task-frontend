@@ -14,17 +14,17 @@ import {map, startWith} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {Task} from '../model/task';
-import {Tag} from '../model/tag';
-import {TaskGroup} from '../service/task-group';
-import {TaskGroupService} from '../service/task-group.service';
-import {TaskService} from '../service/task.service';
-import {TagService} from '../service/tag.service';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
-import {ServerErrorStateMatcher} from '../error/server-error-state-matcher';
-import {Strings} from '../util/strings';
-import {HttpErrors} from '../util/http-errors';
+import {Task} from '../../model/task';
+import {Tag} from '../../model/tag';
+import {TaskGroup} from '../../service/task-group';
+import {TaskGroupService} from '../../service/task-group.service';
+import {TaskService} from '../../service/task.service';
+import {TagService} from '../../service/tag.service';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
+import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
+import {Strings} from '../../util/strings';
+import {HttpErrors} from '../../util/http-errors';
 
 const START_OF_DAY_TIME = '00:00';
 const END_OF_DAY_TIME = '23:59';

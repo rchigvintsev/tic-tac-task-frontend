@@ -7,10 +7,10 @@ import {of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 import {SigninComponent} from './signin.component';
-import {ConfigService} from '../service/config.service';
-import {AlertService} from '../service/alert.service';
-import {Config} from '../model/config';
-import {TestSupport} from '../test/test-support';
+import {ConfigService} from '../../service/config.service';
+import {AlertService} from '../../service/alert.service';
+import {Config} from '../../model/config';
+import {TestSupport} from '../../test/test-support';
 
 describe('SigninComponent', () => {
   let component: SigninComponent;

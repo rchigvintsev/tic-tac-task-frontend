@@ -3,13 +3,13 @@ import {ActivatedRoute} from '@angular/router';
 
 import {of} from 'rxjs';
 
-import {TestSupport} from '../test/test-support';
+import {TestSupport} from '../../test/test-support';
 import {TasksByTagComponent} from './tasks-by-tag.component';
-import {ConfigService} from '../service/config.service';
-import {TaskService} from '../service/task.service';
-import {PageRequest} from '../service/page-request';
-import {TagService} from '../service/tag.service';
-import {Tag} from '../model/tag';
+import {ConfigService} from '../../service/config.service';
+import {TaskService} from '../../service/task.service';
+import {PageRequest} from '../../service/page-request';
+import {TagService} from '../../service/tag.service';
+import {Tag} from '../../model/tag';
 import any = jasmine.any;
 
 describe('TasksByTagComponent', () => {

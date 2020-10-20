@@ -8,12 +8,12 @@ import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 import {TaskListComponent} from './task-list.component';
-import {TaskGroup} from '../service/task-group';
-import {TaskGroupService} from '../service/task-group.service';
-import {ConfigService} from '../service/config.service';
-import {TaskService} from '../service/task.service';
-import {Task} from '../model/task';
-import {TestSupport} from '../test/test-support';
+import {TaskGroup} from '../../service/task-group';
+import {TaskGroupService} from '../../service/task-group.service';
+import {ConfigService} from '../../service/config.service';
+import {TaskService} from '../../service/task.service';
+import {Task} from '../../model/task';
+import {TestSupport} from '../../test/test-support';
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;

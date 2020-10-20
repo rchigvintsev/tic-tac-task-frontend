@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {By} from '@angular/platform-browser';
 
 import {ConfirmationDialogComponent} from './confirmation-dialog.component';
-import {TestSupport} from '../test/test-support';
+import {TestSupport} from '../../test/test-support';
 
 class MatDialogRefMock {
   // noinspection JSUnusedGlobalSymbols

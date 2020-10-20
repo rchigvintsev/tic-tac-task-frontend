@@ -5,12 +5,12 @@ import {Location} from '@angular/common';
 import {TranslateService} from '@ngx-translate/core';
 
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
-import {TasksByGroupComponent} from './tasks-by-group/tasks-by-group.component';
-import {TasksByTagComponent} from './tasks-by-tag/tasks-by-tag.component';
-import {TaskDetailsComponent} from './task-details/task-details.component';
-import {SigninComponent} from './signin/signin.component';
-import {NotFoundComponent} from './error/not-found/not-found.component';
-import {DummyComponent} from './dummy/dummy.component';
+import {TasksByGroupComponent} from './component/tasks-by-group/tasks-by-group.component';
+import {TasksByTagComponent} from './component/tasks-by-tag/tasks-by-tag.component';
+import {TaskDetailsComponent} from './component/task-details/task-details.component';
+import {SigninComponent} from './component/signin/signin.component';
+import {NotFoundComponent} from './component/not-found/not-found.component';
+import {DummyComponent} from './component/dummy/dummy.component';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,

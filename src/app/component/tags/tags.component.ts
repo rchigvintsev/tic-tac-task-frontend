@@ -5,14 +5,14 @@ import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {ColorEvent} from 'ngx-color';
 
-import {Tag} from '../model/tag';
-import {TagService} from '../service/tag.service';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
+import {Tag} from '../../model/tag';
+import {TagService} from '../../service/tag.service';
+import {AuthenticationService} from '../../service/authentication.service';
+import {LogService} from '../../service/log.service';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
-import {Strings} from '../util/strings';
-import {PathMatcher} from '../util/path-matcher';
+import {Strings} from '../../util/strings';
+import {PathMatcher} from '../../util/path-matcher';
 
 @Component({
   selector: 'app-tags',

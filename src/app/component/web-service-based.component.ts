@@ -3,9 +3,9 @@ import {Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import {HttpErrors} from './util/http-errors';
-import {AuthenticationService} from './service/authentication.service';
-import {LogService} from './service/log.service';
+import {HttpErrors} from '../util/http-errors';
+import {AuthenticationService} from '../service/authentication.service';
+import {LogService} from '../service/log.service';
 
 @Injectable()
 export class WebServiceBasedComponent {

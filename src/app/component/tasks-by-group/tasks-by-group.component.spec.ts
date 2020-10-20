@@ -7,15 +7,15 @@ import * as moment from 'moment';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import {TestSupport} from '../test/test-support';
+import {TestSupport} from '../../test/test-support';
 import {TasksByGroupComponent} from './tasks-by-group.component';
-import {ConfigService} from '../service/config.service';
-import {TaskService} from '../service/task.service';
-import {TaskGroupService} from '../service/task-group.service';
-import {TaskGroup} from '../service/task-group';
-import {PageRequest} from '../service/page-request';
-import {Task} from '../model/task';
-import {TaskStatus} from '../model/task-status';
+import {ConfigService} from '../../service/config.service';
+import {TaskService} from '../../service/task.service';
+import {TaskGroupService} from '../../service/task-group.service';
+import {TaskGroup} from '../../service/task-group';
+import {PageRequest} from '../../service/page-request';
+import {Task} from '../../model/task';
+import {TaskStatus} from '../../model/task-status';
 import any = jasmine.any;
 
 describe('TasksByGroupComponent', () => {
