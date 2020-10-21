@@ -21,9 +21,9 @@ import {PathMatcher} from '../../util/path-matcher';
 })
 export class TagsComponent extends WebServiceBasedComponent implements OnInit, AfterViewChecked {
   readonly TAG_COLORS = [
-    '#f44336', '#e91e63', '#ba68c8', '#9575cd', '#7986cb',
-    '#2196f3', '#00bcd4', '#009688', '#4caf50', '#cddc39',
-    '#ffeb3b', '#ff9800', '#a1887f', '#e0e0e0', '#607d8b'
+    '#e57373', '#f06292', '#ba68c8', '#9575cd', '#7986cb',
+    '#64b5f6', '#4dd0e1', '#4db6ac', '#81c784', '#dce775',
+    '#fff176', '#ffb74d', '#a1887f', '#e0e0e0', '#90a4ae'
   ];
 
   tags: Array<Tag>;
