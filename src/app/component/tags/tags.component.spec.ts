@@ -10,7 +10,6 @@ import {TestSupport} from '../../test/test-support';
 import {ConfigService} from '../../service/config.service';
 import {TagService} from '../../service/tag.service';
 import {Tag} from '../../model/tag';
-import createSpyObj = jasmine.createSpyObj;
 
 class MatDialogMock {
   open() {
@@ -104,12 +103,6 @@ describe('TagsComponent', () => {
       fixture.detectChanges();
       expect(fixture.debugElement.query(menuTriggerColumnSelector).nativeElement.getAttribute('hidden')).toEqual('');
     });
-  });
-
-  it('should stop event propagation on tag menu trigger button mouse down', () => {
-    const event = createSpyObj(['stopPropagation']);
-    component.onTagMenuTriggerButtonMouseDown(event);
-    expect(event.stopPropagation).toHaveBeenCalled();
   });
 
   it('should show tag form on edit tag button click', () => {

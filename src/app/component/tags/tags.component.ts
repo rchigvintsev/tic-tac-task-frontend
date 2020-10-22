@@ -81,10 +81,6 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     return this.pathMatcher && this.pathMatcher.matches(path);
   }
 
-  onTagMenuTriggerButtonMouseDown(event) {
-    event.stopPropagation(); // To prevent ripples on underlying list item
-  }
-
   onTagListItemMouseOver(tag: Tag) {
     this.selectedTag = tag;
   }

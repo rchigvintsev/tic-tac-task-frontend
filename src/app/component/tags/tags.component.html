@@ -54,7 +54,8 @@
 
       <div [hidden]="!isTagSelected(tag) || isTagBeingEdited(tag)" class="list-column menu-trigger-column">
         <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu"
-                (mousedown)="onTagMenuTriggerButtonMouseDown($event)" (menuOpened)="onTagMenuOpened()">
+                (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
+                (menuOpened)="onTagMenuOpened()">
           <mat-icon>more_vert</mat-icon>
         </button>
 
