@@ -31,43 +31,41 @@ describe('TaskService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return tasks for "INBOX" group', () => {
+  it('should return tasks for "INBOX" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.INBOX).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.INBOX).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "INBOX" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.INBOX)
+  it('should return number of tasks for "INBOX" group', done => {
+    taskService.getTaskCount(TaskGroup.INBOX)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed/count`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
-
-    return subscription;
   });
 
-  it('should return tasks for "TODAY" group', () => {
+  it('should return tasks for "TODAY" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.TODAY).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.TODAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne((httpReq) => {
@@ -76,14 +74,12 @@ describe('TaskService', () => {
         && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "TODAY" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.TODAY)
+  it('should return number of tasks for "TODAY" group', done => {
+    taskService.getTaskCount(TaskGroup.TODAY)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -91,18 +87,17 @@ describe('TaskService', () => {
         && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
-
-    return subscription;
   });
 
-  it('should return tasks for "TOMORROW" group', () => {
+  it('should return tasks for "TOMORROW" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.TOMORROW).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.TOMORROW).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne((httpReq) => {
@@ -111,14 +106,12 @@ describe('TaskService', () => {
         && /\?deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "TOMORROW" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.TOMORROW)
+  it('should return number of tasks for "TOMORROW" group', done => {
+    taskService.getTaskCount(TaskGroup.TOMORROW)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -126,18 +119,17 @@ describe('TaskService', () => {
         && /\?deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
-
-    return subscription;
   });
 
-  it('should return tasks for "WEEK" group', () => {
+  it('should return tasks for "WEEK" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.WEEK).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.WEEK).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne((httpReq) => {
@@ -146,14 +138,12 @@ describe('TaskService', () => {
         && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "WEEK" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.WEEK)
+  it('should return number of tasks for "WEEK" group', done => {
+    taskService.getTaskCount(TaskGroup.WEEK)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
@@ -161,66 +151,58 @@ describe('TaskService', () => {
         && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
-
-    return subscription;
   });
 
-  it('should return tasks for "SOME_DAY" group', () => {
+  it('should return tasks for "SOME_DAY" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.SOME_DAY).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.SOME_DAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/processed?deadlineFrom=&deadlineTo=&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "SOME_DAY" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.SOME_DAY)
+  it('should return number of tasks for "SOME_DAY" group', done => {
+    taskService.getTaskCount(TaskGroup.SOME_DAY)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count?deadlineFrom=&deadlineTo=`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
-
-    return subscription;
   });
 
-  it('should return tasks for "ALL" group', () => {
+  it('should return tasks for "ALL" group', done => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    const subscription = taskService.getTasksByGroup(TaskGroup.ALL).subscribe(tasks => {
+    taskService.getTasksByGroup(TaskGroup.ALL).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
-
-    return subscription;
   });
 
-  it('should return number of tasks for "ALL" group', () => {
-    const subscription = taskService.getTaskCount(TaskGroup.ALL)
+  it('should return number of tasks for "ALL" group', done => {
+    taskService.getTaskCount(TaskGroup.ALL)
       .pipe(skip(1))
-      .subscribe(count => expect(count).toBe(2));
+      .subscribe(count => { expect(count).toBe(2); done(); });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
-
-    return subscription;
   });
 
   it('should throw error on get tasks by group when task group is null', () => {
@@ -231,7 +213,7 @@ describe('TaskService', () => {
     expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
   });
 
-  it('should return tasks filtered by tag', () => {
+  it('should return tasks filtered by tag', done => {
     const testTag = new Tag('Test tag');
     testTag.id = 3;
 
@@ -241,72 +223,65 @@ describe('TaskService', () => {
     testTasks[0].tags = [testTag];
     testTasks[1].tags = [testTag];
 
-    const subscription = taskService.getTasksByTag(testTag).subscribe(tasks => {
+    taskService.getTasksByTag(testTag).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?tagId=${testTag.id}&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks.map(task => task.serialize()));
-
-    return subscription;
   });
 
   it('should throw error on get tasks by tag when tag is null', () => {
     expect(() => taskService.getTasksByTag(null)).toThrowError('Tag must not be null or undefined');
   });
 
-  it('should return task by id', () => {
+  it('should return task by id', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Test task', tags: [{id: 2, name: 'Test tag'}]});
 
-    const subscription = taskService.getTask(testTask.id).subscribe(task => {
+    taskService.getTask(testTask.id).subscribe(task => {
       expect(task).toEqual(testTask);
+      done();
     });
 
     const taskRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
     expect(taskRequest.request.method).toBe('GET');
     taskRequest.flush(testTask.serialize());
-
-    return subscription;
   });
 
-  it('should create task', () => {
+  it('should create task', done => {
     const testTask = new Task().deserialize({title: 'Test task'});
-    const subscription = taskService.createTask(testTask).subscribe(task => {
+    taskService.createTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);
+      done();
     });
 
     const request = httpMock.expectOne(taskService.baseUrl);
     expect(request.request.method).toBe('POST');
     request.flush(testTask);
-
-    return subscription;
   });
 
-  it('should update task', () => {
+  it('should update task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
 
-    const subscription = taskService.updateTask(testTask).subscribe(task => {
+    taskService.updateTask(testTask).subscribe(task => {
       expect(task).toEqual(testTask);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
     expect(request.request.method).toBe('PUT');
     request.flush(testTask);
-
-    return subscription;
   });
 
   it('should complete task', () => {
     const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
-
-    const subscription = taskService.completeTask(testTask).subscribe(_ => {});
+    taskService.completeTask(testTask).subscribe(_ => {});
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/complete`);
     expect(request.request.method).toBe('POST');
     request.flush(null);
-
-    return subscription;
   });
 });

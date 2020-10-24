@@ -25,25 +25,27 @@ describe('AcceptLanguageInterceptor', () => {
     interceptor = injector.get(AcceptLanguageInterceptor);
   }));
 
-  it('should add "Accept-Language" header', () => {
+  it('should add "Accept-Language" header', done => {
     translateService.currentLang = 'en';
 
     const request = new HttpRequest('GET', '/');
     const handler = new HttpHandlerMock();
 
-    return interceptor.intercept(request, handler).subscribe(() => {
+    interceptor.intercept(request, handler).subscribe(() => {
       expect(handler.savedRequest.headers.get('Accept-Language')).toEqual('en');
+      done();
     }, _ => fail('An error was not expected'));
   });
 
-  it('should do nothing when current language is not set', () => {
+  it('should do nothing when current language is not set', done => {
     translateService.currentLang = null;
 
     const request = new HttpRequest('GET', '/');
     const handler = new HttpHandlerMock();
 
-    return interceptor.intercept(request, handler).subscribe(() => {
+    interceptor.intercept(request, handler).subscribe(() => {
       expect(handler.savedRequest.headers.get('Accept-Language')).toBeNull();
+      done();
     }, _ => fail('An error was not expected'));
   });
 });

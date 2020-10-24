@@ -30,9 +30,8 @@ describe('NotFoundErrorHandler', () => {
   });
 
   it('should navigate to 404 error page when response status is "404 Not found"', () => {
-    return handler.handle(null).subscribe(() => {
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'error', '404']);
-    });
+    handler.handle(null).subscribe(() => {});
+    expect(router.navigate).toHaveBeenCalledWith(['en', 'error', '404']);
   });
 
   it('should support only not "404 Not found" error', () => {

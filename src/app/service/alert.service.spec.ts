@@ -27,12 +27,12 @@ describe('AlertService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should clear message on navigation start', () => {
+  it('should clear message on navigation start', done => {
     service.info('Test message');
 
     const router = injector.get(Router);
     router.events.next(new NavigationStart(1, '/'));
 
-    return service.getMessage().subscribe(message => expect(message).toBeNull());
+    service.getMessage().subscribe(message => { expect(message).toBeNull(); done(); });
   });
 });

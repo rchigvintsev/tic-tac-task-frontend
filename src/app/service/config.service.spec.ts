@@ -23,19 +23,19 @@ describe('ConfigService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load config', () => {
+  it('should load config', done => {
     const config = {
       apiBaseUrl: 'http://backend.com',
       selfBaseUrl: 'http://frontend.com'
     };
-    const result = configService.loadConfig().then(() => {
+    configService.loadConfig().then(() => {
       expect(configService.apiBaseUrl).toBe(config.apiBaseUrl);
       expect(configService.selfBaseUrl).toBe(config.selfBaseUrl);
+      done();
     });
     const request = httpMock.expectOne('/assets/config.json');
     expect(request.request.method).toBe('GET');
     request.flush(config);
-    return result;
   });
 
   it('should throw error on attempt to access uninitialized service', () => {

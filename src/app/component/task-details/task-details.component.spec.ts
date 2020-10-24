@@ -161,13 +161,14 @@ describe('TaskDetailsComponent', () => {
     });
   });
 
-  it('should filter tag options on tag input value change', () => {
+  it('should filter tag options on tag input value change', done => {
     fixture.whenStable().then(() => {
-      const subscription = component.filteredTags.pipe(skip(1))
-        .subscribe(filteredTags => expect(filteredTags).toEqual([new Tag('Green')]));
+      component.filteredTags.pipe(skip(1)).subscribe(filteredTags => {
+          expect(filteredTags).toEqual([new Tag('Green')]);
+          done();
+      });
       component.tagControl.setValue('Gr');
       fixture.detectChanges();
-      return subscription;
     });
   });
 

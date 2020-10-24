@@ -16,22 +16,23 @@ describe('HttpErrorInterceptor', () => {
     }).compileComponents();
   });
 
-  it('should throw error when error handler is not found', () => {
+  it('should throw error when error handler is not found', done => {
     const errorHandler = new DummyErrorHandler(false);
     const errorInterceptor = new HttpErrorInterceptor([errorHandler]);
-    return errorInterceptor.intercept(null, {
+    errorInterceptor.intercept(null, {
       handle: () => throwError({status: 500})
-    }).subscribe(() => fail('An error was expected'), error => expect(error.status).toEqual(500));
+    }).subscribe(() => fail('An error was expected'), error => { expect(error.status).toEqual(500); done(); });
   });
 
-  it('should delegate error handling', () => {
+  it('should delegate error handling', done => {
     const errorHandler = new DummyErrorHandler(true);
     spyOn(errorHandler, 'handle').and.callThrough();
 
     const errorInterceptor = new HttpErrorInterceptor([errorHandler]);
-    return errorInterceptor.intercept(null, {
+    errorInterceptor.intercept(null, {
       handle: () => throwError({status: 500})
-    }).subscribe(() => expect(errorHandler.handle).toHaveBeenCalled(), () => fail('An error was not expected'));
+    }).subscribe(() => { expect(errorHandler.handle).toHaveBeenCalled(); done(); },
+      () => fail('An error was not expected'));
   });
 });
 
