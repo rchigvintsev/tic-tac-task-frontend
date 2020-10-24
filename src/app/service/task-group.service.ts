@@ -2,7 +2,7 @@ import {Injectable, Optional} from '@angular/core';
 
 import {BehaviorSubject, Observable} from 'rxjs';
 
-import {TaskGroup} from './task-group';
+import {TaskGroup} from '../model/task-group';
 
 @Injectable()
 export class TaskGroupService {

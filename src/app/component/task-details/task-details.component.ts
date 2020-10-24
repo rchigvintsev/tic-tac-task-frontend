@@ -16,7 +16,7 @@ import {Observable} from 'rxjs';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../../model/task';
 import {Tag} from '../../model/tag';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';

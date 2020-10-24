@@ -1,4 +1,4 @@
-import {TaskGroup} from './task-group';
+import {TaskGroup} from '../model/task-group';
 
 describe('TaskGroup', () => {
   it(`'valueOf' should return INBOX`, () => {

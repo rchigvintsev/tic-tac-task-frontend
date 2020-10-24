@@ -7,7 +7,7 @@ import {of, Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 import {SidenavMenuComponent} from './sidenav-menu.component';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TestSupport} from '../../test/test-support';
 import {ConfigService} from '../../service/config.service';

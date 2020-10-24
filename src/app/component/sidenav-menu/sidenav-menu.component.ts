@@ -6,7 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskService} from '../../service/task.service';
 import {PathMatcher} from '../../util/path-matcher';

@@ -11,7 +11,7 @@ import {LogService} from '../../service/log.service';
 import {TagService} from '../../service/tag.service';
 import {TaskService} from '../../service/task.service';
 import {PageRequest} from '../../service/page-request';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {Task} from '../../model/task';
 

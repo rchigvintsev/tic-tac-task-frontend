@@ -11,7 +11,7 @@ import {ConfigService} from '../../service/config.service';
 import {TaskService} from '../../service/task.service';
 import {PageRequest} from '../../service/page-request';
 import {TagService} from '../../service/tag.service';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {HttpTestingController} from '@angular/common/http/testing';
 import any = jasmine.any;

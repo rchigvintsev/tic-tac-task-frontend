@@ -16,7 +16,7 @@ import {TagService} from '../../service/tag.service';
 import {ConfigService} from '../../service/config.service';
 import {LogService} from '../../service/log.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
 
 describe('TaskDetailsComponent', () => {

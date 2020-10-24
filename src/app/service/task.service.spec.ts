@@ -5,7 +5,7 @@ import {skip} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
-import {TaskGroup} from './task-group';
+import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 

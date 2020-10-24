@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 import {ConfigService} from './config.service';
-import {TaskGroup} from './task-group';
+import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};

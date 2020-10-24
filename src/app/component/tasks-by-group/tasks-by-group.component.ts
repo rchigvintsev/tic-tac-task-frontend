@@ -11,7 +11,7 @@ import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {TaskGroup} from '../../service/task-group';
+import {TaskGroup} from '../../model/task-group';
 import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
 import {TaskStatus} from '../../model/task-status';
