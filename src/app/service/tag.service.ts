@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {Tag} from '../model/tag';
@@ -18,8 +18,13 @@ const jsonContentOptions = Object.assign({
 export class TagService {
   readonly baseUrl: string;
 
+  private readonly deletedTagSource: Subject<Tag>;
+  private readonly deletedTag: Observable<Tag>;
+
   constructor(private http: HttpClient, private config: ConfigService) {
     this.baseUrl = `${this.config.apiBaseUrl}/tags`;
+    this.deletedTagSource  = new Subject<Tag>();
+    this.deletedTag = this.deletedTagSource.asObservable();
   }
 
   getTags(): Observable<Tag[]> {
@@ -51,6 +56,16 @@ export class TagService {
   }
 
   deleteTag(tag: Tag): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, commonHttpOptions);
+    return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, commonHttpOptions).pipe(
+      tap(_ => this.notifyTagDeleted(tag))
+    );
+  }
+
+  getDeletedTag(): Observable<Tag> {
+    return this.deletedTag;
+  }
+
+  private notifyTagDeleted(tag: Tag) {
+    this.deletedTagSource.next(tag);
   }
 }

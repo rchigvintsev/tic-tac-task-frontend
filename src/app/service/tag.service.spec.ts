@@ -74,4 +74,14 @@ describe('TagService', () => {
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
   });
+
+  it('should notify about deleted tag', done => {
+    const testTag = new Tag().deserialize({id: 1});
+    tagService.getDeletedTag().subscribe(tag => {
+      expect(tag).toEqual(testTag);
+      done();
+    });
+    tagService.deleteTag(testTag).subscribe(() => {});
+    httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`).flush(null);
+  });
 });

@@ -11,6 +11,7 @@ import {LogService} from '../../service/log.service';
 import {TagService} from '../../service/tag.service';
 import {TaskService} from '../../service/task.service';
 import {PageRequest} from '../../service/page-request';
+import {TaskGroup} from '../../service/task-group';
 import {Tag} from '../../model/tag';
 import {Task} from '../../model/task';
 
@@ -46,6 +47,11 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
         return this.taskService.getTasksByTag(tag, this.pageRequest);
       })
     ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    this.tagService.getDeletedTag().subscribe(tag => {
+      if (this.tag && this.tag.id === tag.id) {
+        this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+      }
+    });
   }
 
   onTaskListScroll() {
