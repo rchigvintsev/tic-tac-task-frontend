@@ -7,6 +7,19 @@
 
       <span>{{ title }}</span>
       <span class="space-filler"></span>
+
+      <div class="language-menu-container">
+        <button mat-button [matMenuTriggerFor]="languages">
+          {{ getCurrentLanguage().name }}
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #languages="matMenu">
+          <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageButtonClick(lang)">
+            {{ lang.name }}
+          </button>
+        </mat-menu>
+      </div>
+
       <div *ngIf="principal" class="profile-info-container">
         <img [src]="principal.getPicture()" alt="avatar" class="avatar right-margin-8"/>
         <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
@@ -36,14 +49,6 @@
 
         <div fxFlex></div>
       </main>
-
-      <footer>
-        <div class="language-switcher">
-          <a mat-button class="en-link" (click)="onLanguageSwitchButtonClick('en')">en</a>
-          <span>|</span>
-          <a mat-button class="ru-link" (click)="onLanguageSwitchButtonClick('ru')">ru</a>
-        </div>
-      </footer>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

@@ -1,36 +1,34 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment} from '@angular/router';
 
-import {TranslateService} from '@ngx-translate/core';
-
+import {I18nService} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
-import {AVAILABLE_LANGUAGES} from './language';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalizedRouteGuard implements CanActivate {
-  constructor(private translate: TranslateService, private router: Router) {
+  constructor(private i18nService: I18nService, private router: Router) {
   }
 
-  private static getLanguageFromUrl(url: UrlSegment[]): string {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const lang = this.getLanguageFromUrl(route.url);
+    if (lang != null) {
+      this.navigateTo404Page(lang);
+    } else {
+      this.navigateToTargetPage(this.i18nService.currentLanguage.code, route.url);
+    }
+    return true;
+  }
+
+  private getLanguageFromUrl(url: UrlSegment[]): string {
     if (url.length > 0) {
       const firstSegment = url[0];
-      if (AVAILABLE_LANGUAGES.includes(firstSegment.path)) {
+      if (this.i18nService.languageForCode(firstSegment.path)) {
         return firstSegment.path;
       }
     }
     return null;
-  }
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const lang = LocalizedRouteGuard.getLanguageFromUrl(route.url);
-    if (lang != null) {
-      this.navigateTo404Page(lang);
-    } else {
-      this.navigateToTargetPage(this.translate.currentLang, route.url);
-    }
-    return true;
   }
 
   private navigateToTargetPage(language: string, url: UrlSegment[]) {
@@ -51,20 +49,21 @@ export class LocalizedRouteGuard implements CanActivate {
 })
 export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
-              private translate: TranslateService,
+              private i18nService: I18nService,
               private router: Router) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const currentLang = this.i18nService.currentLanguage;
     if (route.queryParamMap.get('error')) {
-      this.router.navigate([this.translate.currentLang, 'signin'], {queryParams: {error: true}}).then();
+      this.router.navigate([currentLang.code, 'signin'], {queryParams: {error: true}}).then();
     } else {
       const encodedClaims = route.queryParamMap.get('claims');
       if (encodedClaims) {
         const principal = this.authenticationService.createPrincipal(encodedClaims);
         this.authenticationService.setPrincipal(principal);
       }
-      this.router.navigate([this.translate.currentLang]).then();
+      this.router.navigate([currentLang.code]).then();
     }
     return true;
   }
@@ -75,13 +74,13 @@ export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
 })
 export class UnauthenticatedOnlyRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
-              private translate: TranslateService,
+              private i18nService: I18nService,
               private router: Router) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authenticationService.isUserSignedIn()) {
-      this.router.navigate([this.translate.currentLang]).then();
+      this.router.navigate([this.i18nService.currentLanguage.code]).then();
       return false;
     }
     return true;
@@ -93,7 +92,7 @@ export class UnauthenticatedOnlyRouteGuard implements CanActivate {
 })
 export class AuthenticatedOnlyRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
-              private translate: TranslateService,
+              private i18nService: I18nService,
               private router: Router) {
   }
 
@@ -101,7 +100,7 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
     if (this.authenticationService.isUserSignedIn()) {
       return true;
     }
-    this.router.navigate([this.translate.currentLang, 'signin']).then();
+    this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
     return false;
   }
 }

@@ -3,14 +3,14 @@ import {NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@a
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
 
-import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
+import {LangChangeEvent} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {TaskGroupService} from './service/task-group.service';
+import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
+import {TaskGroupService} from './service/task-group.service';
 import {AuthenticatedPrincipal} from './security/authenticated-principal';
-import {AVAILABLE_LANGUAGES} from './language';
 
 @Component({
   selector: 'app-root',
@@ -26,9 +26,10 @@ export class AppComponent implements OnInit, DoCheck {
   principal: AuthenticatedPrincipal;
   mobileQuery: MediaQueryList;
   showSidenav = false;
+  availableLanguages: Language[];
 
   constructor(private router: Router,
-              private translate: TranslateService,
+              private i18nService: I18nService,
               private authenticationService: AuthenticationService,
               media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -38,9 +39,14 @@ export class AppComponent implements OnInit, DoCheck {
     return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
   }
 
+  getCurrentLanguage(): Language {
+    return this.i18nService.currentLanguage;
+  }
+
   ngOnInit() {
-    moment.locale(this.translate.currentLang);
-    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+    this.availableLanguages = this.i18nService.availableLanguages;
+    moment.locale(this.i18nService.currentLanguage.code);
+    this.i18nService.onLanguageChange.subscribe((event: LangChangeEvent) => {
       moment.locale(event.lang);
     });
     this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
@@ -55,7 +61,7 @@ export class AppComponent implements OnInit, DoCheck {
   onSignOutButtonClick() {
     this.authenticationService.signOut().subscribe(() => {
       this.principal = null;
-      this.router.navigate([this.translate.currentLang, 'signin']).then();
+      this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
     });
   }
 
@@ -63,7 +69,7 @@ export class AppComponent implements OnInit, DoCheck {
     this.sidenav.toggle().then();
   }
 
-  onLanguageSwitchButtonClick(language: string) {
+  onLanguageButtonClick(language: Language) {
     this.switchLanguage(language);
   }
 
@@ -73,20 +79,23 @@ export class AppComponent implements OnInit, DoCheck {
     }
   }
 
-  private switchLanguage(language: string) {
+  private switchLanguage(language: Language) {
     let languageChanged = false;
     let urlTree = this.router.parseUrl(this.router.url);
     if (urlTree.root.numberOfChildren === 0) {
-      urlTree = this.router.createUrlTree([language], {fragment: urlTree.fragment, queryParams: urlTree.queryParams});
+      urlTree = this.router.createUrlTree([language.code], {
+        fragment: urlTree.fragment,
+        queryParams: urlTree.queryParams
+      });
       languageChanged = true;
     } else {
       const segmentGroup = urlTree.root.children[PRIMARY_OUTLET];
-      const currentLanguage = segmentGroup.segments[0].path;
-      if (!AVAILABLE_LANGUAGES.includes(currentLanguage)) {
-        segmentGroup.segments.unshift(new UrlSegment(language, {}));
+      const currentLangCode = segmentGroup.segments[0].path;
+      if (!this.i18nService.languageForCode(currentLangCode)) {
+        segmentGroup.segments.unshift(new UrlSegment(language.code, {}));
         languageChanged = true;
-      } else if (currentLanguage !== language) {
-        segmentGroup.segments[0] = new UrlSegment(language, {});
+      } else if (currentLangCode !== language.code) {
+        segmentGroup.segments[0] = new UrlSegment(language.code, {});
         languageChanged = true;
       }
     }

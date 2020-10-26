@@ -11,13 +11,13 @@ import {TaskDetailsComponent} from './component/task-details/task-details.compon
 import {SigninComponent} from './component/signin/signin.component';
 import {NotFoundComponent} from './component/not-found/not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
+import {AVAILABLE_LANGUAGES} from './service/i18n.service';
 import {
   AuthenticatedOnlyRouteGuard,
   LocalizedRouteGuard,
   OAuth2AuthorizationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
-import {AVAILABLE_LANGUAGES} from './language';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
@@ -37,7 +37,7 @@ export const routes: Routes = [
 export function LocalizeHttpLoaderFactory(translate: TranslateService,
                                           location: Location,
                                           settings: LocalizeRouterSettings) {
-  return new ManualParserLoader(translate, location, settings, AVAILABLE_LANGUAGES);
+  return new ManualParserLoader(translate, location, settings, Array.from(AVAILABLE_LANGUAGES.keys()));
 }
 
 @NgModule({

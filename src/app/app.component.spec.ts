@@ -10,6 +10,7 @@ import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
 import {TestSupport} from './test/test-support';
 import {ConfigService} from './service/config.service';
+import {Language} from './service/i18n.service';
 import {Config} from './model/config';
 
 const CURRENT_LANG = 'ru';
@@ -118,7 +119,7 @@ describe('AppComponent', () => {
   });
 
   it('should switch language', () => {
-    component.onLanguageSwitchButtonClick('en');
+    component.onLanguageButtonClick(new Language('en', null));
     expect(router.navigateByUrl).toHaveBeenCalled();
     // @ts-ignore
     const callArg = router.navigateByUrl.calls.mostRecent().args[0];
@@ -132,7 +133,7 @@ describe('AppComponent', () => {
     });
 
     it('should switch language', () => {
-      component.onLanguageSwitchButtonClick('en');
+      component.onLanguageButtonClick(new Language('en', null));
       expect(router.navigateByUrl).toHaveBeenCalled();
       // @ts-ignore
       const callArg = router.navigateByUrl.calls.mostRecent().args[0];
@@ -147,7 +148,7 @@ describe('AppComponent', () => {
     });
 
     it('should switch language', () => {
-      component.onLanguageSwitchButtonClick('ru');
+      component.onLanguageButtonClick(new Language('ru', null));
       expect(router.navigateByUrl).toHaveBeenCalled();
       // @ts-ignore
       const callArg = router.navigateByUrl.calls.mostRecent().args[0];
@@ -155,8 +156,8 @@ describe('AppComponent', () => {
       expect(callArg.toString()).toEqual('/ru/test');
     });
 
-    it('should do nothing on language switch button click when language is not changed', () => {
-      component.onLanguageSwitchButtonClick('en');
+    it('should do nothing on language button click when language is not changed', () => {
+      component.onLanguageButtonClick(new Language('en', null));
       expect(router.navigateByUrl).not.toHaveBeenCalled();
     });
   });
