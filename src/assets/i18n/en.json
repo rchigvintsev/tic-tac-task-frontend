@@ -35,5 +35,6 @@
   "yesterday": "Yesterday",
   "today": "Today",
   "tomorrow": "Tomorrow",
-  "tags": "Tags"
+  "tags": "Tags",
+  "task_lists": "Task lists"
 }
