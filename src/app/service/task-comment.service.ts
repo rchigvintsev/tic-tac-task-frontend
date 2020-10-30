@@ -18,7 +18,7 @@ export class TaskCommentService {
   readonly baseUrl: string;
 
   constructor(private http: HttpClient, private config: ConfigService) {
-    this.baseUrl = `${this.config.apiBaseUrl}/taskComments`;
+    this.baseUrl = `${this.config.apiBaseUrl}/task-comments`;
   }
 
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
