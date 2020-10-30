@@ -1,0 +1,26 @@
+<mat-list id="task_list_list">
+  <mat-list-item *ngFor="let taskList of taskLists"
+                 [routerLink]="[translate.currentLang, 'task-list', taskList.id]"
+                 [ngClass]="'task-list-' + taskList.id"
+                 [class.mat-list-item-selected]="isRouterLinkActive('task-list/' + taskList.id)"
+                 (mouseover)="onTaskListListItemMouseOver(taskList)"
+                 (mouseout)="onTaskListListItemMouseOut()">
+    <div class="list-row task-list-list-row">
+      <div class="list-column name-column">
+        <span>{{ taskList.name }}</span>
+      </div>
+
+      <div [hidden]="!isTaskListSelected(taskList)" class="list-column menu-trigger-column">
+        <button mat-icon-button aria-label="Task list menu" [matMenuTriggerFor]="taskListMenu"
+                (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
+                (menuOpened)="onTaskListMenuOpened()">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #taskListMenu="matMenu" xPosition="before" (closed)="onTaskListMenuClosed()">
+          <button mat-menu-item (click)="onDeleteTaskListButtonClick(taskList)">{{ 'delete' | translate }}</button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-list-item>
+</mat-list>

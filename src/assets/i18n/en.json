@@ -18,6 +18,7 @@
   "attention": "Attention!",
   "delete_comment_question": "Do you really want to delete the selected comment?",
   "delete_tag_question": "Do you really want to delete the selected tag?",
+  "delete_task_list_question": "Do you really want to delete the selected task list?",
   "page_not_found": "We are sorry, page is not found",
   "page_not_found_description": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
   "sign_in_prompt": "Please sign in",

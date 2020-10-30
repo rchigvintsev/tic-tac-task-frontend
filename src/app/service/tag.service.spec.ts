@@ -37,7 +37,7 @@ describe('TagService', () => {
       done();
     });
 
-    const request = httpMock.expectOne(`${tagService.baseUrl}`);
+    const request = httpMock.expectOne(tagService.baseUrl);
     expect(request.request.method).toBe('GET');
     request.flush(testTags.map(tag => tag.serialize()));
   });

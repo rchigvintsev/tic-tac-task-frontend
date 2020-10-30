@@ -48,6 +48,7 @@ import {NotFoundComponent} from './component/not-found/not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/alert/alert.component';
 import {TagsComponent} from './component/tags/tags.component';
+import {TaskListsComponent} from './component/task-lists/task-lists.component';
 import {ConfigService} from './service/config.service';
 import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
@@ -84,6 +85,7 @@ registerLocaleData(localeRu, 'ru');
     DummyComponent,
     AlertComponent,
     TagsComponent,
+    TaskListsComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ],
