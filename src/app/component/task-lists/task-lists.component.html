@@ -1,3 +1,21 @@
+<form class="task-list-form">
+  <mat-form-field>
+    <label>
+      <input matInput
+             name="name"
+             type="text"
+             maxlength="255"
+             placeholder="{{ 'new_task_list' | translate }}"
+             [(ngModel)]="taskListFormModel.name"
+             (ngModelChange)="onTaskListFormModelNameChange()"/>
+    </label>
+  </mat-form-field>
+
+  <button mat-icon-button type="submit" [disabled]="!taskListFormSubmitEnabled">
+    <mat-icon>done</mat-icon>
+  </button>
+</form>
+
 <mat-list id="task_list_list">
   <mat-list-item *ngFor="let taskList of taskLists"
                  [routerLink]="[translate.currentLang, 'task-list', taskList.id]"

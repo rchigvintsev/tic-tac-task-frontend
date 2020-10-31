@@ -122,4 +122,16 @@ describe('TaskListsComponent', () => {
       expect(selectedItem).toBeTruthy();
     });
   });
+
+  it('should enable task list form submit button when task list name is not blank', () => {
+    component.taskListFormModel.name = 'New task list';
+    component.onTaskListFormModelNameChange();
+    expect(component.taskListFormSubmitEnabled).toBeTruthy();
+  });
+
+  it('should disable task list form submit button when task list name is blank', () => {
+    component.taskListFormModel.name = ' ';
+    component.onTaskListFormModelNameChange();
+    expect(component.taskListFormSubmitEnabled).toBeFalsy();
+  });
 });

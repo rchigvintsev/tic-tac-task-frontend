@@ -1,20 +1,26 @@
-.task-list-list-row {
-  justify-content: space-between;
-  min-height: 40px;
+form.task-list-form {
+  display: flex;
+  flex-direction: row;
 
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    margin-right: 8px;
+  }
+}
+
+.task-list-list-row {
   .name-column {
     display: flex;
     align-items: center;
 
     span {
-      width: 181px;
+      width: 189px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-  }
-
-  .menu-trigger-column {
-    margin-left: auto;
   }
 }

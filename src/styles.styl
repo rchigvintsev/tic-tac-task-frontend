@@ -99,8 +99,16 @@ body {
     margin-right: 12px;
   }
 
-  mat-nav-list .mat-expansion-panel-content > .mat-expansion-panel-body {
-    padding-right: 0 !important;
+  mat-nav-list mat-list mat-accordion {
+    mat-expansion-panel {
+      .mat-expansion-panel-content > .mat-expansion-panel-body {
+        padding-right: 0 !important;
+      }
+
+      mat-list mat-list-item .mat-list-item-content {
+        padding-right: 8px !important;
+      }
+    }
   }
 
   .mat-list-item-selected {

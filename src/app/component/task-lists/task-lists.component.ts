@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
@@ -11,6 +11,7 @@ import {LogService} from '../../service/log.service';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {PathMatcher} from '../../util/path-matcher';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-task-lists',
@@ -18,6 +19,9 @@ import {PathMatcher} from '../../util/path-matcher';
   styleUrls: ['./task-lists.component.styl']
 })
 export class TaskListsComponent extends WebServiceBasedComponent implements OnInit {
+  taskListFormModel = new TaskList();
+  taskListFormSubmitEnabled = false;
+
   taskLists: TaskList[];
   taskListMenuOpened: boolean;
 
@@ -29,8 +33,7 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
               authenticationService: AuthenticationService,
               log: LogService,
               private taskListService: TaskListService,
-              private dialog: MatDialog,
-              private changeDetector: ChangeDetectorRef) {
+              private dialog: MatDialog) {
     super(translate, router, authenticationService, log);
   }
 
@@ -51,6 +54,10 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
 
   isRouterLinkActive(path: string): boolean {
     return this.pathMatcher && this.pathMatcher.matches(path);
+  }
+
+  onTaskListFormModelNameChange() {
+    this.taskListFormSubmitEnabled = !Strings.isBlank(this.taskListFormModel.name);
   }
 
   onTaskListListItemMouseOver(taskList: TaskList) {
