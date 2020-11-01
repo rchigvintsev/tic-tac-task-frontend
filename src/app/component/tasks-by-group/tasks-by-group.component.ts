@@ -64,13 +64,13 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
   private static getDeadlineDate(taskGroup: TaskGroup): Date {
     if (taskGroup === TaskGroup.TODAY || taskGroup === TaskGroup.WEEK) {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setHours(23, 59, 59, 999);
       return today;
     }
 
     if (taskGroup === TaskGroup.TOMORROW) {
       const tomorrow = moment().add(1, 'day').toDate();
-      tomorrow.setHours(0, 0, 0, 0);
+      tomorrow.setHours(23, 59, 59, 999);
       return tomorrow;
     }
 

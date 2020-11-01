@@ -85,7 +85,7 @@ describe('TasksByGroupComponent', () => {
         fixture.detectChanges();
 
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        today.setHours(23, 59, 59, 999);
         expect(component.tasks[0].deadline).toEqual(today);
         expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
       });
@@ -100,7 +100,7 @@ describe('TasksByGroupComponent', () => {
         fixture.detectChanges();
 
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        today.setHours(23, 59, 59, 999);
         expect(component.tasks[0].deadline).toEqual(today);
         expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
       });
@@ -115,7 +115,7 @@ describe('TasksByGroupComponent', () => {
         fixture.detectChanges();
 
         const tomorrow = moment().add(1, 'day').toDate();
-        tomorrow.setHours(0, 0, 0, 0);
+        tomorrow.setHours(23, 59, 59, 999);
         expect(component.tasks[0].deadline).toEqual(tomorrow);
         expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
       });
