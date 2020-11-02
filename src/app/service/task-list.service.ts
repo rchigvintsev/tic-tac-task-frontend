@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -8,6 +8,9 @@ import {ConfigService} from './config.service';
 import {TaskList} from '../model/task-list';
 
 const commonHttpOptions = {withCredentials: true};
+const jsonContentOptions = Object.assign({
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+}, commonHttpOptions);
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +30,14 @@ export class TaskListService {
           taskLists.push(new TaskList().deserialize(json));
         }
         return taskLists;
+      })
+    );
+  }
+
+  createTaskList(taskList: TaskList): Observable<TaskList> {
+    return this.http.post<TaskList>(this.baseUrl, taskList.serialize(), jsonContentOptions).pipe(
+      map(response => {
+        return new TaskList().deserialize(response);
       })
     );
   }
