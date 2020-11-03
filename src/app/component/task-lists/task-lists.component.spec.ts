@@ -10,6 +10,7 @@ import {TestSupport} from '../../test/test-support';
 import {ConfigService} from '../../service/config.service';
 import {TaskListService} from '../../service/task-list.service';
 import {TaskList} from '../../model/task-list';
+import {TaskComment} from "../../model/task-comment";
 
 class MatDialogMock {
   open() {
@@ -46,6 +47,13 @@ describe('TaskListsComponent', () => {
       taskLists.push(new TaskList().deserialize({id: i + 1, name: `Test task list ${i + 1}`}));
     }
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of(taskLists));
+    spyOn(taskListService, 'createTaskList').and.callFake(list => {
+      const result = new TaskList().deserialize(list);
+      if (!list.id) {
+        result.id = 4;
+      }
+      return of(result);
+    });
     spyOn(taskListService, 'deleteTaskList').and.returnValue(of(null));
 
     routerEvents = new Subject();
@@ -133,5 +141,26 @@ describe('TaskListsComponent', () => {
     component.taskListFormModel.name = ' ';
     component.onTaskListFormModelNameChange();
     expect(component.taskListFormSubmitEnabled).toBeFalsy();
+  });
+
+  it('should create task list', () => {
+    const taskListName = 'New task list';
+    fixture.whenStable().then(() => {
+      component.taskListFormModel.name = taskListName;
+      component.onTaskListFormSubmit();
+      fixture.detectChanges();
+      expect(taskListService.createTaskList).toHaveBeenCalled();
+      expect(component.taskLists.length).toBe(4);
+      expect(component.taskLists[0].name).toEqual(taskListName);
+    });
+  });
+
+  it('should not create task list with blank name', () => {
+    fixture.whenStable().then(() => {
+      component.taskListFormModel.name = ' ';
+      component.onTaskListFormSubmit();
+      fixture.detectChanges();
+      expect(taskListService.createTaskList).not.toHaveBeenCalled();
+    });
   });
 });

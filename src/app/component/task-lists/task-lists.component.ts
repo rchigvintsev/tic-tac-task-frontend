@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslateService} from '@ngx-translate/core';
@@ -19,6 +20,8 @@ import {Strings} from '../../util/strings';
   styleUrls: ['./task-lists.component.styl']
 })
 export class TaskListsComponent extends WebServiceBasedComponent implements OnInit {
+  @ViewChild('taskListForm')
+  taskListForm: NgForm;
   taskListFormModel = new TaskList();
   taskListFormSubmitEnabled = false;
 
@@ -60,6 +63,10 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
     this.taskListFormSubmitEnabled = !Strings.isBlank(this.taskListFormModel.name);
   }
 
+  onTaskListFormSubmit() {
+    this.createTaskList(this.taskListFormModel);
+  }
+
   onTaskListListItemMouseOver(taskList: TaskList) {
     this.selectedTaskList = taskList;
   }
@@ -96,6 +103,15 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
 
   private onNavigationEnd(e: NavigationEnd) {
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(e.url));
+  }
+
+  private createTaskList(taskList: TaskList) {
+    if (!Strings.isBlank(taskList.name)) {
+      this.taskListService.createTaskList(taskList).subscribe(createdTaskList => {
+        this.taskLists.unshift(createdTaskList);
+        this.taskListForm.resetForm();
+      }, this.onServiceCallError.bind(this));
+    }
   }
 
   private deleteTaskList(taskList: TaskList) {

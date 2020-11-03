@@ -1,4 +1,4 @@
-<form class="task-list-form">
+<form #taskListForm="ngForm" class="task-list-form" (ngSubmit)="onTaskListFormSubmit()">
   <mat-form-field>
     <label>
       <input matInput
