@@ -6,7 +6,7 @@
                     id="new_comment"
                     name="newComment"
                     [(ngModel)]="newCommentFormModel.commentText"
-                    (keyup)="onNewCommentInputKeyUp()"
+                    (ngModelChange)="onNewCommentModelChange()"
                     (keydown)="onNewCommentInputKeyDown($event)"
                     placeholder="{{ 'leave_comment' | translate }}"
                     maxlength="10000">
@@ -55,8 +55,8 @@
                 <textarea matInput
                           id="edit_comment"
                           name="editComment"
-                          (keyup)="onEditCommentInputKeyUp()"
                           [(ngModel)]="editCommentFormModel.commentText"
+                          (ngModelChange)="onEditCommentModelChange()"
                           maxlength="10000">
                 </textarea>
             </label>

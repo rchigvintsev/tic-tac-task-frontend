@@ -51,11 +51,11 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
       .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
   }
 
-  onNewCommentInputKeyUp() {
+  onNewCommentModelChange() {
     this.newCommentFormEnabled = !Strings.isBlank(this.newCommentFormModel.commentText);
   }
 
-  onEditCommentInputKeyUp() {
+  onEditCommentModelChange() {
     this.editCommentFormEnabled = !Strings.isBlank(this.editCommentFormModel.commentText);
   }
 

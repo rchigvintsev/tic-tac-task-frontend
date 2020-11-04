@@ -72,7 +72,7 @@ describe('TaskCommentsComponent', () => {
   it('should enable new comment form when comment text is not blank', () => {
     fixture.whenStable().then(() => {
       component.newCommentFormModel.commentText = 'New comment';
-      component.onNewCommentInputKeyUp();
+      component.onNewCommentModelChange();
       fixture.detectChanges();
       expect(component.newCommentFormEnabled).toBeTruthy();
     });
@@ -81,7 +81,7 @@ describe('TaskCommentsComponent', () => {
   it('should disable new comment form when comment text is blank', () => {
     fixture.whenStable().then(() => {
       component.newCommentFormModel.commentText = ' ';
-      component.onNewCommentInputKeyUp();
+      component.onNewCommentModelChange();
       fixture.detectChanges();
       expect(component.newCommentFormEnabled).toBeFalsy();
     });
@@ -163,7 +163,7 @@ describe('TaskCommentsComponent', () => {
     fixture.whenStable().then(() => {
       component.onEditCommentButtonClick(component.comments[0]);
       component.editCommentFormModel.commentText = 'Edited comment';
-      component.onEditCommentInputKeyUp();
+      component.onEditCommentModelChange();
       fixture.detectChanges();
       expect(component.editCommentFormEnabled).toBeTruthy();
     });
@@ -173,7 +173,7 @@ describe('TaskCommentsComponent', () => {
     fixture.whenStable().then(() => {
       component.onEditCommentButtonClick(component.comments[0]);
       component.editCommentFormModel.commentText = ' ';
-      component.onEditCommentInputKeyUp();
+      component.onEditCommentModelChange();
       fixture.detectChanges();
       expect(component.editCommentFormEnabled).toBeFalsy();
     });
