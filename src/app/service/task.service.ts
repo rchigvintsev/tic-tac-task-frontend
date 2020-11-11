@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -8,6 +8,7 @@ import * as moment from 'moment';
 
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
+import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
@@ -140,6 +141,22 @@ export class TaskService {
     return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
+      })
+    );
+  }
+
+  getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
+    const params = new HttpParams()
+      .set('page', String(pageRequest.page))
+      .set('size', String(pageRequest.size));
+    const options = Object.assign({params}, commonHttpOptions);
+    return this.http.get<any>(`${this.baseUrl}/${taskId}/comments`, options).pipe(
+      map(response => {
+        const comments = [];
+        for (const json of response) {
+          comments.push(new TaskComment().deserialize(json));
+        }
+        return comments;
       })
     );
   }

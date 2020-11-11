@@ -9,12 +9,13 @@ import * as moment from 'moment';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {TaskComment} from '../../model/task-comment';
+import {TaskService} from '../../service/task.service';
 import {TaskCommentService} from '../../service/task-comment.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
+import {PageRequest} from '../../service/page-request';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../../util/strings';
-import {PageRequest} from '../../service/page-request';
 
 @Component({
   selector: 'app-task-comments',
@@ -39,6 +40,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
               authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
+              private taskService: TaskService,
               private commentService: TaskCommentService,
               private dialog: MatDialog) {
     super(translate, router, authenticationService, log);
@@ -47,7 +49,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   ngOnInit() {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
-    this.commentService.getComments(this.taskId, this.pageRequest)
+    this.taskService.getComments(this.taskId, this.pageRequest)
       .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
   }
 
@@ -107,7 +109,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   onCommentListScroll() {
     this.pageRequest.page++;
-    this.commentService.getComments(this.taskId, this.pageRequest)
+    this.taskService.getComments(this.taskId, this.pageRequest)
       .subscribe(comments => this.comments = this.comments.concat(comments), this.onServiceCallError.bind(this));
   }
 

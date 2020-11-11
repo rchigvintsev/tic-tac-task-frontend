@@ -3,11 +3,16 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 
 import {skip} from 'rxjs/operators';
 
+import * as moment from 'moment';
+
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
+import {TaskComment} from '../model/task-comment';
+
+const DATE_FORMAT = moment.HTML5_FMT.DATETIME_LOCAL_MS;
 
 describe('TaskService', () => {
   let injector: TestBed;
@@ -249,6 +254,35 @@ describe('TaskService', () => {
     const taskRequest = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
     expect(taskRequest.request.method).toBe('GET');
     taskRequest.flush(testTask.serialize());
+  });
+
+  it('should return comments for task', () => {
+    const taskId = 1;
+    const testComments = [];
+
+    testComments.push(new TaskComment().deserialize({
+      id: 2,
+      taskId,
+      commentText: 'Comment 1',
+      createdAt: moment().utc().subtract(1, 'hours').format(DATE_FORMAT),
+      updatedAt: moment().utc().format(DATE_FORMAT)
+    }));
+    testComments.push(new TaskComment().deserialize({
+      id: 1,
+      taskId,
+      commentText: 'Comment 2',
+      createdAt: moment().utc().subtract({days: 1, hours: 1}).format(DATE_FORMAT),
+      updatedAt: moment().utc().subtract(1, 'days').format(DATE_FORMAT)
+    }));
+
+    taskService.getComments(taskId).subscribe(comments => {
+      expect(comments.length).toBe(2);
+      expect(comments).toEqual(testComments);
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/comments?page=0&size=20`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testComments);
   });
 
   it('should create task', done => {

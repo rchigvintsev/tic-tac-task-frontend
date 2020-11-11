@@ -1,13 +1,15 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {MatDialog} from '@angular/material';
 
-import * as moment from 'moment';
 import {of} from 'rxjs';
+
+import * as moment from 'moment';
 
 import {TaskCommentsComponent} from './task-comments.component';
 import {TaskComment} from '../../model/task-comment';
+import {TaskService} from '../../service/task.service';
 import {TaskCommentService} from '../../service/task-comment.service';
 import {ConfigService} from '../../service/config.service';
 import {TestSupport} from '../../test/test-support';
@@ -25,6 +27,7 @@ class MatDialogMock {
 describe('TaskCommentsComponent', () => {
   let component: TaskCommentsComponent;
   let fixture: ComponentFixture<TaskCommentsComponent>;
+  let taskService: TaskService;
   let taskCommentService: TaskCommentService;
 
   beforeEach(async(() => {
@@ -42,13 +45,17 @@ describe('TaskCommentsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskCommentsComponent);
 
-    taskCommentService = fixture.debugElement.injector.get(TaskCommentService);
-    const createdAt = moment().utc().subtract(1, 'days').format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+    const injector = getTestBed();
+
+    taskService = injector.get(TaskService);
     const comments = [];
+    const createdAt = moment().utc().subtract(1, 'days').format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
     for (let i = 0; i < 3; i++) {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
-    spyOn(taskCommentService, 'getComments').and.returnValue(of(comments));
+    spyOn(taskService, 'getComments').and.returnValue(of(comments));
+
+    taskCommentService = injector.get(TaskCommentService);
     spyOn(taskCommentService, 'createComment').and.callFake(c => {
       const result = new TaskComment().deserialize(c);
       if (!c.id) {
@@ -229,10 +236,10 @@ describe('TaskCommentsComponent', () => {
     });
   });
 
-  it('should load next task page on task list scroll', () => {
+  it('should load next comment page on comment list scroll', () => {
     fixture.whenStable().then(() => {
       component.onCommentListScroll();
-      expect(taskCommentService.getComments).toHaveBeenCalledWith(any(Number), new PageRequest(1));
+      expect(taskService.getComments).toHaveBeenCalledWith(any(Number), new PageRequest(1));
     });
   });
 });
