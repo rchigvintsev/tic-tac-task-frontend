@@ -9,7 +9,6 @@ import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
 import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
-import {Tag} from '../model/tag';
 import {TaskComment} from '../model/task-comment';
 
 const DATE_FORMAT = moment.HTML5_FMT.DATETIME_LOCAL_MS;
@@ -216,31 +215,6 @@ describe('TaskService', () => {
 
   it('should throw error on get task count when task group is null', () => {
     expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
-  });
-
-  it('should return tasks filtered by tag', done => {
-    const testTag = new Tag('Test tag');
-    testTag.id = 3;
-
-    const testTasks = [];
-    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
-    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
-    testTasks[0].tags = [testTag];
-    testTasks[1].tags = [testTag];
-
-    taskService.getTasksByTag(testTag).subscribe(tasks => {
-      expect(tasks.length).toBe(2);
-      expect(tasks).toEqual(testTasks);
-      done();
-    });
-
-    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?tagId=${testTag.id}&page=0&size=20`);
-    expect(request.request.method).toBe('GET');
-    request.flush(testTasks.map(task => task.serialize()));
-  });
-
-  it('should throw error on get tasks by tag when tag is null', () => {
-    expect(() => taskService.getTasksByTag(null)).toThrowError('Tag must not be null or undefined');
   });
 
   it('should return task by id', done => {

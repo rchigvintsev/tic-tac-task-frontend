@@ -3,6 +3,7 @@ import {HttpTestingController} from '@angular/common/http/testing';
 
 import {TagService} from './tag.service';
 import {Tag} from '../model/tag';
+import {Task} from '../model/task';
 import {TestSupport} from '../test/test-support';
 import {ConfigService} from './config.service';
 
@@ -81,5 +82,26 @@ describe('TagService', () => {
     });
     tagService.deleteTag(testTag).subscribe(() => {});
     httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`).flush(null);
+  });
+
+  it('should return uncompleted tasks for tag', done => {
+    const testTag = new Tag('Test tag');
+    testTag.id = 3;
+
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
+    testTasks[0].tags = [testTag];
+    testTasks[1].tags = [testTag];
+
+    tagService.getUncompletedTasks(testTag.id).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}/tasks/uncompleted?page=0&size=20`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks.map(task => task.serialize()));
   });
 });

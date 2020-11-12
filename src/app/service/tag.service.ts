@@ -6,6 +6,8 @@ import {map, tap} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {Tag} from '../model/tag';
+import {Task} from '../model/task';
+import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};
 const jsonContentOptions = Object.assign({
@@ -63,6 +65,19 @@ export class TagService {
 
   getDeletedTag(): Observable<Tag> {
     return this.deletedTag;
+  }
+
+  getUncompletedTasks(tagId: number, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
+    const url = `${this.baseUrl}/${tagId}/tasks/uncompleted?${pageRequest.toQueryParameters()}`;
+    return this.http.get<any>(url, commonHttpOptions).pipe(
+      map(response => {
+        const tasks = [];
+        for (const json of response) {
+          tasks.push(new Task().deserialize(json));
+        }
+        return tasks;
+      })
+    );
   }
 
   private notifyTagDeleted(tag: Tag) {

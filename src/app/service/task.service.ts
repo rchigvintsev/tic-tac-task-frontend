@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -7,7 +7,6 @@ import {map} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {Task} from '../model/task';
-import {Tag} from '../model/tag';
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {TaskGroup} from '../model/task-group';
@@ -118,25 +117,6 @@ export class TaskService {
     );
   }
 
-  getTasksByTag(tag: Tag, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
-    if (!tag) {
-      throw new Error('Tag must not be null or undefined');
-    }
-
-    const params = `tagId=${tag.id}&${pageRequest.toQueryParameters()}`;
-    const url = `${this.baseUrl}/uncompleted?${params}`;
-
-    return this.http.get<any>(url, commonHttpOptions).pipe(
-      map(response => {
-        const tasks = [];
-        for (const json of response) {
-          tasks.push(new Task().deserialize(json));
-        }
-        return tasks;
-      })
-    );
-  }
-
   getTask(id: number): Observable<Task> {
     return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
       map(response => {
@@ -146,11 +126,8 @@ export class TaskService {
   }
 
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
-    const params = new HttpParams()
-      .set('page', String(pageRequest.page))
-      .set('size', String(pageRequest.size));
-    const options = Object.assign({params}, commonHttpOptions);
-    return this.http.get<any>(`${this.baseUrl}/${taskId}/comments`, options).pipe(
+    const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
+    return this.http.get<any>(url, commonHttpOptions).pipe(
       map(response => {
         const comments = [];
         for (const json of response) {

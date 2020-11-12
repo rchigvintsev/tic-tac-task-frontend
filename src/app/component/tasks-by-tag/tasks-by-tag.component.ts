@@ -9,7 +9,6 @@ import {WebServiceBasedComponent} from '../web-service-based.component';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TagService} from '../../service/tag.service';
-import {TaskService} from '../../service/task.service';
 import {PageRequest} from '../../service/page-request';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
@@ -32,8 +31,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
               authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
-              private tagService: TagService,
-              private taskService: TaskService) {
+              private tagService: TagService) {
     super(translate, router, authenticationService, log);
   }
 
@@ -44,7 +42,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
       flatMap(tag => {
         this.tag = tag;
         this.title = tag.name;
-        return this.taskService.getTasksByTag(tag, this.pageRequest);
+        return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
     ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
     this.tagService.getDeletedTag().subscribe(tag => {
@@ -57,7 +55,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
   onTaskListScroll() {
     if (this.tag) {
       this.pageRequest.page++;
-      this.taskService.getTasksByTag(this.tag, this.pageRequest)
+      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest)
         .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
     }
   }

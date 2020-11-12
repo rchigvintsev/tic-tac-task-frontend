@@ -8,7 +8,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TasksByTagComponent} from './tasks-by-tag.component';
 import {ConfigService} from '../../service/config.service';
-import {TaskService} from '../../service/task.service';
 import {PageRequest} from '../../service/page-request';
 import {TagService} from '../../service/tag.service';
 import {TaskGroup} from '../../model/task-group';
@@ -26,7 +25,6 @@ describe('TasksByTagComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
   let tagService: TagService;
-  let taskService: TaskService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,9 +53,7 @@ describe('TasksByTagComponent', () => {
 
     tagService = injector.get(TagService);
     spyOn(tagService, 'getTag').and.returnValue(of(tag));
-
-    taskService = injector.get(TaskService);
-    spyOn(taskService, 'getTasksByTag').and.returnValue(of([]));
+    spyOn(tagService, 'getUncompletedTasks').and.returnValue(of([]));
 
     fixture.detectChanges();
   });
@@ -69,7 +65,7 @@ describe('TasksByTagComponent', () => {
   it('should load next task page on task list scroll', () => {
     fixture.whenStable().then(() => {
       component.onTaskListScroll();
-      expect(taskService.getTasksByTag).toHaveBeenCalledWith(any(Tag), new PageRequest(1));
+      expect(tagService.getUncompletedTasks).toHaveBeenCalledWith(any(Number), new PageRequest(1));
     });
   });
 
