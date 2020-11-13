@@ -85,22 +85,19 @@ describe('TagService', () => {
   });
 
   it('should return uncompleted tasks for tag', done => {
-    const testTag = new Tag('Test tag');
-    testTag.id = 3;
+    const tagId = 3;
 
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
-    testTasks[0].tags = [testTag];
-    testTasks[1].tags = [testTag];
 
-    tagService.getUncompletedTasks(testTag.id).subscribe(tasks => {
+    tagService.getUncompletedTasks(tagId).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
-    const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}/tasks/uncompleted?page=0&size=20`);
+    const request = httpMock.expectOne(`${tagService.baseUrl}/${tagId}/tasks/uncompleted?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks.map(task => task.serialize()));
   });

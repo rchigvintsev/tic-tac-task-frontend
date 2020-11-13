@@ -116,8 +116,7 @@
 
       <mat-form-field>
         <mat-chip-list #tagList aria-label="Tags">
-          <mat-chip *ngFor="let tag of taskFormModel.tags" [style.background-color]="tag.color"
-                    (removed)="onTagChipRemoved(tag)">
+          <mat-chip *ngFor="let tag of tags" [style.background-color]="tag.color" (removed)="onTagChipRemoved(tag)">
             {{ tag.name }}
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>

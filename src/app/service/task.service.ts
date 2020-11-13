@@ -7,6 +7,7 @@ import {map} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {Task} from '../model/task';
+import {Tag} from '../model/tag';
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {TaskGroup} from '../model/task-group';
@@ -125,19 +126,6 @@ export class TaskService {
     );
   }
 
-  getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
-    const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
-    return this.http.get<any>(url, commonHttpOptions).pipe(
-      map(response => {
-        const comments = [];
-        for (const json of response) {
-          comments.push(new TaskComment().deserialize(json));
-        }
-        return comments;
-      })
-    );
-  }
-
   createTask(task: Task): Observable<Task> {
     return this.http.post<Task>(this.baseUrl, task.serialize(), jsonContentOptions).pipe(
       map(response => {
@@ -156,6 +144,31 @@ export class TaskService {
 
   completeTask(task: Task): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${task.id}/complete`, null, jsonContentOptions);
+  }
+
+  getTags(taskId: number): Observable<Tag[]> {
+    return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, commonHttpOptions).pipe(
+      map(response => {
+        const tags = [];
+        for (const json of response) {
+          tags.push(new Tag().deserialize(json));
+        }
+        return tags;
+      })
+    );
+  }
+
+  getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
+    const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
+    return this.http.get<any>(url, commonHttpOptions).pipe(
+      map(response => {
+        const comments = [];
+        for (const json of response) {
+          comments.push(new TaskComment().deserialize(json));
+        }
+        return comments;
+      })
+    );
   }
 
   private loadTaskCount(taskGroup: TaskGroup): Observable<number> {

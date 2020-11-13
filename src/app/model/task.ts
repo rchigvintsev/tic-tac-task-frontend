@@ -1,7 +1,6 @@
 import * as moment from 'moment';
 
 import {AbstractEntity} from './abstract-entity';
-import {Tag} from './tag';
 import {Objects} from '../util/objects';
 
 export class Task extends AbstractEntity<Task> {
@@ -11,7 +10,6 @@ export class Task extends AbstractEntity<Task> {
   status: string;
   deadline: Date;
   deadlineTimeExplicitlySet = false;
-  tags: Tag[] = [];
 
   deserialize(input: any): Task {
     this.id = input.id;
@@ -22,13 +20,6 @@ export class Task extends AbstractEntity<Task> {
       this.deadline = moment.utc(input.deadline, moment.HTML5_FMT.DATETIME_LOCAL).local().toDate();
     }
     this.deadlineTimeExplicitlySet = input.deadlineTimeExplicitlySet;
-    if (input.tags) {
-      const tags = [];
-      for (const tag of input.tags) {
-        tags.push(new Tag().deserialize(tag));
-      }
-      this.tags = tags;
-    }
     return this;
   }
 
@@ -39,8 +30,7 @@ export class Task extends AbstractEntity<Task> {
       description: this.description,
       status: this.status,
       deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL) : null,
-      deadlineTimeExplicitlySet: this.deadlineTimeExplicitlySet,
-      tags: this.tags.map(tag => tag.serialize())
+      deadlineTimeExplicitlySet: this.deadlineTimeExplicitlySet
     };
   }
 
@@ -52,7 +42,6 @@ export class Task extends AbstractEntity<Task> {
     clone.status = this.status;
     clone.deadline = this.deadline != null ? new Date(this.deadline.getTime()) : null;
     clone.deadlineTimeExplicitlySet = this.deadlineTimeExplicitlySet;
-    clone.tags = this.tags.slice();
     return clone;
   }
 
@@ -62,8 +51,7 @@ export class Task extends AbstractEntity<Task> {
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)
       && Objects.equals(this.deadline, other.deadline)
-      && Objects.equals(this.deadlineTimeExplicitlySet, other.deadlineTimeExplicitlySet)
-      && Objects.equals(this.tags, other.tags);
+      && Objects.equals(this.deadlineTimeExplicitlySet, other.deadlineTimeExplicitlySet);
   }
 
   isOverdue(): boolean {

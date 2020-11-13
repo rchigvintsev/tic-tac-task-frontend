@@ -48,6 +48,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   deadlineTime: string;
   deadlineTimeEnabled = false;
   tagControl = new FormControl();
+  tags: Tag[] = [];
   availableTags: Tag[] = [];
   filteredTags: Observable<Tag[]>;
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
@@ -73,6 +74,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
+    this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.dateAdapter.setLocale(this.translate.currentLang);
 
@@ -167,10 +169,17 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     } else {
       this.deadlineTime = START_OF_DAY_TIME;
     }
+  }
 
+  private initTags(tags: Tag[]) {
+    this.tags = tags;
+    this.initAvailableTags(tags);
+  }
+
+  private initAvailableTags(excludedTags: Tag[]) {
     this.tagService.getTags().pipe(
-      map(tags => tags.filter(tag => task.tags.findIndex(taskTag => taskTag.name === tag.name) < 0))
-    ).subscribe(tags => this.availableTags = tags);
+      map(allTags => allTags.filter(tag => excludedTags.findIndex(excludedTag => excludedTag.name === tag.name) < 0))
+    ).subscribe(availableTags => this.availableTags = availableTags);
   }
 
   private beginTitleEditing() {
@@ -256,12 +265,12 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     if (trimmedName) {
       const availableTagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
       if (availableTagIndex >= 0) {
-        this.taskFormModel.tags.push(this.availableTags.splice(availableTagIndex, 1)[0]);
+        this.tags.push(this.availableTags.splice(availableTagIndex, 1)[0]);
         this.saveTask();
       } else {
-        const taskTagIndex = this.taskFormModel.tags.findIndex(taskTag => taskTag.name === trimmedName);
+        const taskTagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (taskTagIndex < 0) {
-          this.taskFormModel.tags.push(new Tag(trimmedName));
+          this.tags.push(new Tag(trimmedName));
           this.saveTask();
         }
       }
@@ -269,9 +278,9 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   private removeTag(tag: Tag) {
-    const index = this.taskFormModel.tags.findIndex(t => t.name === tag.name);
+    const index = this.tags.findIndex(t => t.name === tag.name);
     if (index >= 0) {
-      this.taskFormModel.tags.splice(index, 1);
+      this.tags.splice(index, 1);
       this.availableTags.push(tag);
       this.saveTask();
     }
