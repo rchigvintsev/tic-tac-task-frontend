@@ -49,7 +49,21 @@ export class TagService {
     );
   }
 
+  createTag(tag: Tag): Observable<Tag> {
+    if (!tag) {
+      throw new Error('Tag must not be null or undefined');
+    }
+    return this.http.post<Tag>(this.baseUrl, tag.serialize(), jsonContentOptions).pipe(
+      map(response => {
+        return new Tag().deserialize(response);
+      })
+    );
+  }
+
   updateTag(tag: Tag): Observable<Tag> {
+    if (!tag) {
+      throw new Error('Tag must not be null or undefined');
+    }
     return this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), jsonContentOptions).pipe(
       map(response => {
         return new Tag().deserialize(response);
@@ -58,6 +72,9 @@ export class TagService {
   }
 
   deleteTag(tag: Tag): Observable<any> {
+    if (!tag) {
+      throw new Error('Tag must not be null or undefined');
+    }
     return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, commonHttpOptions).pipe(
       tap(_ => this.notifyTagDeleted(tag))
     );

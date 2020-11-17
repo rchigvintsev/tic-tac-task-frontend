@@ -55,10 +55,27 @@ describe('TagService', () => {
     tagRequest.flush(testTag.serialize());
   });
 
-  it('should update tag', () => {
+  it('should create tag', done => {
+    const newTag = new Tag().deserialize({name: 'New tag'});
+    tagService.createTag(newTag).subscribe(tag => {
+      expect(tag).toEqual(newTag);
+      done();
+    });
+
+    const request = httpMock.expectOne(tagService.baseUrl);
+    expect(request.request.method).toBe('POST');
+    request.flush(newTag.serialize());
+  });
+
+  it('should throw error on tag create when tag is null', () => {
+    expect(() => tagService.createTag(null)).toThrow(new Error('Tag must not be null or undefined'));
+  });
+
+  it('should update tag', done => {
     const testTag = new Tag().deserialize({id: 1, name: 'Updated test tag'});
     tagService.updateTag(testTag).subscribe(tag => {
       expect(tag).toEqual(testTag);
+      done();
     });
 
     const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
@@ -66,12 +83,20 @@ describe('TagService', () => {
     request.flush(testTag.serialize());
   });
 
-  it('should delete tag', () => {
+  it('should throw error on tag update when tag is null', () => {
+    expect(() => tagService.updateTag(null)).toThrow(new Error('Tag must not be null or undefined'));
+  });
+
+  it('should delete tag', done => {
     const testTag = new Tag().deserialize({id: 1});
-    tagService.deleteTag(testTag).subscribe(() => {});
+    tagService.deleteTag(testTag).subscribe(() => done());
     const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
+  });
+
+  it('should throw error on tag delete when tag is null', () => {
+    expect(() => tagService.deleteTag(null)).toThrow(new Error('Tag must not be null or undefined'));
   });
 
   it('should notify about deleted tag', done => {
