@@ -243,6 +243,10 @@ describe('TaskService', () => {
     request.flush(testTask);
   });
 
+  it('should throw error on task create when task is null', () => {
+    expect(() => taskService.createTask(null)).toThrowError('Task must not be null or undefined');
+  });
+
   it('should update task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
 
@@ -256,16 +260,24 @@ describe('TaskService', () => {
     request.flush(testTask);
   });
 
-  it('should complete task', () => {
+  it('should throw error on task update when task is null', () => {
+    expect(() => taskService.updateTask(null)).toThrowError('Task must not be null or undefined');
+  });
+
+  it('should complete task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
-    taskService.completeTask(testTask).subscribe(_ => {});
+    taskService.completeTask(testTask).subscribe(_ => done());
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/complete`);
     expect(request.request.method).toBe('POST');
     request.flush(null);
   });
 
-  it('should return tags for task', () => {
+  it('should throw error on task complete when task is null', () => {
+    expect(() => taskService.completeTask(null)).toThrowError('Task must not be null or undefined');
+  });
+
+  it('should return tags for task', done => {
     const taskId = 1;
     const testTags = [];
 
@@ -275,6 +287,7 @@ describe('TaskService', () => {
     taskService.getTags(taskId).subscribe(tags => {
       expect(tags.length).toBe(2);
       expect(tags).toEqual(testTags);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/tags`);
@@ -282,7 +295,17 @@ describe('TaskService', () => {
     request.flush(testTags.map(tag => tag.serialize()));
   });
 
-  it('should return comments for task', () => {
+  it('should assign tag to task', done => {
+    const taskId = 1;
+    const tagId = 2;
+    taskService.assignTag(taskId, tagId).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/tags/${tagId}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(null);
+  });
+
+  it('should return comments for task', done => {
     const taskId = 1;
     const testComments = [];
 
@@ -304,6 +327,7 @@ describe('TaskService', () => {
     taskService.getComments(taskId).subscribe(comments => {
       expect(comments.length).toBe(2);
       expect(comments).toEqual(testComments);
+      done();
     });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/comments?page=0&size=20`);

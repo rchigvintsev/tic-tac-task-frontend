@@ -127,6 +127,9 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
+    if (!task) {
+      throw new Error('Task must not be null or undefined');
+    }
     return this.http.post<Task>(this.baseUrl, task.serialize(), jsonContentOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
@@ -135,6 +138,9 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
+    if (!task) {
+      throw new Error('Task must not be null or undefined');
+    }
     return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), jsonContentOptions).pipe(
       map(response => {
         return new Task().deserialize(response);
@@ -143,6 +149,9 @@ export class TaskService {
   }
 
   completeTask(task: Task): Observable<any> {
+    if (!task) {
+      throw new Error('Task must not be null or undefined');
+    }
     return this.http.post<any>(`${this.baseUrl}/${task.id}/complete`, null, jsonContentOptions);
   }
 
@@ -156,6 +165,10 @@ export class TaskService {
         return tags;
       })
     );
+  }
+
+  assignTag(taskId: number, tagId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, null, commonHttpOptions);
   }
 
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
