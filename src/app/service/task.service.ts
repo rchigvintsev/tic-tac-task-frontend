@@ -171,6 +171,10 @@ export class TaskService {
     return this.http.put<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, null, commonHttpOptions);
   }
 
+  removeTag(taskId: number, tagId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, commonHttpOptions);
+  }
+
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
     const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
     return this.http.get<any>(url, commonHttpOptions).pipe(

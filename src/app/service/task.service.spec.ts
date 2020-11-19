@@ -305,6 +305,16 @@ describe('TaskService', () => {
     request.flush(null);
   });
 
+  it('should remove tag from task', done => {
+    const taskId = 1;
+    const tagId = 2;
+    taskService.removeTag(taskId, tagId).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/tags/${tagId}`);
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+  });
+
   it('should return comments for task', done => {
     const taskId = 1;
     const testComments = [];
