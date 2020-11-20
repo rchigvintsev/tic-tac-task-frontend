@@ -265,11 +265,11 @@ describe('TaskService', () => {
   });
 
   it('should complete task', done => {
-    const testTask = new Task().deserialize({id: 1, title: 'Updated test task'});
+    const testTask = new Task().deserialize({id: 1, title: 'Test task'});
     taskService.completeTask(testTask).subscribe(_ => done());
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}/complete`);
-    expect(request.request.method).toBe('POST');
+    const request = httpMock.expectOne(`${taskService.baseUrl}/completed/${testTask.id}`);
+    expect(request.request.method).toBe('PUT');
     request.flush(null);
   });
 

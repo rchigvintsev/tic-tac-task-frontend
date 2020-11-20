@@ -152,7 +152,7 @@ export class TaskService {
     if (!task) {
       throw new Error('Task must not be null or undefined');
     }
-    return this.http.post<any>(`${this.baseUrl}/${task.id}/complete`, null, jsonContentOptions);
+    return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, commonHttpOptions);
   }
 
   getTags(taskId: number): Observable<Tag[]> {
