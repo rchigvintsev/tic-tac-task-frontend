@@ -344,4 +344,21 @@ describe('TaskService', () => {
     expect(request.request.method).toBe('GET');
     request.flush(testComments);
   });
+
+  it('should add new comment to task', done => {
+    const taskId = 1;
+    const testComment = new TaskComment().deserialize({commentText: 'New comment'});
+    taskService.addComment(taskId, testComment).subscribe(comment => {
+      expect(comment).toEqual(testComment);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/comments`);
+    expect(request.request.method).toBe('POST');
+    request.flush(testComment.serialize());
+  });
+
+  it('should throw error on comment add when comment is null', () => {
+    expect(() => taskService.addComment(1, null)).toThrowError('Task comment must not be null or undefined');
+  });
 });

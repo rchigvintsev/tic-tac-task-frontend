@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {EMPTY, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -18,15 +18,6 @@ export class TaskCommentService {
 
   constructor(private http: HttpClient, private config: ConfigService) {
     this.baseUrl = `${this.config.apiBaseUrl}/task-comments`;
-  }
-
-  createComment(comment: TaskComment): Observable<TaskComment> {
-    const options = Object.assign({params: new HttpParams().set('taskId', String(comment.taskId))}, postOptions);
-    return this.http.post<TaskComment>(this.baseUrl, comment.serialize(), options).pipe(
-      map(response => {
-        return new TaskComment().deserialize(response);
-      })
-    );
   }
 
   updateComment(comment: TaskComment): Observable<TaskComment> {

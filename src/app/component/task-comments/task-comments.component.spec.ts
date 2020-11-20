@@ -54,15 +54,12 @@ describe('TaskCommentsComponent', () => {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
     spyOn(taskService, 'getComments').and.returnValue(of(comments));
+    spyOn(taskService, 'addComment').and.callFake(comment => {
+      comment.id = 4;
+      return of(comment);
+    });
 
     taskCommentService = injector.get(TaskCommentService);
-    spyOn(taskCommentService, 'createComment').and.callFake(c => {
-      const result = new TaskComment().deserialize(c);
-      if (!c.id) {
-        result.id = 4;
-      }
-      return of(result);
-    });
     spyOn(taskCommentService, 'updateComment').and.callFake(c => of(new TaskComment().deserialize(c)));
     spyOn(taskCommentService, 'deleteComment').and.returnValue(of(null));
 
@@ -121,7 +118,7 @@ describe('TaskCommentsComponent', () => {
       component.newCommentFormModel.commentText = ' ';
       component.onNewCommentFormSubmit();
       fixture.detectChanges();
-      expect(taskCommentService.createComment).not.toHaveBeenCalled();
+      expect(taskService.addComment).not.toHaveBeenCalled();
     });
   });
 

@@ -26,20 +26,6 @@ describe('TaskCommentService', () => {
     expect(taskCommentService).toBeTruthy();
   });
 
-  it('should create comment', () => {
-    const testComment = new TaskComment().deserialize({
-      taskId: 1,
-      commentText: 'New test comment'
-    });
-    taskCommentService.createComment(testComment).subscribe(comment => {
-      expect(comment).toEqual(testComment);
-    });
-
-    const request = httpMock.expectOne(`${taskCommentService.baseUrl}?taskId=${testComment.taskId}`);
-    expect(request.request.method).toBe('POST');
-    request.flush(testComment);
-  });
-
   it('should update comment', () => {
     const testComment = new TaskComment().deserialize({
       id: 1,

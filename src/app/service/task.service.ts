@@ -188,6 +188,18 @@ export class TaskService {
     );
   }
 
+  addComment(taskId: number, comment: TaskComment): Observable<TaskComment> {
+    if (!comment) {
+      throw new Error('Task comment must not be null or undefined');
+    }
+    const url = `${this.baseUrl}/${taskId}/comments`;
+    return this.http.post<TaskComment>(url, comment.serialize(), jsonContentOptions).pipe(
+      map(response => {
+        return new TaskComment().deserialize(response);
+      })
+    );
+  }
+
   private loadTaskCount(taskGroup: TaskGroup): Observable<number> {
     const path = TaskService.getPathForTaskGroup(taskGroup);
     let url = `${this.baseUrl}/${path}/count`;

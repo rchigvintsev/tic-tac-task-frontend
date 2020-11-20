@@ -127,8 +127,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   private createComment(comment: TaskComment) {
     if (!Strings.isBlank(comment.commentText)) {
-      comment.taskId = this.taskId;
-      this.commentService.createComment(comment).subscribe(createdComment => {
+      this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
         this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
       }, this.onServiceCallError.bind(this));
