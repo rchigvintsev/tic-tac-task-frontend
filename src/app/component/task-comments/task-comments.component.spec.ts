@@ -54,8 +54,10 @@ describe('TaskCommentsComponent', () => {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
     spyOn(taskService, 'getComments').and.returnValue(of(comments));
-    spyOn(taskService, 'addComment').and.callFake(comment => {
+    spyOn(taskService, 'addComment').and.callFake((taskId, c) => {
+      const comment = new TaskComment().deserialize(c);
       comment.id = 4;
+      comment.taskId = taskId;
       return of(comment);
     });
 
