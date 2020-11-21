@@ -23,6 +23,7 @@ describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
+  let tagService: TagService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,9 +56,12 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
     spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({name: 'Red', color: 0xff0000})]));
+    spyOn(taskService, 'assignTag').and.returnValue(of());
+    spyOn(taskService, 'removeTag').and.returnValue(of());
 
-    const tagService = injector.get(TagService);
+    tagService = injector.get(TagService);
     spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
+    spyOn(tagService, 'createTag').and.callFake(t => of(t));
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -134,33 +138,6 @@ describe('TaskDetailsComponent', () => {
       expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
-
-  /*it('should save task on "tagInput" token end', () => {
-    fixture.whenStable().then(() => {
-      const event = {value: 'Green', input: {}} as any;
-      component.onTagChipInputTokenEnd(event);
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
-  });
-
-  it('should save task on tag option select', () => {
-    fixture.whenStable().then(() => {
-      const event = {option: {viewValue: 'Blue'}} as any;
-      component.onTagOptionSelected(event);
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
-  });
-
-  it('should save task on tag remove', () => {
-    fixture.whenStable().then(() => {
-      const tag = new Tag('Red');
-      component.onTagChipRemoved(tag);
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
-  });*/
 
   it('should filter tag options on tag input value change', done => {
     fixture.whenStable().then(() => {
@@ -319,6 +296,43 @@ describe('TaskDetailsComponent', () => {
       component.taskFormModel.deadline = null;
       fixture.detectChanges();
       expect(compiled.querySelector('.deadline-time-checkbox.mat-checkbox-disabled')).not.toBeNull();
+    });
+  });
+
+  it('should assign existing tag to task on "tagInput" token end', () => {
+    fixture.whenStable().then(() => {
+      const event = {value: 'Green', input: {}} as any;
+      component.onTagInputTokenEnd(event);
+      fixture.detectChanges();
+      expect(taskService.assignTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should assign new tag to task on "tagInput" token end', () => {
+    fixture.whenStable().then(() => {
+      const event = {value: 'Yellow', input: {}} as any;
+      component.onTagInputTokenEnd(event);
+      fixture.detectChanges();
+      expect(tagService.createTag).toHaveBeenCalled();
+      expect(taskService.assignTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should assign tag to task on tag option select', () => {
+    fixture.whenStable().then(() => {
+      const event = {option: {viewValue: 'Blue'}} as any;
+      component.onTagOptionSelected(event);
+      fixture.detectChanges();
+      expect(taskService.assignTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should remove tag from task on tag chip remove', () => {
+    fixture.whenStable().then(() => {
+      const tag = new Tag('Red');
+      component.onTagChipRemoved(tag);
+      fixture.detectChanges();
+      expect(taskService.removeTag).toHaveBeenCalled();
     });
   });
 });

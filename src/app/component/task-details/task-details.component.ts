@@ -10,7 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {map, startWith} from 'rxjs/operators';
+import {flatMap, map, startWith} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
@@ -124,7 +124,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     this.saveTask();
   }
 
-  onTagChipInputTokenEnd(event: MatChipInputEvent) {
+  onTagInputTokenEnd(event: MatChipInputEvent) {
     this.addTag(event.value);
     if (event.input) {
       event.input.value = '';
@@ -263,26 +263,33 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   private addTag(tagName: string) {
     const trimmedName = (tagName || '').trim();
     if (trimmedName) {
-      const availableTagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
-      if (availableTagIndex >= 0) {
-        this.tags.push(this.availableTags.splice(availableTagIndex, 1)[0]);
-        this.saveTask();
+      let tagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
+      if (tagIndex >= 0) {
+        const tag = this.availableTags[tagIndex];
+        this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
+          this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
+        }, this.onServiceCallError.bind(this));
       } else {
-        const taskTagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
-        if (taskTagIndex < 0) {
-          this.tags.push(new Tag(trimmedName));
-          this.saveTask();
+        tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
+        if (tagIndex < 0) {
+          const newTag = new Tag(trimmedName);
+          this.tagService.createTag(newTag).pipe(
+            flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(
+              map(_ => tag)
+            ))
+          ).subscribe(tag => this.tags.push(tag), this.onServiceCallError.bind(this));
         }
       }
     }
   }
 
   private removeTag(tag: Tag) {
-    const index = this.tags.findIndex(t => t.name === tag.name);
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-      this.availableTags.push(tag);
-      this.saveTask();
+    const tagIndex = this.tags.findIndex(t => t.name === tag.name);
+    if (tagIndex >= 0) {
+      this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
+        this.tags.splice(tagIndex, 1);
+        this.availableTags.push(tag);
+      }, this.onServiceCallError.bind(this));
     }
   }
 }

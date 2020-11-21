@@ -126,7 +126,7 @@
                  [matChipInputFor]="tagList"
                  [formControl]="tagControl"
                  [matAutocomplete]="tagAutocomplete"
-                 (matChipInputTokenEnd)="onTagChipInputTokenEnd($event)">
+                 (matChipInputTokenEnd)="onTagInputTokenEnd($event)">
         </mat-chip-list>
 
         <mat-autocomplete #tagAutocomplete (optionSelected)="onTagOptionSelected($event)">
