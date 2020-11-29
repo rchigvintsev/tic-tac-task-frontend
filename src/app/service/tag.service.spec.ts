@@ -67,6 +67,16 @@ describe('TagService', () => {
     request.flush(newTag.serialize());
   });
 
+  it('should notify about created tag', done => {
+    const testTag = new Tag().deserialize({name: 'Test tag'});
+    tagService.getCreatedTag().subscribe(tag => {
+      expect(tag).toEqual(testTag);
+      done();
+    });
+    tagService.createTag(testTag).subscribe(() => {});
+    httpMock.expectOne(tagService.baseUrl).flush(testTag.serialize());
+  });
+
   it('should throw error on tag create when tag is null', () => {
     expect(() => tagService.createTag(null)).toThrow(new Error('Tag must not be null or undefined'));
   });

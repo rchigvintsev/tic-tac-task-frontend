@@ -23,6 +23,7 @@ describe('TagsComponent', () => {
   let component: TagsComponent;
   let fixture: ComponentFixture<TagsComponent>;
   let tagService: TagService;
+  let createdTagSource: Subject<Tag>;
   let routerEvents: Subject<RouterEvent>;
 
   beforeEach(async(() => {
@@ -46,8 +47,12 @@ describe('TagsComponent', () => {
       tags.push(new Tag().deserialize({id: i + 1, name: `Test tag ${i + 1}`}));
     }
     spyOn(tagService, 'getTags').and.returnValue(of(tags));
+    spyOn(tagService, 'createTag').and.callFake(t => of(t));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
     spyOn(tagService, 'deleteTag').and.returnValue(of(null));
+
+    createdTagSource = new Subject<Tag>();
+    spyOn(tagService, 'getCreatedTag').and.returnValue(createdTagSource.asObservable());
 
     routerEvents = new Subject();
     const router = injector.get(Router);
@@ -189,6 +194,16 @@ describe('TagsComponent', () => {
       fixture.detectChanges();
       const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected.tag-1'));
       expect(selectedItem).toBeTruthy();
+    });
+  });
+
+  it('should update tag list on tag create', () => {
+    fixture.whenStable().then(() => {
+      const newTag = new Tag('New tag');
+      createdTagSource.next(newTag);
+      fixture.detectChanges();
+      expect(component.tags.length).toBe(4);
+      expect(component.tags[3]).toEqual(newTag);
     });
   });
 });

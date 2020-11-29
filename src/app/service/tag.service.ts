@@ -20,11 +20,18 @@ const jsonContentOptions = Object.assign({
 export class TagService {
   readonly baseUrl: string;
 
+  private readonly createdTagSource: Subject<Tag>;
+  private readonly createdTag: Observable<Tag>;
+
   private readonly deletedTagSource: Subject<Tag>;
   private readonly deletedTag: Observable<Tag>;
 
   constructor(private http: HttpClient, private config: ConfigService) {
     this.baseUrl = `${this.config.apiBaseUrl}/tags`;
+
+    this.createdTagSource = new Subject<Tag>();
+    this.createdTag = this.createdTagSource.asObservable();
+
     this.deletedTagSource  = new Subject<Tag>();
     this.deletedTag = this.deletedTagSource.asObservable();
   }
@@ -54,6 +61,7 @@ export class TagService {
       throw new Error('Tag must not be null or undefined');
     }
     return this.http.post<Tag>(this.baseUrl, tag.serialize(), jsonContentOptions).pipe(
+      tap(_ => this.notifyTagCreated(tag)),
       map(response => {
         return new Tag().deserialize(response);
       })
@@ -80,10 +88,6 @@ export class TagService {
     );
   }
 
-  getDeletedTag(): Observable<Tag> {
-    return this.deletedTag;
-  }
-
   getUncompletedTasks(tagId: number, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
     const url = `${this.baseUrl}/${tagId}/tasks/uncompleted?${pageRequest.toQueryParameters()}`;
     return this.http.get<any>(url, commonHttpOptions).pipe(
@@ -95,6 +99,18 @@ export class TagService {
         return tasks;
       })
     );
+  }
+
+  getCreatedTag(): Observable<Tag> {
+    return this.createdTag;
+  }
+
+  getDeletedTag(): Observable<Tag> {
+    return this.deletedTag;
+  }
+
+  private notifyTagCreated(tag: Tag) {
+    this.createdTagSource.next(tag);
   }
 
   private notifyTagDeleted(tag: Tag) {

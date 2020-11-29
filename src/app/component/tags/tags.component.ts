@@ -26,7 +26,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
     '#fff176', '#ffb74d', '#a1887f', '#e0e0e0', '#90a4ae'
   ];
 
-  tags: Array<Tag>;
+  tags: Tag[];
   tagFormModel: Tag;
   tagMenuOpened: boolean;
   tagNameInputFocused: boolean;
@@ -48,6 +48,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
+    this.tagService.getCreatedTag().subscribe(tag => this.tags.push(tag));
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
