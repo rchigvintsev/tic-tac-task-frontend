@@ -76,6 +76,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.tagService.getDeletedTag().subscribe(tag => this.onTagDelete(tag));
     this.dateAdapter.setLocale(this.translate.currentLang);
 
     this.filteredTags = this.tagControl.valueChanges.pipe(
@@ -157,6 +158,18 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.selectedTaskGroup = taskGroup;
+  }
+
+  private onTagDelete(tag: Tag) {
+    let tagIndex = this.tags.findIndex(t => t.id === tag.id);
+    if (tagIndex >= 0) {
+      this.tags.splice(tagIndex, 1);
+    } else {
+      tagIndex = this.availableTags.findIndex(t => t.id === tag.id);
+      if (tagIndex >= 0) {
+        this.availableTags.splice(tagIndex, 1);
+      }
+    }
   }
 
   private setTaskModel(task: Task) {

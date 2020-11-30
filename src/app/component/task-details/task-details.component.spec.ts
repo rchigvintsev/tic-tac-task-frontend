@@ -4,7 +4,7 @@ import {By} from '@angular/platform-browser';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 
-import {of, throwError} from 'rxjs';
+import {of, Subject, throwError} from 'rxjs';
 import {skip} from 'rxjs/operators';
 
 import * as moment from 'moment';
@@ -24,6 +24,7 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
   let tagService: TagService;
+  let deletedTagSource: Subject<Tag>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,13 +56,16 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
-    spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({name: 'Red', color: 0xff0000})]));
+    spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
     spyOn(taskService, 'assignTag').and.returnValue(of());
     spyOn(taskService, 'removeTag').and.returnValue(of());
+
+    deletedTagSource = new Subject<Tag>();
 
     tagService = injector.get(TagService);
     spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
     spyOn(tagService, 'createTag').and.callFake(t => of(t));
+    spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -333,6 +337,18 @@ describe('TaskDetailsComponent', () => {
       component.onTagChipRemoved(tag);
       fixture.detectChanges();
       expect(taskService.removeTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should update tag lists on tag delete', () => {
+    fixture.whenStable().then(() => {
+      deletedTagSource.next(component.tags[0]);
+      fixture.detectChanges();
+      expect(component.tags.length).toEqual(0);
+
+      deletedTagSource.next(component.availableTags[0]);
+      fixture.detectChanges();
+      expect(component.availableTags.length).toEqual(1);
     });
   });
 });
