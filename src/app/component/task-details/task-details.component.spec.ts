@@ -24,6 +24,7 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
   let tagService: TagService;
+  let updatedTagSource: Subject<Tag>;
   let deletedTagSource: Subject<Tag>;
 
   beforeEach(async(() => {
@@ -60,11 +61,13 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'assignTag').and.returnValue(of());
     spyOn(taskService, 'removeTag').and.returnValue(of());
 
+    updatedTagSource = new Subject<Tag>();
     deletedTagSource = new Subject<Tag>();
 
     tagService = injector.get(TagService);
     spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
     spyOn(tagService, 'createTag').and.callFake(t => of(t));
+    spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
     const logService = injector.get(LogService);
@@ -337,6 +340,24 @@ describe('TaskDetailsComponent', () => {
       component.onTagChipRemoved(tag);
       fixture.detectChanges();
       expect(taskService.removeTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should update tag lists on tag update', () => {
+    fixture.whenStable().then(() => {
+      let updatedTag = component.tags[0].clone();
+      updatedTag.name = updatedTag.name.toUpperCase();
+
+      updatedTagSource.next(updatedTag);
+      fixture.detectChanges();
+      expect(component.tags[0]).toEqual(updatedTag);
+
+      updatedTag = component.availableTags[0].clone();
+      updatedTag.name = updatedTag.name.toUpperCase();
+
+      updatedTagSource.next(updatedTag);
+      fixture.detectChanges();
+      expect(component.availableTags[0]).toEqual(updatedTag);
     });
   });
 

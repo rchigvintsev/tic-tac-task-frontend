@@ -73,10 +73,15 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
+
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
+
     this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+
+    this.tagService.getUpdatedTag().subscribe(tag => this.onTagUpdate(tag));
     this.tagService.getDeletedTag().subscribe(tag => this.onTagDelete(tag));
+
     this.dateAdapter.setLocale(this.translate.currentLang);
 
     this.filteredTags = this.tagControl.valueChanges.pipe(
@@ -158,6 +163,18 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.selectedTaskGroup = taskGroup;
+  }
+
+  private onTagUpdate(tag: Tag) {
+    let tagIndex = this.tags.findIndex(t => t.id === tag.id);
+    if (tagIndex >= 0) {
+      this.tags[tagIndex] = tag;
+    } else {
+      tagIndex = this.availableTags.findIndex(t => t.id === tag.id);
+      if (tagIndex >= 0) {
+        this.availableTags[tagIndex] = tag;
+      }
+    }
   }
 
   private onTagDelete(tag: Tag) {

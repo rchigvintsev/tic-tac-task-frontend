@@ -23,6 +23,9 @@ export class TagService {
   private readonly createdTagSource: Subject<Tag>;
   private readonly createdTag: Observable<Tag>;
 
+  private readonly updatedTagSource: Subject<Tag>;
+  private readonly updatedTag: Observable<Tag>;
+
   private readonly deletedTagSource: Subject<Tag>;
   private readonly deletedTag: Observable<Tag>;
 
@@ -31,6 +34,9 @@ export class TagService {
 
     this.createdTagSource = new Subject<Tag>();
     this.createdTag = this.createdTagSource.asObservable();
+
+    this.updatedTagSource = new Subject<Tag>();
+    this.updatedTag = this.updatedTagSource.asObservable();
 
     this.deletedTagSource  = new Subject<Tag>();
     this.deletedTag = this.deletedTagSource.asObservable();
@@ -61,10 +67,8 @@ export class TagService {
       throw new Error('Tag must not be null or undefined');
     }
     return this.http.post<Tag>(this.baseUrl, tag.serialize(), jsonContentOptions).pipe(
-      tap(_ => this.notifyTagCreated(tag)),
-      map(response => {
-        return new Tag().deserialize(response);
-      })
+      map(response => new Tag().deserialize(response)),
+      tap(createdTag => this.notifyTagCreated(createdTag))
     );
   }
 
@@ -73,9 +77,8 @@ export class TagService {
       throw new Error('Tag must not be null or undefined');
     }
     return this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), jsonContentOptions).pipe(
-      map(response => {
-        return new Tag().deserialize(response);
-      })
+      map(response => new Tag().deserialize(response)),
+      tap(updatedTag => this.notifyTagUpdated(updatedTag))
     );
   }
 
@@ -105,12 +108,20 @@ export class TagService {
     return this.createdTag;
   }
 
+  getUpdatedTag(): Observable<Tag> {
+    return this.updatedTag;
+  }
+
   getDeletedTag(): Observable<Tag> {
     return this.deletedTag;
   }
 
   private notifyTagCreated(tag: Tag) {
     this.createdTagSource.next(tag);
+  }
+
+  private notifyTagUpdated(tag: Tag) {
+    this.updatedTagSource.next(tag);
   }
 
   private notifyTagDeleted(tag: Tag) {

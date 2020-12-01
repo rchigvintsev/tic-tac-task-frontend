@@ -97,6 +97,16 @@ describe('TagService', () => {
     expect(() => tagService.updateTag(null)).toThrow(new Error('Tag must not be null or undefined'));
   });
 
+  it('should notify about updated tag', done => {
+    const testTag = new Tag().deserialize({id: 1, name: 'Test tag'});
+    tagService.getUpdatedTag().subscribe(tag => {
+      expect(tag).toEqual(testTag);
+      done();
+    });
+    tagService.updateTag(testTag).subscribe(() => {});
+    httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`).flush(testTag.serialize());
+  });
+
   it('should delete tag', done => {
     const testTag = new Tag().deserialize({id: 1});
     tagService.deleteTag(testTag).subscribe(() => done());

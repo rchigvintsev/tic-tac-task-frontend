@@ -48,7 +48,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
-    this.tagService.getCreatedTag().subscribe(tag => this.tags.push(tag));
+    this.tagService.getCreatedTag().subscribe(tag => this.onTagCreate(tag));
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
@@ -135,6 +135,10 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   private onNavigationEnd(e: NavigationEnd) {
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(e.url));
+  }
+
+  private onTagCreate(tag: Tag) {
+    return this.tags.push(tag);
   }
 
   private saveTag() {
