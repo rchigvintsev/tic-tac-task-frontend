@@ -42,6 +42,19 @@ describe('TaskListService', () => {
     request.flush(testTaskLists.map(tag => tag.serialize()));
   });
 
+  it('should return task list by id', done => {
+    const testTaskList = new TaskList().deserialize({id: 1, name: 'Test task list'});
+
+    taskListService.getTaskList(testTaskList.id).subscribe(taskList => {
+      expect(taskList).toEqual(testTaskList);
+      done();
+    });
+
+    const taskRequest = httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`);
+    expect(taskRequest.request.method).toBe('GET');
+    taskRequest.flush(testTaskList.serialize());
+  });
+
   it('should create task list', done => {
     const testTaskList = new TaskList().deserialize({name: 'Test task list'});
     taskListService.createTaskList(testTaskList).subscribe(taskList => {

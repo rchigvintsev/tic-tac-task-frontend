@@ -219,7 +219,7 @@ describe('TaskService', () => {
   });
 
   it('should return task by id', done => {
-    const testTask = new Task().deserialize({id: 1, title: 'Test task', tags: [{id: 2, name: 'Test tag'}]});
+    const testTask = new Task().deserialize({id: 1, title: 'Test task'});
 
     taskService.getTask(testTask.id).subscribe(task => {
       expect(task).toEqual(testTask);

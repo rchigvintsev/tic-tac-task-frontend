@@ -119,10 +119,8 @@ export class TaskService {
   }
 
   getTask(id: number): Observable<Task> {
-    return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
-      map(response => {
-        return new Task().deserialize(response);
-      })
+    return this.http.get<Task>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+      map(response => new Task().deserialize(response))
     );
   }
 

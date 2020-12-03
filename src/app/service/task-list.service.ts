@@ -12,9 +12,7 @@ const jsonContentOptions = Object.assign({
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 }, commonHttpOptions);
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class TaskListService {
   readonly baseUrl: string;
 
@@ -31,6 +29,12 @@ export class TaskListService {
         }
         return taskLists;
       })
+    );
+  }
+
+  getTaskList(id: number): Observable<TaskList> {
+    return this.http.get<TaskList>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+      map(response => new TaskList().deserialize(response))
     );
   }
 
