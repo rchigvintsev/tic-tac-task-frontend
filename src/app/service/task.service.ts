@@ -175,7 +175,7 @@ export class TaskService {
 
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
     const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
-    return this.http.get<any>(url, commonHttpOptions).pipe(
+    return this.http.get<TaskComment[]>(url, commonHttpOptions).pipe(
       map(response => {
         const comments = [];
         for (const json of response) {

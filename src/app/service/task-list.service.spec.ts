@@ -5,6 +5,7 @@ import {TaskListService} from './task-list.service';
 import {ConfigService} from './config.service';
 import {TaskList} from '../model/task-list';
 import {TestSupport} from '../test/test-support';
+import {Task} from '../model/task';
 
 describe('TaskListService', () => {
   let httpMock: HttpTestingController;
@@ -73,5 +74,23 @@ describe('TaskListService', () => {
     const request = httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
+  });
+
+  it('should return tasks for task list', done => {
+    const taskListId = 1;
+    const testTasks = [];
+
+    testTasks.push(new Task().deserialize({id: 2, taskListId, title: 'Task 1'}));
+    testTasks.push(new Task().deserialize({id: 3, taskListId, title: 'Task 2'}));
+
+    taskListService.getTasks(taskListId).subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${taskListService.baseUrl}/${taskListId}/tasks?page=0&size=20`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks.map(task => task.serialize()));
   });
 });

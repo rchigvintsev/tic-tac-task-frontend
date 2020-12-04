@@ -6,6 +6,8 @@ import {map} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {TaskList} from '../model/task-list';
+import {Task} from '../model/task';
+import {PageRequest} from './page-request';
 
 const commonHttpOptions = {withCredentials: true};
 const jsonContentOptions = Object.assign({
@@ -48,5 +50,18 @@ export class TaskListService {
 
   deleteTaskList(taskList: TaskList): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${taskList.id}`, commonHttpOptions);
+  }
+
+  getTasks(taskListId: number, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
+    const url = `${this.baseUrl}/${taskListId}/tasks?${pageRequest.toQueryParameters()}`;
+    return this.http.get<Task[]>(url, commonHttpOptions).pipe(
+      map(response => {
+        const tasks = [];
+        for (const json of response) {
+          tasks.push(new Task().deserialize(json));
+        }
+        return tasks;
+      })
+    );
   }
 }

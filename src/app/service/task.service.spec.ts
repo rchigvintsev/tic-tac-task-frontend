@@ -327,7 +327,7 @@ describe('TaskService', () => {
       updatedAt: moment().utc().format(DATE_FORMAT)
     }));
     testComments.push(new TaskComment().deserialize({
-      id: 1,
+      id: 3,
       taskId,
       commentText: 'Comment 2',
       createdAt: moment().utc().subtract({days: 1, hours: 1}).format(DATE_FORMAT),
@@ -342,7 +342,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${taskId}/comments?page=0&size=20`);
     expect(request.request.method).toBe('GET');
-    request.flush(testComments);
+    request.flush(testComments.map(comment => comment.serialize()));
   });
 
   it('should add new comment to task', done => {
