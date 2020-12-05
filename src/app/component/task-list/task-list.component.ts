@@ -1,49 +1,89 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgForm} from '@angular/forms';
+
+import {flatMap, map} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
-import {Task} from '../../model/task';
-import {TaskService} from '../../service/task.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
+import {TaskService} from '../../service/task.service';
+import {TaskListService} from '../../service/task-list.service';
+import {PageRequest} from '../../service/page-request';
+import {Task} from '../../model/task';
+import {TaskList} from '../../model/task-list';
+import {TaskStatus} from '../../model/task-status';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.styl']
 })
-export class TaskListComponent extends WebServiceBasedComponent {
-  @Input()
-  tasks: Array<Task>;
+export class TaskListComponent extends WebServiceBasedComponent implements OnInit {
+  title: string;
+  taskFormModel = new Task();
+  tasks: Task[];
 
-  @Output()
-  taskListScroll = new EventEmitter();
+  @ViewChild('taskForm')
+  taskForm: NgForm;
 
-  constructor(router: Router,
-              translate: TranslateService,
+  private taskList: TaskList;
+  private pageRequest = new PageRequest();
+
+  constructor(translate: TranslateService,
+              router: Router,
               authenticationService: AuthenticationService,
               log: LogService,
-              private taskService: TaskService) {
+              private route: ActivatedRoute,
+              private taskService: TaskService,
+              private taskListService: TaskListService) {
     super(translate, router, authenticationService, log);
   }
 
-  onTaskListScroll(event: any) {
-    this.taskListScroll.emit(event);
+  ngOnInit() {
+    this.route.params.pipe(
+      map(params => +params.id),
+      flatMap(id => this.taskListService.getTaskList(id)),
+      flatMap(taskList => {
+        this.onTaskListLoad(taskList);
+        return this.taskListService.getTasks(taskList.id);
+      })
+    ).subscribe(tasks => this.onTasksLoad(tasks), this.onServiceCallError.bind(this));
+
   }
 
-  onTaskCompleteCheckboxChange(task: Task) {
-    // Let animation to complete
-    setTimeout(() => {
-      this.completeTask(task);
-    }, 300);
+  onTaskFormSubmit() {
+    this.createTask();
   }
 
-  private completeTask(task: Task) {
-    this.taskService.completeTask(task).subscribe(_ => {
-      this.tasks = this.tasks.filter(e => e.id !== task.id);
-      this.taskService.updateTaskCounters();
-    }, this.onServiceCallError.bind(this));
+  onTaskListScroll() {
+    if (this.taskList) {
+      this.pageRequest.page++;
+      this.taskListService.getTasks(this.taskList.id, this.pageRequest)
+        .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+    }
+  }
+
+  private onTaskListLoad(taskList: TaskList) {
+    this.taskList = taskList;
+    this.title = taskList.name;
+  }
+
+  private onTasksLoad(tasks: Task[]) {
+    this.tasks = tasks;
+  }
+
+  private createTask() {
+    if (!Strings.isBlank(this.taskFormModel.title)) {
+      this.taskFormModel.status = TaskStatus.PROCESSED;
+      this.taskService.createTask(this.taskFormModel).subscribe(task => {
+        this.tasks.push(task);
+        this.taskForm.resetForm();
+        this.taskService.updateTaskCounters();
+      }, this.onServiceCallError.bind(this));
+    }
   }
 }

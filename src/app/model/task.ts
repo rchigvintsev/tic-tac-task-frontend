@@ -5,6 +5,7 @@ import {Objects} from '../util/objects';
 
 export class Task extends AbstractEntity<Task> {
   id: number;
+  taskListId: number;
   title: string;
   description: string;
   status: string;
@@ -13,6 +14,7 @@ export class Task extends AbstractEntity<Task> {
 
   deserialize(input: any): Task {
     this.id = input.id;
+    this.taskListId = input.taskListId;
     this.title = input.title;
     this.description = input.description;
     this.status = input.status;
@@ -26,6 +28,7 @@ export class Task extends AbstractEntity<Task> {
   serialize(): any {
     return {
       id: this.id,
+      taskListId: this.taskListId,
       title: this.title,
       description: this.description,
       status: this.status,
@@ -37,6 +40,7 @@ export class Task extends AbstractEntity<Task> {
   clone(): Task {
     const clone = new Task();
     clone.id = this.id;
+    clone.taskListId = this.taskListId;
     clone.title = this.title;
     clone.description = this.description;
     clone.status = this.status;
@@ -47,6 +51,7 @@ export class Task extends AbstractEntity<Task> {
 
   equals(other: Task): boolean {
     return Objects.equals(this.id, other.id)
+      && Objects.equals(this.taskListId, other.taskListId)
       && Objects.equals(this.title, other.title)
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)

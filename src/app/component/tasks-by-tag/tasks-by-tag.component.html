@@ -2,6 +2,6 @@
   <mat-card-title>{{ title | translate }}</mat-card-title>
 
   <mat-card-content>
-    <app-task-list [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-task-list>
+    <app-tasks [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-tasks>
   </mat-card-content>
 </mat-card>

@@ -1,0 +1,46 @@
+#tasks {
+  .mat-list-item {
+    &:hover {
+      background: rgba(0, 0, 0, .04)
+    }
+
+    mat-checkbox {
+      margin-right: 16px;
+
+      ::ng-deep .mat-checkbox-ripple { // ::ng-deep is deprecated
+        display: none;
+      }
+    }
+
+    .task-list-row {
+      align-items: center;
+      height: 100%;
+      cursor: pointer;
+
+      .list-column {
+        flex-grow: 1;
+        flex-basis: 0;
+      }
+
+      .title-column {
+        margin-right: 16px;
+        flex-grow: 7;
+      }
+
+      .deadline-column {
+        min-width: 120px;
+        text-align: right;
+
+        span {
+          text-decoration: underline dotted;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .deadline-column {
+          min-width: 60px;
+        }
+      }
+    }
+  }
+}

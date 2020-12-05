@@ -40,11 +40,10 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
       map(params => +params.id),
       flatMap(tagId => this.tagService.getTag(tagId)),
       flatMap(tag => {
-        this.tag = tag;
-        this.title = tag.name;
+        this.onTagLoad(tag);
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    ).subscribe(tasks => this.onTasksLoad(tasks), this.onServiceCallError.bind(this));
     this.tagService.getDeletedTag().subscribe(tag => {
       if (this.tag && this.tag.id === tag.id) {
         this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
@@ -58,5 +57,14 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
       this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest)
         .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
     }
+  }
+
+  private onTagLoad(tag: Tag) {
+    this.tag = tag;
+    this.title = tag.name;
+  }
+
+  private onTasksLoad(tasks: Task[]) {
+    this.tasks = tasks;
   }
 }
