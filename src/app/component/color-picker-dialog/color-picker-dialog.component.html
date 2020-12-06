@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+
+<div mat-dialog-content>
+  <color-block [color]="color" [colors]="COLORS" triangle="hide"></color-block>
+</div>
+
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center" class="dialog-buttons">
+  <button mat-raised-button id="cancel_button" (click)="onCancelButtonClick()">{{ 'cancel' | translate }}</button>
+  <button mat-raised-button id="ok_button" color="primary" (click)="onOkButtonClick()" cdkFocusInitial>OK</button>
+</div>
