@@ -1,7 +1,10 @@
-import {Component, DoCheck, OnInit, ViewChild} from '@angular/core';
+import {Component, DoCheck, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
+
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {LangChangeEvent} from '@ngx-translate/core';
 
@@ -18,7 +21,7 @@ import {AuthenticatedPrincipal} from './security/authenticated-principal';
   styleUrls: ['./app.component.styl'],
   providers: [TaskGroupService]
 })
-export class AppComponent implements OnInit, DoCheck {
+export class AppComponent implements OnInit, OnDestroy, DoCheck {
   @ViewChild('sidenav')
   sidenav: MatSidenav;
 
@@ -27,6 +30,8 @@ export class AppComponent implements OnInit, DoCheck {
   mobileQuery: MediaQueryList;
   showSidenav = false;
   availableLanguages: Language[];
+
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(private router: Router,
               private i18nService: I18nService,
@@ -46,10 +51,17 @@ export class AppComponent implements OnInit, DoCheck {
   ngOnInit() {
     this.availableLanguages = this.i18nService.availableLanguages;
     moment.locale(this.i18nService.currentLanguage.code);
-    this.i18nService.onLanguageChange.subscribe((event: LangChangeEvent) => {
-      moment.locale(event.lang);
-    });
+    this.i18nService.onLanguageChange
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe((event: LangChangeEvent) => {
+        moment.locale(event.lang);
+      });
     this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   ngDoCheck(): void {
@@ -59,10 +71,12 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   onSignOutButtonClick() {
-    this.authenticationService.signOut().subscribe(() => {
-      this.principal = null;
-      this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
-    });
+    this.authenticationService.signOut()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(() => {
+        this.principal = null;
+        this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
+      });
   }
 
   onSidenavToggleButtonClick() {

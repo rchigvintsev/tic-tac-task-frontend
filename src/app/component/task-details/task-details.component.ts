@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, NgForm} from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
@@ -10,8 +10,8 @@ import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {flatMap, map, startWith} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../../model/task';
@@ -34,7 +34,7 @@ const END_OF_DAY_TIME = '23:59';
   templateUrl: './task-details.component.html',
   styleUrls: ['./task-details.component.styl']
 })
-export class TaskDetailsComponent extends WebServiceBasedComponent implements OnInit {
+export class TaskDetailsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
   @ViewChild('title')
   titleElement: ElementRef;
   @ViewChild('taskDetailsForm', {read: NgForm})
@@ -54,6 +54,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
   private task: Task;
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(translate: TranslateService,
               router: Router,
@@ -77,10 +78,16 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
 
-    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.taskGroupService.getSelectedTaskGroup()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
 
-    this.tagService.getUpdatedTag().subscribe(tag => this.onTagUpdate(tag));
-    this.tagService.getDeletedTag().subscribe(tag => this.onTagDelete(tag));
+    this.tagService.getUpdatedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => this.onTagUpdate(tag));
+    this.tagService.getDeletedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => this.onTagDelete(tag));
 
     this.dateAdapter.setLocale(this.translate.currentLang);
 
@@ -91,6 +98,11 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   onTitleTextClick() {

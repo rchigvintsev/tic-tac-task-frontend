@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {flatMap, map} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {flatMap, map, takeUntil} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -19,12 +20,13 @@ import {Task} from '../../model/task';
   templateUrl: './tasks-by-tag.component.html',
   styleUrls: ['./tasks-by-tag.component.styl']
 })
-export class TasksByTagComponent extends WebServiceBasedComponent implements OnInit {
+export class TasksByTagComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
   title: string;
   tasks: Array<Task>;
 
   private tag: Tag;
   private pageRequest = new PageRequest();
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(translate: TranslateService,
               router: Router,
@@ -44,11 +46,18 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
     ).subscribe(tasks => this.onTasksLoad(tasks), this.onServiceCallError.bind(this));
-    this.tagService.getDeletedTag().subscribe(tag => {
-      if (this.tag && this.tag.id === tag.id) {
-        this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
-      }
-    });
+    this.tagService.getDeletedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => {
+        if (this.tag && this.tag.id === tag.id) {
+          this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   onTaskListScroll() {

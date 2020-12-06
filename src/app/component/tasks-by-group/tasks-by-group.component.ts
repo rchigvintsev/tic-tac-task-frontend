@@ -1,6 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgForm} from '@angular/forms';
+
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -22,7 +25,7 @@ import {Strings} from '../../util/strings';
   templateUrl: './tasks-by-group.component.html',
   styleUrls: ['./tasks-by-group.component.styl']
 })
-export class TasksByGroupComponent extends WebServiceBasedComponent implements OnInit {
+export class TasksByGroupComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
   title: string;
   formModel = new Task();
   tasks: Array<Task>;
@@ -32,6 +35,7 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
 
   private taskGroup: TaskGroup;
   private pageRequest = new PageRequest();
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(translate: TranslateService,
               router: Router,
@@ -82,8 +86,15 @@ export class TasksByGroupComponent extends WebServiceBasedComponent implements O
   }
 
   ngOnInit() {
-    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.taskGroupService.getSelectedTaskGroup()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   onTaskFormSubmit() {

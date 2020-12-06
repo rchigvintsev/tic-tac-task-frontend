@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
@@ -13,13 +13,15 @@ import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../../util/strings';
 import {PathMatcher} from '../../util/path-matcher';
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.styl']
 })
-export class TagsComponent extends WebServiceBasedComponent implements OnInit, AfterViewChecked {
+export class TagsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy, AfterViewChecked {
   readonly TAG_COLORS = [
     '#e57373', '#f06292', '#ba68c8', '#9575cd', '#7986cb',
     '#64b5f6', '#4dd0e1', '#4db6ac', '#81c784', '#dce775',
@@ -35,6 +37,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
   private tagNameInput: ElementRef;
   private selectedTag: Tag;
   private pathMatcher: PathMatcher;
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(router: Router,
               translate: TranslateService,
@@ -48,13 +51,20 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, A
 
   ngOnInit() {
     this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
-    this.tagService.getCreatedTag().subscribe(tag => this.onTagCreate(tag));
+    this.tagService.getCreatedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => this.onTagCreate(tag));
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         this.onNavigationEnd(event);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   ngAfterViewChecked(): void {

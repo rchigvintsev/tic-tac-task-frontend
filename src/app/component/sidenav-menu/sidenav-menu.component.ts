@@ -1,10 +1,12 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
+
+import {Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
-import {Observable} from 'rxjs';
 
 import {TaskGroup} from '../../model/task-group';
 import {TaskGroupService} from '../../service/task-group.service';
@@ -16,7 +18,7 @@ import {PathMatcher} from '../../util/path-matcher';
   templateUrl: './sidenav-menu.component.html',
   styleUrls: ['./sidenav-menu.component.styl']
 })
-export class SidenavMenuComponent implements OnInit {
+export class SidenavMenuComponent implements OnInit, OnDestroy {
   TaskGroup = TaskGroup;
 
   todayDate = moment().date();
@@ -24,6 +26,7 @@ export class SidenavMenuComponent implements OnInit {
 
   private selectedTaskGroup;
   private pathMatcher: PathMatcher;
+  private componentDestroyed = new Subject<boolean>();
 
   constructor(public translate: TranslateService,
               private taskGroupService: TaskGroupService,
@@ -33,13 +36,20 @@ export class SidenavMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.taskGroupService.getSelectedTaskGroup().subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.taskGroupService.getSelectedTaskGroup()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         this.onNavigationEnd(event);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed.next(true);
+    this.componentDestroyed.complete();
   }
 
   isRouterLinkActive(path: string, fragment: string = null): boolean {
