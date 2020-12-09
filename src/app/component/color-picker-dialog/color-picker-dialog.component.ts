@@ -1,8 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
-const DEFAULT_COLOR = '#e0e0e0';
-
 @Component({
   selector: 'app-color-picker-dialog',
   templateUrl: './color-picker-dialog.component.html',
@@ -15,26 +13,28 @@ export class ColorPickerDialogComponent implements OnInit {
     '#fff176', '#ffb74d', '#a1887f', '#e0e0e0', '#90a4ae'
   ];
 
-  color = DEFAULT_COLOR;
+  color: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ColorPickerDialogData,
     private dialogRef: MatDialogRef<ColorPickerDialogComponent>
-  ) {}
+  ) {
+    this.color = data.color;
+  }
 
   ngOnInit() {
   }
 
   onCancelButtonClick(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close({result: false});
   }
 
   onOkButtonClick(): void {
-    this.dialogRef.close(true);
+    this.dialogRef.close({result: true, color: this.color});
   }
 }
 
 export interface ColorPickerDialogData {
   title: string;
-  content: string;
+  color: string;
 }
