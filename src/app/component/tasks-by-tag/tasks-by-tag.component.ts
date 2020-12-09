@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 
 import {Subject} from 'rxjs';
 import {flatMap, map, takeUntil} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
+import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
@@ -33,7 +35,8 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
               authenticationService: AuthenticationService,
               log: LogService,
               private route: ActivatedRoute,
-              private tagService: TagService) {
+              private tagService: TagService,
+              private dialog: MatDialog) {
     super(translate, router, authenticationService, log);
   }
 
@@ -68,6 +71,21 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     }
   }
 
+  onDeleteTagButtonClick() {
+    const title = this.translate.instant('attention');
+    const content = this.translate.instant('delete_tag_question');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      restoreFocus: false,
+      data: {title, content}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteTag();
+      }
+    });
+  }
+
   private onTagLoad(tag: Tag) {
     this.tag = tag;
     this.title = tag.name;
@@ -75,5 +93,9 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
 
   private onTasksLoad(tasks: Task[]) {
     this.tasks = tasks;
+  }
+
+  private deleteTag() {
+    this.tagService.deleteTag(this.tag).subscribe(_ => {}, this.onServiceCallError.bind(this));
   }
 }

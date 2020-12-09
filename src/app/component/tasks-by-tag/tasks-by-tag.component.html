@@ -1,5 +1,19 @@
 <mat-card>
-  <mat-card-title>{{ title | translate }}</mat-card-title>
+  <mat-card-title>
+    <div class="title-column">
+      {{ title | translate }}
+    </div>
+
+    <div class="menu-column">
+      <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #tagMenu="matMenu">
+        <button mat-menu-item (click)="onDeleteTagButtonClick()">{{ 'delete' | translate }}</button>
+      </mat-menu>
+    </div>
+  </mat-card-title>
 
   <mat-card-content>
     <app-tasks [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-tasks>
