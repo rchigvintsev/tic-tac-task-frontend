@@ -2,6 +2,9 @@ import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, O
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+
 import {TranslateService} from '@ngx-translate/core';
 import {ColorEvent} from 'ngx-color';
 
@@ -13,8 +16,6 @@ import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../../util/strings';
 import {PathMatcher} from '../../util/path-matcher';
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-tags',
