@@ -1,12 +1,14 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+
+import {ColorEvent} from 'ngx-color';
 
 @Component({
   selector: 'app-color-picker-dialog',
   templateUrl: './color-picker-dialog.component.html',
   styleUrls: ['./color-picker-dialog.component.styl']
 })
-export class ColorPickerDialogComponent implements OnInit {
+export class ColorPickerDialogComponent {
   readonly COLORS = [
     '#e57373', '#f06292', '#ba68c8', '#9575cd', '#7986cb',
     '#64b5f6', '#4dd0e1', '#4db6ac', '#81c784', '#dce775',
@@ -19,10 +21,11 @@ export class ColorPickerDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: ColorPickerDialogData,
     private dialogRef: MatDialogRef<ColorPickerDialogComponent>
   ) {
-    this.color = data.color;
+    this.color = data.color || '';
   }
 
-  ngOnInit() {
+  onColorChangeComplete(e: ColorEvent) {
+    this.color = e.color.hex;
   }
 
   onCancelButtonClick(): void {

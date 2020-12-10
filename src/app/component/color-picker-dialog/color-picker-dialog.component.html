@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
 
 <div mat-dialog-content>
-  <color-block [color]="color" [colors]="COLORS" triangle="hide"></color-block>
+  <color-block [color]="color" [colors]="COLORS" (onChangeComplete)="onColorChangeComplete($event)" triangle="hide">
+  </color-block>
 </div>
 
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center" class="dialog-buttons">
