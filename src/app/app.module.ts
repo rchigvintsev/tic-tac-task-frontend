@@ -32,6 +32,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {ColorCircleModule} from 'ngx-color/circle';
+import {ColorBlockModule} from 'ngx-color/block';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -43,6 +44,7 @@ import {TaskListComponent} from './component/task-list/task-list.component';
 import {TaskDetailsComponent} from './component/task-details/task-details.component';
 import {TaskCommentsComponent} from './component/task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './component/confirmation-dialog/confirmation-dialog.component';
+import {ColorPickerDialogComponent} from './component/color-picker-dialog/color-picker-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 import {SigninComponent} from './component/signin/signin.component';
 import {NotFoundComponent} from './component/not-found/not-found.component';
@@ -81,6 +83,7 @@ registerLocaleData(localeRu, 'ru');
     TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,
+    ColorPickerDialogComponent,
     NotBlankValidatorDirective,
     SigninComponent,
     NotFoundComponent,
@@ -119,6 +122,7 @@ registerLocaleData(localeRu, 'ru');
     InfiniteScrollModule,
     NgxMaterialTimepickerModule,
     ColorCircleModule,
+    ColorBlockModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -135,7 +139,7 @@ registerLocaleData(localeRu, 'ru');
     CookieService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmationDialogComponent]
+  entryComponents: [ConfirmationDialogComponent, ColorPickerDialogComponent]
 })
 export class AppModule {
 }

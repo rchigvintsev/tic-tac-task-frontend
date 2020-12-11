@@ -25,6 +25,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorCircleModule} from 'ngx-color/circle';
+import {ColorBlockModule} from 'ngx-color/block';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -41,6 +42,7 @@ import {TaskListComponent} from '../component/task-list/task-list.component';
 import {TaskDetailsComponent} from '../component/task-details/task-details.component';
 import {SidenavMenuComponent} from '../component/sidenav-menu/sidenav-menu.component';
 import {ConfirmationDialogComponent} from '../component/confirmation-dialog/confirmation-dialog.component';
+import {ColorPickerDialogComponent} from '../component/color-picker-dialog/color-picker-dialog.component';
 import {NotFoundComponent} from '../component/not-found/not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
@@ -71,6 +73,7 @@ export class TestSupport {
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorCircleModule,
+    ColorBlockModule,
     RouterTestingModule.withRoutes(routes),
     TranslateModule.forRoot({
       loader: {
@@ -96,6 +99,7 @@ export class TestSupport {
     TaskDetailsComponent,
     SidenavMenuComponent,
     ConfirmationDialogComponent,
+    ColorPickerDialogComponent,
     NotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,

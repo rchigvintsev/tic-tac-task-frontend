@@ -8,6 +8,7 @@ import {flatMap, map, takeUntil} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
+import {ColorPickerDialogComponent} from '../color-picker-dialog/color-picker-dialog.component';
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
@@ -24,9 +25,9 @@ import {Task} from '../../model/task';
 })
 export class TasksByTagComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
   title: string;
+  tag: Tag;
   tasks: Array<Task>;
 
-  private tag: Tag;
   private pageRequest = new PageRequest();
   private componentDestroyed = new Subject<boolean>();
 
@@ -71,6 +72,23 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     }
   }
 
+  onChangeColorButtonClick() {
+    const title = this.translate.instant('tag_color');
+    const dialogRef = this.dialog.open(ColorPickerDialogComponent, {
+      width: '248px',
+      restoreFocus: false,
+      data: {title, color: this.tag.color}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.result) {
+        if (result.color !== this.tag.color) {
+          this.tag.color = result.color;
+          this.saveTag(this.tag);
+        }
+      }
+    });
+  }
+
   onDeleteTagButtonClick() {
     const title = this.translate.instant('attention');
     const content = this.translate.instant('delete_tag_question');
@@ -81,7 +99,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.deleteTag();
+        this.deleteTag(this.tag);
       }
     });
   }
@@ -95,7 +113,12 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     this.tasks = tasks;
   }
 
-  private deleteTag() {
-    this.tagService.deleteTag(this.tag).subscribe(_ => {}, this.onServiceCallError.bind(this));
+  private saveTag(tag: Tag) {
+      this.tagService.updateTag(tag)
+        .subscribe(savedTag => this.tag = savedTag, this.onServiceCallError.bind(this));
+  }
+
+  private deleteTag(tag: Tag) {
+    this.tagService.deleteTag(tag).subscribe(_ => {}, this.onServiceCallError.bind(this));
   }
 }

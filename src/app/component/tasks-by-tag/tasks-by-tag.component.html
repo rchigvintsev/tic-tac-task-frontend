@@ -10,6 +10,7 @@
       </button>
 
       <mat-menu #tagMenu="matMenu">
+        <button mat-menu-item (click)="onChangeColorButtonClick()">{{ 'change_color' | translate }}</button>
         <button mat-menu-item (click)="onDeleteTagButtonClick()">{{ 'delete' | translate }}</button>
       </mat-menu>
     </div>

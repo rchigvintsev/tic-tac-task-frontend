@@ -12,6 +12,7 @@
   "edit": "Edit",
   "post": "Post",
   "delete": "Delete",
+  "change_color": "Change color",
   "cancel": "Cancel",
   "yes": "Yes",
   "no": "No",
@@ -38,5 +39,6 @@
   "today": "Today",
   "tomorrow": "Tomorrow",
   "tags": "Tags",
+  "tag_color": "Tag color",
   "task_lists": "Task lists"
 }
