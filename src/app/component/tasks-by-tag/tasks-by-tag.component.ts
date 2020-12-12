@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
@@ -17,6 +17,7 @@ import {PageRequest} from '../../service/page-request';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {Task} from '../../model/task';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-tasks-by-tag',
@@ -24,10 +25,14 @@ import {Task} from '../../model/task';
   styleUrls: ['./tasks-by-tag.component.styl']
 })
 export class TasksByTagComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
-  title: string;
-  tag: Tag;
+  titleEditing = false;
+  tagFormModel: Tag;
   tasks: Array<Task>;
 
+  @ViewChild('title')
+  titleElement: ElementRef;
+
+  private tag: Tag;
   private pageRequest = new PageRequest();
   private componentDestroyed = new Subject<boolean>();
 
@@ -46,7 +51,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
       map(params => +params.id),
       flatMap(tagId => this.tagService.getTag(tagId)),
       flatMap(tag => {
-        this.onTagLoad(tag);
+        this.setTagModel(tag);
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
     ).subscribe(tasks => this.onTasksLoad(tasks), this.onServiceCallError.bind(this));
@@ -62,6 +67,18 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
   ngOnDestroy(): void {
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
+  }
+
+  onTitleTextClick() {
+    this.beginTitleEditing();
+  }
+
+  onTitleInputBlur() {
+    this.endTitleEditing();
+  }
+
+  onTitleInputEnterKeydown() {
+    this.endTitleEditing();
   }
 
   onTaskListScroll() {
@@ -81,10 +98,8 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result.result) {
-        if (result.color !== this.tag.color) {
-          this.tag.color = result.color;
-          this.saveTag(this.tag);
-        }
+        this.tagFormModel.color = result.color;
+        this.saveTag();
       }
     });
   }
@@ -99,26 +114,42 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.deleteTag(this.tag);
+        this.deleteTag();
       }
     });
   }
 
-  private onTagLoad(tag: Tag) {
-    this.tag = tag;
-    this.title = tag.name;
+  private setTagModel(tag: Tag) {
+    this.tagFormModel = tag;
+    this.tag = tag.clone();
   }
 
   private onTasksLoad(tasks: Task[]) {
     this.tasks = tasks;
   }
 
-  private saveTag(tag: Tag) {
-      this.tagService.updateTag(tag)
-        .subscribe(savedTag => this.tag = savedTag, this.onServiceCallError.bind(this));
+  private saveTag() {
+    if (Strings.isBlank(this.tagFormModel.name)) {
+      this.tagFormModel.name = this.tag.name;
+    }
+
+    if (!this.tagFormModel.equals(this.tag)) {
+      this.tagService.updateTag(this.tagFormModel)
+        .subscribe(savedTag => this.setTagModel(savedTag), this.onServiceCallError.bind(this));
+    }
   }
 
-  private deleteTag(tag: Tag) {
-    this.tagService.deleteTag(tag).subscribe(_ => {}, this.onServiceCallError.bind(this));
+  private deleteTag() {
+    this.tagService.deleteTag(this.tagFormModel).subscribe(_ => {}, this.onServiceCallError.bind(this));
+  }
+
+  private beginTitleEditing() {
+    this.titleEditing = true;
+    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  }
+
+  private endTitleEditing() {
+    this.saveTag();
+    this.titleEditing = false;
   }
 }

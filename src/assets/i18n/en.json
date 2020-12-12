@@ -39,6 +39,7 @@
   "today": "Today",
   "tomorrow": "Tomorrow",
   "tags": "Tags",
+  "tag_name": "Tag name",
   "tag_color": "Tag color",
   "task_lists": "Task lists"
 }

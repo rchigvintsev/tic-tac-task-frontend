@@ -1,7 +1,25 @@
 <mat-card>
   <mat-card-title>
     <div class="title-column">
-      {{ title | translate }}
+      <form *ngIf="titleEditing">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #title
+                   name="title"
+                   type="text"
+                   [(ngModel)]="tagFormModel.name"
+                   (blur)="onTitleInputBlur()"
+                   (keydown.enter)="onTitleInputEnterKeydown()"
+                   placeholder="{{ 'tag_name' | translate }}"
+                   maxlength="50"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
+
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ tagFormModel?.name }}</span>
     </div>
 
     <div class="menu-column">
