@@ -1,68 +1,13 @@
 <mat-list id="tag_list">
   <mat-list-item *ngFor="let tag of tags"
-                 [routerLink]="isTagBeingEdited(tag) ? null : [translate.currentLang, 'tag', tag.id]"
+                 [routerLink]="[translate.currentLang, 'tag', tag.id]"
                  [ngClass]="'tag-' + tag.id"
-                 [class.mat-list-item-selected]="isRouterLinkActive('tag/' + tag.id)"
-                 (mouseover)="onTagListItemMouseOver(tag)"
-                 (mouseout)="onTagListItemMouseOut()"
-                 [style.height]="isTagBeingEdited(tag) ? '298px' : '48px'"
-                 [disableRipple]="isTagBeingEdited(tag)"
-                 [class.non-selectable-list-item]="isTagBeingEdited(tag)">
-    <mat-icon *ngIf="!isTagBeingEdited(tag)" mat-list-icon [style.color]="tag.color">label</mat-icon>
+                 [class.mat-list-item-selected]="isRouterLinkActive('tag/' + tag.id)">
+    <mat-icon mat-list-icon [style.color]="tag.color">label</mat-icon>
 
     <div class="list-row tag-list-row">
-      <form *ngIf="isTagBeingEdited(tag)" class="tag-form">
-        <mat-form-field>
-          <label>
-            <input matInput
-                   #tagNameInput
-                   name="name"
-                   type="text"
-                   [(ngModel)]="tagFormModel.name"
-                   maxlength="50"
-                   placeholder="{{ 'name' | translate }}"
-                   required
-                   notBlank/>
-          </label>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'color' | translate }}</mat-label>
-          <label>
-            <input matInput type="text" name="dummy" value="I'm dummy" hidden="hidden"/>
-          </label>
-          <color-circle width="210" [color]="tagFormModel.color" [colors]="TAG_COLORS"
-                        (onChangeComplete)="onColorChangeComplete($event)">
-          </color-circle>
-        </mat-form-field>
-
-        <div class="form-buttons">
-          <button mat-raised-button type="button" color="primary" [disabled]="!isTagFormValid()"
-                  (click)="onSaveTagButtonClick(); $event.stopPropagation()">
-            {{ 'post' | translate }}
-          </button>
-
-          <button mat-raised-button type="button" (click)="onCancelTagEditButtonClick(); $event.stopPropagation()">
-            {{ 'cancel' | translate }}
-          </button>
-        </div>
-      </form>
-
-      <div *ngIf="!isTagBeingEdited(tag)" class="list-column name-column">
+      <div class="list-column name-column">
         <span>{{ tag.name }}</span>
-      </div>
-
-      <div [hidden]="!isTagSelected(tag) || isTagBeingEdited(tag)" class="list-column menu-trigger-column">
-        <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu"
-                (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                (menuOpened)="onTagMenuOpened()">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-
-        <mat-menu #tagMenu="matMenu" xPosition="before" (closed)="onTagMenuClosed()">
-          <button mat-menu-item (click)="onEditTagButtonClick(tag)">{{ 'edit' | translate }}</button>
-          <button mat-menu-item (click)="onDeleteTagButtonClick(tag)">{{ 'delete' | translate }}</button>
-        </mat-menu>
       </div>
     </div>
   </mat-list-item>
