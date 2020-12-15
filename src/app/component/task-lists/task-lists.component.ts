@@ -95,7 +95,7 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
       data: {title, content}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result.result) {
         this.deleteTaskList(taskList);
       }
     });

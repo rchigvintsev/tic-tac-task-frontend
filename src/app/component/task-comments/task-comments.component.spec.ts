@@ -19,7 +19,7 @@ import any = jasmine.any;
 class MatDialogMock {
   open() {
     return {
-      afterClosed: () => of(true)
+      afterClosed: () => of({result: true})
     };
   }
 }

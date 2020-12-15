@@ -10,12 +10,11 @@ import {TestSupport} from '../../test/test-support';
 import {ConfigService} from '../../service/config.service';
 import {TaskListService} from '../../service/task-list.service';
 import {TaskList} from '../../model/task-list';
-import {TaskComment} from "../../model/task-comment";
 
 class MatDialogMock {
   open() {
     return {
-      afterClosed: () => of(true)
+      afterClosed: () => of({result: true})
     };
   }
 }

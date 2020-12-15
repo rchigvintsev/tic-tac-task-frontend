@@ -16,11 +16,11 @@ export class ConfirmationDialogComponent implements OnInit {
   }
 
   onNoButtonClick(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close({result: false});
   }
 
   onYesButtonClick(): void {
-    this.dialogRef.close(true);
+    this.dialogRef.close({result: true});
   }
 }
 

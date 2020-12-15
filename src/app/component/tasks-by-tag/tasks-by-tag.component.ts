@@ -113,7 +113,7 @@ export class TasksByTagComponent extends WebServiceBasedComponent implements OnI
       data: {title, content}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result.result) {
         this.deleteTag();
       }
     });

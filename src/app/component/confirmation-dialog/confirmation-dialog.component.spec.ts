@@ -45,7 +45,7 @@ describe('ConfirmationDialogComponent', () => {
     fixture.whenStable().then(() => {
       yesButton.nativeElement.click();
       fixture.detectChanges();
-      expect(matDialogRef.close).toHaveBeenCalledWith(true);
+      expect(matDialogRef.close).toHaveBeenCalledWith({result: true});
     });
   });
 
@@ -56,7 +56,7 @@ describe('ConfirmationDialogComponent', () => {
     fixture.whenStable().then(() => {
       noButton.nativeElement.click();
       fixture.detectChanges();
-      expect(matDialogRef.close).toHaveBeenCalledWith(false);
+      expect(matDialogRef.close).toHaveBeenCalledWith({result: false});
     });
   });
 });

@@ -93,7 +93,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
       data: {title, content}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result.result) {
         this.deleteComment(comment);
       }
     });

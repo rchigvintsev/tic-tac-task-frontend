@@ -1,6 +1,6 @@
 <mat-card>
-  <mat-card-title>
-    <div class="title-column">
+  <div class="mat-card-header">
+    <div class="mat-card-title">
       <form *ngIf="titleEditing">
         <mat-form-field>
           <label>
@@ -22,7 +22,7 @@
       <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ tagFormModel?.name }}</span>
     </div>
 
-    <div class="menu-column">
+    <div class="card-header-menu">
       <button mat-icon-button aria-label="Tag menu" [matMenuTriggerFor]="tagMenu">
         <mat-icon>more_vert</mat-icon>
       </button>
@@ -32,7 +32,7 @@
         <button mat-menu-item (click)="onDeleteTagButtonClick()">{{ 'delete' | translate }}</button>
       </mat-menu>
     </div>
-  </mat-card-title>
+  </div>
 
   <mat-card-content>
     <app-tasks [tasks]="tasks" (taskListScroll)="onTaskListScroll()"></app-tasks>
