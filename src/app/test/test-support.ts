@@ -24,7 +24,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import {ColorCircleModule} from 'ngx-color/circle';
 import {ColorBlockModule} from 'ngx-color/block';
 
 import {routes} from '../app-routing.module';
@@ -72,7 +71,6 @@ export class TestSupport {
     MatExpansionModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
-    ColorCircleModule,
     ColorBlockModule,
     RouterTestingModule.withRoutes(routes),
     TranslateModule.forRoot({

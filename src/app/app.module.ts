@@ -31,7 +31,6 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
-import {ColorCircleModule} from 'ngx-color/circle';
 import {ColorBlockModule} from 'ngx-color/block';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -121,7 +120,6 @@ registerLocaleData(localeRu, 'ru');
     BrowserAnimationsModule,
     InfiniteScrollModule,
     NgxMaterialTimepickerModule,
-    ColorCircleModule,
     ColorBlockModule,
     TranslateModule.forRoot({
       loader: {
