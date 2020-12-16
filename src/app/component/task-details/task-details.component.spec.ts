@@ -98,6 +98,15 @@ describe('TaskDetailsComponent', () => {
     });
   });
 
+  it('should end title editing on title input enter keydown', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.onTitleInputEnterKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
   it('should hide title text element on click', () => {
     const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
     let titleSpan = fixture.debugElement.query(spanSelector);

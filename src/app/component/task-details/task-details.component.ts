@@ -113,6 +113,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     this.endTitleEditing();
   }
 
+  onTitleInputEnterKeydown() {
+    this.endTitleEditing();
+  }
+
   onDescriptionInputBlur() {
     this.saveTask();
   }
