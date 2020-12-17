@@ -5,12 +5,12 @@ import {Location} from '@angular/common';
 import {TranslateService} from '@ngx-translate/core';
 
 import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
-import {TasksByGroupComponent} from './component/tasks-by-group/tasks-by-group.component';
-import {TasksByTagComponent} from './component/tasks-by-tag/tasks-by-tag.component';
-import {TaskListComponent} from './component/task-list/task-list.component';
+import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
+import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
+import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
 import {TaskDetailsComponent} from './component/task-details/task-details.component';
 import {SigninComponent} from './component/signin/signin.component';
-import {NotFoundComponent} from './component/not-found/not-found.component';
+import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AVAILABLE_LANGUAGES} from './service/i18n.service';
 import {
@@ -22,17 +22,17 @@ import {
 
 export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
-  {path: 'task', component: TasksByGroupComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'task', component: TaskGroupTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task/:id', component: TaskDetailsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
-  {path: 'tag/:id', component: TasksByTagComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
-  {path: 'task-list/:id', component: TaskListComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'tag/:id', component: TagTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
+  {path: 'task-list/:id', component: TaskListTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'oauth2/authorization/callback',
     component: DummyComponent,
     canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
-  {path: 'error/404', component: NotFoundComponent},
+  {path: 'error/404', component: ErrorNotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];
 

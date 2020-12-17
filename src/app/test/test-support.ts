@@ -29,20 +29,20 @@ import {ColorBlockModule} from 'ngx-color/block';
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
-import {AlertComponent} from '../component/alert/alert.component';
+import {AlertComponent} from '../component/fragment/alert/alert.component';
 import {SigninComponent} from '../component/signin/signin.component';
-import {TasksComponent} from '../component/tasks/tasks.component';
-import {TaskCommentsComponent} from '../component/task-comments/task-comments.component';
-import {TagsComponent} from '../component/tags/tags.component';
-import {TaskListsComponent} from '../component/task-lists/task-lists.component';
-import {TasksByGroupComponent} from '../component/tasks-by-group/tasks-by-group.component';
-import {TasksByTagComponent} from '../component/tasks-by-tag/tasks-by-tag.component';
-import {TaskListComponent} from '../component/task-list/task-list.component';
+import {TasksComponent} from '../component/fragment/tasks/tasks.component';
+import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
+import {TagsComponent} from '../component/fragment/tags/tags.component';
+import {TaskListsComponent} from '../component/fragment/task-lists/task-lists.component';
+import {TaskGroupTasksComponent} from '../component/task-group-tasks/task-group-tasks.component';
+import {TagTasksComponent} from '../component/tag-tasks/tag-tasks.component';
+import {TaskListTasksComponent} from '../component/task-list-tasks/task-list-tasks.component';
 import {TaskDetailsComponent} from '../component/task-details/task-details.component';
-import {SidenavMenuComponent} from '../component/sidenav-menu/sidenav-menu.component';
-import {ConfirmationDialogComponent} from '../component/confirmation-dialog/confirmation-dialog.component';
-import {ColorPickerDialogComponent} from '../component/color-picker-dialog/color-picker-dialog.component';
-import {NotFoundComponent} from '../component/not-found/not-found.component';
+import {SidenavMenuComponent} from '../component/fragment/sidenav-menu/sidenav-menu.component';
+import {ConfirmationDialogComponent} from '../component/fragment/confirmation-dialog/confirmation-dialog.component';
+import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
+import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
@@ -91,14 +91,14 @@ export class TestSupport {
     TaskCommentsComponent,
     TagsComponent,
     TaskListsComponent,
-    TasksByGroupComponent,
-    TasksByTagComponent,
-    TaskListComponent,
+    TaskGroupTasksComponent,
+    TagTasksComponent,
+    TaskListTasksComponent,
     TaskDetailsComponent,
     SidenavMenuComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
-    NotFoundComponent,
+    ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
