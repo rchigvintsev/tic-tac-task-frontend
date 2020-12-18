@@ -1,5 +1,38 @@
 <mat-card>
-  <mat-card-title>{{ title | translate }}</mat-card-title>
+  <div class="mat-card-header">
+    <div class="mat-card-title">
+      <form *ngIf="titleEditing">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #title
+                   name="title"
+                   type="text"
+                   [(ngModel)]="taskListFormModel.name"
+                   (blur)="onTitleInputBlur()"
+                   (keydown.enter)="onTitleInputEnterKeydown()"
+                   (keydown.escape)="onTitleInputEscapeKeydown()"
+                   placeholder="{{ 'task_list_name' | translate }}"
+                   maxlength="50"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
+
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ taskListFormModel.name }}</span>
+    </div>
+
+    <div class="card-header-menu">
+      <button mat-icon-button aria-label="Task list menu" [matMenuTriggerFor]="taskListMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #taskListMenu="matMenu">
+        <button mat-menu-item (click)="onDeleteTaskListButtonClick()">{{ 'delete' | translate }}</button>
+      </mat-menu>
+    </div>
+  </div>
 
   <form #taskForm="ngForm" (ngSubmit)="onTaskFormSubmit()">
     <mat-form-field>
