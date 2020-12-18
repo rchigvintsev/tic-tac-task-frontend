@@ -48,6 +48,17 @@ export class TaskListService {
     );
   }
 
+  updateTaskList(taskList: TaskList): Observable<TaskList> {
+    if (!taskList) {
+      throw new Error('Task list must not be null or undefined');
+    }
+    return this.http.put<TaskList>(`${this.baseUrl}/${taskList.id}`, taskList.serialize(), jsonContentOptions).pipe(
+      map(response => {
+        return new TaskList().deserialize(response);
+      })
+    );
+  }
+
   deleteTaskList(taskList: TaskList): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${taskList.id}`, commonHttpOptions);
   }

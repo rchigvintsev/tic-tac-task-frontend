@@ -68,6 +68,23 @@ describe('TaskListService', () => {
     request.flush(testTaskList);
   });
 
+  it('should update task list', done => {
+    const testTaskList = new TaskList().deserialize({id: 1, name: 'Updated test task list'});
+
+    taskListService.updateTaskList(testTaskList).subscribe(taskList => {
+      expect(taskList).toEqual(testTaskList);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(testTaskList);
+  });
+
+  it('should throw error on task list update when task list is null', () => {
+    expect(() => taskListService.updateTaskList(null)).toThrowError('Task list must not be null or undefined');
+  });
+
   it('should delete task list', () => {
     const testTaskList = new TaskList().deserialize({id: 1});
     taskListService.deleteTaskList(testTaskList).subscribe(() => {});
