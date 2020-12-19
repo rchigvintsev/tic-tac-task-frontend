@@ -31,10 +31,10 @@ import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../component/fragment/alert/alert.component';
 import {SigninComponent} from '../component/signin/signin.component';
-import {TasksComponent} from '../component/fragment/tasks/tasks.component';
 import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
 import {TagsComponent} from '../component/fragment/tags/tags.component';
 import {TaskListsComponent} from '../component/fragment/task-lists/task-lists.component';
+import {BaseTasksComponent} from '../component/fragment/base-tasks/base-tasks.component';
 import {TaskGroupTasksComponent} from '../component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from '../component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from '../component/task-list-tasks/task-list-tasks.component';
@@ -87,10 +87,10 @@ export class TestSupport {
     AppComponent,
     AlertComponent,
     SigninComponent,
-    TasksComponent,
     TaskCommentsComponent,
     TagsComponent,
     TaskListsComponent,
+    BaseTasksComponent,
     TaskGroupTasksComponent,
     TagTasksComponent,
     TaskListTasksComponent,

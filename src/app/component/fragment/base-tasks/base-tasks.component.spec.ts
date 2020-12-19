@@ -7,7 +7,7 @@ import {of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
-import {TasksComponent} from './tasks.component';
+import {BaseTasksComponent} from './base-tasks.component';
 import {TaskGroup} from '../../../model/task-group';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {ConfigService} from '../../../service/config.service';
@@ -15,9 +15,9 @@ import {TaskService} from '../../../service/task.service';
 import {Task} from '../../../model/task';
 import {TestSupport} from '../../../test/test-support';
 
-describe('TasksComponent', () => {
-  let component: TasksComponent;
-  let fixture: ComponentFixture<TasksComponent>;
+describe('BaseTasksComponent', () => {
+  let component: BaseTasksComponent;
+  let fixture: ComponentFixture<BaseTasksComponent>;
   let taskService: TaskService;
 
   beforeEach(async(() => {
@@ -43,7 +43,7 @@ describe('TasksComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TasksComponent);
+    fixture = TestBed.createComponent(BaseTasksComponent);
 
     taskService = fixture.debugElement.injector.get(TaskService);
     spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
@@ -112,14 +112,6 @@ describe('TasksComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.whenStable().then(() => {
       expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
-    });
-  });
-
-  it('should emit event on task list scroll', () => {
-    spyOn(component.taskListScroll, 'emit');
-    fixture.whenStable().then(() => {
-      component.onTaskListScroll({});
-      expect(component.taskListScroll.emit).toHaveBeenCalled();
     });
   });
 });

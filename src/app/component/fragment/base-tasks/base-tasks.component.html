@@ -1,0 +1,75 @@
+<mat-card>
+  <div class="mat-card-header">
+    <div class="mat-card-title">
+      <form *ngIf="titleEditing">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #titleInput
+                   name="title"
+                   type="text"
+                   [(ngModel)]="title"
+                   (blur)="onTitleInputBlur()"
+                   (keydown.enter)="onTitleInputEnterKeydown()"
+                   (keydown.escape)="onTitleInputEscapeKeydown()"
+                   [placeholder]="titlePlaceholder"
+                   [maxlength]="titleMaxLength.toString()"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
+
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ title }}</span>
+    </div>
+
+    <div *ngIf="taskListMenuItems.length > 0" class="card-header-menu">
+      <button mat-icon-button aria-label="Task list menu" [matMenuTriggerFor]="taskListMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #taskListMenu="matMenu">
+        <button *ngFor="let item of taskListMenuItems" mat-menu-item (click)="item.handler()">
+          {{ item.name | translate }}
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <form *ngIf="taskFormEnabled" #taskForm="ngForm" (ngSubmit)="onTaskFormSubmit()">
+    <mat-form-field>
+      <label>
+        <input matInput
+               type="text"
+               name="title"
+               [(ngModel)]="taskFormModel.title"
+               placeholder="{{ 'new_task' | translate }}"
+               maxlength="255"
+               required
+               notBlank>
+      </label>
+      <button type="submit" hidden="hidden">Submit</button>
+    </mat-form-field>
+  </form>
+
+  <mat-card-content>
+    <mat-list id="tasks" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll($event)">
+      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
+        <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
+
+        <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row task-list-row">
+          <div class="list-column title-column">
+            <span>{{ task.title }}</span>
+          </div>
+
+          <div *ngIf="task.deadline" class="list-column deadline-column">
+            <span [matTooltip]="task.deadline | localizedDate"
+                  [class]="task.isOverdue() ? 'color-warn' : 'color-primary'" matTooltipPosition="above">
+              {{ task.deadline | localizedRelativeDate }}
+            </span>
+          </div>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

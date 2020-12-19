@@ -36,7 +36,7 @@ import {ColorBlockModule} from 'ngx-color/block';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SidenavMenuComponent} from './component/fragment/sidenav-menu/sidenav-menu.component';
-import {TasksComponent} from './component/fragment/tasks/tasks.component';
+import {BaseTasksComponent} from './component/fragment/base-tasks/base-tasks.component';
 import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
@@ -75,7 +75,7 @@ registerLocaleData(localeRu, 'ru');
   declarations: [
     AppComponent,
     SidenavMenuComponent,
-    TasksComponent,
+    BaseTasksComponent,
     TaskGroupTasksComponent,
     TagTasksComponent,
     TaskListTasksComponent,
