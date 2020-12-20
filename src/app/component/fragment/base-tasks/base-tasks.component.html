@@ -12,7 +12,7 @@
                    (blur)="onTitleInputBlur()"
                    (keydown.enter)="onTitleInputEnterKeydown()"
                    (keydown.escape)="onTitleInputEscapeKeydown()"
-                   [placeholder]="titlePlaceholder"
+                   placeholder="{{ titlePlaceholder | translate }}"
                    [maxlength]="titleMaxLength.toString()"
                    required
                    notBlank/>
@@ -20,7 +20,7 @@
         </mat-form-field>
       </form>
 
-      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ title }}</span>
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ title | translate }}</span>
     </div>
 
     <div *ngIf="taskListMenuItems.length > 0" class="card-header-menu">

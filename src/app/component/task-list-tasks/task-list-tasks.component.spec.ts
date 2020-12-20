@@ -2,7 +2,6 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {HttpTestingController} from '@angular/common/http/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
-import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
@@ -30,6 +29,8 @@ class MatDialogMock {
 }
 
 describe('TaskListTasksComponent', () => {
+  const taskList = new TaskList().deserialize({id: 1, name: 'Test task list'});
+
   let component: TaskListTasksComponent;
   let fixture: ComponentFixture<TaskListTasksComponent>;
   let httpMock: HttpTestingController;
@@ -63,7 +64,6 @@ describe('TaskListTasksComponent', () => {
     router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
-    const taskList = new TaskList().deserialize({id: 1, name: 'Test task list'});
     const tasks = [
       new Task().deserialize({id: 2, taskListIdL: taskList.id, title: 'Task 1'}),
       new Task().deserialize({id: 3, taskListIdL: taskList.id, title: 'Task 2'})
@@ -94,84 +94,18 @@ describe('TaskListTasksComponent', () => {
     });
   });
 
-  it('should begin title editing on title text click', () => {
-    fixture.whenStable().then(() => {
-      component.onTitleTextClick();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
-  });
-
-  it('should end title editing on title input blur', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
-  });
-
-  it('should end title editing on title input enter keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
-  });
-
-  it('should not end title editing on title input enter keydown when title is blank', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.taskListFormModel.name = '';
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
-  });
-
-  it('should end title editing on title input escape keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputEscapeKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
-  });
-
   it('should undo changes in title on title input escape keydown', () => {
     fixture.whenStable().then(() => {
-      component.taskListFormModel.name = 'New name';
+      component.title = 'New name';
       component.onTitleInputEscapeKeydown();
       fixture.detectChanges();
-      expect(component.taskListFormModel.name).toEqual('Test task list');
-    });
-  });
-
-  it('should hide title text element on click', () => {
-    const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
-    let titleSpan = fixture.debugElement.query(spanSelector);
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      titleSpan = fixture.debugElement.query(spanSelector);
-      expect(titleSpan).toBeFalsy();
-    });
-  });
-
-  it('should show title form on title text element click', () => {
-    const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title .title-text'));
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
-      expect(titleForm).toBeTruthy();
+      expect(component.title).toEqual(taskList.name);
     });
   });
 
   it('should save task list on title input blur', () => {
     fixture.whenStable().then(() => {
-      component.taskListFormModel.name = 'New name';
+      component.title = 'New name';
       component.onTitleInputBlur();
       fixture.detectChanges();
       expect(taskListService.updateTaskList).toHaveBeenCalled();
@@ -180,7 +114,7 @@ describe('TaskListTasksComponent', () => {
 
   it('should not save task list with blank name', () => {
     fixture.whenStable().then(() => {
-      component.taskListFormModel.name = ' ';
+      component.title = ' ';
       component.onTitleInputBlur();
       fixture.detectChanges();
       expect(taskListService.updateTaskList).not.toHaveBeenCalled();
@@ -198,7 +132,7 @@ describe('TaskListTasksComponent', () => {
 
   it('should navigate to "tasks-for-today" on task list delete', () => {
     component.onDeleteTaskListButtonClick();
-    httpMock.expectOne(`${taskListService.baseUrl}/${component.taskListFormModel.id}`).flush(null);
+    httpMock.expectOne(`${taskListService.baseUrl}/${taskList.id}`).flush(null);
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
   });
 });

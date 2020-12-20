@@ -1,6 +1,5 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -8,43 +7,34 @@ import {takeUntil} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {TranslateService} from '@ngx-translate/core';
-
-import {WebServiceBasedComponent} from '../web-service-based.component';
+import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {TaskGroup} from '../../model/task-group';
-import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
+import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
-import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-task-group-tasks',
-  templateUrl: './task-group-tasks.component.html',
-  styleUrls: ['./task-group-tasks.component.styl']
+  templateUrl: '../fragment/base-tasks/base-tasks.component.html',
+  styleUrls: ['../fragment/base-tasks/base-tasks.component.styl']
 })
-export class TaskGroupTasksComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
-  title: string;
-  formModel = new Task();
-  tasks: Array<Task>;
-
-  @ViewChild('taskForm')
-  taskForm: NgForm;
-
+export class TaskGroupTasksComponent extends BaseTasksComponent implements OnInit, OnDestroy {
   private taskGroup: TaskGroup;
-  private pageRequest = new PageRequest();
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(translate: TranslateService,
-              router: Router,
+  constructor(router: Router,
+              private route: ActivatedRoute,
+              translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
-              private route: ActivatedRoute,
-              private taskGroupService: TaskGroupService,
-              private taskService: TaskService) {
-    super(translate, router, authenticationService, log);
+              taskService: TaskService,
+              private taskGroupService: TaskGroupService) {
+    super(router, translate, authenticationService, log, taskService);
+    this.taskFormEnabled = true;
+    this.titleReadonly = true;
   }
 
   private static getTitle(taskGroup: TaskGroup): string {
@@ -97,14 +87,15 @@ export class TaskGroupTasksComponent extends WebServiceBasedComponent implements
     this.componentDestroyed.complete();
   }
 
-  onTaskFormSubmit() {
-    this.createTask();
-  }
-
   onTaskListScroll() {
     this.pageRequest.page++;
     this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest)
       .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+  }
+
+  protected beforeTaskCreate(task: Task) {
+    task.deadline = TaskGroupTasksComponent.getDeadlineDate(this.taskGroup);
+    task.status = TaskGroupTasksComponent.getTaskStatus(this.taskGroup);
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
@@ -124,18 +115,5 @@ export class TaskGroupTasksComponent extends WebServiceBasedComponent implements
       this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
-  }
-
-  private createTask() {
-    if (!Strings.isBlank(this.formModel.title)) {
-      this.formModel.deadline = TaskGroupTasksComponent.getDeadlineDate(this.taskGroup);
-      this.formModel.status = TaskGroupTasksComponent.getTaskStatus(this.taskGroup);
-
-      this.taskService.createTask(this.formModel).subscribe(task => {
-        this.tasks.push(task);
-        this.taskForm.resetForm();
-        this.taskService.updateTaskCounters();
-      }, this.onServiceCallError.bind(this));
-    }
   }
 }

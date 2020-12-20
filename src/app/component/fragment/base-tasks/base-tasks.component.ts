@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
@@ -23,10 +23,10 @@ export class MenuItem {
   templateUrl: './base-tasks.component.html',
   styleUrls: ['./base-tasks.component.styl']
 })
-export class BaseTasksComponent extends WebServiceBasedComponent implements OnInit {
+export class BaseTasksComponent extends WebServiceBasedComponent {
   title = '';
-  titleMaxLength = 50;
-  titlePlaceholder = '';
+  titleMaxLength = 255;
+  titlePlaceholder = 'title';
   titleEditing = false;
   taskListMenuItems: MenuItem[] = [];
   taskFormEnabled = false;
@@ -38,22 +38,21 @@ export class BaseTasksComponent extends WebServiceBasedComponent implements OnIn
   @ViewChild('taskForm')
   taskForm: NgForm;
 
+  protected titleReadonly = false;
   protected pageRequest = new PageRequest();
 
   constructor(router: Router,
               translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
-              private taskService: TaskService) {
+              protected taskService: TaskService) {
     super(translate, router, authenticationService, log);
   }
 
-  ngOnInit(): void {
-    this.titlePlaceholder = this.translate.instant('title');
-  }
-
   onTitleTextClick() {
-    this.beginTitleEditing();
+    if (!this.titleReadonly) {
+      this.beginTitleEditing();
+    }
   }
 
   onTitleInputBlur() {
@@ -84,14 +83,14 @@ export class BaseTasksComponent extends WebServiceBasedComponent implements OnIn
     }, 300);
   }
 
-  protected getTaskListMenuItems(): MenuItem[] {
-    return [];
-  }
-
   protected onTitleEditingBegin() {
   }
 
   protected onTitleEditingEnd() {
+  }
+
+  protected beforeTaskCreate(task: Task) {
+    task.status = TaskStatus.PROCESSED;
   }
 
   private beginTitleEditing() {
@@ -107,7 +106,7 @@ export class BaseTasksComponent extends WebServiceBasedComponent implements OnIn
 
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
-      this.taskFormModel.status = TaskStatus.PROCESSED;
+      this.beforeTaskCreate(this.taskFormModel);
       this.taskService.createTask(this.taskFormModel).subscribe(task => {
         this.tasks.push(task);
         this.taskForm.resetForm();

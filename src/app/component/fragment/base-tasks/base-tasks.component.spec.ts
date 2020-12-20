@@ -1,6 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
+import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
@@ -46,6 +47,7 @@ describe('BaseTasksComponent', () => {
     fixture = TestBed.createComponent(BaseTasksComponent);
 
     taskService = fixture.debugElement.injector.get(TaskService);
+    spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
     spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
     spyOn(taskService, 'updateTaskCounters').and.stub();
 
@@ -68,11 +70,106 @@ describe('BaseTasksComponent', () => {
 
     component = fixture.componentInstance;
     component.tasks = tasks;
+    component.taskFormEnabled = true;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should begin title editing on title text click', () => {
+    fixture.whenStable().then(() => {
+      component.onTitleTextClick();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeTruthy();
+    });
+  });
+
+  it('should end title editing on title input blur', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
+  it('should end title editing on title input enter keydown', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.title = 'New title';
+      component.onTitleInputEnterKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
+  it('should not end title editing on title input enter keydown when title is blank', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.title = ' ';
+      component.onTitleInputEnterKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeTruthy();
+    });
+  });
+
+  it('should end title editing on title input escape keydown', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.onTitleInputEscapeKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
+  it('should hide title text element on click', () => {
+    const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
+    let titleSpan = fixture.debugElement.query(spanSelector);
+    fixture.whenStable().then(() => {
+      titleSpan.nativeElement.click();
+      fixture.detectChanges();
+      titleSpan = fixture.debugElement.query(spanSelector);
+      expect(titleSpan).toBeFalsy();
+    });
+  });
+
+  it('should show title form on title text element click', () => {
+    const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title .title-text'));
+    fixture.whenStable().then(() => {
+      titleSpan.nativeElement.click();
+      fixture.detectChanges();
+      const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
+      expect(titleForm).toBeTruthy();
+    });
+  });
+
+  it('should create task', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New task';
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(taskService.createTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should not create task with blank title', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = ' ';
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(taskService.createTask).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should update task counters on task create', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New task';
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(taskService.updateTaskCounters).toHaveBeenCalled();
+    });
   });
 
   it('should complete task', fakeAsync(() => {

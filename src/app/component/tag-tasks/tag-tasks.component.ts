@@ -1,49 +1,47 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
-import {Subject} from 'rxjs';
-import {flatMap, map, takeUntil} from 'rxjs/operators';
+import {flatMap, map} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
+import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
-import {WebServiceBasedComponent} from '../web-service-based.component';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
+import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
-import {PageRequest} from '../../service/page-request';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
-import {Task} from '../../model/task';
 import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-tag-tasks',
-  templateUrl: './tag-tasks.component.html',
-  styleUrls: ['./tag-tasks.component.styl']
+  templateUrl: '../fragment/base-tasks/base-tasks.component.html',
+  styleUrls: ['../fragment/base-tasks/base-tasks.component.styl']
 })
-export class TagTasksComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
-  titleEditing = false;
-  tagFormModel: Tag;
-  tasks: Array<Task>;
-
-  @ViewChild('title')
-  titleElement: ElementRef;
+export class TagTasksComponent extends BaseTasksComponent implements OnInit {
+  tagFormModel = new Tag();
 
   private tag: Tag;
-  private pageRequest = new PageRequest();
-  private componentDestroyed = new Subject<boolean>();
 
-  constructor(translate: TranslateService,
-              router: Router,
+  constructor(router: Router,
+              private route: ActivatedRoute,
+              translate: TranslateService,
               authenticationService: AuthenticationService,
               log: LogService,
-              private route: ActivatedRoute,
+              taskService: TaskService,
               private tagService: TagService,
               private dialog: MatDialog) {
-    super(translate, router, authenticationService, log);
+    super(router, translate, authenticationService, log, taskService);
+    this.titlePlaceholder = 'tag_name';
+    this.titleMaxLength = 50;
+    this.taskListMenuItems = [
+      new MenuItem('change_color', this.onChangeColorButtonClick.bind(this)),
+      new MenuItem('delete', this.onDeleteTagButtonClick.bind(this))
+    ];
   }
 
   ngOnInit() {
@@ -51,34 +49,17 @@ export class TagTasksComponent extends WebServiceBasedComponent implements OnIni
       map(params => +params.id),
       flatMap(tagId => this.tagService.getTag(tagId)),
       flatMap(tag => {
-        this.setTagModel(tag);
+        this.setTag(tag);
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.onTasksLoad(tasks), this.onServiceCallError.bind(this));
-    this.tagService.getDeletedTag()
-      .pipe(takeUntil(this.componentDestroyed))
-      .subscribe(tag => {
-        if (this.tag && this.tag.id === tag.id) {
-          this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
-        }
-      });
+    ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
   }
 
-  ngOnDestroy(): void {
-    this.componentDestroyed.next(true);
-    this.componentDestroyed.complete();
-  }
-
-  onTitleTextClick() {
-    this.beginTitleEditing();
-  }
-
-  onTitleInputBlur() {
-    this.endTitleEditing();
-  }
-
-  onTitleInputEnterKeydown() {
-    this.endTitleEditing();
+  onTitleInputEscapeKeydown() {
+    if (this.tag) {
+      this.title = this.tag.name;
+    }
+    super.onTitleInputEscapeKeydown();
   }
 
   onTaskListScroll() {
@@ -119,37 +100,29 @@ export class TagTasksComponent extends WebServiceBasedComponent implements OnIni
     });
   }
 
-  private setTagModel(tag: Tag) {
-    this.tagFormModel = tag;
-    this.tag = tag.clone();
+  protected onTitleEditingEnd() {
+    if (!Strings.isBlank(this.title)) {
+      this.tagFormModel.name = this.title;
+      this.saveTag();
+    }
   }
 
-  private onTasksLoad(tasks: Task[]) {
-    this.tasks = tasks;
+  private setTag(tag: Tag) {
+    this.tag = tag;
+    this.tagFormModel = tag.clone();
+    this.title = tag.name;
   }
 
   private saveTag() {
-    if (Strings.isBlank(this.tagFormModel.name)) {
-      this.tagFormModel.name = this.tag.name;
-    }
-
     if (!this.tagFormModel.equals(this.tag)) {
       this.tagService.updateTag(this.tagFormModel)
-        .subscribe(savedTag => this.setTagModel(savedTag), this.onServiceCallError.bind(this));
+        .subscribe(savedTag => this.setTag(savedTag), this.onServiceCallError.bind(this));
     }
   }
 
   private deleteTag() {
-    this.tagService.deleteTag(this.tagFormModel).subscribe(_ => {}, this.onServiceCallError.bind(this));
-  }
-
-  private beginTitleEditing() {
-    this.titleEditing = true;
-    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
-  }
-
-  private endTitleEditing() {
-    this.saveTag();
-    this.titleEditing = false;
+    this.tagService.deleteTag(this.tagFormModel).subscribe(_ => {
+      this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+    }, this.onServiceCallError.bind(this));
   }
 }

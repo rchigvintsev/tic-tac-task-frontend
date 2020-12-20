@@ -55,7 +55,6 @@ describe('TaskGroupTasksComponent', () => {
 
       spyOn(taskService, 'getTasksByGroup').and.returnValue(of([]));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
-      spyOn(taskService, 'updateTaskCounters').and.stub();
 
       taskGroupService = injector.get(TaskGroupService);
       fixture.detectChanges();
@@ -65,14 +64,16 @@ describe('TaskGroupTasksComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should create task', () => {
+    it('should create unscheduled unprocessed task when "INBOX" group is selected', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
-      const taskTitle = 'New task';
+      const taskTitle = 'To be processed';
       fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
+        component.taskFormModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
-        expect(taskService.createTask).toHaveBeenCalled();
+
+        expect(component.tasks[0].deadline).toBeUndefined();
+        expect(component.tasks[0].status).toEqual(TaskStatus.UNPROCESSED);
       });
     });
 
@@ -80,7 +81,7 @@ describe('TaskGroupTasksComponent', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
       const taskTitle = 'For today';
       fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
+        component.taskFormModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
 
@@ -95,7 +96,7 @@ describe('TaskGroupTasksComponent', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
       const taskTitle = 'For today';
       fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
+        component.taskFormModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
 
@@ -110,7 +111,7 @@ describe('TaskGroupTasksComponent', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
       const taskTitle = 'For tomorrow';
       fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
+        component.taskFormModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
 
@@ -125,7 +126,7 @@ describe('TaskGroupTasksComponent', () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
       const taskTitle = 'For some day';
       fixture.whenStable().then(() => {
-        component.formModel.title = taskTitle;
+        component.taskFormModel.title = taskTitle;
         component.onTaskFormSubmit();
         fixture.detectChanges();
 
@@ -134,46 +135,32 @@ describe('TaskGroupTasksComponent', () => {
       });
     });
 
-    it('should not create task with blank title', () => {
-      fixture.whenStable().then(() => {
-        component.formModel.title = ' ';
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-        expect(taskService.createTask).not.toHaveBeenCalled();
-      });
-    });
-
-    it('should update task counters on task create', () => {
-      fixture.whenStable().then(() => {
-        component.formModel.title = 'New task';
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
-        expect(taskService.updateTaskCounters).toHaveBeenCalled();
-      });
-    });
-
     it('should render correct task list title depending on selected task group', () => {
       const compiled = fixture.debugElement.nativeElement;
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
       fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('inbox');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent).toBe('inbox');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
       fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_today');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+        .toBe('scheduled_for_today');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
       fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_tomorrow');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+        .toBe('scheduled_for_tomorrow');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
       fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_week');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+        .toBe('scheduled_for_week');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
       fixture.detectChanges();
-      expect(compiled.querySelector('mat-card > mat-card-title').textContent).toBe('scheduled_for_some_day');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+        .toBe('scheduled_for_some_day');
     });
 
     it('should load next task page on task list scroll', () => {
