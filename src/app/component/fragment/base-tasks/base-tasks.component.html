@@ -20,7 +20,10 @@
         </mat-form-field>
       </form>
 
-      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ title | translate }}</span>
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()" [style.cursor]="titleReadonly ? 'default' : 'auto'"
+            class="title-text" >
+        {{ title | translate }}
+      </span>
     </div>
 
     <div *ngIf="taskListMenuItems.length > 0" class="card-header-menu">

@@ -25,6 +25,7 @@ export class MenuItem {
 })
 export class BaseTasksComponent extends WebServiceBasedComponent {
   title = '';
+  titleReadonly = false;
   titleMaxLength = 255;
   titlePlaceholder = 'title';
   titleEditing = false;
@@ -38,7 +39,6 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
   @ViewChild('taskForm')
   taskForm: NgForm;
 
-  protected titleReadonly = false;
   protected pageRequest = new PageRequest();
 
   constructor(router: Router,
