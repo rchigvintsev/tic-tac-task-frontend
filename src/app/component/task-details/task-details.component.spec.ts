@@ -26,6 +26,7 @@ describe('TaskDetailsComponent', () => {
   let tagService: TagService;
   let updatedTagSource: Subject<Tag>;
   let deletedTagSource: Subject<Tag>;
+  let task: Task;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -44,8 +45,7 @@ describe('TaskDetailsComponent', () => {
     fixture = TestBed.createComponent(TaskDetailsComponent);
     const injector = getTestBed();
 
-    taskService = injector.get(TaskService);
-    const task = new Task().deserialize({
+    task = new Task().deserialize({
       id: 1,
       title: 'Test task',
       description: 'Test description',
@@ -54,6 +54,7 @@ describe('TaskDetailsComponent', () => {
       deadlineTimeExplicitlySet: true
     });
 
+    taskService = injector.get(TaskService);
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
@@ -81,7 +82,7 @@ describe('TaskDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should begin title editing on title span click', () => {
+  it('should begin title editing on title text click', () => {
     fixture.whenStable().then(() => {
       component.onTitleTextClick();
       fixture.detectChanges();
@@ -104,6 +105,34 @@ describe('TaskDetailsComponent', () => {
       component.onTitleInputEnterKeydown();
       fixture.detectChanges();
       expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
+  it('should not end title editing on title input enter keydown when title is blank', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.taskFormModel.title = ' ';
+      component.onTitleInputEnterKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeTruthy();
+    });
+  });
+
+  it('should end title editing on title input escape keydown', () => {
+    fixture.whenStable().then(() => {
+      component.titleEditing = true;
+      component.onTitleInputEscapeKeydown();
+      fixture.detectChanges();
+      expect(component.titleEditing).toBeFalsy();
+    });
+  });
+
+  it('should undo changes in title on title input escape keydown', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = 'New title';
+      component.onTitleInputEscapeKeydown();
+      fixture.detectChanges();
+      expect(component.taskFormModel.title).toEqual(task.title);
     });
   });
 

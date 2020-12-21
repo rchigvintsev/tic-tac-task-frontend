@@ -114,6 +114,13 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   onTitleInputEnterKeydown() {
+    if (!Strings.isBlank(this.taskFormModel.title)) {
+      this.endTitleEditing();
+    }
+  }
+
+  onTitleInputEscapeKeydown() {
+    this.taskFormModel.title = this.task.title;
     this.endTitleEditing();
   }
 

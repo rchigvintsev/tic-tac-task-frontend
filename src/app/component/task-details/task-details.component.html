@@ -16,6 +16,7 @@
                    [(ngModel)]="taskFormModel.title"
                    (blur)="onTitleInputBlur()"
                    (keydown.enter)="onTitleInputEnterKeydown()"
+                   (keydown.escape)="onTitleInputEscapeKeydown()"
                    placeholder="{{ 'title' | translate }}"
                    maxlength="255"
                    required
