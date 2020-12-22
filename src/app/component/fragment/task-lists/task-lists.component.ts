@@ -22,7 +22,6 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
   taskListForm: NgForm;
   taskListFormModel = new TaskList();
   taskListFormSubmitEnabled = false;
-
   taskLists: TaskList[];
 
   private pathMatcher: PathMatcher;
@@ -55,16 +54,16 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
   }
 
   onTaskListFormSubmit() {
-    this.createTaskList(this.taskListFormModel);
+    this.createTaskList();
   }
 
   private onNavigationEnd(e: NavigationEnd) {
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(e.url));
   }
 
-  private createTaskList(taskList: TaskList) {
-    if (!Strings.isBlank(taskList.name)) {
-      this.taskListService.createTaskList(taskList).subscribe(createdTaskList => {
+  private createTaskList() {
+    if (!Strings.isBlank(this.taskListFormModel.name)) {
+      this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
         this.taskLists.unshift(createdTaskList);
         this.taskListForm.resetForm();
       }, this.onServiceCallError.bind(this));

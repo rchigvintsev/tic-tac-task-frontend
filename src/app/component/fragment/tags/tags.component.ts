@@ -1,5 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -12,6 +13,7 @@ import {AuthenticationService} from '../../../service/authentication.service';
 import {LogService} from '../../../service/log.service';
 import {WebServiceBasedComponent} from '../../web-service-based.component';
 import {PathMatcher} from '../../../util/path-matcher';
+import {Strings} from '../../../util/strings';
 
 @Component({
   selector: 'app-tags',
@@ -19,6 +21,10 @@ import {PathMatcher} from '../../../util/path-matcher';
   styleUrls: ['./tags.component.styl']
 })
 export class TagsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
+  @ViewChild('tagForm')
+  tagForm: NgForm;
+  tagFormModel = new Tag();
+  tagFormSubmitEnabled = false;
   tags: Tag[];
 
   private pathMatcher: PathMatcher;
@@ -54,8 +60,24 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
     return this.pathMatcher && this.pathMatcher.matches(path);
   }
 
+  onTagFormModelNameChange() {
+    this.tagFormSubmitEnabled = !Strings.isBlank(this.tagFormModel.name);
+  }
+
+  onTagFormSubmit() {
+    this.createTag();
+  }
+
   private onNavigationEnd(e: NavigationEnd) {
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(e.url));
+  }
+
+  private createTag() {
+    if (!Strings.isBlank(this.tagFormModel.name)) {
+      this.tagService.createTag(this.tagFormModel).subscribe(_ => {
+        this.tagForm.resetForm();
+      }, this.onServiceCallError.bind(this));
+    }
   }
 
   private onTagCreate(tag: Tag) {

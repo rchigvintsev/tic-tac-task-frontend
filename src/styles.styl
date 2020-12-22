@@ -101,12 +101,41 @@ body {
 
   mat-nav-list mat-list mat-accordion {
     mat-expansion-panel {
+      form {
+        display: flex;
+        flex-direction: row;
+
+        mat-form-field {
+          width: 100%;
+        }
+
+        button {
+          margin-right: 8px !important;
+        }
+      }
+
       .mat-expansion-panel-content > .mat-expansion-panel-body {
         padding-right: 0 !important;
       }
 
-      mat-list mat-list-item .mat-list-item-content {
-        padding-right: 8px !important;
+      mat-list mat-list-item {
+        .mat-list-item-content {
+          padding-right: 8px !important;
+        }
+
+        .list-row {
+          .name-column {
+            display: flex;
+            align-items: center;
+
+            span {
+              width: 197px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
       }
     }
   }

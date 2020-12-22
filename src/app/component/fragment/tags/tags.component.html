@@ -1,3 +1,21 @@
+<form #tagForm="ngForm" class="tag-form" (ngSubmit)="onTagFormSubmit()">
+  <mat-form-field>
+    <label>
+      <input matInput
+             name="name"
+             type="text"
+             maxlength="50"
+             placeholder="{{ 'new_tag' | translate }}"
+             [(ngModel)]="tagFormModel.name"
+             (ngModelChange)="onTagFormModelNameChange()"/>
+    </label>
+  </mat-form-field>
+
+  <button mat-mini-fab color="primary" type="submit" [disabled]="!tagFormSubmitEnabled">
+    <mat-icon>done</mat-icon>
+  </button>
+</form>
+
 <mat-list id="tag_list">
   <mat-list-item *ngFor="let tag of tags"
                  [routerLink]="[translate.currentLang, 'tag', tag.id]"

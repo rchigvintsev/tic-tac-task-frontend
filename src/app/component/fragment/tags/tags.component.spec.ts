@@ -69,4 +69,37 @@ describe('TagsComponent', () => {
       expect(component.tags[3]).toEqual(newTag);
     });
   });
+
+  it('should enable tag form submit button when tag name is not blank', () => {
+    component.tagFormModel.name = 'New tag';
+    component.onTagFormModelNameChange();
+    expect(component.tagFormSubmitEnabled).toBeTruthy();
+  });
+
+  it('should disable tag form submit button when tag name is blank', () => {
+    component.tagFormModel.name = ' ';
+    component.onTagFormModelNameChange();
+    expect(component.tagFormSubmitEnabled).toBeFalsy();
+  });
+
+  it('should create tag', () => {
+    const tagName = 'New tag';
+    fixture.whenStable().then(() => {
+      component.tagFormModel.name = tagName;
+      component.onTagFormSubmit();
+      fixture.detectChanges();
+      expect(tagService.createTag).toHaveBeenCalled();
+      expect(component.tags.length).toBe(4);
+      expect(component.tags[3].name).toEqual(tagName);
+    });
+  });
+
+  it('should not create tag with blank name', () => {
+    fixture.whenStable().then(() => {
+      component.tagFormModel.name = ' ';
+      component.onTagFormSubmit();
+      fixture.detectChanges();
+      expect(tagService.createTag).not.toHaveBeenCalled();
+    });
+  });
 });

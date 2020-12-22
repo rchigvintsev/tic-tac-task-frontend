@@ -2,7 +2,6 @@
   "task": "Task",
   "tasks": "Tasks",
   "new_task": "New task",
-  "new_task_list": "New list",
   "title": "Title",
   "name": "Name",
   "description": "Description",
@@ -39,8 +38,10 @@
   "today": "Today",
   "tomorrow": "Tomorrow",
   "tags": "Tags",
+  "new_tag": "New tag",
   "tag_name": "Tag name",
   "tag_color": "Tag color",
   "task_lists": "Task lists",
+  "new_task_list": "New list",
   "task_list_name": "Task list name"
 }

@@ -140,26 +140,27 @@ describe('TaskGroupTasksComponent', () => {
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
       fixture.detectChanges();
-      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent).toBe('inbox');
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent.trim())
+        .toBe('inbox');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
       fixture.detectChanges();
-      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent.trim())
         .toBe('scheduled_for_today');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
       fixture.detectChanges();
-      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent.trim())
         .toBe('scheduled_for_tomorrow');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
       fixture.detectChanges();
-      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent.trim())
         .toBe('scheduled_for_week');
 
       taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
       fixture.detectChanges();
-      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent)
+      expect(compiled.querySelector('.mat-card-header > .mat-card-title > .title-text').textContent.trim())
         .toBe('scheduled_for_some_day');
     });
 
