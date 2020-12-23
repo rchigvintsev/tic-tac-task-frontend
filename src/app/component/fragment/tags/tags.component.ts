@@ -43,7 +43,15 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
     this.tagService.getCreatedTag()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(tag => this.onTagCreate(tag));
+    this.tagService.getUpdatedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => this.onTagUpdate(tag));
+    this.tagService.getDeletedTag()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(tag => this.onTagDelete(tag));
+
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
+
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         this.onNavigationEnd(event);
@@ -82,5 +90,19 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
 
   private onTagCreate(tag: Tag) {
     return this.tags.push(tag);
+  }
+
+  private onTagUpdate(updatedTag: Tag) {
+    const tagIndex = this.tags.findIndex(tag => tag.id === updatedTag.id);
+    if (tagIndex >= 0) {
+      this.tags[tagIndex] = updatedTag;
+    }
+  }
+
+  private onTagDelete(deletedTag: Tag) {
+    const tagIndex = this.tags.findIndex(tag => tag.id === deletedTag.id);
+    if (tagIndex >= 0) {
+      this.tags.splice(tagIndex, 1);
+    }
   }
 }

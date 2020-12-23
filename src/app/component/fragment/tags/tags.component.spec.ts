@@ -15,6 +15,8 @@ describe('TagsComponent', () => {
   let fixture: ComponentFixture<TagsComponent>;
   let tagService: TagService;
   let createdTagSource: Subject<Tag>;
+  let updatedTagSource: Subject<Tag>;
+  let deletedTagSource: Subject<Tag>;
   let routerEvents: Subject<RouterEvent>;
 
   beforeEach(async(() => {
@@ -38,6 +40,10 @@ describe('TagsComponent', () => {
 
     createdTagSource = new Subject<Tag>();
     spyOn(tagService, 'getCreatedTag').and.returnValue(createdTagSource.asObservable());
+    updatedTagSource = new Subject<Tag>();
+    spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
+    deletedTagSource = new Subject<Tag>();
+    spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
     routerEvents = new Subject();
     const router = injector.get(Router);
@@ -67,6 +73,24 @@ describe('TagsComponent', () => {
       fixture.detectChanges();
       expect(component.tags.length).toBe(4);
       expect(component.tags[3]).toEqual(newTag);
+    });
+  });
+
+  it('should update tag list on tag update', () => {
+    fixture.whenStable().then(() => {
+      const updatedTag = new Tag().deserialize({id: 1, name: 'Updated tag'});
+      updatedTagSource.next(updatedTag);
+      fixture.detectChanges();
+      expect(component.tags[0].name).toEqual(updatedTag.name);
+    });
+  });
+
+  it('should update tag list on tag delete', () => {
+    fixture.whenStable().then(() => {
+      const deletedTag = new Tag().deserialize({id: 1});
+      deletedTagSource.next(deletedTag);
+      fixture.detectChanges();
+      expect(component.tags.length).toBe(2);
     });
   });
 
