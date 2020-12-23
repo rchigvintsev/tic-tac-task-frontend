@@ -25,7 +25,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
   tagForm: NgForm;
   tagFormModel = new Tag();
   tagFormSubmitEnabled = false;
-  tags: Tag[];
+  tags: Tag[] = [];
 
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();

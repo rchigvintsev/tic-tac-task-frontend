@@ -14,6 +14,8 @@ describe('TaskListsComponent', () => {
   let component: TaskListsComponent;
   let fixture: ComponentFixture<TaskListsComponent>;
   let taskListService: TaskListService;
+  let updatedTaskListSource: Subject<TaskList>;
+  let deletedTaskListSource: Subject<TaskList>;
   let routerEvents: Subject<RouterEvent>;
 
   beforeEach(async(() => {
@@ -42,6 +44,11 @@ describe('TaskListsComponent', () => {
       return of(result);
     });
 
+    updatedTaskListSource = new Subject<TaskList>();
+    spyOn(taskListService, 'getUpdatedTaskList').and.returnValue(updatedTaskListSource.asObservable());
+    deletedTaskListSource = new Subject<TaskList>();
+    spyOn(taskListService, 'getDeletedTaskList').and.returnValue(deletedTaskListSource.asObservable());
+
     routerEvents = new Subject();
     const router = injector.get(Router);
     (router as any).events = routerEvents.asObservable();
@@ -60,6 +67,24 @@ describe('TaskListsComponent', () => {
       fixture.detectChanges();
       const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected.task-list-1'));
       expect(selectedItem).toBeTruthy();
+    });
+  });
+
+  it('should update list of task lists on task list update', () => {
+    fixture.whenStable().then(() => {
+      const updatedTaskList = new TaskList().deserialize({id: 1, name: 'Updated task list'});
+      updatedTaskListSource.next(updatedTaskList);
+      fixture.detectChanges();
+      expect(component.taskLists[0].name).toEqual(updatedTaskList.name);
+    });
+  });
+
+  it('should update list of task lists on task list delete', () => {
+    fixture.whenStable().then(() => {
+      const deletedTaskList = new TaskList().deserialize({id: 1});
+      deletedTaskListSource.next(deletedTaskList);
+      fixture.detectChanges();
+      expect(component.taskLists.length).toBe(2);
     });
   });
 
@@ -83,7 +108,7 @@ describe('TaskListsComponent', () => {
       fixture.detectChanges();
       expect(taskListService.createTaskList).toHaveBeenCalled();
       expect(component.taskLists.length).toBe(4);
-      expect(component.taskLists[0].name).toEqual(taskListName);
+      expect(component.taskLists[3].name).toEqual(taskListName);
     });
   });
 

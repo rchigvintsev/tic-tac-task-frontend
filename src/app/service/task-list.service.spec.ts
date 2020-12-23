@@ -68,6 +68,20 @@ describe('TaskListService', () => {
     request.flush(testTaskList);
   });
 
+  it('should notify about created task list', done => {
+    const testTaskList = new TaskList().deserialize({name: 'Test task list'});
+    taskListService.getCreatedTaskList().subscribe(taskList => {
+      expect(taskList).toEqual(testTaskList);
+      done();
+    });
+    taskListService.createTaskList(testTaskList).subscribe(() => {});
+    httpMock.expectOne(taskListService.baseUrl).flush(testTaskList.serialize());
+  });
+
+  it('should throw error on task list create when task list is null', () => {
+    expect(() => taskListService.createTaskList(null)).toThrow(new Error('Task list must not be null or undefined'));
+  });
+
   it('should update task list', done => {
     const testTaskList = new TaskList().deserialize({id: 1, name: 'Updated test task list'});
 
@@ -81,6 +95,16 @@ describe('TaskListService', () => {
     request.flush(testTaskList);
   });
 
+  it('should notify about updated task list', done => {
+    const testTaskList = new TaskList().deserialize({id: 1, name: 'Test task list'});
+    taskListService.getUpdatedTaskList().subscribe(taskList => {
+      expect(taskList).toEqual(testTaskList);
+      done();
+    });
+    taskListService.updateTaskList(testTaskList).subscribe(() => {});
+    httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`).flush(testTaskList.serialize());
+  });
+
   it('should throw error on task list update when task list is null', () => {
     expect(() => taskListService.updateTaskList(null)).toThrowError('Task list must not be null or undefined');
   });
@@ -91,6 +115,20 @@ describe('TaskListService', () => {
     const request = httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
+  });
+
+  it('should notify about deleted task list', done => {
+    const testTaskList = new TaskList().deserialize({id: 1});
+    taskListService.getDeletedTaskList().subscribe(taskList => {
+      expect(taskList).toEqual(testTaskList);
+      done();
+    });
+    taskListService.deleteTaskList(testTaskList).subscribe(() => {});
+    httpMock.expectOne(`${taskListService.baseUrl}/${testTaskList.id}`).flush(null);
+  });
+
+  it('should throw error on task list delete when task list is null', () => {
+    expect(() => taskListService.deleteTaskList(null)).toThrow(new Error('Task list must not be null or undefined'));
   });
 
   it('should return tasks for task list', done => {
