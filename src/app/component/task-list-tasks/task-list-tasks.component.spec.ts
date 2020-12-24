@@ -13,9 +13,9 @@ import {ConfigService} from '../../service/config.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {PageRequest} from '../../service/page-request';
-import {TaskList} from '../../model/task-list';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
+import {TaskList} from '../../model/task-list';
 import any = jasmine.any;
 
 const CURRENT_LANG = 'en';
@@ -75,7 +75,7 @@ describe('TaskListTasksComponent', () => {
     spyOn(taskListService, 'updateTaskList').and.callFake(t => of(t));
 
     taskService = injector.get(TaskService);
-    spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
+    spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));
 
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
@@ -134,5 +134,17 @@ describe('TaskListTasksComponent', () => {
     component.onDeleteTaskListButtonClick();
     httpMock.expectOne(`${taskListService.baseUrl}/${taskList.id}`).flush(null);
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+  });
+
+  it('should put new task on current task list', () => {
+    const taskTitle = 'New task';
+    fixture.whenStable().then(() => {
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
+      expect(component.tasks.length).toBe(3);
+      expect(component.tasks[2].title).toBe(taskTitle);
+      expect(component.tasks[2].taskListId).toBe(taskList.id);
+    });
   });
 });

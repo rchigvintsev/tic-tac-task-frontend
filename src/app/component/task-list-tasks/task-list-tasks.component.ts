@@ -15,6 +15,7 @@ import {TaskListService} from '../../service/task-list.service';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {Strings} from '../../util/strings';
+import {Task} from 'src/app/model/task';
 
 @Component({
   selector: 'app-task-list-tasks',
@@ -85,6 +86,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       this.taskList.name = this.title;
       this.saveTaskList();
     }
+  }
+
+  protected beforeTaskCreate(task: Task) {
+    super.beforeTaskCreate(task);
+    task.taskListId = this.taskList.id;
   }
 
   private setTaskList(taskList: TaskList) {

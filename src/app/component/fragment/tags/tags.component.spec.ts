@@ -37,6 +37,11 @@ describe('TagsComponent', () => {
       tags.push(new Tag().deserialize({id: i + 1, name: `Test tag ${i + 1}`}));
     }
     spyOn(tagService, 'getTags').and.returnValue(of(tags));
+    spyOn(tagService, 'createTag').and.callFake(tag => {
+      const createdTag = tag.clone();
+      createdTagSource.next(createdTag);
+      return of(createdTag);
+    });
 
     createdTagSource = new Subject<Tag>();
     spyOn(tagService, 'getCreatedTag').and.returnValue(createdTagSource.asObservable());
