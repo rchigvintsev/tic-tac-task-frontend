@@ -141,6 +141,7 @@
       <mat-form-field>
         <mat-label>{{ 'task_list' | translate }}</mat-label>
         <mat-select [(ngModel)]="taskFormModel.taskListId" name="taskList" (selectionChange)="onTaskListSelect()">
+          <mat-option>-</mat-option>
           <mat-option *ngFor="let taskList of taskLists" [value]="taskList.id">
             {{ taskList.name }}
           </mat-option>
