@@ -42,6 +42,7 @@
   "tag_name": "Tag name",
   "tag_color": "Tag color",
   "task_lists": "Task lists",
+  "task_list": "Task list",
   "new_task_list": "New list",
   "task_list_name": "Task list name"
 }

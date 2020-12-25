@@ -13,6 +13,7 @@ import {Task} from '../../model/task';
 import {Tag} from '../../model/tag';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
+import {TaskListService} from '../../service/task-list.service';
 import {ConfigService} from '../../service/config.service';
 import {LogService} from '../../service/log.service';
 import {TaskGroupService} from '../../service/task-group.service';
@@ -70,6 +71,9 @@ describe('TaskDetailsComponent', () => {
     spyOn(tagService, 'createTag').and.callFake(t => of(t));
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
+
+    const taskListService = injector.get(TaskListService);
+    spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -408,6 +412,15 @@ describe('TaskDetailsComponent', () => {
       deletedTagSource.next(component.availableTags[0]);
       fixture.detectChanges();
       expect(component.availableTags.length).toEqual(1);
+    });
+  });
+
+  it('should save task on task list select', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.taskListId = 1;
+      component.onTaskListSelect();
+      fixture.detectChanges();
+      expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
 });

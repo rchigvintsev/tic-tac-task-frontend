@@ -137,6 +137,15 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'task_list' | translate }}</mat-label>
+        <mat-select [(ngModel)]="taskFormModel.taskListId" name="taskList" (selectionChange)="onTaskListSelect()">
+          <mat-option *ngFor="let taskList of taskLists" [value]="taskList.id">
+            {{ taskList.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </form>
   </mat-card-content>
 

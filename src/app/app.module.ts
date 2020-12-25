@@ -22,6 +22,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -116,6 +117,7 @@ registerLocaleData(localeRu, 'ru');
     MatChipsModule,
     MatAutocompleteModule,
     MatExpansionModule,
+    MatSelectModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,

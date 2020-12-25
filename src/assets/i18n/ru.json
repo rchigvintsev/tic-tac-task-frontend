@@ -42,6 +42,7 @@
   "tag_name": "Имя метки",
   "tag_color": "Цвет метки",
   "task_lists": "Списки задач",
+  "task_list": "Список задач",
   "new_task_list": "Новый список",
   "task_list_name": "Имя списка задач"
 }

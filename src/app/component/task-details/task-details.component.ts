@@ -15,11 +15,13 @@ import {Observable, Subject} from 'rxjs';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {Task} from '../../model/task';
-import {Tag} from '../../model/tag';
 import {TaskGroup} from '../../model/task-group';
+import {Tag} from '../../model/tag';
+import {TaskList} from '../../model/task-list';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
+import {TaskListService} from '../../service/task-list.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
@@ -51,6 +53,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   tags: Tag[] = [];
   availableTags: Tag[] = [];
   filteredTags: Observable<Tag[]>;
+  taskLists: TaskList[] = [];
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
   private task: Task;
@@ -64,6 +67,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
               private tagService: TagService,
+              private taskListService: TaskListService,
               private dateAdapter: DateAdapter<any>) {
     super(translate, router, authenticationService, log);
   }
@@ -75,7 +79,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
 
-    this.taskService.getTask(taskId).subscribe(task => this.setTaskModel(task), this.onServiceCallError.bind(this));
+    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), this.onServiceCallError.bind(this));
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
 
     this.taskGroupService.getSelectedTaskGroup()
@@ -95,6 +99,9 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
       startWith(null),
       map((tagName: string | null) => tagName ? this.filterTagsByName(tagName) : this.availableTags)
     );
+
+    this.taskListService.getUncompletedTaskLists()
+      .subscribe(taskLists => this.taskLists = taskLists, this.onServiceCallError.bind(this));
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
@@ -171,6 +178,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     this.removeTag(tag);
   }
 
+  onTaskListSelect() {
+    this.saveTask();
+  }
+
   getFirstFieldErrorMessage(...fieldNames: string[]): string {
     for (const fieldName of fieldNames) {
       const control = this.taskDetailsForm.controls[fieldName];
@@ -212,7 +223,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     }
   }
 
-  private setTaskModel(task: Task) {
+  private initTaskModel(task: Task) {
     this.taskFormModel = task;
     this.task = task.clone();
 
@@ -253,7 +264,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     if (!this.taskFormModel.equals(this.task)) {
       this.taskService.updateTask(this.taskFormModel).subscribe(task => {
         this.clearErrors();
-        this.setTaskModel(task);
+        this.initTaskModel(task);
         this.taskService.updateTaskCounters();
       }, response => {
         this.clearErrors();
