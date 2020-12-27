@@ -78,6 +78,13 @@ export class TaskListService {
     );
   }
 
+  completeTaskList(taskList: TaskList): Observable<any> {
+    if (!taskList) {
+      throw new Error('Task list must not be null or undefined');
+    }
+    return this.http.put<any>(`${this.baseUrl}/completed/${taskList.id}`, null, commonHttpOptions);
+  }
+
   deleteTaskList(taskList: TaskList): Observable<any> {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');

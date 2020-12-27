@@ -109,6 +109,19 @@ describe('TaskListService', () => {
     expect(() => taskListService.updateTaskList(null)).toThrowError('Task list must not be null or undefined');
   });
 
+  it('should complete task list', done => {
+    const testTaskList = new TaskList().deserialize({id: 1, title: 'Test task list'});
+    taskListService.completeTaskList(testTaskList).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskListService.baseUrl}/completed/${testTaskList.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(null);
+  });
+
+  it('should throw error on task list complete when task list is null', () => {
+    expect(() => taskListService.completeTaskList(null)).toThrowError('Task list must not be null or undefined');
+  });
+
   it('should delete task list', () => {
     const testTaskList = new TaskList().deserialize({id: 1});
     taskListService.deleteTaskList(testTaskList).subscribe(() => {});

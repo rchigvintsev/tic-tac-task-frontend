@@ -36,7 +36,10 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     super(router, translate, authenticationService, log, taskService);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
-    this.taskListMenuItems = [new MenuItem('delete', this.onDeleteTaskListButtonClick.bind(this))];
+    this.taskListMenuItems = [
+      new MenuItem('complete', this.onCompleteTaskListButtonClick.bind(this)),
+      new MenuItem('delete', this.onDeleteTaskListButtonClick.bind(this))
+    ];
   }
 
   ngOnInit() {
@@ -64,6 +67,21 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       this.taskListService.getTasks(this.taskList.id, this.pageRequest)
         .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
     }
+  }
+
+  onCompleteTaskListButtonClick() {
+    const title = this.translate.instant('attention');
+    const content = this.translate.instant('complete_task_list_question');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      restoreFocus: false,
+      data: {title, content}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.result) {
+        this.completeTaskList();
+      }
+    });
   }
 
   onDeleteTaskListButtonClick() {
@@ -103,9 +121,17 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       .subscribe(updatedTaskList => this.setTaskList(updatedTaskList), this.onServiceCallError.bind(this));
   }
 
+  private completeTaskList() {
+    this.taskListService.completeTaskList(this.taskList)
+      .subscribe(_ => this.navigateToScheduledForTodayTasks(), this.onServiceCallError.bind(this));
+  }
+
   private deleteTaskList() {
-    this.taskListService.deleteTaskList(this.taskList).subscribe(_ => {
-      this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
-    }, this.onServiceCallError.bind(this));
+    this.taskListService.deleteTaskList(this.taskList)
+      .subscribe(_ => this.navigateToScheduledForTodayTasks(), this.onServiceCallError.bind(this));
+  }
+
+  private navigateToScheduledForTodayTasks() {
+    this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
   }
 }

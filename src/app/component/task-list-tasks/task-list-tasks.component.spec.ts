@@ -121,6 +121,21 @@ describe('TaskListTasksComponent', () => {
     });
   });
 
+  it('should complete task list', () => {
+    spyOn(taskListService, 'completeTaskList').and.returnValue(of());
+    fixture.whenStable().then(() => {
+      component.onCompleteTaskListButtonClick();
+      fixture.detectChanges();
+      expect(taskListService.completeTaskList).toHaveBeenCalled();
+    });
+  });
+
+  it('should navigate to "tasks-for-today" on task list complete', () => {
+    component.onCompleteTaskListButtonClick();
+    httpMock.expectOne(`${taskListService.baseUrl}/completed/${taskList.id}`).flush(null);
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+  });
+
   it('should delete task list', () => {
     spyOn(taskListService, 'deleteTaskList').and.returnValue(of());
     fixture.whenStable().then(() => {
