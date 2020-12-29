@@ -15,6 +15,7 @@ describe('TaskListsComponent', () => {
   let fixture: ComponentFixture<TaskListsComponent>;
   let taskListService: TaskListService;
   let updatedTaskListSource: Subject<TaskList>;
+  let completedTaskListSource: Subject<TaskList>;
   let deletedTaskListSource: Subject<TaskList>;
   let routerEvents: Subject<RouterEvent>;
 
@@ -46,6 +47,8 @@ describe('TaskListsComponent', () => {
 
     updatedTaskListSource = new Subject<TaskList>();
     spyOn(taskListService, 'getUpdatedTaskList').and.returnValue(updatedTaskListSource.asObservable());
+    completedTaskListSource = new Subject<TaskList>();
+    spyOn(taskListService, 'getCompletedTaskList').and.returnValue(completedTaskListSource.asObservable());
     deletedTaskListSource = new Subject<TaskList>();
     spyOn(taskListService, 'getDeletedTaskList').and.returnValue(deletedTaskListSource.asObservable());
 
@@ -76,6 +79,15 @@ describe('TaskListsComponent', () => {
       updatedTaskListSource.next(updatedTaskList);
       fixture.detectChanges();
       expect(component.taskLists[0].name).toEqual(updatedTaskList.name);
+    });
+  });
+
+  it('should update list of task lists on task list complete', () => {
+    fixture.whenStable().then(() => {
+      const completedTaskList = new TaskList().deserialize({id: 1, name: 'Completed task list', completed: true});
+      completedTaskListSource.next(completedTaskList);
+      fixture.detectChanges();
+      expect(component.taskLists.length).toBe(2);
     });
   });
 

@@ -44,6 +44,9 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
     this.taskListService.getUpdatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListUpdate(taskList));
+    this.taskListService.getCompletedTaskList()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(taskList => this.onTaskListComplete(taskList));
     this.taskListService.getDeletedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListDelete(taskList));
@@ -94,8 +97,16 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
     }
   }
 
+  private onTaskListComplete(completedTaskList: TaskList) {
+    this.removeTaskList(completedTaskList);
+  }
+
   private onTaskListDelete(deletedTaskList: TaskList) {
-    const index = this.taskLists.findIndex(taskList => taskList.id === deletedTaskList.id);
+    this.removeTaskList(deletedTaskList);
+  }
+
+  private removeTaskList(taskList: TaskList) {
+    const index = this.taskLists.findIndex(e => e.id === taskList.id);
     if (index >= 0) {
       this.taskLists.splice(index, 1);
     }

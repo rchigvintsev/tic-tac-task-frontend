@@ -24,6 +24,9 @@ export class TaskListService {
   private readonly updatedTaskListSource: Subject<TaskList>;
   private readonly updatedTaskList: Observable<TaskList>;
 
+  private readonly completedTaskListSource: Subject<TaskList>;
+  private readonly completedTaskList: Observable<TaskList>;
+
   private readonly deletedTaskListSource: Subject<TaskList>;
   private readonly deletedTaskList: Observable<TaskList>;
 
@@ -35,6 +38,9 @@ export class TaskListService {
 
     this.updatedTaskListSource = new Subject<TaskList>();
     this.updatedTaskList = this.updatedTaskListSource.asObservable();
+
+    this.completedTaskListSource = new Subject<TaskList>();
+    this.completedTaskList = this.completedTaskListSource.asObservable();
 
     this.deletedTaskListSource  = new Subject<TaskList>();
     this.deletedTaskList = this.deletedTaskListSource.asObservable();
@@ -82,7 +88,12 @@ export class TaskListService {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');
     }
-    return this.http.put<any>(`${this.baseUrl}/completed/${taskList.id}`, null, commonHttpOptions);
+    return this.http.put<any>(`${this.baseUrl}/completed/${taskList.id}`, null, commonHttpOptions).pipe(
+      tap(_ => {
+        taskList.completed = true;
+        this.notifyTaskListCompleted(taskList);
+      })
+    );
   }
 
   deleteTaskList(taskList: TaskList): Observable<any> {
@@ -115,6 +126,10 @@ export class TaskListService {
     return this.updatedTaskList;
   }
 
+  getCompletedTaskList(): Observable<TaskList> {
+    return this.completedTaskList;
+  }
+
   getDeletedTaskList(): Observable<TaskList> {
     return this.deletedTaskList;
   }
@@ -125,6 +140,10 @@ export class TaskListService {
 
   private notifyTaskListUpdated(taskList: TaskList) {
     this.updatedTaskListSource.next(taskList);
+  }
+
+  private notifyTaskListCompleted(taskList: TaskList) {
+    this.completedTaskListSource.next(taskList);
   }
 
   private notifyTaskListDeleted(taskList: TaskList) {
