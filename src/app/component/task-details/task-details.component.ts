@@ -5,6 +5,7 @@ import {DateAdapter} from '@angular/material/core';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatDialog} from '@angular/material/dialog';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -14,6 +15,7 @@ import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
+import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
@@ -68,7 +70,8 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
               private taskGroupService: TaskGroupService,
               private tagService: TagService,
               private taskListService: TaskListService,
-              private dateAdapter: DateAdapter<any>) {
+              private dateAdapter: DateAdapter<any>,
+              private dialog: MatDialog) {
     super(translate, router, authenticationService, log);
   }
 
@@ -110,6 +113,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   ngOnDestroy(): void {
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
+  }
+
+  onBackButtonClick() {
+    this.navigateToCurrentTaskGroupPage();
   }
 
   onTitleTextClick() {
@@ -180,6 +187,21 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
   onTaskListSelect() {
     this.saveTask();
+  }
+
+  onDeleteTaskButtonClick() {
+    const title = this.translate.instant('attention');
+    const content = this.translate.instant('delete_task_question');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      restoreFocus: false,
+      data: {title, content}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.result) {
+        this.deleteTask();
+      }
+    });
   }
 
   getFirstFieldErrorMessage(...fieldNames: string[]): string {
@@ -277,6 +299,11 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     }
   }
 
+  private deleteTask() {
+    this.taskService.deleteTask(this.taskFormModel)
+      .subscribe(() => this.navigateToCurrentTaskGroupPage(), this.onServiceCallError.bind(this));
+  }
+
   private handleBadRequestError(response: any) {
     if (response.error && response.error.fieldErrors) {
       for (const fieldName of Object.keys(response.error.fieldErrors)) {
@@ -355,5 +382,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
         this.availableTags.push(tag);
       }, this.onServiceCallError.bind(this));
     }
+  }
+
+  private navigateToCurrentTaskGroupPage() {
+    const taskGroup = this.selectedTaskGroup || TaskGroup.TODAY;
+    this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
   }
 }

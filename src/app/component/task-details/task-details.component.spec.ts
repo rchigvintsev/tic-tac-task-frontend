@@ -1,13 +1,18 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
+import {MatDialog} from '@angular/material';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxChange} from '@angular/material/checkbox';
+import {Router} from '@angular/router';
 
 import {of, Subject, throwError} from 'rxjs';
 import {skip} from 'rxjs/operators';
 
+import {TranslateService} from '@ngx-translate/core';
+
 import * as moment from 'moment';
+
 import {TaskDetailsComponent} from './task-details.component';
 import {Task} from '../../model/task';
 import {Tag} from '../../model/tag';
@@ -20,9 +25,20 @@ import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
 
+const CURRENT_LANG = 'en';
+
+class MatDialogMock {
+  open() {
+    return {
+      afterClosed: () => of({result: true})
+    };
+  }
+}
+
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
   let fixture: ComponentFixture<TaskDetailsComponent>;
+  let router: Router;
   let taskService: TaskService;
   let tagService: TagService;
   let updatedTagSource: Subject<Tag>;
@@ -35,6 +51,7 @@ describe('TaskDetailsComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {provide: MatDialog, useClass: MatDialogMock},
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
         MatDatepickerModule
@@ -46,6 +63,9 @@ describe('TaskDetailsComponent', () => {
     fixture = TestBed.createComponent(TaskDetailsComponent);
     const injector = getTestBed();
 
+    const translateService = injector.get(TranslateService);
+    translateService.currentLang = CURRENT_LANG;
+
     task = new Task().deserialize({
       id: 1,
       title: 'Test task',
@@ -55,10 +75,14 @@ describe('TaskDetailsComponent', () => {
       deadlineTimeExplicitlySet: true
     });
 
+    router = injector.get(Router);
+    router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
+
     taskService = injector.get(TaskService);
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
+    spyOn(taskService, 'deleteTask').and.returnValue(of(true));
     spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
     spyOn(taskService, 'assignTag').and.returnValue(of());
     spyOn(taskService, 'removeTag').and.returnValue(of());
@@ -84,6 +108,11 @@ describe('TaskDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate to current task group on back button click', () => {
+    component.onBackButtonClick();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: component.selectedTaskGroup.value});
   });
 
   it('should begin title editing on title text click', () => {
@@ -177,6 +206,19 @@ describe('TaskDetailsComponent', () => {
       fixture.detectChanges();
       expect(taskService.updateTask).not.toHaveBeenCalled();
     });
+  });
+
+  it('should delete task', () => {
+    fixture.whenStable().then(() => {
+      component.onDeleteTaskButtonClick();
+      fixture.detectChanges();
+      expect(taskService.deleteTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should navigate to current task group page on task delete', () => {
+    component.onDeleteTaskButtonClick();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
   });
 
   it('should save task on description input blur', () => {

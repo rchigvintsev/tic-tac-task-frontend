@@ -277,6 +277,19 @@ describe('TaskService', () => {
     expect(() => taskService.completeTask(null)).toThrowError('Task must not be null or undefined');
   });
 
+  it('should delete task', done => {
+    const testTask = new Task().deserialize({id: 1, title: 'Test task'});
+    taskService.deleteTask(testTask).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+  });
+
+  it('should throw error on task delete when task is null', () => {
+    expect(() => taskService.deleteTask(null)).toThrowError('Task must not be null or undefined');
+  });
+
   it('should return tags for task', done => {
     const taskId = 1;
     const testTags = [];

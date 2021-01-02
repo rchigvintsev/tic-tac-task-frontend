@@ -153,6 +153,13 @@ export class TaskService {
     return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, commonHttpOptions);
   }
 
+  deleteTask(task: Task): Observable<any> {
+    if (!task) {
+      throw new Error('Task must not be null or undefined');
+    }
+    return this.http.delete<any>(`${this.baseUrl}/${task.id}`, commonHttpOptions);
+  }
+
   getTags(taskId: number): Observable<Tag[]> {
     return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, commonHttpOptions).pipe(
       map(response => {

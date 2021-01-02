@@ -1,7 +1,6 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
-import {HttpTestingController} from '@angular/common/http/testing';
 
 import {of} from 'rxjs';
 
@@ -31,7 +30,6 @@ describe('TagTasksComponent', () => {
 
   let fixture: ComponentFixture<TagTasksComponent>;
   let component: TagTasksComponent;
-  let httpMock: HttpTestingController;
   let router: Router;
   let tagService: TagService;
 
@@ -56,8 +54,6 @@ describe('TagTasksComponent', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    httpMock = injector.get(HttpTestingController);
-
     router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
@@ -65,6 +61,7 @@ describe('TagTasksComponent', () => {
     spyOn(tagService, 'getTag').and.returnValue(of(tag));
     spyOn(tagService, 'getUncompletedTasks').and.returnValue(of([]));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
+    spyOn(tagService, 'deleteTag').and.returnValue(of(true));
 
     fixture.detectChanges();
   });
@@ -116,7 +113,6 @@ describe('TagTasksComponent', () => {
   });
 
   it('should delete tag', () => {
-    spyOn(tagService, 'deleteTag').and.returnValue(of());
     fixture.whenStable().then(() => {
       component.onDeleteTagButtonClick();
       fixture.detectChanges();
@@ -127,7 +123,6 @@ describe('TagTasksComponent', () => {
   it('should navigate to "tasks-for-today" page on tag delete', () => {
     fixture.whenStable().then(() => {
       component.onDeleteTagButtonClick();
-      httpMock.expectOne(`${tagService.baseUrl}/${tag.id}`).flush(null);
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
     });
   });

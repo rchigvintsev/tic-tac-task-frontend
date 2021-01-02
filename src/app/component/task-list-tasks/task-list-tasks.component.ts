@@ -123,15 +123,15 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
 
   private completeTaskList() {
     this.taskListService.completeTaskList(this.taskList)
-      .subscribe(_ => this.navigateToScheduledForTodayTasks(), this.onServiceCallError.bind(this));
+      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
   }
 
   private deleteTaskList() {
     this.taskListService.deleteTaskList(this.taskList)
-      .subscribe(_ => this.navigateToScheduledForTodayTasks(), this.onServiceCallError.bind(this));
+      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
   }
 
-  private navigateToScheduledForTodayTasks() {
+  private navigateToTodayTaskGroupPage() {
     this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
   }
 }

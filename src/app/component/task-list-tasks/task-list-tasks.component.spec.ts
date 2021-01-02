@@ -1,5 +1,4 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
-import {HttpTestingController} from '@angular/common/http/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 
@@ -33,7 +32,6 @@ describe('TaskListTasksComponent', () => {
 
   let component: TaskListTasksComponent;
   let fixture: ComponentFixture<TaskListTasksComponent>;
-  let httpMock: HttpTestingController;
   let router: Router;
   let taskService: TaskService;
   let taskListService: TaskListService;
@@ -59,8 +57,6 @@ describe('TaskListTasksComponent', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    httpMock = injector.get(HttpTestingController);
-
     router = injector.get(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
@@ -73,6 +69,8 @@ describe('TaskListTasksComponent', () => {
     spyOn(taskListService, 'getTaskList').and.returnValue(of(taskList));
     spyOn(taskListService, 'getTasks').and.returnValue(of(tasks));
     spyOn(taskListService, 'updateTaskList').and.callFake(t => of(t));
+    spyOn(taskListService, 'completeTaskList').and.returnValue(of(true));
+    spyOn(taskListService, 'deleteTaskList').and.returnValue(of(true));
 
     taskService = injector.get(TaskService);
     spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));
@@ -122,7 +120,6 @@ describe('TaskListTasksComponent', () => {
   });
 
   it('should complete task list', () => {
-    spyOn(taskListService, 'completeTaskList').and.returnValue(of());
     fixture.whenStable().then(() => {
       component.onCompleteTaskListButtonClick();
       fixture.detectChanges();
@@ -130,14 +127,14 @@ describe('TaskListTasksComponent', () => {
     });
   });
 
-  it('should navigate to "tasks-for-today" on task list complete', () => {
-    component.onCompleteTaskListButtonClick();
-    httpMock.expectOne(`${taskListService.baseUrl}/completed/${taskList.id}`).flush(null);
-    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+  it('should navigate to "tasks-for-today" page on task list complete', () => {
+    fixture.whenStable().then(() => {
+      component.onCompleteTaskListButtonClick();
+      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+    });
   });
 
   it('should delete task list', () => {
-    spyOn(taskListService, 'deleteTaskList').and.returnValue(of());
     fixture.whenStable().then(() => {
       component.onDeleteTaskListButtonClick();
       fixture.detectChanges();
@@ -145,10 +142,11 @@ describe('TaskListTasksComponent', () => {
     });
   });
 
-  it('should navigate to "tasks-for-today" on task list delete', () => {
-    component.onDeleteTaskListButtonClick();
-    httpMock.expectOne(`${taskListService.baseUrl}/${taskList.id}`).flush(null);
-    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+  it('should navigate to "tasks-for-today" page on task list delete', () => {
+    fixture.whenStable().then(() => {
+      component.onDeleteTaskListButtonClick();
+      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+    });
   });
 
   it('should put new task on current task list', () => {

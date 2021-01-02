@@ -1,9 +1,8 @@
 <mat-card *ngIf="taskFormModel">
   <div class="mat-card-header">
-    <a mat-icon-button [routerLink]="['/', translate.currentLang, 'task']" [fragment]="selectedTaskGroup?.value"
-       aria-label="Back button">
+    <button mat-icon-button (click)="onBackButtonClick()" aria-label="Back button">
       <mat-icon>arrow_back</mat-icon>
-    </a>
+    </button>
 
     <div class="mat-card-title">
       <form *ngIf="titleEditing">
@@ -26,6 +25,18 @@
       </form>
 
       <span *ngIf="!titleEditing" (click)="onTitleTextClick()" class="title-text">{{ taskFormModel.title }}</span>
+    </div>
+
+    <div class="card-header-menu">
+      <button mat-icon-button aria-label="Task menu" [matMenuTriggerFor]="taskMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #taskMenu="matMenu">
+        <button mat-menu-item (click)="onDeleteTaskButtonClick()">
+          {{ 'delete' | translate }}
+        </button>
+      </mat-menu>
     </div>
   </div>
 
@@ -152,5 +163,7 @@
 
   <mat-divider></mat-divider>
 
-  <app-task-comments></app-task-comments>
+  <div class="task-comments-container">
+    <app-task-comments></app-task-comments>
+  </div>
 </mat-card>

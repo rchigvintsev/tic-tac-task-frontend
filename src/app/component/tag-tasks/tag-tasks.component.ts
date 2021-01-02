@@ -121,8 +121,11 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   private deleteTag() {
-    this.tagService.deleteTag(this.tagFormModel).subscribe(_ => {
-      this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
-    }, this.onServiceCallError.bind(this));
+    this.tagService.deleteTag(this.tagFormModel)
+      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
+  }
+
+  private navigateToTodayTaskGroupPage() {
+    this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
   }
 }
