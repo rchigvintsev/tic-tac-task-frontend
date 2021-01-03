@@ -7,8 +7,43 @@
     <app-alert class="signin-alert"></app-alert>
 
     <mat-card-content>
+      <form>
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="email_input"
+                   type="email"
+                   name="login"
+                   placeholder="{{ 'email' | translate }}">
+          </label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="password_input"
+                   type="password"
+                   name="password"
+                   placeholder="{{ 'password' | translate }}">
+          </label>
+        </mat-form-field>
+
+        <div>
+          <button mat-raised-button color="primary" type="submit" class="button-sign-in">
+            <span>{{ 'sign_in' | translate }}</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="signin-divider">
+        <div class="signin-divider-line"></div>
+        <div class="signin-divider-label">{{ 'or' | translate }}</div>
+        <div class="signin-divider-line"></div>
+      </div>
+
       <div>
-        <a mat-raised-button [href]="buildAuthorizationUri('google')" class="button-sign-in button-sign-in-google">
+        <a mat-raised-button [href]="buildAuthorizationUri('google')"
+           class="button-sign-in-with button-sign-in-with-google">
           <mat-icon class="logo-google" svgIcon="logo-google"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} Google</span>
         </a>
@@ -16,21 +51,23 @@
 
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('facebook')"
-           class="button-sign-in button-sign-in-facebook">
+           class="button-sign-in-with button-sign-in-with-facebook">
           <mat-icon class="logo-facebook" svgIcon="logo-facebook"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} Facebook</span>
         </a>
       </div>
 
       <div>
-        <a mat-raised-button [href]="buildAuthorizationUri('github')" class="button-sign-in button-sign-in-github">
+        <a mat-raised-button [href]="buildAuthorizationUri('github')"
+           class="button-sign-in-with button-sign-in-with-github">
           <mat-icon class="logo-github" svgIcon="logo-github"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} GitHub</span>
         </a>
       </div>
 
       <div>
-        <a mat-raised-button [href]="buildAuthorizationUri('vk')" class="button-sign-in button-sign-in-vk">
+        <a mat-raised-button [href]="buildAuthorizationUri('vk')"
+           class="button-sign-in-with button-sign-in-with-vk">
           <mat-icon class="logo-vk" svgIcon="logo-vk"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} ВКонтакте</span>
         </a>

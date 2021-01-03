@@ -7,16 +7,42 @@
     flex-direction: column;
     min-width: 320px;
 
+    .signin-divider {
+      display: flex;
+      flex-direction: row;
+      padding-top: 16px;
+      padding-bottom: 16px;
+
+      .signin-divider-line {
+        border-top: 1px solid rgba(0, 0, 0, 0.42);
+        width: 95px;
+        height: 0;
+        margin-top: 8px
+      }
+
+      .signin-divider-label {
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.65);
+        width: 35px;
+        text-align: center;
+      }
+    }
+
     .signin-alert {
       width: 100%;
     }
 
     .button-sign-in {
       min-width: 225px;
+      text-align: center;
+    }
+
+    .button-sign-in-with {
+      min-width: 225px;
       text-align: left;
     }
 
-    .button-sign-in-google {
+    .button-sign-in-with-google {
       padding-left: 8px;
       margin-bottom: 8px;
 
@@ -27,7 +53,7 @@
       }
     }
 
-    .button-sign-in-facebook {
+    .button-sign-in-with-facebook {
       padding-left: 10px;
       margin-bottom: 8px;
       background-color: #4267b2;
@@ -38,7 +64,7 @@
       }
     }
 
-    .button-sign-in-github {
+    .button-sign-in-with-github {
       padding-left: 10px;
       margin-bottom: 8px;
       background-color: #000000;
@@ -49,7 +75,7 @@
       }
     }
 
-    .button-sign-in-vk {
+    .button-sign-in-with-vk {
       padding-left: 8px;
       background-color: #467fc1;
       color: #ffffff;
