@@ -10,7 +10,7 @@
     </div>
 
     <div class="button-container content-align-center">
-      <a mat-raised-button [routerLink]="['/', translate.currentLang]" color="primary">
+      <a mat-raised-button [routerLink]="['/', i18nService.currentLanguage.code]" color="primary">
         {{ 'back_to_home_page' | translate }}
       </a>
     </div>

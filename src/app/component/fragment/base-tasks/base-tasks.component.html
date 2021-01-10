@@ -60,7 +60,7 @@
       <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
         <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
 
-        <div [routerLink]="['/', translate.currentLang, 'task', task.id]" class="list-row task-list-row">
+        <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]" class="list-row task-list-row">
           <div class="list-column title-column">
             <span>{{ task.title }}</span>
           </div>

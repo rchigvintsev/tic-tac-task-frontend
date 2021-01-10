@@ -7,8 +7,6 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatDialog} from '@angular/material/dialog';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import * as moment from 'moment';
 
 import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
@@ -24,6 +22,7 @@ import {TaskGroupService} from '../../service/task-group.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
 import {TaskListService} from '../../service/task-list.service';
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
@@ -61,10 +60,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   private task: Task;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(translate: TranslateService,
-              router: Router,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               private route: ActivatedRoute,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
@@ -72,7 +71,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
               private taskListService: TaskListService,
               private dateAdapter: DateAdapter<any>,
               private dialog: MatDialog) {
-    super(translate, router, authenticationService, log);
+    super(i18nService, authenticationService, log, router);
   }
 
   private static normalizeTagName(name: string): string {
@@ -96,7 +95,8 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(tag => this.onTagDelete(tag));
 
-    this.dateAdapter.setLocale(this.translate.currentLang);
+    const currentLang = this.i18nService.currentLanguage;
+    this.dateAdapter.setLocale(currentLang.code);
 
     this.filteredTags = this.tagControl.valueChanges.pipe(
       startWith(null),
@@ -190,8 +190,8 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   onDeleteTaskButtonClick() {
-    const title = this.translate.instant('attention');
-    const content = this.translate.instant('delete_task_question');
+    const title = this.i18nService.translate('attention');
+    const content = this.i18nService.translate('delete_task_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       restoreFocus: false,
@@ -385,7 +385,8 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   private navigateToCurrentTaskGroupPage() {
+    const currentLang = this.i18nService.currentLanguage;
     const taskGroup = this.selectedTaskGroup || TaskGroup.TODAY;
-    this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
+    this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value}).then();
   }
 }

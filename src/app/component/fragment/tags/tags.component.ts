@@ -5,10 +5,9 @@ import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import {Tag} from '../../../model/tag';
 import {TagService} from '../../../service/tag.service';
+import {I18nService} from '../../../service/i18n.service';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LogService} from '../../../service/log.service';
 import {WebServiceBasedComponent} from '../../web-service-based.component';
@@ -30,12 +29,12 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(router: Router,
-              translate: TranslateService,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               private tagService: TagService) {
-    super(translate, router, authenticationService, log);
+    super(i18nService, authenticationService, log, router);
   }
 
   ngOnInit() {

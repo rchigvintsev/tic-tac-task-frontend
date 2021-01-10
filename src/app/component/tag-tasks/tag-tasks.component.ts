@@ -4,11 +4,10 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map} from 'rxjs/operators';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
@@ -27,15 +26,15 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
 
   private tag: Tag;
 
-  constructor(router: Router,
-              private route: ActivatedRoute,
-              translate: TranslateService,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               taskService: TaskService,
+              private route: ActivatedRoute,
               private tagService: TagService,
               private dialog: MatDialog) {
-    super(router, translate, authenticationService, log, taskService);
+    super(i18nService, authenticationService, log, router, taskService);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -71,7 +70,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   onChangeColorButtonClick() {
-    const title = this.translate.instant('tag_color');
+    const title = this.i18nService.translate('tag_color');
     const dialogRef = this.dialog.open(ColorPickerDialogComponent, {
       width: '248px',
       restoreFocus: false,
@@ -86,8 +85,8 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   onDeleteTagButtonClick() {
-    const title = this.translate.instant('attention');
-    const content = this.translate.instant('delete_tag_question');
+    const title = this.i18nService.translate('attention');
+    const content = this.i18nService.translate('delete_tag_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       restoreFocus: false,
@@ -126,6 +125,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   private navigateToTodayTaskGroupPage() {
-    this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+    const currentLang = this.i18nService.currentLanguage;
+    this.router.navigate([currentLang.code, 'task'], {fragment: TaskGroup.TODAY.value}).then();
   }
 }

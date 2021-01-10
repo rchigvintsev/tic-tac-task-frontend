@@ -6,8 +6,8 @@ import {takeUntil} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
-import {TranslateService} from '@ngx-translate/core';
 import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
@@ -25,14 +25,14 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(router: Router,
-              private route: ActivatedRoute,
-              translate: TranslateService,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               taskService: TaskService,
+              private route: ActivatedRoute,
               private taskGroupService: TaskGroupService) {
-    super(router, translate, authenticationService, log, taskService);
+    super(i18nService, authenticationService, log, router, taskService);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }
@@ -112,7 +112,8 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     let taskGroup = TaskGroup.valueOf(fragment);
     if (!taskGroup) {
       taskGroup = TaskGroup.TODAY;
-      this.router.navigate([this.translate.currentLang, 'task'], {fragment: taskGroup.value}).then();
+      const currentLang = this.i18nService.currentLanguage;
+      this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value}).then();
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
   }

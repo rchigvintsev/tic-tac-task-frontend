@@ -45,4 +45,8 @@ export class I18nService {
   get onLanguageChange(): EventEmitter<LangChangeEvent> {
     return this.translateService.onLangChange;
   }
+
+  translate(key: string): string {
+    return this.translateService.instant(key);
+  }
 }

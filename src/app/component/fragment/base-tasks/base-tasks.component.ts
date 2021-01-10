@@ -2,12 +2,11 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import {WebServiceBasedComponent} from '../../web-service-based.component';
 import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
 import {TaskService} from '../../../service/task.service';
+import {I18nService} from '../../../service/i18n.service';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LogService} from '../../../service/log.service';
 import {PageRequest} from '../../../service/page-request';
@@ -41,12 +40,12 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
 
   protected pageRequest = new PageRequest();
 
-  constructor(router: Router,
-              translate: TranslateService,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               protected taskService: TaskService) {
-    super(translate, router, authenticationService, log);
+    super(i18nService, authenticationService, log, router);
   }
 
   onTitleTextClick() {

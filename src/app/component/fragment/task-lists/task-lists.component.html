@@ -18,7 +18,7 @@
 
 <mat-list id="task_list_list">
   <mat-list-item *ngFor="let taskList of taskLists"
-                 [routerLink]="[translate.currentLang, 'task-list', taskList.id]"
+                 [routerLink]="[i18nService.currentLanguage.code, 'task-list', taskList.id]"
                  [ngClass]="'task-list-' + taskList.id"
                  [class.mat-list-item-selected]="isRouterLinkActive('task-list/' + taskList.id)">
     <div class="list-row task-list-list-row">

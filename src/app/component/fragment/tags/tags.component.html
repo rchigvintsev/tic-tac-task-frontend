@@ -18,7 +18,7 @@
 
 <mat-list id="tag_list">
   <mat-list-item *ngFor="let tag of tags"
-                 [routerLink]="[translate.currentLang, 'tag', tag.id]"
+                 [routerLink]="[i18nService.currentLanguage.code, 'tag', tag.id]"
                  [ngClass]="'tag-' + tag.id"
                  [class.mat-list-item-selected]="isRouterLinkActive('tag/' + tag.id)">
     <mat-icon mat-list-icon [style.color]="tag.color">label</mat-icon>

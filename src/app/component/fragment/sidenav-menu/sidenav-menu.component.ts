@@ -4,10 +4,9 @@ import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import * as moment from 'moment';
 
+import {I18nService} from '../../../service/i18n.service';
 import {TaskGroup} from '../../../model/task-group';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {TaskService} from '../../../service/task.service';
@@ -28,7 +27,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(public translate: TranslateService,
+  constructor(public i18nService: I18nService,
               private taskGroupService: TaskGroupService,
               private taskService: TaskService,
               private router: Router,

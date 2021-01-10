@@ -3,14 +3,13 @@ import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import * as moment from 'moment';
 
 import {WebServiceBasedComponent} from '../../web-service-based.component';
 import {TaskComment} from '../../../model/task-comment';
 import {TaskService} from '../../../service/task.service';
 import {TaskCommentService} from '../../../service/task-comment.service';
+import {I18nService} from '../../../service/i18n.service';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LogService} from '../../../service/log.service';
 import {PageRequest} from '../../../service/page-request';
@@ -35,15 +34,15 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   private pageRequest = new PageRequest();
 
-  constructor(translate: TranslateService,
-              router: Router,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               private route: ActivatedRoute,
               private taskService: TaskService,
               private commentService: TaskCommentService,
               private dialog: MatDialog) {
-    super(translate, router, authenticationService, log);
+    super(i18nService, authenticationService, log, router);
   }
 
   ngOnInit() {
@@ -85,8 +84,8 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
   }
 
   onDeleteCommentButtonClick(comment: TaskComment) {
-    const title = this.translate.instant('attention');
-    const content = this.translate.instant('delete_comment_question');
+    const title = this.i18nService.translate('attention');
+    const content = this.i18nService.translate('delete_comment_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       restoreFocus: false,

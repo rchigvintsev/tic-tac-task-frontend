@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-
-import {TranslateService} from '@ngx-translate/core';
+import {I18nService} from '../../service/i18n.service';
 
 @Component({
   selector: 'app-error-not-found',
@@ -8,7 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./error-not-found.component.styl']
 })
 export class ErrorNotFoundComponent implements OnInit {
-  constructor(public translate: TranslateService) {
+  constructor(public i18nService: I18nService) {
   }
 
   ngOnInit() {

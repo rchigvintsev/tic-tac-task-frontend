@@ -1,18 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import {HttpErrors} from '../util/http-errors';
+import {I18nService} from '../service/i18n.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {LogService} from '../service/log.service';
 
 @Injectable()
 export class WebServiceBasedComponent {
-  constructor(public translate: TranslateService,
-              protected router: Router,
+  constructor(public i18nService: I18nService,
               protected authenticationService: AuthenticationService,
-              protected log: LogService) {
+              protected log: LogService,
+              protected router: Router) {
   }
 
   private logError(error: any) {
@@ -35,6 +34,7 @@ export class WebServiceBasedComponent {
   }
 
   navigateToSigninPage() {
-    this.router.navigate([this.translate.currentLang, 'signin']).then();
+    const currentLang = this.i18nService.currentLanguage;
+    this.router.navigate([currentLang.code, 'signin']).then();
   }
 }

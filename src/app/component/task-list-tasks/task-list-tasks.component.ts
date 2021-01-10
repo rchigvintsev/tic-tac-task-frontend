@@ -4,10 +4,9 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map} from 'rxjs/operators';
 
-import {TranslateService} from '@ngx-translate/core';
-
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
@@ -25,15 +24,15 @@ import {Task} from 'src/app/model/task';
 export class TaskListTasksComponent extends BaseTasksComponent implements OnInit {
   private taskList: TaskList;
 
-  constructor(router: Router,
-              translate: TranslateService,
+  constructor(i18nService: I18nService,
               authenticationService: AuthenticationService,
               log: LogService,
+              router: Router,
               taskService: TaskService,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(router, translate, authenticationService, log, taskService);
+    super(i18nService, authenticationService, log, router, taskService);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
@@ -70,8 +69,8 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   onCompleteTaskListButtonClick() {
-    const title = this.translate.instant('attention');
-    const content = this.translate.instant('complete_task_list_question');
+    const title = this.i18nService.translate('attention');
+    const content = this.i18nService.translate('complete_task_list_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       restoreFocus: false,
@@ -85,8 +84,8 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   onDeleteTaskListButtonClick() {
-    const title = this.translate.instant('attention');
-    const content = this.translate.instant('delete_task_list_question');
+    const title = this.i18nService.translate('attention');
+    const content = this.i18nService.translate('delete_task_list_question');
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       restoreFocus: false,
@@ -132,6 +131,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   private navigateToTodayTaskGroupPage() {
-    this.router.navigate([this.translate.currentLang, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+    const currentLang = this.i18nService.currentLanguage;
+    this.router.navigate([currentLang.code, 'task'], {fragment: TaskGroup.TODAY.value}).then();
   }
 }
