@@ -71,11 +71,21 @@ describe('AuthenticationService', () => {
   });
 
   it('should sign out', () => {
-    service.signOut().subscribe(() => {
-    });
+    service.signOut().subscribe(() => {});
     const configService = injector.get(ConfigService);
     const request = httpMock.expectOne(`${configService.apiBaseUrl}/logout`);
     expect(request.request.method).toBe('POST');
     request.flush({});
+  });
+
+  it('should sign in', () => {
+    const username = 'alice';
+    const password = 'secret';
+
+    service.signIn(username, password).subscribe(() => {});
+    const configService = injector.get(ConfigService);
+    const request = httpMock.expectOne(`${configService.apiBaseUrl}/login`);
+    expect(request.request.method).toBe('POST');
+    request.flush(JSON.stringify({sub: username}));
   });
 });

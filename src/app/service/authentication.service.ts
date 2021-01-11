@@ -12,7 +12,14 @@ import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 
 const PRINCIPAL_KEY = 'principal';
 
-const postOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+const jsonContentOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
+  withCredentials: true
+};
+const formContentOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'}),
+  withCredentials: true
+};
 
 @Injectable({
   providedIn: 'root'
@@ -49,8 +56,11 @@ export class AuthenticationService {
     this.user = null;
   }
 
-  createPrincipal(encodedClaims: string): AuthenticatedPrincipal {
-    const claims = JSON.parse(this.jwtHelper.urlBase64Decode(encodedClaims));
+  parseAccessTokenClaims(encodedClaims: string): AuthenticatedPrincipal {
+    return JSON.parse(this.jwtHelper.urlBase64Decode(encodedClaims));
+  }
+
+  createPrincipal(claims: any) {
     const user = new User();
     user.email = claims.sub;
     user.fullName = claims.name;
@@ -63,8 +73,13 @@ export class AuthenticationService {
     return this.getPrincipal() != null;
   }
 
+  signIn(username: string, password: string): Observable<any> {
+    const body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, formContentOptions);
+  }
+
   signOut(): Observable<any> {
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, postOptions)
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, jsonContentOptions)
       .pipe(
         tap(() => {
           this.removePrincipal();

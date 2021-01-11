@@ -132,7 +132,7 @@ describe('RouteGuard', () => {
 
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('/', null)];
-      snapshotMock.queryParams =  {claims: btoa(JSON.stringify(claims))};
+      snapshotMock.queryParams =  {access_token_claims: btoa(JSON.stringify(claims))};
 
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
 

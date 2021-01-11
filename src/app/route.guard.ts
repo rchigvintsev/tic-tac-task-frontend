@@ -58,9 +58,10 @@ export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
     if (route.queryParamMap.get('error')) {
       this.router.navigate([currentLang.code, 'signin'], {queryParams: {error: true}}).then();
     } else {
-      const encodedClaims = route.queryParamMap.get('claims');
+      const encodedClaims = route.queryParamMap.get('access_token_claims');
       if (encodedClaims) {
-        const principal = this.authenticationService.createPrincipal(encodedClaims);
+        const claims = this.authenticationService.parseAccessTokenClaims(encodedClaims);
+        const principal = this.authenticationService.createPrincipal(claims);
         this.authenticationService.setPrincipal(principal);
       }
       this.router.navigate([currentLang.code]).then();
