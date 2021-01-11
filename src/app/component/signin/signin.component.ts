@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
+import {NgForm} from '@angular/forms';
 
 import {WebServiceBasedComponent} from '../web-service-based.component';
 import {I18nService} from '../../service/i18n.service';
@@ -18,6 +19,9 @@ import {AlertService} from '../../service/alert.service';
 export class SigninComponent extends WebServiceBasedComponent implements OnInit {
   email: string;
   password: string;
+
+  @ViewChild('signinForm', {read: NgForm})
+  signinForm: NgForm;
 
   private readonly config: ConfigService;
   private readonly redirectUri: string;
@@ -55,8 +59,10 @@ export class SigninComponent extends WebServiceBasedComponent implements OnInit 
   }
 
   onSigninFormSubmit() {
-    this.authenticationService.signIn(this.email, this.password)
-      .subscribe(accessTokenClaims => this.onSignIn(accessTokenClaims), this.onServiceCallError.bind(this));
+    if (this.signinForm.valid) {
+      this.authenticationService.signIn(this.email, this.password)
+        .subscribe(accessTokenClaims => this.onSignIn(accessTokenClaims), this.onServiceCallError.bind(this));
+    }
   }
 
   buildAuthorizationUri(provider: string): string {

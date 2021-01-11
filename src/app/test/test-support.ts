@@ -47,6 +47,7 @@ import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-fou
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
+import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 
 export class TestSupport {
   public static readonly IMPORTS = [
@@ -103,6 +104,7 @@ export class TestSupport {
     ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,
-    LocalizedRelativeDatePipe
+    LocalizedRelativeDatePipe,
+    NotBlankValidatorDirective
   ];
 }

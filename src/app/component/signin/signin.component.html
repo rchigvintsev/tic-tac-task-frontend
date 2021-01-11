@@ -7,7 +7,7 @@
     <app-alert class="signin-alert"></app-alert>
 
     <mat-card-content>
-      <form (ngSubmit)="onSigninFormSubmit()">
+      <form #signinForm (ngSubmit)="onSigninFormSubmit()">
         <mat-form-field>
           <label>
             <input matInput
@@ -15,7 +15,9 @@
                    type="email"
                    name="email"
                    [(ngModel)]="email"
-                   placeholder="{{ 'email' | translate }}">
+                   placeholder="{{ 'email' | translate }}"
+                   required
+                   email>
           </label>
         </mat-form-field>
 
@@ -26,7 +28,9 @@
                    type="password"
                    name="password"
                    [(ngModel)]="password"
-                   placeholder="{{ 'password' | translate }}">
+                   placeholder="{{ 'password' | translate }}"
+                   required
+                   notBlank>
           </label>
         </mat-form-field>
 

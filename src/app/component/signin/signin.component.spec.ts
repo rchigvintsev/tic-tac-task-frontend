@@ -1,6 +1,6 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
+import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
@@ -25,7 +25,6 @@ describe('SigninComponent', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ActivatedRoute,
@@ -73,8 +72,20 @@ describe('SigninComponent', () => {
 
   it('should sign in on signin form submit', () => {
     fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
       component.password = 'secret';
+
+      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
+      emailInput.value = component.email;
+      emailInput.dispatchEvent(new Event('input'));
+
+      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
+      passwordInput.value = component.password;
+      passwordInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
       component.onSigninFormSubmit();
       expect(authenticationService.setPrincipal).toHaveBeenCalled();
     });
@@ -82,10 +93,85 @@ describe('SigninComponent', () => {
 
   it('should navigate to home page on sign in', () => {
     fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
       component.password = 'secret';
+
+      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
+      emailInput.value = component.email;
+      emailInput.dispatchEvent(new Event('input'));
+
+      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
+      passwordInput.value = component.password;
+      passwordInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
       component.onSigninFormSubmit();
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG]);
+    });
+  });
+
+  it('should not sign in when email is empty', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = '';
+      component.password = 'secret';
+
+      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
+      emailInput.value = component.email;
+      emailInput.dispatchEvent(new Event('input'));
+
+      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
+      passwordInput.value = component.password;
+      passwordInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      component.onSigninFormSubmit();
+      expect(authenticationService.signIn).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign in when email is not valid', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice';
+      component.password = 'secret';
+
+      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
+      emailInput.value = component.email;
+      emailInput.dispatchEvent(new Event('input'));
+
+      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
+      passwordInput.value = component.password;
+      passwordInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      component.onSigninFormSubmit();
+      expect(authenticationService.signIn).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign in when password is blank', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.password = ' ';
+
+      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
+      emailInput.value = component.email;
+      emailInput.dispatchEvent(new Event('input'));
+
+      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
+      passwordInput.value = component.password;
+      passwordInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      component.onSigninFormSubmit();
+      expect(authenticationService.signIn).not.toHaveBeenCalled();
     });
   });
 });
