@@ -27,7 +27,7 @@ export class I18nService {
   get currentLanguage(): Language {
     let langCode = this.translateService.currentLang;
     if (!langCode) {
-      this.logService.warn('Current language is undefined. Fallback to english.');
+      this.logService.debug('Current language is undefined. Fallback to english.');
       langCode = 'en';
     }
     let result = this.languageForCode(langCode);
