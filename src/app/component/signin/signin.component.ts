@@ -10,6 +10,7 @@ import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
+import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-signin',
@@ -60,8 +61,10 @@ export class SigninComponent extends WebServiceBasedComponent implements OnInit 
 
   onSigninFormSubmit() {
     if (this.signinForm.valid) {
-      this.authenticationService.signIn(this.email, this.password)
-        .subscribe(accessTokenClaims => this.onSignIn(accessTokenClaims), this.onServiceCallError.bind(this));
+      this.authenticationService.signIn(this.email, this.password).subscribe(
+        accessTokenClaims => this.onSignIn(accessTokenClaims),
+        error => this.onSignInError(error)
+      );
     }
   }
 
@@ -69,10 +72,18 @@ export class SigninComponent extends WebServiceBasedComponent implements OnInit 
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${this.redirectUri}`;
   }
 
-  private onSignIn(accessTokenClaims) {
+  private onSignIn(accessTokenClaims: any) {
     const principal = this.authenticationService.createPrincipal(accessTokenClaims);
     this.authenticationService.setPrincipal(principal);
     this.navigateToHomePage();
+  }
+
+  private onSignInError(error: any) {
+    if (HttpErrors.isUnauthorized(error)) {
+      this.alertService.error(this.i18nService.translate('user_not_found_or_invalid_password'));
+    } else {
+      this.onServiceCallError(error);
+    }
   }
 
   private navigateToHomePage() {

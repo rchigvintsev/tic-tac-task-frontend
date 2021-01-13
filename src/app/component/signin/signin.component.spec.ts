@@ -2,13 +2,14 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {By} from '@angular/platform-browser';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {TranslateService} from '@ngx-translate/core';
 
 import {SigninComponent} from './signin.component';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {Config} from '../../model/config';
 import {TestSupport} from '../../test/test-support';
@@ -18,6 +19,8 @@ const CURRENT_LANG = 'en';
 describe('SigninComponent', () => {
   let component: SigninComponent;
   let fixture: ComponentFixture<SigninComponent>;
+  let alertService: AlertService;
+  let i18nService: I18nService;
   let authenticationService: AuthenticationService;
   let router: Router;
 
@@ -42,10 +45,12 @@ describe('SigninComponent', () => {
     const translateService = injector.get(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
+    i18nService = injector.get(I18nService);
+
     const configService = injector.get(ConfigService);
     configService.setConfig(new Config());
 
-    const alertService = injector.get(AlertService);
+    alertService = injector.get(AlertService);
     spyOn(alertService, 'error').and.stub();
 
     authenticationService = injector.get(AuthenticationService);
@@ -65,9 +70,7 @@ describe('SigninComponent', () => {
   });
 
   it('should show error message when error query parameter is present', () => {
-    const translate = fixture.debugElement.injector.get(TranslateService);
-    const alertService = fixture.debugElement.injector.get(AlertService);
-    expect(alertService.error).toHaveBeenCalledWith(translate.instant('sign_in_error'));
+    expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('sign_in_error'));
   });
 
   it('should sign in on signin form submit', () => {
@@ -76,14 +79,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = 'secret';
 
-      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
-      emailInput.value = component.email;
-      emailInput.dispatchEvent(new Event('input'));
-
-      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
-      passwordInput.value = component.password;
-      passwordInput.dispatchEvent(new Event('input'));
-
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -97,14 +94,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = 'secret';
 
-      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
-      emailInput.value = component.email;
-      emailInput.dispatchEvent(new Event('input'));
-
-      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
-      passwordInput.value = component.password;
-      passwordInput.dispatchEvent(new Event('input'));
-
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -118,14 +109,8 @@ describe('SigninComponent', () => {
       component.email = '';
       component.password = 'secret';
 
-      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
-      emailInput.value = component.email;
-      emailInput.dispatchEvent(new Event('input'));
-
-      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
-      passwordInput.value = component.password;
-      passwordInput.dispatchEvent(new Event('input'));
-
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -139,14 +124,8 @@ describe('SigninComponent', () => {
       component.email = 'alice';
       component.password = 'secret';
 
-      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
-      emailInput.value = component.email;
-      emailInput.dispatchEvent(new Event('input'));
-
-      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
-      passwordInput.value = component.password;
-      passwordInput.dispatchEvent(new Event('input'));
-
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -160,18 +139,34 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = ' ';
 
-      const emailInput = fixture.debugElement.query(By.css('#email_input')).nativeElement;
-      emailInput.value = component.email;
-      emailInput.dispatchEvent(new Event('input'));
-
-      const passwordInput = fixture.debugElement.query(By.css('#password_input')).nativeElement;
-      passwordInput.value = component.password;
-      passwordInput.dispatchEvent(new Event('input'));
-
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
       expect(authenticationService.signIn).not.toHaveBeenCalled();
     });
   });
+
+  it('should show error message on sign in when server responded with 401 status code', () => {
+    (authenticationService.signIn as jasmine.Spy).and.callFake(() => throwError({status: 401}));
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.password = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('password_input', component.password);
+      fixture.detectChanges();
+
+      component.onSigninFormSubmit();
+      expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('user_not_found_or_invalid_password'));
+    });
+  });
+
+  function setInputValue(inputId: string, value: string) {
+    const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
+    emailInput.value = value;
+    emailInput.dispatchEvent(new Event('input'));
+  }
 });

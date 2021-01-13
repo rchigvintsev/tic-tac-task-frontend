@@ -31,6 +31,7 @@
   "sign_in_with": "Sign in with",
   "sign_out": "Sign out",
   "sign_in_error": "Something went wrong during signing in",
+  "user_not_found_or_invalid_password": "User with this email is not found or password is not valid",
   "email": "Email",
   "password": "Password",
   "inbox": "Inbox",
