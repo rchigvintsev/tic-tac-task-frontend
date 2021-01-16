@@ -4,12 +4,17 @@ import {Objects} from '../util/objects';
 
 export class User extends AbstractEntity<User> implements AuthenticatedPrincipal {
   email: string;
+  secret: string;
   fullName: string;
   imageUrl: string;
   validUntilSeconds: number;
 
   getSubject(): string {
     return this.email;
+  }
+
+  getSecret(): string {
+    return this.secret;
   }
 
   getName(): string {
@@ -26,6 +31,7 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
 
   deserialize(input: any): User {
     this.email = input.email;
+    this.secret = input.secret;
     this.fullName = input.fullName;
     this.imageUrl = input.imageUrl;
     this.validUntilSeconds = input.validUntilSeconds;
@@ -35,6 +41,7 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
   clone(): User {
     const clone = new User();
     clone.email = this.email;
+    clone.secret = this.secret;
     clone.fullName = this.fullName;
     clone.imageUrl = this.imageUrl;
     clone.validUntilSeconds = this.validUntilSeconds;
@@ -43,6 +50,7 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
 
   equals(other: User): boolean {
     return Objects.equals(this.email, other.email)
+      && Objects.equals(this.secret, other.secret)
       && Objects.equals(this.fullName, other.fullName)
       && Objects.equals(this.imageUrl, other.imageUrl)
       && Objects.equals(this.validUntilSeconds, other.validUntilSeconds);

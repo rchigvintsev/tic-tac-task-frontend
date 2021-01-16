@@ -18,10 +18,6 @@ export class TaskList extends AbstractEntity<TaskList> {
     return this;
   }
 
-  serialize(): any {
-    return {id: this.id, name: this.name, completed: this.completed};
-  }
-
   clone(): TaskList {
     const clone = new TaskList();
     clone.id = this.id;
