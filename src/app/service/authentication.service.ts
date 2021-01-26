@@ -78,6 +78,11 @@ export class AuthenticationService {
     return this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, formContentOptions);
   }
 
+  signUp(email: string, fullName: string, password: string): Observable<any> {
+    const body = '';
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/users`, body, jsonContentOptions);
+  }
+
   signOut(): Observable<any> {
     return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, jsonContentOptions)
       .pipe(

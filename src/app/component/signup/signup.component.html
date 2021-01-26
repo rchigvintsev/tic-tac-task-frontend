@@ -1,0 +1,109 @@
+<div class="signin-container content-align-center">
+  <mat-card class="content-align-center">
+    <mat-card-header>
+      <mat-card-title>{{ 'sign_up_prompt' | translate }}</mat-card-title>
+    </mat-card-header>
+
+    <app-alert class="signup-alert"></app-alert>
+
+    <mat-card-content>
+      <form #signupForm (ngSubmit)="onSignupFormSubmit()">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="email_input"
+                   type="email"
+                   name="email"
+                   [(ngModel)]="email"
+                   placeholder="{{ 'email' | translate }}"
+                   required
+                   email>
+          </label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="full_name_input"
+                   type="text"
+                   name="full-name"
+                   [(ngModel)]="fullName"
+                   placeholder="{{ 'full_name' | translate }}"
+                   required
+                   notBlank>
+          </label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="password_input"
+                   type="password"
+                   name="password"
+                   [(ngModel)]="password"
+                   placeholder="{{ 'password' | translate }}"
+                   required
+                   notBlank>
+          </label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input matInput
+                   id="password_repeat_input"
+                   type="password"
+                   name="password-repeat"
+                   [(ngModel)]="passwordRepeat"
+                   placeholder="{{ 'password_repeat' | translate }}"
+                   required
+                   notBlank>
+          </label>
+        </mat-form-field>
+
+        <div>
+          <button mat-raised-button color="primary" type="submit" class="button-sign-up">
+            <span>{{ 'sign_up' | translate }}</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="signup-divider">
+        <div class="signup-divider-line"></div>
+        <div class="signup-divider-label">{{ 'or' | translate }}</div>
+        <div class="signup-divider-line"></div>
+      </div>
+
+      <div>
+        <a mat-raised-button [href]="buildAuthorizationUri('google')"
+           class="button-sign-up-with button-sign-up-with-google">
+          <mat-icon class="logo-google" svgIcon="logo-google"></mat-icon>
+          <span>{{ 'sign_up_with' | translate }} Google</span>
+        </a>
+      </div>
+
+      <div>
+        <a mat-raised-button [href]="buildAuthorizationUri('facebook')"
+           class="button-sign-up-with button-sign-up-with-facebook">
+          <mat-icon class="logo-facebook" svgIcon="logo-facebook"></mat-icon>
+          <span>{{ 'sign_up_with' | translate }} Facebook</span>
+        </a>
+      </div>
+
+      <div>
+        <a mat-raised-button [href]="buildAuthorizationUri('github')"
+           class="button-sign-up-with button-sign-up-with-github">
+          <mat-icon class="logo-github" svgIcon="logo-github"></mat-icon>
+          <span>{{ 'sign_up_with' | translate }} GitHub</span>
+        </a>
+      </div>
+
+      <div>
+        <a mat-raised-button [href]="buildAuthorizationUri('vk')"
+           class="button-sign-up-with button-sign-up-with-vk">
+          <mat-icon class="logo-vk" svgIcon="logo-vk"></mat-icon>
+          <span>{{ 'sign_up_with' | translate }} ВКонтакте</span>
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

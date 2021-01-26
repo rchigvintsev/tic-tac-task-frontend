@@ -47,6 +47,7 @@ import {ConfirmationDialogComponent} from './component/fragment/confirmation-dia
 import {ColorPickerDialogComponent} from './component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
 import {SigninComponent} from './component/signin/signin.component';
+import {SignupComponent} from './component/signup/signup.component';
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
@@ -86,6 +87,7 @@ registerLocaleData(localeRu, 'ru');
     ColorPickerDialogComponent,
     NotBlankValidatorDirective,
     SigninComponent,
+    SignupComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     AlertComponent,

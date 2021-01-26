@@ -32,6 +32,7 @@ import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../component/fragment/alert/alert.component';
 import {SigninComponent} from '../component/signin/signin.component';
+import {SignupComponent} from '../component/signup/signup.component';
 import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
 import {TagsComponent} from '../component/fragment/tags/tags.component';
 import {TaskListsComponent} from '../component/fragment/task-lists/task-lists.component';
@@ -90,6 +91,7 @@ export class TestSupport {
     AppComponent,
     AlertComponent,
     SigninComponent,
+    SignupComponent,
     TaskCommentsComponent,
     TagsComponent,
     TaskListsComponent,
