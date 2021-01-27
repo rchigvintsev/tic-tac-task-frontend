@@ -31,6 +31,7 @@ import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../component/fragment/alert/alert.component';
+import {BaseSignComponent} from '../component/fragment/base-sign/base-sign.component';
 import {SigninComponent} from '../component/signin/signin.component';
 import {SignupComponent} from '../component/signup/signup.component';
 import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
@@ -90,6 +91,7 @@ export class TestSupport {
   public static readonly DECLARATIONS = [
     AppComponent,
     AlertComponent,
+    BaseSignComponent,
     SigninComponent,
     SignupComponent,
     TaskCommentsComponent,

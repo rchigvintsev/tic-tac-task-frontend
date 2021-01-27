@@ -10,6 +10,7 @@ import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
 import {TaskDetailsComponent} from './component/task-details/task-details.component';
 import {SigninComponent} from './component/signin/signin.component';
+import {SignupComponent} from './component/signup/signup.component';
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AVAILABLE_LANGUAGES} from './service/i18n.service';
@@ -27,6 +28,7 @@ export const routes: Routes = [
   {path: 'tag/:id', component: TagTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task-list/:id', component: TaskListTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'signin', component: SigninComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
+  {path: 'signup', component: SignupComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'oauth2/authorization/callback',
     component: DummyComponent,
