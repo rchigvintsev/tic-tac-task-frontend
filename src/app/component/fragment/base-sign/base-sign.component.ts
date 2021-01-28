@@ -47,7 +47,7 @@ export class BaseSignComponent extends WebServiceBasedComponent implements OnIni
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
       if (params.get('error')) {
-        this.onSignError();
+        this.showErrorMessage();
       }
     });
   }
@@ -56,6 +56,6 @@ export class BaseSignComponent extends WebServiceBasedComponent implements OnIni
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${this.redirectUri}`;
   }
 
-  protected onSignError() {
+  protected showErrorMessage(message: string = null) {
   }
 }

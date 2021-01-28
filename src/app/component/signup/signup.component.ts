@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
@@ -16,7 +16,7 @@ import {AlertService} from '../../service/alert.service';
   templateUrl: './signup.component.html',
   styleUrls: ['../fragment/base-sign/base-sign.component.styl']
 })
-export class SignupComponent extends BaseSignComponent implements OnInit {
+export class SignupComponent extends BaseSignComponent {
   fullName: string;
   passwordRepeat: string;
 
@@ -46,8 +46,11 @@ export class SignupComponent extends BaseSignComponent implements OnInit {
     }
   }
 
-  protected onSignError(): void {
-    this.alertService.error(this.i18nService.translate('sign_up_error'));
+  protected showErrorMessage(message: string = null): void {
+    if (!message) {
+      message = this.i18nService.translate('sign_up_error');
+    }
+    this.alertService.error(message);
   }
 
   private onSignUp(response: any) {

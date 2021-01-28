@@ -1,10 +1,10 @@
-<div class="signin-container content-align-center">
+<div class="sign-container content-align-center">
   <mat-card class="content-align-center">
     <mat-card-header>
       <mat-card-title>{{ 'sign_in_prompt' | translate }}</mat-card-title>
     </mat-card-header>
 
-    <app-alert class="signin-alert"></app-alert>
+    <app-alert class="sign-alert"></app-alert>
 
     <mat-card-content>
       <form #signinForm (ngSubmit)="onSigninFormSubmit()">
@@ -35,21 +35,21 @@
         </mat-form-field>
 
         <div>
-          <button mat-raised-button color="primary" type="submit" class="button-sign-in">
+          <button mat-raised-button color="primary" type="submit" class="button-sign">
             <span>{{ 'sign_in' | translate }}</span>
           </button>
         </div>
       </form>
 
-      <div class="signin-divider">
-        <div class="signin-divider-line"></div>
-        <div class="signin-divider-label">{{ 'or' | translate }}</div>
-        <div class="signin-divider-line"></div>
+      <div class="sign-divider">
+        <div class="sign-divider-line"></div>
+        <div class="sign-divider-label">{{ 'or' | translate }}</div>
+        <div class="sign-divider-line"></div>
       </div>
 
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('google')"
-           class="button-sign-in-with button-sign-in-with-google">
+           class="button-sign-with button-sign-with-google">
           <mat-icon class="logo-google" svgIcon="logo-google"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} Google</span>
         </a>
@@ -57,7 +57,7 @@
 
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('facebook')"
-           class="button-sign-in-with button-sign-in-with-facebook">
+           class="button-sign-with button-sign-with-facebook">
           <mat-icon class="logo-facebook" svgIcon="logo-facebook"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} Facebook</span>
         </a>
@@ -65,7 +65,7 @@
 
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('github')"
-           class="button-sign-in-with button-sign-in-with-github">
+           class="button-sign-with button-sign-with-github">
           <mat-icon class="logo-github" svgIcon="logo-github"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} GitHub</span>
         </a>
@@ -73,7 +73,7 @@
 
       <div>
         <a mat-raised-button [href]="buildAuthorizationUri('vk')"
-           class="button-sign-in-with button-sign-in-with-vk">
+           class="button-sign-with button-sign-with-vk">
           <mat-icon class="logo-vk" svgIcon="logo-vk"></mat-icon>
           <span>{{ 'sign_in_with' | translate }} ВКонтакте</span>
         </a>
