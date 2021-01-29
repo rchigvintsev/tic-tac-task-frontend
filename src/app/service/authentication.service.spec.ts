@@ -13,6 +13,7 @@ const PRINCIPAL_KEY = 'principal';
 describe('AuthenticationService', () => {
   let injector: TestBed;
   let service: AuthenticationService;
+  let configService: ConfigService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('AuthenticationService', () => {
 
     const appConfig = new Config();
     appConfig.apiBaseUrl = 'http://backend.com';
-    const configService = injector.get(ConfigService);
+    configService = injector.get(ConfigService);
     configService.setConfig(appConfig);
   });
 
@@ -72,7 +73,6 @@ describe('AuthenticationService', () => {
 
   it('should sign out', () => {
     service.signOut().subscribe(() => {});
-    const configService = injector.get(ConfigService);
     const request = httpMock.expectOne(`${configService.apiBaseUrl}/logout`);
     expect(request.request.method).toBe('POST');
     request.flush({});
@@ -83,9 +83,32 @@ describe('AuthenticationService', () => {
     const password = 'secret';
 
     service.signIn(username, password).subscribe(() => {});
-    const configService = injector.get(ConfigService);
     const request = httpMock.expectOne(`${configService.apiBaseUrl}/login`);
     expect(request.request.method).toBe('POST');
     request.flush(JSON.stringify({sub: username}));
+  });
+
+  it('should sign up', done => {
+    const newUser = new User();
+    newUser.email = 'alice@mail.com';
+    newUser.fullName = 'Alice';
+    newUser.password = 'secret';
+
+    service.signUp(newUser.email, newUser.fullName, newUser.password).subscribe(user => {
+      expect(newUser.equals(user)).toBeTruthy();
+      done();
+    });
+    const request = httpMock.expectOne(`${configService.apiBaseUrl}/users`);
+    expect(request.request.method).toBe('POST');
+    request.flush(newUser.serialize());
+  });
+
+  it('should throw error on sign up when email is null', () => {
+    expect(() => service.signUp(null, 'Alice', 'secret')).toThrowError('Email must not be null or undefined');
+  });
+
+  it('should throw error on sign up when username is null', () => {
+    expect(() => service.signUp('alice@mail.com', null, 'secret'))
+      .toThrowError('Username must not be null or undefined');
   });
 });

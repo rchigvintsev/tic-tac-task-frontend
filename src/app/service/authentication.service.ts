@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 import {JwtHelperService} from '@auth0/angular-jwt';
 
@@ -78,9 +78,21 @@ export class AuthenticationService {
     return this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, formContentOptions);
   }
 
-  signUp(email: string, fullName: string, password: string): Observable<any> {
-    const body = '';
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/users`, body, jsonContentOptions);
+  signUp(email: string, username: string, password: string): Observable<User> {
+    if (!email) {
+      throw new Error('Email must not be null or undefined');
+    }
+    if (!username) {
+      throw new Error('Username must not be null or undefined');
+    }
+
+    const user = new User();
+    user.email = email;
+    user.fullName = username;
+    user.password = password;
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/users`, user.serialize(), jsonContentOptions).pipe(
+      map(response => new User().deserialize(response))
+    );
   }
 
   signOut(): Observable<any> {
