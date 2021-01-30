@@ -10,6 +10,7 @@ import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
+import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-signup',
@@ -41,7 +42,7 @@ export class SignupComponent extends BaseSignComponent {
     if (this.signupForm.valid) {
       this.authenticationService.signUp(this.email, this.fullName, this.password).subscribe(
         response => this.onSignUp(response),
-        this.onServiceCallError.bind(this)
+        response => this.onSignUpError(response)
       );
     }
   }
@@ -54,5 +55,14 @@ export class SignupComponent extends BaseSignComponent {
   }
 
   private onSignUp(response: any) {
+
+  }
+
+  private onSignUpError(response: any) {
+    if (HttpErrors.isBadRequest(response)) {
+      this.showErrorMessage(response.error.errors[0]);
+    } else {
+      this.onServiceCallError(response);
+    }
   }
 }
