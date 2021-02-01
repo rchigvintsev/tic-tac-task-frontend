@@ -7,7 +7,7 @@
     <app-alert class="sign-alert"></app-alert>
 
     <mat-card-content>
-      <form #signupForm (ngSubmit)="onSignupFormSubmit()">
+      <form #signupForm (ngSubmit)="onSignupFormSubmit()" passwordsMatch>
         <mat-form-field>
           <label>
             <input matInput
