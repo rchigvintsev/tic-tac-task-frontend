@@ -46,6 +46,7 @@ import {TaskCommentsComponent} from './component/fragment/task-comments/task-com
 import {ConfirmationDialogComponent} from './component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from './component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
+import {PasswordsMatchValidatorDirective} from './validator/passwords-match.directive';
 import {BaseSignComponent} from './component/fragment/base-sign/base-sign.component';
 import {SigninComponent} from './component/signin/signin.component';
 import {SignupComponent} from './component/signup/signup.component';
@@ -87,6 +88,7 @@ registerLocaleData(localeRu, 'ru');
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
     NotBlankValidatorDirective,
+    PasswordsMatchValidatorDirective,
     BaseSignComponent,
     SigninComponent,
     SignupComponent,
