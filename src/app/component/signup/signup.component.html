@@ -54,10 +54,15 @@
                    type="password"
                    name="password-repeat"
                    [(ngModel)]="passwordRepeat"
+                   #passwordRepeatInput="ngModel"
                    placeholder="{{ 'password_repeat' | translate }}"
                    required
                    notBlank>
           </label>
+
+          <mat-error *ngIf="passwordRepeatInput?.errors?.passwordsMatch">
+            {{ 'passwords_not_match' | translate }}
+          </mat-error>
         </mat-form-field>
 
         <div>

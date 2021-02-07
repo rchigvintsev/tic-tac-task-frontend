@@ -40,6 +40,7 @@
   "full_name": "Name",
   "password": "Password",
   "password_repeat": "Password again",
+  "passwords_not_match": "Passwords do not match",
   "inbox": "Inbox",
   "scheduled_for": "Scheduled for",
   "scheduled_for_today": "Today",
