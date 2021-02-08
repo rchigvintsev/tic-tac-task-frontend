@@ -21,12 +21,13 @@ function passwordsMatchValidator(): ValidatorFn {
         passwordRepeatControl.markAsTouched();
         passwordRepeatControl.setErrors({passwordsMatch: true});
       } else {
-        passwordControl.setErrors({passwordsMatch: false});
-        passwordRepeatControl.setErrors({passwordsMatch: false});
         if (!Strings.isBlank(password)) {
+          passwordControl.setErrors(null);
           passwordControl.markAsUntouched();
         }
+
         if (!Strings.isBlank(repeatedPassword)) {
+          passwordRepeatControl.setErrors(null);
           passwordRepeatControl.markAsUntouched();
         }
       }
