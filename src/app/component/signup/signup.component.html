@@ -7,7 +7,7 @@
     <app-alert class="sign-alert"></app-alert>
 
     <mat-card-content>
-      <form #signupForm (ngSubmit)="onSignupFormSubmit()" passwordsMatch>
+      <form #signupForm (ngSubmit)="onSignupFormSubmit(); signupForm.reset();" passwordsMatch>
         <mat-form-field>
           <label>
             <input matInput
@@ -54,7 +54,7 @@
                    id="password_repeat_input"
                    type="password"
                    name="password-repeat"
-                   [(ngModel)]="passwordRepeat"
+                   [(ngModel)]="repeatedPassword"
                    #passwordRepeatInput="ngModel"
                    placeholder="{{ 'password_repeat' | translate }}"
                    required

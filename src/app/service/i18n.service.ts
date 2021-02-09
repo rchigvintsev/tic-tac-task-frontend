@@ -46,7 +46,15 @@ export class I18nService {
     return this.translateService.onLangChange;
   }
 
-  translate(key: string): string {
-    return this.translateService.instant(key);
+  translate(key: string, args: any = null): string {
+    let message = this.translateService.instant(key);
+    if (args) {
+      message = this.interpolateMessage(message, args);
+    }
+    return message;
+  }
+
+  private interpolateMessage(template: string, args: any): string {
+    return template.replace(/\${(\w+)}/g, (_, v) => args[v]);
   }
 }

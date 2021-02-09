@@ -19,7 +19,7 @@ import {HttpErrors} from '../../util/http-errors';
 })
 export class SignupComponent extends BaseSignComponent {
   fullName: string;
-  passwordRepeat: string;
+  repeatedPassword: string;
 
   @ViewChild('signupForm', {read: NgForm})
   signupForm: NgForm;
@@ -41,7 +41,7 @@ export class SignupComponent extends BaseSignComponent {
   onSignupFormSubmit() {
     if (this.signupForm.valid) {
       this.authenticationService.signUp(this.email, this.fullName, this.password).subscribe(
-        response => this.onSignUp(response),
+        _ => this.onSignUp(),
         response => this.onSignUpError(response)
       );
     }
@@ -54,8 +54,8 @@ export class SignupComponent extends BaseSignComponent {
     this.alertService.error(message);
   }
 
-  private onSignUp(response: any) {
-
+  private onSignUp() {
+    this.alertService.info(this.i18nService.translate('email_confirmation_link_sent', {email: this.email}));
   }
 
   private onSignUpError(response: any) {
