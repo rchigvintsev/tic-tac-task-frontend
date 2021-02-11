@@ -55,12 +55,15 @@ export class SignupComponent extends BaseSignComponent {
   }
 
   private onSignUp() {
+    this.signupForm.resetForm();
     this.alertService.info(this.i18nService.translate('email_confirmation_link_sent', {email: this.email}));
   }
 
   private onSignUpError(response: any) {
     if (HttpErrors.isBadRequest(response)) {
       this.showErrorMessage(response.error.errors[0]);
+    } else if (HttpErrors.isInternalServerError(response)) {
+      this.showErrorMessage(response.error.message);
     } else {
       this.onServiceCallError(response);
     }

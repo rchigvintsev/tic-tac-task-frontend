@@ -9,4 +9,8 @@ export class HttpErrors {
   static isBadRequest(response: any): boolean {
     return response.status === 400;
   }
+
+  static isInternalServerError(response: any): boolean {
+    return response.status === 500;
+  }
 }
