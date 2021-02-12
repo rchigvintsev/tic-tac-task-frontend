@@ -2,7 +2,7 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {By} from '@angular/platform-browser';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {SignupComponent} from './signup.component';
 import {TestSupport} from '../../test/test-support';
@@ -44,6 +44,7 @@ describe('SignupComponent', () => {
 
     alertService = injector.get(AlertService);
     spyOn(alertService, 'info').and.stub();
+    spyOn(alertService, 'error').and.stub();
 
     authenticationService = injector.get(AuthenticationService);
     spyOn(authenticationService, 'signUp').and.callFake((email, username) => of({email, fullName: username}));
@@ -55,6 +56,120 @@ describe('SignupComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should sign up on signup form submit', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = 'Alice';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign up when email is empty', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = '';
+      component.fullName = 'Alice';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign up when email is not valid', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice';
+      component.fullName = 'Alice';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign up when username is blank', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = ' ';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign up when password is blank', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = 'Alice';
+      component.password = ' ';
+      component.repeatedPassword = ' ';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not sign up when passwords do not match', () => {
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = 'Alice';
+      component.password = '12345';
+      component.repeatedPassword = '54321';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(authenticationService.signUp).not.toHaveBeenCalled();
+    });
   });
 
   it('should show information message on sign up when server responded with 200 status code', () => {
@@ -73,6 +188,52 @@ describe('SignupComponent', () => {
 
       component.onSignupFormSubmit();
       expect(alertService.info).toHaveBeenCalledWith(i18nService.translate('email_confirmation_link_sent'));
+    });
+  });
+
+  it('should show error message on sign up when server responded with 400 status code', () => {
+    const errorMessage = 'Bad request';
+    (authenticationService.signUp as jasmine.Spy).and.callFake(() => {
+      return throwError({status: 400, error: {errors: [errorMessage]}});
+    });
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = 'Alice';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(alertService.error).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
+  it('should show error message on sign up when server responded with 500 status code', () => {
+    const errorMessage = 'Something went wrong';
+    (authenticationService.signUp as jasmine.Spy).and.callFake(() => {
+      return throwError({status: 500, error: {message: errorMessage}});
+    });
+    fixture.whenStable().then(() => {
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      component.fullName = 'Alice';
+      component.password = 'secret';
+      component.repeatedPassword = 'secret';
+
+      setInputValue('email_input', component.email);
+      setInputValue('full_name_input', component.fullName);
+      setInputValue('password_input', component.password);
+      setInputValue('password_repeat_input', component.repeatedPassword);
+      fixture.detectChanges();
+
+      component.onSignupFormSubmit();
+      expect(alertService.error).toHaveBeenCalledWith(errorMessage);
     });
   });
 

@@ -50,6 +50,7 @@ import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
+import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
 
 export class TestSupport {
   public static readonly IMPORTS = [
@@ -109,6 +110,7 @@ export class TestSupport {
     DummyComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
-    NotBlankValidatorDirective
+    NotBlankValidatorDirective,
+    PasswordsMatchValidatorDirective
   ];
 }
