@@ -3,13 +3,18 @@ import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 import {Objects} from '../util/objects';
 
 export class User extends AbstractEntity<User> implements AuthenticatedPrincipal {
+  id: number;
   email: string;
   password: string;
   fullName: string;
-  imageUrl: string;
+  profilePictureUrl: string;
   validUntilSeconds: number;
 
-  getSubject(): string {
+  getId(): number {
+    return this.id;
+  }
+
+  getEmail(): string {
     return this.email;
   }
 
@@ -17,8 +22,8 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
     return this.fullName;
   }
 
-  getPicture(): string {
-    return this.imageUrl;
+  getProfilePictureUrl(): string {
+    return this.profilePictureUrl;
   }
 
   isValid(): boolean {
@@ -26,29 +31,32 @@ export class User extends AbstractEntity<User> implements AuthenticatedPrincipal
   }
 
   deserialize(input: any): User {
+    this.id = input.id;
     this.email = input.email;
     this.password = input.password;
     this.fullName = input.fullName;
-    this.imageUrl = input.imageUrl;
+    this.profilePictureUrl = input.profilePictureUrl;
     this.validUntilSeconds = input.validUntilSeconds;
     return this;
   }
 
   clone(): User {
     const clone = new User();
+    clone.id = this.id;
     clone.email = this.email;
     clone.password = this.password;
     clone.fullName = this.fullName;
-    clone.imageUrl = this.imageUrl;
+    clone.profilePictureUrl = this.profilePictureUrl;
     clone.validUntilSeconds = this.validUntilSeconds;
     return clone;
   }
 
   equals(other: User): boolean {
-    return Objects.equals(this.email, other.email)
+    return Objects.equals(this.id, other.id)
+      && Objects.equals(this.email, other.email)
       && Objects.equals(this.password, other.password)
       && Objects.equals(this.fullName, other.fullName)
-      && Objects.equals(this.imageUrl, other.imageUrl)
+      && Objects.equals(this.profilePictureUrl, other.profilePictureUrl)
       && Objects.equals(this.validUntilSeconds, other.validUntilSeconds);
   }
 }

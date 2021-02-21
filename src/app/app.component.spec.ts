@@ -50,8 +50,10 @@ describe('AppComponent', () => {
     router.navigateByUrl = jasmine.createSpy('navigateByUrl').and.callFake(() => Promise.resolve());
 
     const user = new User();
+    user.id = 1;
+    user.email = 'john.doe@mail.com';
     user.fullName = 'John Doe';
-    user.imageUrl = 'http://example.com/avatar.png';
+    user.profilePictureUrl = 'http://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
     authenticationService.setPrincipal(user);
   });
@@ -85,7 +87,7 @@ describe('AppComponent', () => {
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > img.avatar');
-    expect(element.getAttribute('src')).toEqual(principal.getPicture());
+    expect(element.getAttribute('src')).toEqual(principal.getProfilePictureUrl());
   });
 
   it('should sign out on corresponding menu item select', () => {

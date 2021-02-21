@@ -62,9 +62,10 @@ export class AuthenticationService {
 
   createPrincipal(claims: any) {
     const user = new User();
-    user.email = claims.sub;
+    user.id = claims.sub;
+    user.email = claims.email;
     user.fullName = claims.name;
-    user.imageUrl = claims.picture;
+    user.profilePictureUrl = claims.picture;
     user.validUntilSeconds = claims.exp;
     return user;
   }

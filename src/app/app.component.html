@@ -21,7 +21,7 @@
       </div>
 
       <div *ngIf="principal" class="profile-info-container">
-        <img [src]="principal.getPicture()" alt="avatar" class="avatar right-margin-8"/>
+        <img [src]="principal.getProfilePictureUrl()" alt="avatar" class="avatar right-margin-8"/>
         <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
 
         <mat-menu #profileActions="matMenu">

@@ -124,7 +124,8 @@ describe('RouteGuard', () => {
     it('should set authenticated principal', () => {
       const nextDay = moment().utc().add(1, 'days');
       const claims = {
-        sub: 'john.doe@mail.com',
+        sub: '1',
+        email: 'john.doe@mail.com',
         name: 'John Doe',
         picture: 'http://example.com/avatar.png',
         exp: Math.round(nextDay.toDate().getTime() / 1000)
@@ -139,9 +140,10 @@ describe('RouteGuard', () => {
       const principal = authenticationService.getPrincipal();
       expect(principal).not.toBeNull();
       expect(principal.isValid()).toBeTruthy();
-      expect(principal.getSubject()).toEqual(claims.sub);
+      expect(principal.getId()).toEqual(claims.sub);
+      expect(principal.getEmail()).toEqual(claims.email);
       expect(principal.getName()).toEqual(claims.name);
-      expect(principal.getPicture()).toEqual(claims.picture);
+      expect(principal.getProfilePictureUrl()).toEqual(claims.picture);
     });
   });
 });

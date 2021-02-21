@@ -1,9 +1,11 @@
 export interface AuthenticatedPrincipal {
+  getId(): number;
+
   getName(): string;
 
-  getSubject(): string;
+  getEmail(): string;
 
-  getPicture(): string;
+  getProfilePictureUrl(): string;
 
   isValid(): boolean;
 }
