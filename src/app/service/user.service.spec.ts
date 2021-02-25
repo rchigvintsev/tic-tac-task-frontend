@@ -38,7 +38,16 @@ describe('TaskListService', () => {
     request.flush(testUser.serialize());
   });
 
-  it('should throw error on task list create when task list is null', () => {
+  it('should throw error on user create when user is null', () => {
     expect(() => userService.createUser(null)).toThrow(new Error('User must not be null or undefined'));
+  });
+
+  it('should confirm email', done => {
+    const userId = 1;
+    const token = 'K1Mb2ByFcfYndPmuFijB';
+    userService.confirmEmail(userId, token).subscribe(_ => done());
+    const request = httpMock.expectOne(`${userService.baseUrl}/${userId}/email/confirmation/${token}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(null);
   });
 });

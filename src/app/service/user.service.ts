@@ -28,4 +28,8 @@ export class UserService {
       map(response => new User().deserialize(response))
     );
   }
+
+  confirmEmail(userId: number, token: string): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${userId}/email/confirmation/${token}`, null, commonHttpOptions);
+  }
 }
