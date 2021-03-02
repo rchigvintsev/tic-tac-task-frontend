@@ -53,8 +53,9 @@ describe('RouteGuard', () => {
     it('should prepend language to target URL when valid language is not present', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('about', null)];
+      snapshotMock.queryParams = {test: 'true'};
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'about']);
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'about'], {queryParams: snapshotMock.queryParams});
     });
   });
 

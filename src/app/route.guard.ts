@@ -4,9 +4,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSeg
 import {I18nService} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class LocalizedRouteGuard implements CanActivate {
   constructor(private i18nService: I18nService, private router: Router) {
   }
@@ -16,7 +14,7 @@ export class LocalizedRouteGuard implements CanActivate {
     if (lang != null) {
       this.navigateTo404Page(lang);
     } else {
-      this.navigateToTargetPage(this.i18nService.currentLanguage.code, route.url);
+      this.navigateToTargetPage(this.i18nService.currentLanguage.code, route);
     }
     return true;
   }
@@ -31,12 +29,12 @@ export class LocalizedRouteGuard implements CanActivate {
     return null;
   }
 
-  private navigateToTargetPage(language: string, url: UrlSegment[]) {
+  private navigateToTargetPage(language: string, route: ActivatedRouteSnapshot) {
     const commands = [language];
-    for (const segment of url) {
+    for (const segment of route.url) {
       commands.push(segment.path);
     }
-    this.router.navigate(commands).then();
+    this.router.navigate(commands, {queryParams: route.queryParams}).then();
   }
 
   private navigateTo404Page(language: string) {
