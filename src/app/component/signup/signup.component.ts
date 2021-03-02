@@ -33,9 +33,10 @@ export class SignupComponent extends BaseSignComponent {
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
     activatedRoute: ActivatedRoute,
-    private alertService: AlertService,
+    alertService: AlertService,
   ) {
-    super(i18nService, authenticationService, log, config, router, iconRegistry, domSanitizer, activatedRoute);
+    super(i18nService, authenticationService, log, router, iconRegistry, domSanitizer, alertService, config,
+      activatedRoute);
   }
 
   onSignupFormSubmit() {
@@ -47,11 +48,8 @@ export class SignupComponent extends BaseSignComponent {
     }
   }
 
-  protected showErrorMessage(message: string = null): void {
-    if (!message) {
-      message = this.i18nService.translate('sign_up_error');
-    }
-    this.alertService.error(message);
+  protected getDefaultErrorMessage(): string {
+    return this.i18nService.translate('sign_up_error');
   }
 
   private onSignUp() {
@@ -61,9 +59,9 @@ export class SignupComponent extends BaseSignComponent {
 
   private onSignUpError(response: any) {
     if (HttpErrors.isBadRequest(response)) {
-      this.showErrorMessage(response.error.errors[0]);
+      this.alertService.error(response.error.errors[0]);
     } else if (HttpErrors.isInternalServerError(response)) {
-      this.showErrorMessage(response.error.message);
+      this.alertService.error(response.error.message);
     } else {
       this.onServiceCallError(response);
     }

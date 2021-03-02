@@ -1,22 +1,25 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment} from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment, UrlTree} from '@angular/router';
+
+import {Observable, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 
 import {I18nService} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
+import {UserService} from './service/user.service';
+import {LogService} from './service/log.service';
 
 @Injectable({providedIn: 'root'})
 export class LocalizedRouteGuard implements CanActivate {
   constructor(private i18nService: I18nService, private router: Router) {
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree {
     const lang = this.getLanguageFromUrl(route.url);
     if (lang != null) {
-      this.navigateTo404Page(lang);
-    } else {
-      this.navigateToTargetPage(this.i18nService.currentLanguage.code, route);
+      return this.navigateTo404Page(lang);
     }
-    return true;
+    return this.navigateToTargetPage(this.i18nService.currentLanguage.code, route);
   }
 
   private getLanguageFromUrl(url: UrlSegment[]): string {
@@ -29,48 +32,73 @@ export class LocalizedRouteGuard implements CanActivate {
     return null;
   }
 
-  private navigateToTargetPage(language: string, route: ActivatedRouteSnapshot) {
+  private navigateToTargetPage(language: string, route: ActivatedRouteSnapshot): UrlTree {
     const commands = [language];
     for (const segment of route.url) {
       commands.push(segment.path);
     }
-    this.router.navigate(commands, {queryParams: route.queryParams}).then();
+    return this.router.createUrlTree(commands, {queryParams: route.queryParams});
   }
 
-  private navigateTo404Page(language: string) {
-    this.router.navigate([language, 'error', '404']).then();
+  private navigateTo404Page(language: string): UrlTree {
+    return this.router.createUrlTree([language, 'error', '404']);
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class OAuth2AuthorizationCallbackRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
               private i18nService: I18nService,
               private router: Router) {
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     const currentLang = this.i18nService.currentLanguage;
     if (route.queryParamMap.get('error')) {
-      this.router.navigate([currentLang.code, 'signin'], {queryParams: {error: true}}).then();
-    } else {
-      const encodedClaims = route.queryParamMap.get('access_token_claims');
-      if (encodedClaims) {
-        const claims = this.authenticationService.parseAccessTokenClaims(encodedClaims);
-        const principal = this.authenticationService.createPrincipal(claims);
-        this.authenticationService.setPrincipal(principal);
-      }
-      this.router.navigate([currentLang.code]).then();
+      return this.router.navigate([currentLang.code, 'signin'], {queryParams: {error: true, message: 'default'}});
     }
-    return true;
+
+    const encodedClaims = route.queryParamMap.get('access_token_claims');
+    if (encodedClaims) {
+      const claims = this.authenticationService.parseAccessTokenClaims(encodedClaims);
+      const principal = this.authenticationService.createPrincipal(claims);
+      this.authenticationService.setPrincipal(principal);
+    }
+    return this.router.navigate([currentLang.code]);
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
+export class EmailConfirmationCallbackRouteGuard implements CanActivate {
+  constructor(private userService: UserService,
+              private i18nService: I18nService,
+              private log: LogService,
+              private router: Router) {
+  }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UrlTree> {
+    const userId = parseInt(route.queryParamMap.get('userId'), 10);
+    const token = route.queryParamMap.get('token');
+    if (!userId || !token) {
+      return of(this.router.createUrlTree([this.i18nService.currentLanguage.code, 'signin'],
+        {queryParams: {error: true, message: 'invalid_email_confirmation_params'}}));
+    } else {
+      return this.userService.confirmEmail(userId, token).pipe(
+        map(_ => {
+          return this.router.createUrlTree([this.i18nService.currentLanguage.code, 'signin'],
+            {queryParams: {error: false, message: 'email_confirmed'}});
+        }),
+        catchError(error => {
+          this.log.error(`Failed to confirm email for user with id ${userId}: ${error}`);
+          return of(this.router.createUrlTree([this.i18nService.currentLanguage.code, 'signin'],
+            {queryParams: {error: true, message: 'email_confirmation_error'}}));
+        })
+      );
+    }
+  }
+}
+
+@Injectable({providedIn: 'root'})
 export class UnauthenticatedOnlyRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
               private i18nService: I18nService,
@@ -86,9 +114,7 @@ export class UnauthenticatedOnlyRouteGuard implements CanActivate {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class AuthenticatedOnlyRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
               private i18nService: I18nService,

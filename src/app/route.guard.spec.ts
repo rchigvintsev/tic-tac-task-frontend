@@ -2,18 +2,23 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, Router, UrlSegment} from '@angular/router';
 
+import {of, throwError} from 'rxjs';
+
 import {TranslateService} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
 import {
   AuthenticatedOnlyRouteGuard,
+  EmailConfirmationCallbackRouteGuard,
   LocalizedRouteGuard,
   OAuth2AuthorizationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
 import {AuthenticationService} from './service/authentication.service';
 import {TestSupport} from './test/test-support';
+import {ConfigService} from './service/config.service';
+import {UserService} from './service/user.service';
 
 describe('RouteGuard', () => {
   let guard;
@@ -24,6 +29,7 @@ describe('RouteGuard', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
@@ -46,16 +52,14 @@ describe('RouteGuard', () => {
     it('should navigate to 404 error page when valid language is present in URL', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('en', null)];
-      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'error', '404']);
+      expect(guard.canActivate(snapshotMock, null).toString()).toBe('/en/error/404');
     });
 
     it('should prepend language to target URL when valid language is not present', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('about', null)];
       snapshotMock.queryParams = {test: 'true'};
-      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'about'], {queryParams: snapshotMock.queryParams});
+      expect(guard.canActivate(snapshotMock, null).toString()).toBe('/en/about?test=true')
     });
   });
 
@@ -112,7 +116,7 @@ describe('RouteGuard', () => {
       snapshotMock.url = [new UrlSegment('/', null)];
       snapshotMock.queryParams =  {error: 'true'};
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'], {queryParams: {error: true}});
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'], {queryParams: {error: true, message: 'default'}});
     });
 
     it('should navigate to root page when there is no error', () => {
@@ -145,6 +149,75 @@ describe('RouteGuard', () => {
       expect(principal.getEmail()).toEqual(claims.email);
       expect(principal.getName()).toEqual(claims.name);
       expect(principal.getProfilePictureUrl()).toEqual(claims.picture);
+    });
+  });
+
+  describe('EmailConfirmationCallback', () => {
+    let userService: UserService;
+
+    beforeEach(() => {
+      userService = injector.get(UserService);
+      guard = injector.get(EmailConfirmationCallbackRouteGuard);
+    });
+
+    it('should navigate to signin page with error when query parameter "userId" is missing', done => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.queryParams = {token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
+      guard.canActivate(snapshotMock, null).subscribe(urlTree => {
+        expect(urlTree.toString()).toBe('/en/signin?error=true&message=invalid_email_confirmation_params');
+        done();
+      });
+    });
+
+    it('should navigate to signin page with error when query parameter "token" is missing', done => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.queryParams = {userId: '1'};
+      guard.canActivate(snapshotMock, null).subscribe(urlTree => {
+        expect(urlTree.toString()).toBe('/en/signin?error=true&message=invalid_email_confirmation_params');
+        done();
+      });
+    });
+
+    it('should confirm user email', done => {
+      userService.confirmEmail = jasmine.createSpy('confirmEmail')
+        .and.callFake(() => throwError('Something went wrong'));
+
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      const userId = 1;
+      const token = '4b1f7955-a406-4d36-8cbe-d6c61f39e27d';
+      snapshotMock.queryParams = {userId, token};
+      guard.canActivate(snapshotMock, null).subscribe(_ => {
+        expect(userService.confirmEmail).toHaveBeenCalledWith(userId, token);
+        done();
+      });
+    });
+
+    it('should navigate to signin page when email is confirmed', done => {
+      userService.confirmEmail = jasmine.createSpy('confirmEmail').and.callFake(() => of(true));
+
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
+      guard.canActivate(snapshotMock, null).subscribe(urlTree => {
+        expect(urlTree.toString()).toBe('/en/signin?error=false&message=email_confirmed');
+        done();
+      });
+    });
+
+    it('should navigate to signin page with error when some error occurred during email confirmation', done => {
+      userService.confirmEmail = jasmine.createSpy('confirmEmail')
+        .and.callFake(() => throwError('Something went wrong'));
+
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
+      guard.canActivate(snapshotMock, null).subscribe(urlTree => {
+        expect(urlTree.toString()).toBe('/en/signin?error=true&message=email_confirmation_error');
+        done();
+      });
     });
   });
 });

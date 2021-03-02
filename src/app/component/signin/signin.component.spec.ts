@@ -32,7 +32,7 @@ describe('SigninComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParamMap: of(convertToParamMap({error: true}))
+            queryParamMap: of(convertToParamMap({error: 'true', message: 'default'}))
           }
         }
       ]

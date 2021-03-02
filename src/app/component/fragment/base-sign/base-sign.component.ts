@@ -7,6 +7,7 @@ import {WebServiceBasedComponent} from '../../web-service-based.component';
 import {I18nService} from '../../../service/i18n.service';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LogService} from '../../../service/log.service';
+import {AlertService} from '../../../service/alert.service';
 import {ConfigService} from '../../../service/config.service';
 
 @Component({
@@ -18,24 +19,23 @@ export class BaseSignComponent extends WebServiceBasedComponent implements OnIni
   email: string;
   password: string;
 
-  private readonly config: ConfigService;
   private readonly redirectUri: string;
 
   constructor(
     i18nService: I18nService,
     authenticationService: AuthenticationService,
     log: LogService,
-    config: ConfigService,
     router: Router,
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
+    public alertService: AlertService,
+    private config: ConfigService,
     private activatedRoute: ActivatedRoute
   ) {
     super(i18nService, authenticationService, log, router);
 
-    this.config = config;
     const currentLang = i18nService.currentLanguage;
-    this.redirectUri = `${config.selfBaseUrl}/${currentLang.code}/oauth2/authorization/callback`;
+    this.redirectUri = `${this.config.selfBaseUrl}/${currentLang.code}/oauth2/authorization/callback`;
 
     iconRegistry.addSvgIcon('logo-google',
       domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/btn_google_light_normal.svg'));
@@ -46,8 +46,14 @@ export class BaseSignComponent extends WebServiceBasedComponent implements OnIni
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      if (params.get('error')) {
-        this.showErrorMessage();
+      const messageCode = params.get('message');
+      if (messageCode) {
+        const error = params.get('error');
+        if (error === 'true') {
+          this.alertService.error(this.getErrorMessage(messageCode));
+        } else {
+          this.alertService.info(this.i18nService.translate(messageCode));
+        }
       }
     });
   }
@@ -56,6 +62,14 @@ export class BaseSignComponent extends WebServiceBasedComponent implements OnIni
     return `${this.config.apiBaseUrl}/oauth2/authorization/${provider}?client-redirect-uri=${this.redirectUri}`;
   }
 
-  protected showErrorMessage(message: string = null) {
+  protected getDefaultErrorMessage(): string {
+    throw new Error('Method "getDefaultErrorMessage" is not implemented');
+  }
+
+  private getErrorMessage(messageCode: string): string {
+    if (messageCode === 'default') {
+      return this.getDefaultErrorMessage();
+    }
+    return this.i18nService.translate(messageCode);
   }
 }

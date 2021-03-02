@@ -16,6 +16,7 @@ import {DummyComponent} from './component/dummy/dummy.component';
 import {AVAILABLE_LANGUAGES} from './service/i18n.service';
 import {
   AuthenticatedOnlyRouteGuard,
+  EmailConfirmationCallbackRouteGuard,
   LocalizedRouteGuard,
   OAuth2AuthorizationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
@@ -34,6 +35,7 @@ export const routes: Routes = [
     component: DummyComponent,
     canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
+  {path: 'user/email/confirmation', component: DummyComponent, canActivate: [EmailConfirmationCallbackRouteGuard]},
   {path: 'error/404', component: ErrorNotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];

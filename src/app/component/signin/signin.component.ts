@@ -30,9 +30,10 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
     activatedRoute: ActivatedRoute,
-    private alertService: AlertService,
+    alertService: AlertService,
   ) {
-    super(i18nService, authenticationService, log, config, router, iconRegistry, domSanitizer, activatedRoute);
+    super(i18nService, authenticationService, log, router, iconRegistry, domSanitizer, alertService, config,
+      activatedRoute);
   }
 
   onSigninFormSubmit() {
@@ -44,11 +45,8 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
     }
   }
 
-  protected showErrorMessage(message: string = null): void {
-    if (!message) {
-      message = this.i18nService.translate('sign_in_error');
-    }
-    this.alertService.error(message);
+  protected getDefaultErrorMessage(): string {
+    return this.i18nService.translate('sign_in_error');
   }
 
   private onSignIn(accessTokenClaims: any) {
@@ -59,7 +57,7 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
 
   private onSignInError(error: any) {
     if (HttpErrors.isUnauthorized(error)) {
-      this.showErrorMessage(this.i18nService.translate('user_not_found_or_invalid_password'));
+      this.alertService.error(this.i18nService.translate('user_not_found_or_invalid_password'));
     } else {
       this.onServiceCallError(error);
     }
