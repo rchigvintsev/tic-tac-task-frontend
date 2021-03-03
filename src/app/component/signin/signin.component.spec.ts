@@ -164,6 +164,16 @@ describe('SigninComponent', () => {
     });
   });
 
+  it('should render link to signup page', () => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      const signupLink = compiled.querySelector('.sign-container mat-card mat-card-footer a[href="/en/signup"]');
+      expect(signupLink).toBeTruthy();
+      expect(signupLink.textContent.trim()).toBe('sign_up_proposal');
+    });
+  });
+
   function setInputValue(inputId: string, value: string) {
     const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
     emailInput.value = value;

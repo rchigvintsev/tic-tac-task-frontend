@@ -237,6 +237,16 @@ describe('SignupComponent', () => {
     });
   });
 
+  it('should render link to signin page', () => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      const signupLink = compiled.querySelector('.sign-container mat-card mat-card-footer a[href="/en/signin"]');
+      expect(signupLink).toBeTruthy();
+      expect(signupLink.textContent.trim()).toBe('sign_in_proposal');
+    });
+  });
+
   function setInputValue(inputId: string, value: string) {
     const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
     emailInput.value = value;

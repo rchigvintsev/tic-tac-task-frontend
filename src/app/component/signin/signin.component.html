@@ -79,5 +79,12 @@
         </a>
       </div>
     </mat-card-content>
+
+    <mat-card-footer>
+      <div>{{ 'have_no_account_yet' | translate }}</div>
+      <div>
+        <a [routerLink]="['/', i18nService.currentLanguage.code, 'signup']">{{ 'sign_up_proposal' | translate }}</a>
+      </div>
+    </mat-card-footer>
   </mat-card>
 </div>

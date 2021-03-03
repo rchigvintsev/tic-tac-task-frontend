@@ -30,6 +30,8 @@
   "sign_up_prompt": "Please sign up",
   "sign_in": "Sign in",
   "sign_up": "Sign up",
+  "sign_in_proposal": "Sign in",
+  "sign_up_proposal": "Sign up",
   "sign_in_with": "Sign in with",
   "sign_up_with": "Sign up with",
   "sign_out": "Sign out",
@@ -63,5 +65,7 @@
   "email_confirmation_link_sent": "We have just sent an email confirmation link to \"${email}\". Please check your inbox or spam folder. It can take up to 10 minutes to receive this message.",
   "invalid_email_confirmation_params": "Could not confirm email: required parameters are missing",
   "email_confirmed": "Your email has been confirmed. Please use it to sign in.",
-  "email_confirmation_error": "Something went wrong during email confirmation"
+  "email_confirmation_error": "Something went wrong during email confirmation",
+  "have_no_account_yet": "Have no account yet?",
+  "already_have_account": "Already have an account?"
 }
