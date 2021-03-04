@@ -95,11 +95,6 @@ describe('AppComponent', () => {
     expect(authenticationService.signOut).toHaveBeenCalled();
   });
 
-  it('should set principal to null on sign out', () => {
-    component.onSignOutButtonClick();
-    expect(component.principal).toBeNull();
-  });
-
   it('should navigate to signin page after user being signed out', () => {
     component.onSignOutButtonClick();
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'signin']);
@@ -114,8 +109,13 @@ describe('AppComponent', () => {
     });
   });
 
+  it('should hide sidenav when user is not authenticated', () => {
+    authenticationService.removePrincipal()
+    component.onRouterEvent(new NavigationEnd(1, '/', null));
+    expect(component.showSidenav).toBeFalsy();
+  });
+
   it('should hide sidenav on error page', () => {
-    component.ngDoCheck(); // Initialize authenticated principal
     component.onRouterEvent(new NavigationEnd(1, '/error/404', null));
     expect(component.showSidenav).toBeFalsy();
   });

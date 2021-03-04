@@ -1,4 +1,4 @@
-import {Component, DoCheck, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
@@ -21,12 +21,11 @@ import {AuthenticatedPrincipal} from './security/authenticated-principal';
   styleUrls: ['./app.component.styl'],
   providers: [TaskGroupService]
 })
-export class AppComponent implements OnInit, OnDestroy, DoCheck {
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav')
   sidenav: MatSidenav;
 
   title = 'Orchestra';
-  principal: AuthenticatedPrincipal;
   mobileQuery: MediaQueryList;
   showSidenav = false;
   availableLanguages: Language[];
@@ -42,10 +41,6 @@ export class AppComponent implements OnInit, OnDestroy, DoCheck {
 
   private static isErrorPage(url: string): boolean {
     return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
-  }
-
-  getCurrentLanguage(): Language {
-    return this.i18nService.currentLanguage;
   }
 
   ngOnInit() {
@@ -64,17 +59,18 @@ export class AppComponent implements OnInit, OnDestroy, DoCheck {
     this.componentDestroyed.complete();
   }
 
-  ngDoCheck(): void {
-    if (!this.principal) {
-      this.principal = this.authenticationService.getPrincipal();
-    }
+  get currentLanguage(): Language {
+    return this.i18nService.currentLanguage;
+  }
+
+  get principal(): AuthenticatedPrincipal {
+    return this.authenticationService.getPrincipal();
   }
 
   onSignOutButtonClick() {
     this.authenticationService.signOut()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(() => {
-        this.principal = null;
         this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
       });
   }
