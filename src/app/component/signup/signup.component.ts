@@ -53,8 +53,8 @@ export class SignupComponent extends BaseSignComponent {
   }
 
   private onSignUp() {
-    this.signupForm.resetForm();
     this.alertService.info(this.i18nService.translate('email_confirmation_link_sent', {email: this.email}));
+    this.signupForm.resetForm();
   }
 
   private onSignUpError(response: any) {

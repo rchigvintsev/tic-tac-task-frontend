@@ -187,7 +187,7 @@ describe('SignupComponent', () => {
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
-      expect(alertService.info).toHaveBeenCalledWith(i18nService.translate('email_confirmation_link_sent'));
+      expect(alertService.info).toHaveBeenCalledWith('email_confirmation_link_sent');
     });
   });
 
