@@ -56,10 +56,7 @@ import {AlertComponent} from './component/fragment/alert/alert.component';
 import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {ConfigService} from './service/config.service';
-import {HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
-import {NotFoundErrorHandler} from './error/handler/not-found-error.handler';
-import {HTTP_ERROR_HANDLERS} from './error/handler/http-error.handler';
 import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
@@ -139,9 +136,7 @@ registerLocaleData(localeRu, 'ru');
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
-    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
-    {provide: HTTP_ERROR_HANDLERS, useClass: NotFoundErrorHandler, multi: true},
     CookieService
   ],
   bootstrap: [AppComponent],

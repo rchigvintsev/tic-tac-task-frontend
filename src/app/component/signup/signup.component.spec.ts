@@ -191,33 +191,10 @@ describe('SignupComponent', () => {
     });
   });
 
-  it('should show error message on sign up when server responded with 400 status code', () => {
-    const errorMessage = 'Bad request';
+  it('should show localized error message on sign up', () => {
+    const errorMessage = 'Very bad request';
     (authenticationService.signUp as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {errors: [errorMessage]}});
-    });
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice@mail.com';
-      component.fullName = 'Alice';
-      component.password = 'secret';
-      component.repeatedPassword = 'secret';
-
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
-      fixture.detectChanges();
-
-      component.onSignupFormSubmit();
-      expect(alertService.error).toHaveBeenCalledWith(errorMessage);
-    });
-  });
-
-  it('should show error message on sign up when server responded with 500 status code', () => {
-    const errorMessage = 'Something went wrong';
-    (authenticationService.signUp as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 500, error: {message: errorMessage}});
+      return throwError({status: 400, error: {localizedMessage: errorMessage}});
     });
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form

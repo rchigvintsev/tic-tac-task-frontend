@@ -251,7 +251,7 @@ describe('TaskDetailsComponent', () => {
 
   it('should display server validation error', () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {fieldErrors: {deadline: 'Must be valid'}}});
+      return throwError({status: 400, error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}});
     });
     fixture.whenStable().then(() => {
       component.taskFormModel.deadline = moment().add(1, 'days').toDate();

@@ -10,7 +10,6 @@ import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
-import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-signup',
@@ -58,10 +57,8 @@ export class SignupComponent extends BaseSignComponent {
   }
 
   private onSignUpError(response: any) {
-    if (HttpErrors.isBadRequest(response)) {
-      this.alertService.error(response.error.errors[0]);
-    } else if (HttpErrors.isInternalServerError(response)) {
-      this.alertService.error(response.error.message);
+    if (response.error.localizedMessage) {
+      this.alertService.error(response.error.localizedMessage);
     } else {
       this.onServiceCallError(response);
     }

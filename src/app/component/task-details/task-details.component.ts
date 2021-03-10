@@ -306,7 +306,8 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
   private handleBadRequestError(response: any) {
     if (response.error && response.error.fieldErrors) {
-      for (const fieldName of Object.keys(response.error.fieldErrors)) {
+      for (const fieldError of response.error.fieldErrors) {
+        const fieldName = fieldError.field;
         const controls = [];
         if (fieldName === 'deadline') {
           controls.push(this.taskDetailsForm.controls.deadlineDate);
@@ -319,7 +320,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
         }
 
         if (controls.length > 0) {
-          const message = response.error.fieldErrors[fieldName];
+          const message = fieldError.message;
           this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
           for (const control of controls) {
             control.setErrors({valid: message});
