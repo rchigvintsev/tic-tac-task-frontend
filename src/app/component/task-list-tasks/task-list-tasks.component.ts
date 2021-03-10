@@ -15,6 +15,7 @@ import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {Strings} from '../../util/strings';
 import {Task} from 'src/app/model/task';
+import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-task-list-tasks',
@@ -49,7 +50,13 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
         this.setTaskList(taskList);
         return this.taskListService.getTasks(taskList.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    ).subscribe(tasks => this.tasks = tasks, error => {
+      if (HttpErrors.isNotFound(error)) {
+        this.navigateToNotFoundErrorPage();
+      } else {
+        this.onServiceCallError.bind(this);
+      }
+    });
   }
 
 

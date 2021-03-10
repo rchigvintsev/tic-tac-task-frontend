@@ -15,6 +15,7 @@ import {TagService} from '../../service/tag.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {Strings} from '../../util/strings';
+import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-tag-tasks',
@@ -51,7 +52,13 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
         this.setTag(tag);
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+    ).subscribe(tasks => this.tasks = tasks, error => {
+      if (HttpErrors.isNotFound(error)) {
+        this.navigateToNotFoundErrorPage();
+      } else {
+        this.onServiceCallError.bind(this);
+      }
+    });
   }
 
   onTitleInputEscapeKeydown() {

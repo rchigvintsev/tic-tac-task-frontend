@@ -59,7 +59,7 @@ describe('RouteGuard', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('about', null)];
       snapshotMock.queryParams = {test: 'true'};
-      expect(guard.canActivate(snapshotMock, null).toString()).toBe('/en/about?test=true')
+      expect(guard.canActivate(snapshotMock, null).toString()).toBe('/en/about?test=true');
     });
   });
 
@@ -111,7 +111,7 @@ describe('RouteGuard', () => {
       guard = injector.get(OAuth2AuthorizationCallbackRouteGuard);
     });
 
-    it('should navigate to signin page when error is occurred', () => {
+    it('should navigate to signin page when error occurred', () => {
       const snapshotMock = new ActivatedRouteSnapshot();
       snapshotMock.url = [new UrlSegment('/', null)];
       snapshotMock.queryParams =  {error: 'true'};

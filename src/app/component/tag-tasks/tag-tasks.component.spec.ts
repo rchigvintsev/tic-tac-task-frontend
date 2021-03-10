@@ -2,7 +2,7 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -124,6 +124,14 @@ describe('TagTasksComponent', () => {
     fixture.whenStable().then(() => {
       component.onDeleteTagButtonClick();
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+    });
+  });
+
+  it('should navigate to "not-found" error page when tag is not found', () => {
+    tagService.getTag = jasmine.createSpy('getTag').and.callFake(() => throwError({status: 404}));
+    component.ngOnInit();
+    fixture.whenStable().then(() => {
+      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
     });
   });
 });

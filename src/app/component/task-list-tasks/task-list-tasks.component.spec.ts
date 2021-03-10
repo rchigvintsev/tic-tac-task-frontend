@@ -2,7 +2,7 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -146,6 +146,14 @@ describe('TaskListTasksComponent', () => {
     fixture.whenStable().then(() => {
       component.onDeleteTaskListButtonClick();
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
+    });
+  });
+
+  it('should navigate to "not-found" error page when task list is not found', () => {
+    taskListService.getTaskList = jasmine.createSpy('getTaskList').and.callFake(() => throwError({status: 404}));
+    component.ngOnInit();
+    fixture.whenStable().then(() => {
+      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
     });
   });
 

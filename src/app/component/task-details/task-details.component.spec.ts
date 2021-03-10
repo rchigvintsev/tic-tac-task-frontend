@@ -465,4 +465,12 @@ describe('TaskDetailsComponent', () => {
       expect(taskService.updateTask).toHaveBeenCalled();
     });
   });
+
+  it('should navigate to "not-found" error page when task is not found', () => {
+    taskService.getTask = jasmine.createSpy('getTask').and.callFake(() => throwError({status: 404}));
+    component.ngOnInit();
+    fixture.whenStable().then(() => {
+      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
+    });
+  });
 });

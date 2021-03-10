@@ -81,7 +81,13 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
 
-    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), this.onServiceCallError.bind(this));
+    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), error => {
+      if (HttpErrors.isNotFound(error)) {
+        this.navigateToNotFoundErrorPage();
+      } else {
+        this.onServiceCallError(error);
+      }
+    });
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
 
     this.taskGroupService.getSelectedTaskGroup()
@@ -388,6 +394,6 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   private navigateToCurrentTaskGroupPage() {
     const currentLang = this.i18nService.currentLanguage;
     const taskGroup = this.selectedTaskGroup || TaskGroup.TODAY;
-    this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value}).then();
+    this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value});
   }
 }

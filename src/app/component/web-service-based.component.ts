@@ -35,6 +35,11 @@ export class WebServiceBasedComponent {
 
   navigateToSigninPage() {
     const currentLang = this.i18nService.currentLanguage;
-    this.router.navigate([currentLang.code, 'signin']).then();
+    this.router.navigate([currentLang.code, 'signin']);
+  }
+
+  navigateToNotFoundErrorPage() {
+    const currentLang = this.i18nService.currentLanguage;
+    this.router.navigate([currentLang.code, 'error', '404']);
   }
 }
