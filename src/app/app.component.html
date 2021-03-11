@@ -21,7 +21,12 @@
       </div>
 
       <div *ngIf="principal" class="profile-info-container">
-        <img [src]="principal.getProfilePictureUrl()" alt="avatar" class="avatar right-margin-8"/>
+        <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
+             alt="avatar" class="avatar round right-margin-8"/>
+
+        <ng-template #identicon>
+          <svg [data-jdenticon-value]="principal.getEmail()" class="avatar right-margin-8"></svg>
+        </ng-template>
         <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
 
         <mat-menu #profileActions="matMenu">

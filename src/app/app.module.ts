@@ -33,6 +33,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {ColorBlockModule} from 'ngx-color/block';
+import {JDENTICON_CONFIG, NgxJdenticonModule} from 'ngx-jdenticon';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -132,11 +133,13 @@ registerLocaleData(localeRu, 'ru');
         useFactory: TranslateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    NgxJdenticonModule
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
+    {provide: JDENTICON_CONFIG, useValue: {backColor: '#fff'}},
     CookieService
   ],
   bootstrap: [AppComponent],

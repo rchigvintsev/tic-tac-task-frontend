@@ -66,13 +66,13 @@ describe('AppComponent', () => {
     expect(component.title).toEqual('Orchestra');
   });
 
-  it('should render title in a toolbar', () => {
+  it('should render title in toolbar', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.page > header > mat-toolbar > span').textContent).toContain('Orchestra');
   });
 
-  it('should render current user\'s name in a toolbar', () => {
+  it('should render current user\'s name in toolbar', () => {
     const principal = authenticationService.getPrincipal();
     fixture.detectChanges();
 
@@ -81,13 +81,24 @@ describe('AppComponent', () => {
     expect(element.textContent).toEqual(principal.getName());
   });
 
-  it('should render current user\'s avatar in a toolbar', () => {
+  it('should render current user\'s avatar in toolbar', () => {
     const principal = authenticationService.getPrincipal();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > img.avatar');
-    expect(element.getAttribute('src')).toEqual(principal.getProfilePictureUrl());
+    const element = compiled.querySelector('mat-toolbar > div.profile-info-container > img.avatar');
+    expect(element.getAttribute('src')).toBe(principal.getProfilePictureUrl());
+  });
+
+  it('should render user\'s identicon in toolbar when user does not have a profile picture URL', () => {
+    const principal = authenticationService.getPrincipal();
+    (principal as User).profilePictureUrl = null;
+    authenticationService.setPrincipal(principal);
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    const element = compiled.querySelector('mat-toolbar > div.profile-info-container > svg.avatar');
+    expect(element.getAttribute('data-jdenticon-value')).toBe(principal.getEmail());
   });
 
   it('should sign out on corresponding menu item select', () => {
@@ -110,7 +121,7 @@ describe('AppComponent', () => {
   });
 
   it('should hide sidenav when user is not authenticated', () => {
-    authenticationService.removePrincipal()
+    authenticationService.removePrincipal();
     component.onRouterEvent(new NavigationEnd(1, '/', null));
     expect(component.showSidenav).toBeFalsy();
   });

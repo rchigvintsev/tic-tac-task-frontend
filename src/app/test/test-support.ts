@@ -26,6 +26,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorBlockModule} from 'ngx-color/block';
+import {NgxJdenticonModule} from 'ngx-jdenticon';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -86,7 +87,8 @@ export class TestSupport {
         deps: [HttpClient]
       }
     }),
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    NgxJdenticonModule
   ];
 
   public static readonly DECLARATIONS = [
