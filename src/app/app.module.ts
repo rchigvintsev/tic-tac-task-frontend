@@ -51,6 +51,7 @@ import {PasswordsMatchValidatorDirective} from './validator/passwords-match.dire
 import {BaseSignComponent} from './component/fragment/base-sign/base-sign.component';
 import {SigninComponent} from './component/signin/signin.component';
 import {SignupComponent} from './component/signup/signup.component';
+import {PasswordResetComponent} from './component/password-reset/password-reset.component';
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
@@ -90,6 +91,7 @@ registerLocaleData(localeRu, 'ru');
     BaseSignComponent,
     SigninComponent,
     SignupComponent,
+    PasswordResetComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     AlertComponent,

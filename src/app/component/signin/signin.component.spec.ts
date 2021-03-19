@@ -174,6 +174,16 @@ describe('SigninComponent', () => {
     });
   });
 
+  it('should render link to password reset page', () => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      const signupLink = compiled.querySelector('.sign-container mat-card a[href="/en/account/password/reset"]');
+      expect(signupLink).toBeTruthy();
+      expect(signupLink.textContent.trim()).toBe('forgot_password');
+    });
+  });
+
   function setInputValue(inputId: string, value: string) {
     const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
     emailInput.value = value;

@@ -35,6 +35,7 @@ import {AlertComponent} from '../component/fragment/alert/alert.component';
 import {BaseSignComponent} from '../component/fragment/base-sign/base-sign.component';
 import {SigninComponent} from '../component/signin/signin.component';
 import {SignupComponent} from '../component/signup/signup.component';
+import {PasswordResetComponent} from '../component/password-reset/password-reset.component';
 import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
 import {TagsComponent} from '../component/fragment/tags/tags.component';
 import {TaskListsComponent} from '../component/fragment/task-lists/task-lists.component';
@@ -97,6 +98,7 @@ export class TestSupport {
     BaseSignComponent,
     SigninComponent,
     SignupComponent,
+    PasswordResetComponent,
     TaskCommentsComponent,
     TagsComponent,
     TaskListsComponent,

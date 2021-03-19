@@ -28,8 +28,10 @@
   "page_not_found_description": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
   "sign_in_prompt": "Please sign in",
   "sign_up_prompt": "Please sign up",
+  "password_reset": "Password reset",
   "sign_in": "Sign in",
   "sign_up": "Sign up",
+  "submit": "Submit",
   "sign_in_proposal": "Sign in",
   "sign_up_proposal": "Sign up",
   "sign_in_with": "Sign in with",
@@ -67,5 +69,6 @@
   "email_confirmed": "Your email has been confirmed. Please use it to sign in.",
   "email_confirmation_error": "Something went wrong during email confirmation",
   "have_no_account_yet": "Have no account yet?",
-  "already_have_account": "Already have an account?"
+  "already_have_account": "Already have an account?",
+  "forgot_password": "Forgot password?"
 }
