@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {Observable, Subject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
@@ -8,11 +8,7 @@ import {ConfigService} from './config.service';
 import {Tag} from '../model/tag';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
-
-const commonHttpOptions = {withCredentials: true};
-const jsonContentOptions = Object.assign({
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-}, commonHttpOptions);
+import {HttpContentOptions} from '../util/http-content-options';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +39,7 @@ export class TagService {
   }
 
   getTags(): Observable<Tag[]> {
-    return this.http.get<any>(this.baseUrl, commonHttpOptions).pipe(
+    return this.http.get<any>(this.baseUrl, {withCredentials: true}).pipe(
       map(response => {
         const tags = [];
         for (const json of response) {
@@ -55,7 +51,7 @@ export class TagService {
   }
 
   getTag(id: number): Observable<Tag> {
-    return this.http.get<any>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+    return this.http.get<any>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
       map(response => {
         return new Tag().deserialize(response);
       })
@@ -66,7 +62,7 @@ export class TagService {
     if (!tag) {
       throw new Error('Tag must not be null or undefined');
     }
-    return this.http.post<Tag>(this.baseUrl, tag.serialize(), jsonContentOptions).pipe(
+    return this.http.post<Tag>(this.baseUrl, tag.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new Tag().deserialize(response)),
       tap(createdTag => this.notifyTagCreated(createdTag))
     );
@@ -76,7 +72,7 @@ export class TagService {
     if (!tag) {
       throw new Error('Tag must not be null or undefined');
     }
-    return this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), jsonContentOptions).pipe(
+    return this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new Tag().deserialize(response)),
       tap(updatedTag => this.notifyTagUpdated(updatedTag))
     );
@@ -86,14 +82,14 @@ export class TagService {
     if (!tag) {
       throw new Error('Tag must not be null or undefined');
     }
-    return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, commonHttpOptions).pipe(
+    return this.http.delete<any>(`${this.baseUrl}/${tag.id}`, {withCredentials: true}).pipe(
       tap(_ => this.notifyTagDeleted(tag))
     );
   }
 
   getUncompletedTasks(tagId: number, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
     const url = `${this.baseUrl}/${tagId}/tasks/uncompleted?${pageRequest.toQueryParameters()}`;
-    return this.http.get<any>(url, commonHttpOptions).pipe(
+    return this.http.get<any>(url, {withCredentials: true}).pipe(
       map(response => {
         const tasks = [];
         for (const json of response) {

@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {EMPTY, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
-
-const commonHttpOptions = {withCredentials: true};
-const postOptions = Object.assign({headers: new HttpHeaders({'Content-Type': 'application/json'})}, commonHttpOptions);
+import {HttpContentOptions} from '../util/http-content-options';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +19,8 @@ export class TaskCommentService {
   }
 
   updateComment(comment: TaskComment): Observable<TaskComment> {
-    return this.http.put<TaskComment>(`${this.baseUrl}/${comment.id}`, comment.serialize(), postOptions).pipe(
+    const url = `${this.baseUrl}/${comment.id}`;
+    return this.http.put<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
@@ -29,6 +28,6 @@ export class TaskCommentService {
   }
 
   deleteComment(comment: TaskComment): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${comment.id}`, commonHttpOptions).pipe(map(() => EMPTY));
+    return this.http.delete<any>(`${this.baseUrl}/${comment.id}`, {withCredentials: true}).pipe(map(() => EMPTY));
   }
 }

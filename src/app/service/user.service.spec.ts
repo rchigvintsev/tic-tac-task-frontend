@@ -50,4 +50,11 @@ describe('TaskListService', () => {
     expect(request.request.method).toBe('PUT');
     request.flush(null);
   });
+
+  it('should reset password', done => {
+    userService.resetPassword('alice@mail.com').subscribe(_ => done());
+    const request = httpMock.expectOne(`${userService.baseUrl}/password/reset`);
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+  });
 });

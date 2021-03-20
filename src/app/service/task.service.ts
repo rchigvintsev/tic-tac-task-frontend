@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -12,11 +12,7 @@ import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
-
-const commonHttpOptions = {withCredentials: true};
-const jsonContentOptions = Object.assign({
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-}, commonHttpOptions);
+import {HttpContentOptions} from '../util/http-content-options';
 
 @Injectable({
   providedIn: 'root'
@@ -107,7 +103,7 @@ export class TaskService {
 
     const url = `${this.baseUrl}/${path}?${params}`;
 
-    return this.http.get<any>(url, commonHttpOptions).pipe(
+    return this.http.get<any>(url, {withCredentials: true}).pipe(
       map(response => {
         const tasks = [];
         for (const json of response) {
@@ -119,7 +115,7 @@ export class TaskService {
   }
 
   getTask(id: number): Observable<Task> {
-    return this.http.get<Task>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+    return this.http.get<Task>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
       map(response => new Task().deserialize(response))
     );
   }
@@ -128,7 +124,7 @@ export class TaskService {
     if (!task) {
       throw new Error('Task must not be null or undefined');
     }
-    return this.http.post<Task>(this.baseUrl, task.serialize(), jsonContentOptions).pipe(
+    return this.http.post<Task>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -139,7 +135,7 @@ export class TaskService {
     if (!task) {
       throw new Error('Task must not be null or undefined');
     }
-    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), jsonContentOptions).pipe(
+    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
       map(response => {
         return new Task().deserialize(response);
       })
@@ -150,18 +146,18 @@ export class TaskService {
     if (!task) {
       throw new Error('Task must not be null or undefined');
     }
-    return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, commonHttpOptions);
+    return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, {withCredentials: true});
   }
 
   deleteTask(task: Task): Observable<any> {
     if (!task) {
       throw new Error('Task must not be null or undefined');
     }
-    return this.http.delete<any>(`${this.baseUrl}/${task.id}`, commonHttpOptions);
+    return this.http.delete<any>(`${this.baseUrl}/${task.id}`, {withCredentials: true});
   }
 
   getTags(taskId: number): Observable<Tag[]> {
-    return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, commonHttpOptions).pipe(
+    return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, {withCredentials: true}).pipe(
       map(response => {
         const tags = [];
         for (const json of response) {
@@ -173,16 +169,16 @@ export class TaskService {
   }
 
   assignTag(taskId: number, tagId: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, null, commonHttpOptions);
+    return this.http.put<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, null, {withCredentials: true});
   }
 
   removeTag(taskId: number, tagId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, commonHttpOptions);
+    return this.http.delete<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, {withCredentials: true});
   }
 
   getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
     const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
-    return this.http.get<TaskComment[]>(url, commonHttpOptions).pipe(
+    return this.http.get<TaskComment[]>(url, {withCredentials: true}).pipe(
       map(response => {
         const comments = [];
         for (const json of response) {
@@ -198,7 +194,7 @@ export class TaskService {
       throw new Error('Task comment must not be null or undefined');
     }
     const url = `${this.baseUrl}/${taskId}/comments`;
-    return this.http.post<TaskComment>(url, comment.serialize(), jsonContentOptions).pipe(
+    return this.http.post<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
       map(response => {
         return new TaskComment().deserialize(response);
       })
@@ -214,6 +210,6 @@ export class TaskService {
       url += `?${params}`;
     }
 
-    return this.http.get<number>(url, commonHttpOptions);
+    return this.http.get<number>(url, {withCredentials: true});
   }
 }

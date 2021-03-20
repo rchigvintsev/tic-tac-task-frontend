@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
@@ -9,17 +9,9 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {User} from '../model/user';
 import {ConfigService} from './config.service';
 import {AuthenticatedPrincipal} from '../security/authenticated-principal';
+import {HttpContentOptions} from '../util/http-content-options';
 
 const PRINCIPAL_KEY = 'principal';
-
-const jsonContentOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-  withCredentials: true
-};
-const formContentOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'}),
-  withCredentials: true
-};
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +68,7 @@ export class AuthenticationService {
 
   signIn(username: string, password: string): Observable<any> {
     const body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, formContentOptions);
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, HttpContentOptions.FORM);
   }
 
   signUp(email: string, username: string, password: string): Observable<User> {
@@ -91,13 +83,13 @@ export class AuthenticationService {
     user.email = email;
     user.fullName = username;
     user.password = password;
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/users`, user.serialize(), jsonContentOptions).pipe(
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/users`, user.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new User().deserialize(response))
     );
   }
 
   signOut(): Observable<any> {
-    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, jsonContentOptions)
+    return this.httpClient.post<any>(`${this.config.apiBaseUrl}/logout`, null, HttpContentOptions.JSON)
       .pipe(
         tap(() => {
           this.removePrincipal();

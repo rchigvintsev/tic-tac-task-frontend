@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {Observable, Subject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
@@ -8,11 +8,7 @@ import {ConfigService} from './config.service';
 import {TaskList} from '../model/task-list';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
-
-const commonHttpOptions = {withCredentials: true};
-const jsonContentOptions = Object.assign({
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-}, commonHttpOptions);
+import {HttpContentOptions} from '../util/http-content-options';
 
 @Injectable({providedIn: 'root'})
 export class TaskListService {
@@ -47,7 +43,7 @@ export class TaskListService {
   }
 
   getUncompletedTaskLists(): Observable<TaskList[]> {
-    return this.http.get<any>(`${this.baseUrl}/uncompleted`, commonHttpOptions).pipe(
+    return this.http.get<any>(`${this.baseUrl}/uncompleted`, {withCredentials: true}).pipe(
       map(response => {
         const taskLists = [];
         for (const json of response) {
@@ -59,7 +55,7 @@ export class TaskListService {
   }
 
   getTaskList(id: number): Observable<TaskList> {
-    return this.http.get<TaskList>(`${this.baseUrl}/${id}`, commonHttpOptions).pipe(
+    return this.http.get<TaskList>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
       map(response => new TaskList().deserialize(response))
     );
   }
@@ -68,7 +64,7 @@ export class TaskListService {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');
     }
-    return this.http.post<TaskList>(this.baseUrl, taskList.serialize(), jsonContentOptions).pipe(
+    return this.http.post<TaskList>(this.baseUrl, taskList.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new TaskList().deserialize(response)),
       tap(createdTaskList => this.notifyTaskListCreated(createdTaskList))
     );
@@ -78,7 +74,8 @@ export class TaskListService {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');
     }
-    return this.http.put<TaskList>(`${this.baseUrl}/${taskList.id}`, taskList.serialize(), jsonContentOptions).pipe(
+    const url = `${this.baseUrl}/${taskList.id}`;
+    return this.http.put<TaskList>(url, taskList.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new TaskList().deserialize(response)),
       tap(updatedTaskList => this.notifyTaskListUpdated(updatedTaskList))
     );
@@ -88,7 +85,7 @@ export class TaskListService {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');
     }
-    return this.http.put<any>(`${this.baseUrl}/completed/${taskList.id}`, null, commonHttpOptions).pipe(
+    return this.http.put<any>(`${this.baseUrl}/completed/${taskList.id}`, null, {withCredentials: true}).pipe(
       tap(_ => {
         taskList.completed = true;
         this.notifyTaskListCompleted(taskList);
@@ -100,14 +97,14 @@ export class TaskListService {
     if (!taskList) {
       throw new Error('Task list must not be null or undefined');
     }
-    return this.http.delete<any>(`${this.baseUrl}/${taskList.id}`, commonHttpOptions).pipe(
+    return this.http.delete<any>(`${this.baseUrl}/${taskList.id}`, {withCredentials: true}).pipe(
       tap(_ => this.notifyTaskListDeleted(taskList))
     );
   }
 
   getTasks(taskListId: number, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
     const url = `${this.baseUrl}/${taskListId}/tasks?${pageRequest.toQueryParameters()}`;
-    return this.http.get<Task[]>(url, commonHttpOptions).pipe(
+    return this.http.get<Task[]>(url, {withCredentials: true}).pipe(
       map(response => {
         const tasks = [];
         for (const json of response) {
