@@ -65,6 +65,7 @@
   "new_task_list": "New list",
   "task_list_name": "Task list name",
   "email_confirmation_link_sent": "We have just sent an email confirmation link to \"${email}\". Please check your inbox or spam folder. It can take up to 10 minutes to receive this message.",
+  "password_reset_confirmation_link_sent": "We have just sent a password reset confirmation link to \"${email}\".",
   "invalid_email_confirmation_params": "Could not confirm email: required parameters are missing",
   "email_confirmed": "Your email has been confirmed. Please use it to sign in.",
   "email_confirmation_error": "Something went wrong during email confirmation",
