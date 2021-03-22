@@ -1,6 +1,5 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
-import {By} from '@angular/platform-browser';
 
 import {of, throwError} from 'rxjs';
 
@@ -66,10 +65,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -85,10 +84,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -104,10 +103,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -123,10 +122,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -142,10 +141,10 @@ describe('SignupComponent', () => {
       component.password = ' ';
       component.repeatedPassword = ' ';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -161,10 +160,10 @@ describe('SignupComponent', () => {
       component.password = '12345';
       component.repeatedPassword = '54321';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -180,10 +179,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -203,10 +202,10 @@ describe('SignupComponent', () => {
       component.password = 'secret';
       component.repeatedPassword = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('full_name_input', component.fullName);
-      setInputValue('password_input', component.password);
-      setInputValue('password_repeat_input', component.repeatedPassword);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
+      TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
       fixture.detectChanges();
 
       component.onSignupFormSubmit();
@@ -223,10 +222,4 @@ describe('SignupComponent', () => {
       expect(signupLink.textContent.trim()).toBe('sign_in_proposal');
     });
   });
-
-  function setInputValue(inputId: string, value: string) {
-    const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
-    emailInput.value = value;
-    emailInput.dispatchEvent(new Event('input'));
-  }
 });

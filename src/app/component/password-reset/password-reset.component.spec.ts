@@ -1,5 +1,4 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
@@ -52,7 +51,7 @@ describe('PasswordResetComponent', () => {
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
-      setInputValue('email_input', component.email);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
       fixture.detectChanges();
 
       component.onPasswordResetFormSubmit();
@@ -64,7 +63,7 @@ describe('PasswordResetComponent', () => {
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = '';
-      setInputValue('email_input', component.email);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
       fixture.detectChanges();
 
       component.onPasswordResetFormSubmit();
@@ -76,7 +75,7 @@ describe('PasswordResetComponent', () => {
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
-      setInputValue('email_input', component.email);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
       fixture.detectChanges();
 
       component.onPasswordResetFormSubmit();
@@ -84,9 +83,25 @@ describe('PasswordResetComponent', () => {
     });
   });
 
-  function setInputValue(inputId: string, value: string) {
-    const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
-    emailInput.value = value;
-    emailInput.dispatchEvent(new Event('input'));
-  }
+  it('should render link to signin page', () => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      const selector = '.password-reset-container mat-card mat-card-footer a[href="/en/signin"]';
+      const signinLink = compiled.querySelector(selector);
+      expect(signinLink).toBeTruthy();
+      expect(signinLink.textContent.trim()).toBe('sign_in');
+    });
+  });
+
+  it('should render link to signup page', () => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+      const selector = '.password-reset-container mat-card mat-card-footer a[href="/en/signup"]';
+      const signupLink = compiled.querySelector(selector);
+      expect(signupLink).toBeTruthy();
+      expect(signupLink.textContent.trim()).toBe('sign_up');
+    });
+  });
 });

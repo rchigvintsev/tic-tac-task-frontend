@@ -1,6 +1,5 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
-import {By} from '@angular/platform-browser';
 
 import {of, throwError} from 'rxjs';
 
@@ -79,8 +78,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -94,8 +93,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -109,8 +108,8 @@ describe('SigninComponent', () => {
       component.email = '';
       component.password = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -124,8 +123,8 @@ describe('SigninComponent', () => {
       component.email = 'alice';
       component.password = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -139,8 +138,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = ' ';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -155,8 +154,8 @@ describe('SigninComponent', () => {
       component.email = 'alice@mail.com';
       component.password = 'secret';
 
-      setInputValue('email_input', component.email);
-      setInputValue('password_input', component.password);
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      TestSupport.setInputValue(fixture, 'password_input', component.password);
       fixture.detectChanges();
 
       component.onSigninFormSubmit();
@@ -183,10 +182,4 @@ describe('SigninComponent', () => {
       expect(signupLink.textContent.trim()).toBe('forgot_password');
     });
   });
-
-  function setInputValue(inputId: string, value: string) {
-    const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
-    emailInput.value = value;
-    emailInput.dispatchEvent(new Event('input'));
-  }
 });

@@ -21,6 +21,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {By} from '@angular/platform-browser';
+import {ComponentFixture} from '@angular/core/testing';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
@@ -117,4 +119,10 @@ export class TestSupport {
     NotBlankValidatorDirective,
     PasswordsMatchValidatorDirective
   ];
+
+  static setInputValue(fixture: ComponentFixture<any>, inputId: string, value: string) {
+    const emailInput = fixture.debugElement.query(By.css('#' + inputId)).nativeElement;
+    emailInput.value = value;
+    emailInput.dispatchEvent(new Event('input'));
+  }
 }
