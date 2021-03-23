@@ -37,7 +37,7 @@ export const routes: Routes = [
     canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
   {path: 'account/password/reset', component: PasswordResetComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
-  {path: 'user/email/confirmation', component: DummyComponent, canActivate: [EmailConfirmationCallbackRouteGuard]},
+  {path: 'account/email/confirmation', component: DummyComponent, canActivate: [EmailConfirmationCallbackRouteGuard]},
   {path: 'error/404', component: ErrorNotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];

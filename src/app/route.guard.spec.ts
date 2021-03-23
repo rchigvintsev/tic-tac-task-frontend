@@ -13,6 +13,7 @@ import {
   EmailConfirmationCallbackRouteGuard,
   LocalizedRouteGuard,
   OAuth2AuthorizationCallbackRouteGuard,
+  PasswordResetConfirmationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
 import {AuthenticationService} from './service/authentication.service';
@@ -162,7 +163,7 @@ describe('RouteGuard', () => {
 
     it('should navigate to signin page with error when query parameter "userId" is missing', done => {
       const snapshotMock = new ActivatedRouteSnapshot();
-      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       snapshotMock.queryParams = {token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
       guard.canActivate(snapshotMock, null).subscribe(urlTree => {
         expect(urlTree.toString()).toBe('/en/signin?error=true&message=invalid_email_confirmation_params');
@@ -172,7 +173,7 @@ describe('RouteGuard', () => {
 
     it('should navigate to signin page with error when query parameter "token" is missing', done => {
       const snapshotMock = new ActivatedRouteSnapshot();
-      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       snapshotMock.queryParams = {userId: '1'};
       guard.canActivate(snapshotMock, null).subscribe(urlTree => {
         expect(urlTree.toString()).toBe('/en/signin?error=true&message=invalid_email_confirmation_params');
@@ -185,7 +186,7 @@ describe('RouteGuard', () => {
         .and.callFake(() => throwError('Something went wrong'));
 
       const snapshotMock = new ActivatedRouteSnapshot();
-      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       const userId = 1;
       const token = '4b1f7955-a406-4d36-8cbe-d6c61f39e27d';
       snapshotMock.queryParams = {userId, token};
@@ -199,7 +200,7 @@ describe('RouteGuard', () => {
       userService.confirmEmail = jasmine.createSpy('confirmEmail').and.callFake(() => of(true));
 
       const snapshotMock = new ActivatedRouteSnapshot();
-      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
       guard.canActivate(snapshotMock, null).subscribe(urlTree => {
         expect(urlTree.toString()).toBe('/en/signin?error=false&message=email_confirmed');
@@ -212,12 +213,43 @@ describe('RouteGuard', () => {
         .and.callFake(() => throwError('Something went wrong'));
 
       const snapshotMock = new ActivatedRouteSnapshot();
-      snapshotMock.url = [new UrlSegment('user/email/confirmation', null)];
+      snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
       guard.canActivate(snapshotMock, null).subscribe(urlTree => {
         expect(urlTree.toString()).toBe('/en/signin?error=true&message=email_confirmation_error');
         done();
       });
+    });
+  });
+
+  describe('PasswordResetConfirmationCallback', () => {
+    beforeEach(() => {
+      guard = injector.get(PasswordResetConfirmationCallbackRouteGuard);
+    });
+
+    it('should navigate to signin page with error when query parameter "userId" is missing', () => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('account/password/reset/confirmation', null)];
+      snapshotMock.queryParams = {token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
+      expect(guard.canActivate(snapshotMock, null)).toBeFalsy();
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'],
+        {queryParams: {error: true, message: 'invalid_password_reset_confirmation_params'}});
+    });
+
+    it('should navigate to signin page with error when query parameter "token" is missing', () => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('account/password/reset/confirmation', null)];
+      snapshotMock.queryParams = {userId: '1'};
+      expect(guard.canActivate(snapshotMock, null)).toBeFalsy();
+      expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'],
+        {queryParams: {error: true, message: 'invalid_password_reset_confirmation_params'}});
+    });
+
+    it('should allow access', () => {
+      const snapshotMock = new ActivatedRouteSnapshot();
+      snapshotMock.url = [new UrlSegment('account/password/reset/confirmation', null)];
+      snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
+      expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
     });
   });
 });

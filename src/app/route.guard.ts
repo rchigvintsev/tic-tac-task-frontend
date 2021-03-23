@@ -99,6 +99,23 @@ export class EmailConfirmationCallbackRouteGuard implements CanActivate {
 }
 
 @Injectable({providedIn: 'root'})
+export class PasswordResetConfirmationCallbackRouteGuard implements CanActivate {
+  constructor(private i18nService: I18nService, private router: Router) {
+  }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const userId = parseInt(route.queryParamMap.get('userId'), 10);
+    const token = route.queryParamMap.get('token');
+    if (!userId || !token) {
+      this.router.navigate([this.i18nService.currentLanguage.code, 'signin'],
+        {queryParams: {error: true, message: 'invalid_password_reset_confirmation_params'}});
+      return false;
+    }
+    return true;
+  }
+}
+
+@Injectable({providedIn: 'root'})
 export class UnauthenticatedOnlyRouteGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService,
               private i18nService: I18nService,
@@ -107,7 +124,7 @@ export class UnauthenticatedOnlyRouteGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authenticationService.isUserSignedIn()) {
-      this.router.navigate([this.i18nService.currentLanguage.code]).then();
+      this.router.navigate([this.i18nService.currentLanguage.code]);
       return false;
     }
     return true;
@@ -125,7 +142,7 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
     if (this.authenticationService.isUserSignedIn()) {
       return true;
     }
-    this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
+    this.router.navigate([this.i18nService.currentLanguage.code, 'signin']);
     return false;
   }
 }
