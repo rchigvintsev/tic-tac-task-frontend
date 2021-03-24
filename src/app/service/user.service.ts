@@ -27,7 +27,7 @@ export class UserService {
   }
 
   confirmEmail(userId: number, token: string): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${userId}/email/confirmation/${token}`, null, {withCredentials: true});
+    return this.http.post<any>(`${this.baseUrl}/${userId}/email/confirmation/${token}`, null, {withCredentials: true});
   }
 
   resetPassword(email: string): Observable<any> {
@@ -37,5 +37,11 @@ export class UserService {
 
     const body = 'email=' + encodeURIComponent(email);
     return this.http.post<any>(`${this.baseUrl}/password/reset`, body, HttpContentOptions.FORM);
+  }
+
+  confirmPasswordReset(userId: number, token: string, password: string) {
+    const url = `${this.baseUrl}/${userId}/password/reset/confirmation/${token}`;
+    const body = 'password=' + encodeURIComponent(password);
+    return this.http.post<any>(url, body, HttpContentOptions.FORM);
   }
 }

@@ -6,7 +6,7 @@ import {ConfigService} from './config.service';
 import {UserService} from './user.service';
 import {User} from '../model/user';
 
-describe('TaskListService', () => {
+describe('UserService', () => {
   let httpMock: HttpTestingController;
   let userService: UserService;
 
@@ -47,13 +47,23 @@ describe('TaskListService', () => {
     const token = 'K1Mb2ByFcfYndPmuFijB';
     userService.confirmEmail(userId, token).subscribe(_ => done());
     const request = httpMock.expectOne(`${userService.baseUrl}/${userId}/email/confirmation/${token}`);
-    expect(request.request.method).toBe('PUT');
+    expect(request.request.method).toBe('POST');
     request.flush(null);
   });
 
   it('should reset password', done => {
     userService.resetPassword('alice@mail.com').subscribe(_ => done());
     const request = httpMock.expectOne(`${userService.baseUrl}/password/reset`);
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+  });
+
+  it('should confirm password reset', done => {
+    const userId = 1;
+    const token = 'K1Mb2ByFcfYndPmuFijB';
+    const password = 'qwerty';
+    userService.confirmPasswordReset(userId, token, password).subscribe(_ => done());
+    const request = httpMock.expectOne(`${userService.baseUrl}/${userId}/password/reset/confirmation/${token}`);
     expect(request.request.method).toBe('POST');
     request.flush(null);
   });
