@@ -62,8 +62,7 @@ describe('SignupComponent', () => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
       component.fullName = 'Alice';
-      component.password = 'secret';
-      component.repeatedPassword = 'secret';
+      component.repeatedPassword = component.password = 'secret';
 
       TestSupport.setInputValue(fixture, 'email_input', component.email);
       TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
@@ -138,8 +137,7 @@ describe('SignupComponent', () => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';
       component.fullName = 'Alice';
-      component.password = ' ';
-      component.repeatedPassword = ' ';
+      component.repeatedPassword = component.password = ' ';
 
       TestSupport.setInputValue(fixture, 'email_input', component.email);
       TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);

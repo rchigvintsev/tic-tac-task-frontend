@@ -1,6 +1,6 @@
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {TestSupport} from '../../test/test-support';
 import {PasswordResetComponent} from './password-reset.component';
@@ -34,6 +34,7 @@ describe('PasswordResetComponent', () => {
 
     alertService = injector.get(AlertService);
     spyOn(alertService, 'info').and.stub();
+    spyOn(alertService, 'error').and.stub();
 
     userService = injector.get(UserService);
     spyOn(userService, 'resetPassword').and.callFake(_ => of(true));
@@ -80,6 +81,39 @@ describe('PasswordResetComponent', () => {
 
       component.onPasswordResetFormSubmit();
       expect(alertService.info).toHaveBeenCalledWith(i18nService.translate('password_reset_confirmation_link_sent'));
+    });
+  });
+
+  it('should show localized error message on password reset error', () => {
+    fixture.whenStable().then(() => {
+      const errorMessage = 'Very bad request';
+      (userService.resetPassword as jasmine.Spy).and.callFake(() => {
+        return throwError({status: 400, error: {localizedMessage: errorMessage}});
+      });
+
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      fixture.detectChanges();
+
+      component.onPasswordResetFormSubmit();
+      expect(alertService.error).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
+  it('should show error message on password reset error', () => {
+    fixture.whenStable().then(() => {
+      (userService.resetPassword as jasmine.Spy).and.callFake(() => {
+        return throwError({status: 500, error: {message: 'Something went wrong'}});
+      });
+
+      // For some reason two-way binding does not work in tests when input is placed within form
+      component.email = 'alice@mail.com';
+      TestSupport.setInputValue(fixture, 'email_input', component.email);
+      fixture.detectChanges();
+
+      component.onPasswordResetFormSubmit();
+      expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('password_reset_confirmation_error'));
     });
   });
 

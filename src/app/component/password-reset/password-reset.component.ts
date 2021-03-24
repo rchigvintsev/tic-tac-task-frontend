@@ -35,12 +35,21 @@ export class PasswordResetComponent extends WebServiceBasedComponent implements 
   onPasswordResetFormSubmit() {
     if (this.passwordResetForm.valid) {
       this.userService.resetPassword(this.email)
-        .subscribe(_ => this.onPasswordReset(), error => this.onServiceCallError(error));
+        .subscribe(_ => this.onPasswordReset(), response => this.onPasswordResetError(response));
     }
   }
 
   private onPasswordReset() {
     this.alertService.info(this.i18nService.translate('password_reset_confirmation_link_sent', {email: this.email}));
     this.passwordResetForm.resetForm();
+  }
+
+  private onPasswordResetError(response: any) {
+    if (response.error.localizedMessage) {
+      this.alertService.error(response.error.localizedMessage);
+    } else {
+      this.alertService.error(this.i18nService.translate('password_reset_confirmation_error'));
+    }
+    this.onServiceCallError(response);
   }
 }
