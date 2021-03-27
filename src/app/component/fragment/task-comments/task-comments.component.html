@@ -35,16 +35,20 @@
           <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
         </div>
 
-        <div class="header-buttons" [hidden]="comment.id !== selectedComment?.id">
-          <a mat-mini-fab class="mat-micro-fab" color="primary" aria-label="Edit comment button"
-             (click)="onEditCommentButtonClick(comment)">
-            <mat-icon class="edit-icon" [inline]="false">edit_circle_outline</mat-icon>
-          </a>
+        <div class="comment-menu-wrapper">
+          <button mat-icon-button aria-label="Task comment menu" [matMenuTriggerFor]="taskCommentMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
 
-          <a mat-mini-fab class="mat-micro-fab" color="warn" aria-label="Delete comment button"
-             (click)="onDeleteCommentButtonClick(comment)">
-            <mat-icon class="delete-icon" [inline]="false">delete_circle_outline</mat-icon>
-          </a>
+          <mat-menu #taskCommentMenu="matMenu">
+            <button mat-menu-item (click)="onEditCommentButtonClick(comment)">
+              {{ 'edit' | translate }}
+            </button>
+
+            <button mat-menu-item (click)="onDeleteCommentButtonClick(comment)">
+              {{ 'delete' | translate }}
+            </button>
+          </mat-menu>
         </div>
       </div>
 
