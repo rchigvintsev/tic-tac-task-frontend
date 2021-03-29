@@ -11,10 +11,10 @@ import {AuthenticationService} from '../../service/authentication.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
+import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {Strings} from '../../util/strings';
-import {Task} from 'src/app/model/task';
 import {HttpErrors} from '../../util/http-errors';
 
 @Component({
@@ -58,7 +58,6 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       }
     });
   }
-
 
   onTitleInputEscapeKeydown() {
     if (this.taskList) {
@@ -105,16 +104,16 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     });
   }
 
+  protected afterTaskCreate(task: Task) {
+    this.taskListService.addTask(this.taskList, task)
+      .subscribe(_ => super.afterTaskCreate(task), errorResponse => this.onServiceCallError(errorResponse));
+  }
+
   protected onTitleEditingEnd() {
     if (!Strings.isBlank(this.title) && this.title !== this.taskList.name) {
       this.taskList.name = this.title;
       this.saveTaskList();
     }
-  }
-
-  protected beforeTaskCreate(task: Task) {
-    super.beforeTaskCreate(task);
-    task.taskListId = this.taskList.id;
   }
 
   private setTaskList(taskList: TaskList) {

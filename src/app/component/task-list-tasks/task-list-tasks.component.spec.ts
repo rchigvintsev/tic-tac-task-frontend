@@ -71,6 +71,10 @@ describe('TaskListTasksComponent', () => {
     spyOn(taskListService, 'updateTaskList').and.callFake(t => of(t));
     spyOn(taskListService, 'completeTaskList').and.returnValue(of(true));
     spyOn(taskListService, 'deleteTaskList').and.returnValue(of(true));
+    spyOn(taskListService, 'addTask').and.callFake((list, task) => {
+      task.taskListId = list.id;
+      return of(true);
+    });
 
     taskService = injector.get(TaskService);
     spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));
@@ -157,7 +161,7 @@ describe('TaskListTasksComponent', () => {
     });
   });
 
-  it('should put new task on current task list', () => {
+  it('should include new task in current task list', () => {
     const taskTitle = 'New task';
     fixture.whenStable().then(() => {
       component.taskFormModel.title = taskTitle;

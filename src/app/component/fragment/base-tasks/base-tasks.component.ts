@@ -92,6 +92,12 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
     task.status = TaskStatus.PROCESSED;
   }
 
+  protected afterTaskCreate(task: Task) {
+    this.tasks.push(task);
+    this.taskForm.resetForm();
+    this.taskService.updateTaskCounters();
+  }
+
   private beginTitleEditing() {
     this.titleEditing = true;
     setTimeout(() => this.titleElement.nativeElement.focus(), 0);
@@ -106,11 +112,8 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
       this.beforeTaskCreate(this.taskFormModel);
-      this.taskService.createTask(this.taskFormModel).subscribe(task => {
-        this.tasks.push(task);
-        this.taskForm.resetForm();
-        this.taskService.updateTaskCounters();
-      }, this.onServiceCallError.bind(this));
+      this.taskService.createTask(this.taskFormModel)
+        .subscribe(task => this.afterTaskCreate(task), this.onServiceCallError.bind(this));
     }
   }
 

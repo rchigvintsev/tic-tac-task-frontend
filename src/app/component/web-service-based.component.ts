@@ -24,12 +24,12 @@ export class WebServiceBasedComponent {
     }
   }
 
-  onServiceCallError(error) {
-    if (HttpErrors.isUnauthorized(error)) {
+  onServiceCallError(errorResponse) {
+    if (HttpErrors.isUnauthorized(errorResponse)) {
       this.authenticationService.removePrincipal();
       this.navigateToSigninPage();
     } else {
-      this.logError(error);
+      this.logError(errorResponse);
     }
   }
 
