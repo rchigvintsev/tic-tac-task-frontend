@@ -172,4 +172,24 @@ describe('TaskListService', () => {
     expect(request.request.method).toBe('GET');
     request.flush(testTasks.map(task => task.serialize()));
   });
+
+  it('should add task', done => {
+    const taskList = new TaskList().deserialize({id: 1, name: 'Test task list', completed: false});
+    const task = new Task().deserialize({id: 2, title: 'Test task'});
+    taskListService.addTask(taskList, task).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskListService.baseUrl}/${taskList.id}/tasks/${task.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(null);
+  });
+
+  it('should throw error on task add when task list is null', () => {
+    const task = new Task().deserialize({id: 2, title: 'Test task'});
+    expect(() => taskListService.addTask(null, task)).toThrow(new Error('Task list must not be null or undefined'));
+  });
+
+  it('should throw error on task add when task is null', () => {
+    const taskList = new TaskList().deserialize({id: 1, name: 'Test task list', completed: false});
+    expect(() => taskListService.addTask(taskList, null)).toThrow(new Error('Task must not be null or undefined'));
+  });
 });

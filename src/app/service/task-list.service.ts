@@ -9,6 +9,7 @@ import {TaskList} from '../model/task-list';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
 import {HttpContentOptions} from '../util/http-content-options';
+import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
 export class TaskListService {
@@ -113,6 +114,12 @@ export class TaskListService {
         return tasks;
       })
     );
+  }
+
+  addTask(taskList: TaskList, task: Task): Observable<any> {
+    Assert.notNullOrUndefined(taskList, 'Task list must not be null or undefined');
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
+    return this.http.put<any>(`${this.baseUrl}/${taskList.id}/tasks/${task.id}`, null, {withCredentials: true});
   }
 
   getCreatedTaskList(): Observable<TaskList> {
