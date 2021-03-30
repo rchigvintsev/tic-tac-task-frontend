@@ -71,10 +71,7 @@ describe('TaskListTasksComponent', () => {
     spyOn(taskListService, 'updateTaskList').and.callFake(t => of(t));
     spyOn(taskListService, 'completeTaskList').and.returnValue(of(true));
     spyOn(taskListService, 'deleteTaskList').and.returnValue(of(true));
-    spyOn(taskListService, 'addTask').and.callFake((list, task) => {
-      task.taskListId = list.id;
-      return of(true);
-    });
+    spyOn(taskListService, 'addTask').and.returnValue(of(true));
 
     taskService = injector.get(TaskService);
     spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));

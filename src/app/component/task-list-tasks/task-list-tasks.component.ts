@@ -105,8 +105,10 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   protected afterTaskCreate(task: Task) {
-    this.taskListService.addTask(this.taskList, task)
-      .subscribe(_ => super.afterTaskCreate(task), errorResponse => this.onServiceCallError(errorResponse));
+    this.taskListService.addTask(this.taskList.id, task.id).subscribe(_ => {
+      task.taskListId = this.taskList.id;
+      super.afterTaskCreate(task);
+    }, errorResponse => this.onServiceCallError(errorResponse));
   }
 
   protected onTitleEditingEnd() {

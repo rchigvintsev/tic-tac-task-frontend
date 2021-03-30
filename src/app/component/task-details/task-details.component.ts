@@ -81,11 +81,11 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
 
-    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), error => {
-      if (HttpErrors.isNotFound(error)) {
+    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), errorResponse => {
+      if (HttpErrors.isNotFound(errorResponse)) {
         this.navigateToNotFoundErrorPage();
       } else {
-        this.onServiceCallError(error);
+        this.onServiceCallError(errorResponse);
       }
     });
     this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
@@ -192,7 +192,13 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   onTaskListSelect() {
-    this.saveTask();
+    const taskListId = this.taskFormModel.taskListId;
+    if (taskListId !== this.task.taskListId) {
+      if (taskListId) {
+        this.taskListService.addTask(taskListId, this.task.id)
+          .subscribe(_ => this.task.taskListId = taskListId, errorResponse => this.onServiceCallError(errorResponse));
+      }
+    }
   }
 
   onDeleteTaskButtonClick() {

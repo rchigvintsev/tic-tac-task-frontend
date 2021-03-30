@@ -41,6 +41,7 @@ describe('TaskDetailsComponent', () => {
   let router: Router;
   let taskService: TaskService;
   let tagService: TagService;
+  let taskListService: TaskListService;
   let updatedTagSource: Subject<Tag>;
   let deletedTagSource: Subject<Tag>;
   let task: Task;
@@ -96,8 +97,9 @@ describe('TaskDetailsComponent', () => {
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
-    const taskListService = injector.get(TaskListService);
+    taskListService = injector.get(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
+    spyOn(taskListService, 'addTask').and.returnValue(of(true));
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -457,12 +459,13 @@ describe('TaskDetailsComponent', () => {
     });
   });
 
-  it('should save task on task list select', () => {
+  it('should include task in selected task list on task list select', () => {
+    const taskListId = 1;
     fixture.whenStable().then(() => {
-      component.taskFormModel.taskListId = 1;
+      component.taskFormModel.taskListId = taskListId;
       component.onTaskListSelect();
       fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
+      expect(taskListService.addTask).toHaveBeenCalledWith(taskListId, task.id);
     });
   });
 
