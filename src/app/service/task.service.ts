@@ -13,10 +13,9 @@ import {ConfigService} from './config.service';
 import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
 import {HttpContentOptions} from '../util/http-content-options';
+import {Assert} from '../util/assert';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class TaskService {
   readonly baseUrl: string;
 
@@ -68,9 +67,7 @@ export class TaskService {
   }
 
   getTaskCount(taskGroup: TaskGroup, forceLoad: boolean = false): Observable<number> {
-    if (!taskGroup) {
-      throw new Error('Task group must not be null or undefined');
-    }
+    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
     const counter = this.taskCounters.get(taskGroup);
     const value = counter.getValue();
     if (value == null || forceLoad) {
@@ -89,12 +86,9 @@ export class TaskService {
   }
 
   getTasksByGroup(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
-    if (!taskGroup) {
-      throw new Error('Task group must not be null or undefined');
-    }
+    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
 
     const path = TaskService.getPathForTaskGroup(taskGroup);
-
     let params = TaskService.getParametersForTaskGroup(taskGroup);
     if (params !== '') {
       params += '&';
@@ -121,38 +115,26 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    if (!task) {
-      throw new Error('Task must not be null or undefined');
-    }
-    return this.http.post<Task>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
-      map(response => {
-        return new Task().deserialize(response);
-      })
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
+    return this.http.post<any>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
+      map(response => new Task().deserialize(response))
     );
   }
 
   updateTask(task: Task): Observable<Task> {
-    if (!task) {
-      throw new Error('Task must not be null or undefined');
-    }
-    return this.http.put<Task>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
-      map(response => {
-        return new Task().deserialize(response);
-      })
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
+    return this.http.put<any>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
+      map(response => new Task().deserialize(response))
     );
   }
 
   completeTask(task: Task): Observable<any> {
-    if (!task) {
-      throw new Error('Task must not be null or undefined');
-    }
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
     return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, {withCredentials: true});
   }
 
   deleteTask(task: Task): Observable<any> {
-    if (!task) {
-      throw new Error('Task must not be null or undefined');
-    }
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
     return this.http.delete<any>(`${this.baseUrl}/${task.id}`, {withCredentials: true});
   }
 
@@ -190,9 +172,7 @@ export class TaskService {
   }
 
   addComment(taskId: number, comment: TaskComment): Observable<TaskComment> {
-    if (!comment) {
-      throw new Error('Task comment must not be null or undefined');
-    }
+    Assert.notNullOrUndefined(comment, 'Task comment must not be null or undefined');
     const url = `${this.baseUrl}/${taskId}/comments`;
     return this.http.post<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
       map(response => {
