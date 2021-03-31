@@ -119,6 +119,10 @@ export class TaskListService {
     return this.http.put<any>(`${this.baseUrl}/${taskListId}/tasks/${taskId}`, null, {withCredentials: true});
   }
 
+  removeTask(taskListId: number, taskId: number): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${taskListId}/tasks/${taskId}`, {withCredentials: true});
+  }
+
   getCreatedTaskList(): Observable<TaskList> {
     return this.createdTaskList;
   }

@@ -197,6 +197,9 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
       if (taskListId) {
         this.taskListService.addTask(taskListId, this.task.id)
           .subscribe(_ => this.task.taskListId = taskListId, errorResponse => this.onServiceCallError(errorResponse));
+      } else {
+        this.taskListService.removeTask(this.task.taskListId, this.task.id)
+          .subscribe(_ => this.task.taskListId = null, errorResponse => this.onServiceCallError(errorResponse));
       }
     }
   }

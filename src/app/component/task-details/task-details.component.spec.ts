@@ -69,6 +69,7 @@ describe('TaskDetailsComponent', () => {
 
     task = new Task().deserialize({
       id: 1,
+      taskListId: 2,
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
@@ -100,6 +101,7 @@ describe('TaskDetailsComponent', () => {
     taskListService = injector.get(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
     spyOn(taskListService, 'addTask').and.returnValue(of(true));
+    spyOn(taskListService, 'removeTask').and.returnValue(of(true));
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -436,6 +438,7 @@ describe('TaskDetailsComponent', () => {
 
       updatedTagSource.next(updatedTag);
       fixture.detectChanges();
+
       expect(component.tags[0]).toEqual(updatedTag);
 
       updatedTag = component.availableTags[0].clone();
@@ -460,12 +463,22 @@ describe('TaskDetailsComponent', () => {
   });
 
   it('should include task in selected task list on task list select', () => {
-    const taskListId = 1;
+    const taskListId = 3;
     fixture.whenStable().then(() => {
       component.taskFormModel.taskListId = taskListId;
       component.onTaskListSelect();
       fixture.detectChanges();
       expect(taskListService.addTask).toHaveBeenCalledWith(taskListId, task.id);
+    });
+  });
+
+  it('should remove task from current task list on task list unselect', () => {
+    const taskListId = component.taskFormModel.taskListId;
+    fixture.whenStable().then(() => {
+      component.taskFormModel.taskListId = null;
+      component.onTaskListSelect();
+      fixture.detectChanges();
+      expect(taskListService.removeTask).toHaveBeenCalledWith(taskListId, task.id);
     });
   });
 

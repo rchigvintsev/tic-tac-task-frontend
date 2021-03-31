@@ -173,13 +173,23 @@ describe('TaskListService', () => {
     request.flush(testTasks.map(task => task.serialize()));
   });
 
-  it('should add task', done => {
+  it('should add task to task list', done => {
     const taskListId = 1;
     const taskId = 2;
     taskListService.addTask(taskListId, taskId).subscribe(_ => done());
 
     const request = httpMock.expectOne(`${taskListService.baseUrl}/${taskListId}/tasks/${taskId}`);
     expect(request.request.method).toBe('PUT');
+    request.flush(null);
+  });
+
+  it('should remove task from task list', done => {
+    const taskListId = 1;
+    const taskId = 2;
+    taskListService.removeTask(taskListId, taskId).subscribe(_ => done());
+
+    const request = httpMock.expectOne(`${taskListService.baseUrl}/${taskListId}/tasks/${taskId}`);
+    expect(request.request.method).toBe('DELETE');
     request.flush(null);
   });
 });
