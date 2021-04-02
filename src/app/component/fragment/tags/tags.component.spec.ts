@@ -101,13 +101,13 @@ describe('TagsComponent', () => {
 
   it('should enable tag form submit button when tag name is not blank', () => {
     component.tagFormModel.name = 'New tag';
-    component.onTagFormModelNameChange();
+    component.onTagFormModelChange();
     expect(component.tagFormSubmitEnabled).toBeTruthy();
   });
 
   it('should disable tag form submit button when tag name is blank', () => {
     component.tagFormModel.name = ' ';
-    component.onTagFormModelNameChange();
+    component.onTagFormModelChange();
     expect(component.tagFormSubmitEnabled).toBeFalsy();
   });
 

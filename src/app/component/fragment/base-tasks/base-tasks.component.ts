@@ -30,6 +30,7 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
   titleEditing = false;
   taskListMenuItems: MenuItem[] = [];
   taskFormEnabled = false;
+  taskFormSubmitEnabled = false;
   taskFormModel = new Task();
   tasks: Array<Task>;
 
@@ -66,6 +67,10 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
 
   onTitleInputEscapeKeydown() {
     this.endTitleEditing();
+  }
+
+  onTaskFormModelChange() {
+    this.taskFormSubmitEnabled = !Strings.isBlank(this.taskFormModel.title);
   }
 
   onTaskFormSubmit() {

@@ -46,13 +46,17 @@
                type="text"
                name="title"
                [(ngModel)]="taskFormModel.title"
+               (ngModelChange)="onTaskFormModelChange()"
                placeholder="{{ 'new_task' | translate }}"
                maxlength="255"
                required
                notBlank>
       </label>
-      <button type="submit" hidden="hidden">Submit</button>
     </mat-form-field>
+
+    <button mat-mini-fab color="primary" type="submit" [disabled]="!taskFormSubmitEnabled">
+      <mat-icon>done</mat-icon>
+    </button>
   </form>
 
   <mat-card-content>

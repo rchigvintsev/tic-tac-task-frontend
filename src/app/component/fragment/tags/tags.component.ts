@@ -67,7 +67,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
     return this.pathMatcher && this.pathMatcher.matches(path);
   }
 
-  onTagFormModelNameChange() {
+  onTagFormModelChange() {
     this.tagFormSubmitEnabled = !Strings.isBlank(this.tagFormModel.name);
   }
 

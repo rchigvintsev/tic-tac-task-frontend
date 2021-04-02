@@ -145,6 +145,18 @@ describe('BaseTasksComponent', () => {
     });
   });
 
+  it('should enable task form submit button when task title is not blank', () => {
+    component.taskFormModel.title = 'New task';
+    component.onTaskFormModelChange();
+    expect(component.taskFormSubmitEnabled).toBeTruthy();
+  });
+
+  it('should disable task form submit button when task title is blank', () => {
+    component.taskFormModel.title = ' ';
+    component.onTaskFormModelChange();
+    expect(component.taskFormSubmitEnabled).toBeFalsy();
+  });
+
   it('should create task', () => {
     fixture.whenStable().then(() => {
       component.taskFormModel.title = 'New task';
