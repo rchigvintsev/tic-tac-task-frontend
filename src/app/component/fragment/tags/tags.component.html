@@ -7,7 +7,8 @@
              maxlength="50"
              placeholder="{{ 'new_tag' | translate }}"
              [(ngModel)]="tagFormModel.name"
-             (ngModelChange)="onTagFormModelChange()"/>
+             (ngModelChange)="onTagFormModelChange()"
+             notBlank/>
     </label>
   </mat-form-field>
 
