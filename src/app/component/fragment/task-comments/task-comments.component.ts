@@ -1,19 +1,16 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 import * as moment from 'moment';
-
-import {WebServiceBasedComponent} from '../../web-service-based.component';
-import {TaskComment} from '../../../model/task-comment';
+import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
+import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {TaskService} from '../../../service/task.service';
 import {TaskCommentService} from '../../../service/task-comment.service';
 import {I18nService} from '../../../service/i18n.service';
-import {AuthenticationService} from '../../../service/authentication.service';
-import {LogService} from '../../../service/log.service';
+import {TaskComment} from '../../../model/task-comment';
 import {PageRequest} from '../../../service/page-request';
-import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {Strings} from '../../../util/strings';
 
 @Component({
@@ -21,7 +18,7 @@ import {Strings} from '../../../util/strings';
   templateUrl: './task-comments.component.html',
   styleUrls: ['./task-comments.component.styl']
 })
-export class TaskCommentsComponent extends WebServiceBasedComponent implements OnInit {
+export class TaskCommentsComponent implements OnInit {
   @ViewChild('newCommentForm')
   newCommentForm: NgForm;
   newCommentFormModel: TaskComment;
@@ -34,22 +31,21 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   private pageRequest = new PageRequest();
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
-              private route: ActivatedRoute,
+  constructor(private componentHelper: WebServiceBasedComponentHelper,
               private taskService: TaskService,
               private commentService: TaskCommentService,
+              private i18nService: I18nService,
+              private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, authenticationService, log, router);
   }
 
   ngOnInit() {
     this.setNewCommentFormModel(new TaskComment());
     this.taskId = +this.route.snapshot.paramMap.get('id');
-    this.taskService.getComments(this.taskId, this.pageRequest)
-      .subscribe(comments => this.comments = comments, this.onServiceCallError.bind(this));
+    this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
+      comments => this.comments = comments,
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   onNewCommentModelChange() {
@@ -108,8 +104,10 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
 
   onCommentListScroll() {
     this.pageRequest.page++;
-    this.taskService.getComments(this.taskId, this.pageRequest)
-      .subscribe(comments => this.comments = this.comments.concat(comments), this.onServiceCallError.bind(this));
+    this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
+      comments => this.comments = this.comments.concat(comments),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   getRelativeCommentDate(comment: TaskComment) {
@@ -129,7 +127,7 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
       this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
         this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
-      }, this.onServiceCallError.bind(this));
+      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
     }
   }
 
@@ -142,13 +140,13 @@ export class TaskCommentsComponent extends WebServiceBasedComponent implements O
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      }, this.onServiceCallError.bind(this));
+      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, this.onServiceCallError.bind(this));
+    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
   }
 }

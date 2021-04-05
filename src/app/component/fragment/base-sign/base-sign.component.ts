@@ -1,12 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
-
-import {WebServiceBasedComponent} from '../../web-service-based.component';
 import {I18nService} from '../../../service/i18n.service';
-import {AuthenticationService} from '../../../service/authentication.service';
-import {LogService} from '../../../service/log.service';
 import {AlertService} from '../../../service/alert.service';
 import {ConfigService} from '../../../service/config.service';
 
@@ -15,25 +11,20 @@ import {ConfigService} from '../../../service/config.service';
   templateUrl: './base-sign.component.html',
   styleUrls: ['./base-sign.component.styl']
 })
-export class BaseSignComponent extends WebServiceBasedComponent implements OnInit {
+export class BaseSignComponent implements OnInit {
   email: string;
   password: string;
 
   private readonly redirectUri: string;
 
   constructor(
-    i18nService: I18nService,
-    authenticationService: AuthenticationService,
-    log: LogService,
-    router: Router,
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
-    public alertService: AlertService,
+    protected alertService: AlertService,
+    protected i18nService: I18nService,
     private config: ConfigService,
     private activatedRoute: ActivatedRoute
   ) {
-    super(i18nService, authenticationService, log, router);
-
     const currentLang = i18nService.currentLanguage;
     this.redirectUri = `${this.config.selfBaseUrl}/${currentLang.code}/oauth2/authorization/callback`;
 

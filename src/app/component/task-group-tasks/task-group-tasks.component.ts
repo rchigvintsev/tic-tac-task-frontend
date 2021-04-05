@@ -1,17 +1,17 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
+import {I18nService} from '../../service/i18n.service';
+import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
@@ -26,13 +26,12 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   private componentDestroyed = new Subject<boolean>();
 
   constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
+              componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
-              private route: ActivatedRoute,
-              private taskGroupService: TaskGroupService) {
-    super(i18nService, authenticationService, log, router, taskService);
+              private taskGroupService: TaskGroupService,
+              private pageNavigationService: PageNavigationService,
+              private route: ActivatedRoute) {
+    super(i18nService, taskService, componentHelper);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }
@@ -89,8 +88,10 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
 
   onTaskListScroll() {
     this.pageRequest.page++;
-    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest)
-      .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest).subscribe(
+      tasks => this.tasks = this.tasks.concat(tasks),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   protected beforeTaskCreate(task: Task) {
@@ -103,8 +104,10 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     this.pageRequest.page = 0;
     if (taskGroup != null) {
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
-      this.taskService.getTasksByGroup(taskGroup, this.pageRequest)
-        .subscribe(tasks => this.tasks = tasks, this.onServiceCallError.bind(this));
+      this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
+        tasks => this.tasks = tasks,
+        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      );
     }
   }
 
@@ -112,8 +115,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     let taskGroup = TaskGroup.valueOf(fragment);
     if (!taskGroup) {
       taskGroup = TaskGroup.TODAY;
-      const currentLang = this.i18nService.currentLanguage;
-      this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value}).then();
+      this.pageNavigationService.navigateToTaskGroupPage(taskGroup);
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
   }

@@ -19,9 +19,13 @@ export class PageNavigationService {
     this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value});
   }
 
-  navigateToSigninPage() {
-    const currentLang = this.i18nService.currentLanguage;
-    this.router.navigate([currentLang.code, 'signin']);
+  navigateToSigninPage(queryParams: any = null) {
+    const commands = [this.i18nService.currentLanguage.code, 'signin'];
+    if (queryParams) {
+      this.router.navigate(commands, {queryParams});
+    } else {
+      this.router.navigate(commands);
+    }
   }
 
   navigateToNotFoundErrorPage() {

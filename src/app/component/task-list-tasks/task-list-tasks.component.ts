@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map} from 'rxjs/operators';
 
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
+import {I18nService} from '../../service/i18n.service';
+import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
@@ -26,14 +26,13 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private taskList: TaskList;
 
   constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
+              componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
               private taskListService: TaskListService,
+              private pageNavigationService: PageNavigationService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, authenticationService, log, router, taskService);
+    super(i18nService, taskService, componentHelper);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
@@ -50,11 +49,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
         this.setTaskList(taskList);
         return this.taskListService.getTasks(taskList.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.tasks = tasks, error => {
-      if (HttpErrors.isNotFound(error)) {
-        this.navigateToNotFoundErrorPage();
+    ).subscribe(tasks => this.tasks = tasks, errorResponse => {
+      if (HttpErrors.isNotFound(errorResponse)) {
+        this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        this.onServiceCallError.bind(this);
+        this.componentHelper.handleWebServiceCallError(errorResponse);
       }
     });
   }
@@ -69,8 +68,10 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   onTaskListScroll() {
     if (this.taskList) {
       this.pageRequest.page++;
-      this.taskListService.getTasks(this.taskList.id, this.pageRequest)
-        .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+      this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe(
+        tasks => this.tasks = this.tasks.concat(tasks),
+        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      );
     }
   }
 
@@ -108,7 +109,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     this.taskListService.addTask(this.taskList.id, task.id).subscribe(_ => {
       task.taskListId = this.taskList.id;
       super.afterTaskCreate(task);
-    }, errorResponse => this.onServiceCallError(errorResponse));
+    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
   }
 
   protected onTitleEditingEnd() {
@@ -124,22 +125,23 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   private saveTaskList() {
-    this.taskListService.updateTaskList(this.taskList)
-      .subscribe(updatedTaskList => this.setTaskList(updatedTaskList), this.onServiceCallError.bind(this));
+    this.taskListService.updateTaskList(this.taskList).subscribe(
+      updatedTaskList => this.setTaskList(updatedTaskList),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   private completeTaskList() {
-    this.taskListService.completeTaskList(this.taskList)
-      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
+    this.taskListService.completeTaskList(this.taskList).subscribe(
+      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   private deleteTaskList() {
-    this.taskListService.deleteTaskList(this.taskList)
-      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
-  }
-
-  private navigateToTodayTaskGroupPage() {
-    const currentLang = this.i18nService.currentLanguage;
-    this.router.navigate([currentLang.code, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+    this.taskListService.deleteTaskList(this.taskList).subscribe(
+      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 }

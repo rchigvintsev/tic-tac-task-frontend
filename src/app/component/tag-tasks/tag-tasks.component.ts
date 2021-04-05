@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map} from 'rxjs/operators';
@@ -7,11 +7,11 @@ import {flatMap, map} from 'rxjs/operators';
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
+import {I18nService} from '../../service/i18n.service';
+import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {Strings} from '../../util/strings';
@@ -28,14 +28,13 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private tag: Tag;
 
   constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
+              componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
+              private pageNavigationService: PageNavigationService,
               private route: ActivatedRoute,
               private tagService: TagService,
               private dialog: MatDialog) {
-    super(i18nService, authenticationService, log, router, taskService);
+    super(i18nService, taskService, componentHelper);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -52,11 +51,11 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
         this.setTag(tag);
         return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
       })
-    ).subscribe(tasks => this.tasks = tasks, error => {
-      if (HttpErrors.isNotFound(error)) {
-        this.navigateToNotFoundErrorPage();
+    ).subscribe(tasks => this.tasks = tasks, errorResponse => {
+      if (HttpErrors.isNotFound(errorResponse)) {
+        this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        this.onServiceCallError.bind(this);
+        this.componentHelper.handleWebServiceCallError(errorResponse);
       }
     });
   }
@@ -71,8 +70,10 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   onTaskListScroll() {
     if (this.tag) {
       this.pageRequest.page++;
-      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest)
-        .subscribe(tasks => this.tasks = this.tasks.concat(tasks), this.onServiceCallError.bind(this));
+      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest).subscribe(
+        tasks => this.tasks = this.tasks.concat(tasks),
+        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      );
     }
   }
 
@@ -121,18 +122,17 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
 
   private saveTag() {
     if (!this.tagFormModel.equals(this.tag)) {
-      this.tagService.updateTag(this.tagFormModel)
-        .subscribe(savedTag => this.setTag(savedTag), this.onServiceCallError.bind(this));
+      this.tagService.updateTag(this.tagFormModel).subscribe(
+        savedTag => this.setTag(savedTag),
+        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      );
     }
   }
 
   private deleteTag() {
-    this.tagService.deleteTag(this.tagFormModel)
-      .subscribe(_ => this.navigateToTodayTaskGroupPage(), this.onServiceCallError.bind(this));
-  }
-
-  private navigateToTodayTaskGroupPage() {
-    const currentLang = this.i18nService.currentLanguage;
-    this.router.navigate([currentLang.code, 'task'], {fragment: TaskGroup.TODAY.value}).then();
+    this.tagService.deleteTag(this.tagFormModel).subscribe(
+      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 }

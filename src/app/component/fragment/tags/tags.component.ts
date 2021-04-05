@@ -5,12 +5,10 @@ import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {Tag} from '../../../model/tag';
-import {TagService} from '../../../service/tag.service';
+import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
 import {I18nService} from '../../../service/i18n.service';
-import {AuthenticationService} from '../../../service/authentication.service';
-import {LogService} from '../../../service/log.service';
-import {WebServiceBasedComponent} from '../../web-service-based.component';
+import {TagService} from '../../../service/tag.service';
+import {Tag} from '../../../model/tag';
 import {PathMatcher} from '../../../util/path-matcher';
 import {Strings} from '../../../util/strings';
 
@@ -19,7 +17,7 @@ import {Strings} from '../../../util/strings';
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.styl']
 })
-export class TagsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
+export class TagsComponent implements OnInit, OnDestroy {
   @ViewChild('tagForm')
   tagForm: NgForm;
   tagFormModel = new Tag();
@@ -29,16 +27,17 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
-              private tagService: TagService) {
-    super(i18nService, authenticationService, log, router);
+  constructor(public i18nService: I18nService,
+              private componentHelper: WebServiceBasedComponentHelper,
+              private tagService: TagService,
+              private router: Router) {
   }
 
   ngOnInit() {
-    this.tagService.getTags().subscribe(tags => this.tags = tags, this.onServiceCallError.bind(this));
+    this.tagService.getTags().subscribe(
+      tags => this.tags = tags,
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
     this.tagService.getCreatedTag()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(tag => this.onTagCreate(tag));
@@ -83,7 +82,7 @@ export class TagsComponent extends WebServiceBasedComponent implements OnInit, O
     if (!Strings.isBlank(this.tagFormModel.name)) {
       this.tagService.createTag(this.tagFormModel).subscribe(_ => {
         this.tagForm.resetForm();
-      }, this.onServiceCallError.bind(this));
+      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
     }
   }
 

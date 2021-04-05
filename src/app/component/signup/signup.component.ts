@@ -1,13 +1,13 @@
 import {Component, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
 import {NgForm} from '@angular/forms';
 
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {BaseSignComponent} from '../fragment/base-sign/base-sign.component';
 import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
 
@@ -24,18 +24,16 @@ export class SignupComponent extends BaseSignComponent {
   signupForm: NgForm;
 
   constructor(
-    i18nService: I18nService,
-    authenticationService: AuthenticationService,
-    log: LogService,
-    config: ConfigService,
-    router: Router,
     iconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
-    activatedRoute: ActivatedRoute,
     alertService: AlertService,
+    i18nService: I18nService,
+    config: ConfigService,
+    activatedRoute: ActivatedRoute,
+    private componentHelper: WebServiceBasedComponentHelper,
+    private authenticationService: AuthenticationService
   ) {
-    super(i18nService, authenticationService, log, router, iconRegistry, domSanitizer, alertService, config,
-      activatedRoute);
+    super(iconRegistry, domSanitizer, alertService, i18nService, config, activatedRoute);
   }
 
   onSignupFormSubmit() {
@@ -56,11 +54,11 @@ export class SignupComponent extends BaseSignComponent {
     this.signupForm.resetForm();
   }
 
-  private onSignUpError(response: any) {
-    if (response.error.localizedMessage) {
-      this.alertService.error(response.error.localizedMessage);
+  private onSignUpError(errorResponse: any) {
+    if (errorResponse.error.localizedMessage) {
+      this.alertService.error(errorResponse.error.localizedMessage);
     } else {
-      this.onServiceCallError(response);
+      this.componentHelper.handleWebServiceCallError(errorResponse);
     }
   }
 }

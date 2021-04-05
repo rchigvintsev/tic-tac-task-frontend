@@ -1,14 +1,11 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
-import {WebServiceBasedComponent} from '../../web-service-based.component';
+import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
+import {I18nService} from '../../../service/i18n.service';
+import {TaskService} from '../../../service/task.service';
 import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
-import {TaskService} from '../../../service/task.service';
-import {I18nService} from '../../../service/i18n.service';
-import {AuthenticationService} from '../../../service/authentication.service';
-import {LogService} from '../../../service/log.service';
 import {PageRequest} from '../../../service/page-request';
 import {Strings} from '../../../util/strings';
 
@@ -22,7 +19,7 @@ export class MenuItem {
   templateUrl: './base-tasks.component.html',
   styleUrls: ['./base-tasks.component.styl']
 })
-export class BaseTasksComponent extends WebServiceBasedComponent {
+export class BaseTasksComponent {
   title = '';
   titleReadonly = false;
   titleMaxLength = 255;
@@ -41,12 +38,9 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
 
   protected pageRequest = new PageRequest();
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
-              protected taskService: TaskService) {
-    super(i18nService, authenticationService, log, router);
+  constructor(public i18nService: I18nService,
+              protected taskService: TaskService,
+              protected componentHelper: WebServiceBasedComponentHelper) {
   }
 
   onTitleTextClick() {
@@ -117,8 +111,10 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
       this.beforeTaskCreate(this.taskFormModel);
-      this.taskService.createTask(this.taskFormModel)
-        .subscribe(task => this.afterTaskCreate(task), this.onServiceCallError.bind(this));
+      this.taskService.createTask(this.taskFormModel).subscribe(
+        task => this.afterTaskCreate(task),
+        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      );
     }
   }
 
@@ -126,6 +122,6 @@ export class BaseTasksComponent extends WebServiceBasedComponent {
     this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
-    }, this.onServiceCallError.bind(this));
+    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
   }
 }

@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {FormControl, NgForm} from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
 import {MatCheckboxChange} from '@angular/material/checkbox';
@@ -12,19 +12,19 @@ import * as moment from 'moment';
 import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 
-import {WebServiceBasedComponent} from '../web-service-based.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
+import {TaskService} from '../../service/task.service';
+import {TaskGroupService} from '../../service/task-group.service';
+import {TaskListService} from '../../service/task-list.service';
+import {TagService} from '../../service/tag.service';
+import {LogService} from '../../service/log.service';
+import {I18nService} from '../../service/i18n.service';
+import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
-import {Tag} from '../../model/tag';
 import {TaskList} from '../../model/task-list';
-import {TaskGroupService} from '../../service/task-group.service';
-import {TaskService} from '../../service/task.service';
-import {TagService} from '../../service/tag.service';
-import {TaskListService} from '../../service/task-list.service';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
+import {Tag} from '../../model/tag';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {Strings} from '../../util/strings';
 import {HttpErrors} from '../../util/http-errors';
@@ -37,7 +37,7 @@ const END_OF_DAY_TIME = '23:59';
   templateUrl: './task-details.component.html',
   styleUrls: ['./task-details.component.styl']
 })
-export class TaskDetailsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
+export class TaskDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('title')
   titleElement: ElementRef;
   @ViewChild('taskDetailsForm', {read: NgForm})
@@ -60,18 +60,17 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   private task: Task;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
-              private route: ActivatedRoute,
+  constructor(private componentHelper: WebServiceBasedComponentHelper,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
-              private tagService: TagService,
               private taskListService: TaskListService,
+              private tagService: TagService,
+              private log: LogService,
+              private i18nService: I18nService,
+              private pageNavigationService: PageNavigationService,
+              private route: ActivatedRoute,
               private dateAdapter: DateAdapter<any>,
               private dialog: MatDialog) {
-    super(i18nService, authenticationService, log, router);
   }
 
   private static normalizeTagName(name: string): string {
@@ -83,12 +82,15 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
 
     this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), errorResponse => {
       if (HttpErrors.isNotFound(errorResponse)) {
-        this.navigateToNotFoundErrorPage();
+        this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        this.onServiceCallError(errorResponse);
+        this.componentHelper.handleWebServiceCallError(errorResponse);
       }
     });
-    this.taskService.getTags(taskId).subscribe(tags => this.initTags(tags), this.onServiceCallError.bind(this));
+    this.taskService.getTags(taskId).subscribe(
+      tags => this.initTags(tags),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
 
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
@@ -109,8 +111,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
       map((tagName: string | null) => tagName ? this.filterTagsByName(tagName) : this.availableTags)
     );
 
-    this.taskListService.getUncompletedTaskLists()
-      .subscribe(taskLists => this.taskLists = taskLists, this.onServiceCallError.bind(this));
+    this.taskListService.getUncompletedTaskLists().subscribe(
+      taskLists => this.taskLists = taskLists,
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
@@ -122,7 +126,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
   }
 
   onBackButtonClick() {
-    this.navigateToCurrentTaskGroupPage();
+    this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY);
   }
 
   onTitleTextClick() {
@@ -195,11 +199,15 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
     const taskListId = this.taskFormModel.taskListId;
     if (taskListId !== this.task.taskListId) {
       if (taskListId) {
-        this.taskListService.addTask(taskListId, this.task.id)
-          .subscribe(_ => this.task.taskListId = taskListId, errorResponse => this.onServiceCallError(errorResponse));
+        this.taskListService.addTask(taskListId, this.task.id).subscribe(
+          _ => this.task.taskListId = taskListId,
+          errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+        );
       } else {
-        this.taskListService.removeTask(this.task.taskListId, this.task.id)
-          .subscribe(_ => this.task.taskListId = null, errorResponse => this.onServiceCallError(errorResponse));
+        this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe(
+          _ => this.task.taskListId = null,
+          errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+        );
       }
     }
   }
@@ -308,15 +316,17 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
         if (HttpErrors.isBadRequest(response)) {
           this.handleBadRequestError(response);
         } else {
-          this.onServiceCallError(response);
+          this.componentHelper.handleWebServiceCallError(response);
         }
       });
     }
   }
 
   private deleteTask() {
-    this.taskService.deleteTask(this.taskFormModel)
-      .subscribe(() => this.navigateToCurrentTaskGroupPage(), this.onServiceCallError.bind(this));
+    this.taskService.deleteTask(this.taskFormModel).subscribe(
+      () => this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY),
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
   }
 
   private handleBadRequestError(response: any) {
@@ -375,7 +385,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
         const tag = this.availableTags[tagIndex];
         this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
           this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
-        }, this.onServiceCallError.bind(this));
+        }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
@@ -384,7 +394,10 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
             flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(
               map(_ => tag)
             ))
-          ).subscribe(tag => this.tags.push(tag), this.onServiceCallError.bind(this));
+          ).subscribe(
+            tag => this.tags.push(tag),
+            errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+          );
         }
       }
     }
@@ -396,13 +409,7 @@ export class TaskDetailsComponent extends WebServiceBasedComponent implements On
       this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
         this.tags.splice(tagIndex, 1);
         this.availableTags.push(tag);
-      }, this.onServiceCallError.bind(this));
+      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
     }
-  }
-
-  private navigateToCurrentTaskGroupPage() {
-    const currentLang = this.i18nService.currentLanguage;
-    const taskGroup = this.selectedTaskGroup || TaskGroup.TODAY;
-    this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value});
   }
 }

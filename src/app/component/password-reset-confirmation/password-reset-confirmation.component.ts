@@ -1,12 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
-import {WebServiceBasedComponent} from '../web-service-based.component';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {UserService} from '../../service/user.service';
+import {I18nService} from '../../service/i18n.service';
+import {PageNavigationService} from '../../service/page-navigation.service';
 import {AlertService} from '../../service/alert.service';
 
 @Component({
@@ -14,7 +13,7 @@ import {AlertService} from '../../service/alert.service';
   templateUrl: './password-reset-confirmation.component.html',
   styleUrls: ['./password-reset-confirmation.component.styl']
 })
-export class PasswordResetConfirmationComponent extends WebServiceBasedComponent implements OnInit {
+export class PasswordResetConfirmationComponent implements OnInit {
   @ViewChild('passwordResetConfirmationForm', {read: NgForm})
   passwordResetConfirmationForm: NgForm;
 
@@ -24,14 +23,12 @@ export class PasswordResetConfirmationComponent extends WebServiceBasedComponent
   private userId: number;
   private token: string;
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
+  constructor(public i18nService: I18nService,
+              private componentHelper: WebServiceBasedComponentHelper,
               private userService: UserService,
+              private pageNavigationService: PageNavigationService,
               private alertService: AlertService,
               private activatedRoute: ActivatedRoute) {
-    super(i18nService, authenticationService, log, router);
   }
 
   ngOnInit() {
@@ -50,16 +47,15 @@ export class PasswordResetConfirmationComponent extends WebServiceBasedComponent
 
   private onPasswordResetConfirm() {
     this.passwordResetConfirmationForm.resetForm();
-    this.router.navigate([this.i18nService.currentLanguage.code, 'signin'],
-      {queryParams: {error: false, message: 'password_reset_confirmed'}});
+    this.pageNavigationService.navigateToSigninPage({error: false, message: 'password_reset_confirmed'});
   }
 
-  private onPasswordResetConfirmError(response: any) {
-    if (response.error.localizedMessage) {
-      this.alertService.error(response.error.localizedMessage);
+  private onPasswordResetConfirmError(errorResponse: any) {
+    if (errorResponse.error.localizedMessage) {
+      this.alertService.error(errorResponse.error.localizedMessage);
     } else {
       this.alertService.error(this.i18nService.translate('password_reset_confirmation_error'));
     }
-    this.onServiceCallError(response);
+    this.componentHelper.handleWebServiceCallError(errorResponse);
   }
 }

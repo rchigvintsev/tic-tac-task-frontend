@@ -5,12 +5,10 @@ import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {TaskList} from '../../../model/task-list';
-import {TaskListService} from '../../../service/task-list.service';
+import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
 import {I18nService} from '../../../service/i18n.service';
-import {AuthenticationService} from '../../../service/authentication.service';
-import {LogService} from '../../../service/log.service';
-import {WebServiceBasedComponent} from '../../web-service-based.component';
+import {TaskListService} from '../../../service/task-list.service';
+import {TaskList} from '../../../model/task-list';
 import {PathMatcher} from '../../../util/path-matcher';
 import {Strings} from '../../../util/strings';
 
@@ -19,7 +17,7 @@ import {Strings} from '../../../util/strings';
   templateUrl: './task-lists.component.html',
   styleUrls: ['./task-lists.component.styl']
 })
-export class TaskListsComponent extends WebServiceBasedComponent implements OnInit, OnDestroy {
+export class TaskListsComponent implements OnInit, OnDestroy {
   @ViewChild('taskListForm')
   taskListForm: NgForm;
   taskListFormModel = new TaskList();
@@ -29,17 +27,17 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
-              private taskListService: TaskListService) {
-    super(i18nService, authenticationService, log, router);
+  constructor(public i18nService: I18nService,
+              private componentHelper: WebServiceBasedComponentHelper,
+              private taskListService: TaskListService,
+              private router: Router) {
   }
 
   ngOnInit() {
-    this.taskListService.getUncompletedTaskLists()
-      .subscribe(taskLists => this.taskLists = taskLists, this.onServiceCallError.bind(this));
+    this.taskListService.getUncompletedTaskLists().subscribe(
+      taskLists => this.taskLists = taskLists,
+      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+    );
     this.taskListService.getUpdatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListUpdate(taskList));
@@ -85,7 +83,7 @@ export class TaskListsComponent extends WebServiceBasedComponent implements OnIn
       this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
         this.taskLists.push(createdTaskList);
         this.taskListForm.resetForm();
-      }, this.onServiceCallError.bind(this));
+      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
     }
   }
 

@@ -1,12 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {Router} from '@angular/router';
 
-import {WebServiceBasedComponent} from '../web-service-based.component';
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {LogService} from '../../service/log.service';
+import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {UserService} from '../../service/user.service';
+import {I18nService} from '../../service/i18n.service';
 import {AlertService} from '../../service/alert.service';
 
 @Component({
@@ -14,19 +11,16 @@ import {AlertService} from '../../service/alert.service';
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.styl']
 })
-export class PasswordResetComponent extends WebServiceBasedComponent implements OnInit {
+export class PasswordResetComponent implements OnInit {
   @ViewChild('passwordResetForm', {read: NgForm})
   passwordResetForm: NgForm;
 
   email: string;
 
-  constructor(i18nService: I18nService,
-              authenticationService: AuthenticationService,
-              log: LogService,
-              router: Router,
+  constructor(public i18nService: I18nService,
+              private componentHelper: WebServiceBasedComponentHelper,
               private userService: UserService,
               private alertService: AlertService) {
-    super(i18nService, authenticationService, log, router);
   }
 
   ngOnInit() {
@@ -44,12 +38,12 @@ export class PasswordResetComponent extends WebServiceBasedComponent implements 
     this.passwordResetForm.resetForm();
   }
 
-  private onPasswordResetError(response: any) {
-    if (response.error.localizedMessage) {
-      this.alertService.error(response.error.localizedMessage);
+  private onPasswordResetError(errorResponse: any) {
+    if (errorResponse.error.localizedMessage) {
+      this.alertService.error(errorResponse.error.localizedMessage);
     } else {
       this.alertService.error(this.i18nService.translate('password_reset_confirmation_error'));
     }
-    this.onServiceCallError(response);
+    this.componentHelper.handleWebServiceCallError(errorResponse);
   }
 }
