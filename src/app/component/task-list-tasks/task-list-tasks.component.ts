@@ -53,7 +53,8 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       if (HttpErrors.isNotFound(errorResponse)) {
         this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        this.componentHelper.handleWebServiceCallError(errorResponse);
+        const messageToDisplay = this.i18nService.translate('task_loading_error');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
       }
     });
   }
@@ -70,7 +71,10 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       this.pageRequest.page++;
       this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe(
         tasks => this.tasks = this.tasks.concat(tasks),
-        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+        errorResponse => {
+          const messageToDisplay = this.i18nService.translate('task_loading_error');
+          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+        }
       );
     }
   }

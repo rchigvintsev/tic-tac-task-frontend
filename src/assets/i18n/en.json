@@ -76,5 +76,6 @@
   "password_reset_confirmation_error": "Something went wrong during password reset confirmation",
   "have_no_account_yet": "Have no account yet?",
   "already_have_account": "Already have an account?",
-  "forgot_password": "Forgot password?"
+  "forgot_password": "Forgot password?",
+  "task_loading_error": "Failed to load tasks"
 }

@@ -23,6 +23,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconRegistry} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -137,6 +138,7 @@ registerLocaleData(localeRu, 'ru');
     MatAutocompleteModule,
     MatExpansionModule,
     MatSelectModule,
+    MatSnackBarModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,

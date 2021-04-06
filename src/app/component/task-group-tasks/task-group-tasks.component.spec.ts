@@ -200,10 +200,10 @@ describe('TaskGroupTasksComponent', () => {
   });
 
   describe('when server responds with error', () => {
-    const error = {status: 500};
+    const errorResponse = {status: 500, url: 'http://backend.com/service', error: {message: 'Something went wrong...'}};
 
     beforeEach(() => {
-      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(error));
+      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(errorResponse));
       spyOn(window.console, 'error');
       fixture.detectChanges();
     });
@@ -211,23 +211,8 @@ describe('TaskGroupTasksComponent', () => {
     it('should output error into console', () => {
       fixture.whenStable().then(() => {
         fixture.detectChanges();
-        expect(window.console.error).toHaveBeenCalledWith(error);
-      });
-    });
-  });
-
-  describe('when server responds with error with message', () => {
-    const errorMessage = 'Something went wrong...';
-
-    beforeEach(() => {
-      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError({status: 500, errors: [errorMessage]}));
-      spyOn(window.console, 'error');
-      fixture.detectChanges();
-    });
-
-    it('should output error message into console', () => {
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
+        const errorMessage = `HTTP failure response for ${errorResponse.url}: `
+          + `server responded with status 500 and message "${errorResponse.error.message}"`;
         expect(window.console.error).toHaveBeenCalledWith(errorMessage);
       });
     });

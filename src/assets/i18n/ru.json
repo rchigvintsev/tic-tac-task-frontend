@@ -76,5 +76,6 @@
   "password_reset_confirmation_error": "Что-то пошло не так во время восстановления пароля",
   "have_no_account_yet": "Ещё нет аккаунта?",
   "already_have_account": "Уже есть аккаунт?",
-  "forgot_password": "Забыли пароль?"
+  "forgot_password": "Забыли пароль?",
+  "task_loading_error": "Не удаётся загрузить задачи"
 }
