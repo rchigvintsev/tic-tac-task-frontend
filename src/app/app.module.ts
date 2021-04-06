@@ -1,4 +1,4 @@
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {registerLocaleData} from '@angular/common';
@@ -23,6 +23,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
+import {MatIconRegistry} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -70,6 +71,16 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
 export function loadConfig(configService: ConfigService) {
   return (): Promise<void> => {
     return configService.loadConfig();
+  };
+}
+
+export function initIcons(iconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+  return () => {
+    iconRegistry.addSvgIcon('logo-google',
+      domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/btn_google_light_normal.svg'));
+    iconRegistry.addSvgIcon('logo-facebook', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/FB_Logo.svg'));
+    iconRegistry.addSvgIcon('logo-github', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/GitHub_Logo.svg'));
+    iconRegistry.addSvgIcon('logo-vk', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/VK_Blue_Logo.svg'));
   };
 }
 
@@ -142,6 +153,7 @@ registerLocaleData(localeRu, 'ru');
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
+    {provide: APP_INITIALIZER, useFactory: initIcons, multi: true, deps: [MatIconRegistry, DomSanitizer]},
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
     {provide: JDENTICON_CONFIG, useValue: {backColor: '#fff'}},
     CookieService

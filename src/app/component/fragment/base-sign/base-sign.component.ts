@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material/icon';
 import {I18nService} from '../../../service/i18n.service';
 import {AlertService} from '../../../service/alert.service';
 import {ConfigService} from '../../../service/config.service';
@@ -18,8 +16,6 @@ export class BaseSignComponent implements OnInit {
   private readonly redirectUri: string;
 
   constructor(
-    iconRegistry: MatIconRegistry,
-    domSanitizer: DomSanitizer,
     protected alertService: AlertService,
     protected i18nService: I18nService,
     private config: ConfigService,
@@ -27,12 +23,6 @@ export class BaseSignComponent implements OnInit {
   ) {
     const currentLang = i18nService.currentLanguage;
     this.redirectUri = `${this.config.selfBaseUrl}/${currentLang.code}/oauth2/authorization/callback`;
-
-    iconRegistry.addSvgIcon('logo-google',
-      domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/btn_google_light_normal.svg'));
-    iconRegistry.addSvgIcon('logo-facebook', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/FB_Logo.svg'));
-    iconRegistry.addSvgIcon('logo-github', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/GitHub_Logo.svg'));
-    iconRegistry.addSvgIcon('logo-vk', domSanitizer.bypassSecurityTrustResourceUrl('../assets/img/VK_Blue_Logo.svg'));
   }
 
   ngOnInit(): void {

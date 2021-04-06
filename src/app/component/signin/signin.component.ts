@@ -1,7 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material/icon';
 import {NgForm} from '@angular/forms';
 
 import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
@@ -23,8 +21,6 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
   signinForm: NgForm;
 
   constructor(
-    iconRegistry: MatIconRegistry,
-    domSanitizer: DomSanitizer,
     alertService: AlertService,
     i18nService: I18nService,
     config: ConfigService,
@@ -33,7 +29,7 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private pageNavigationService: PageNavigationService
   ) {
-    super(iconRegistry, domSanitizer, alertService, i18nService, config, activatedRoute);
+    super(alertService, i18nService, config, activatedRoute);
   }
 
   onSigninFormSubmit() {
