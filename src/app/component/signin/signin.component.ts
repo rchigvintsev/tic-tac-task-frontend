@@ -42,7 +42,7 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
   }
 
   protected getDefaultErrorMessage(): string {
-    return this.i18nService.translate('sign_in_error');
+    return this.i18nService.translate('failed_to_sign_in');
   }
 
   private onSignIn(accessTokenClaims: any) {
@@ -55,6 +55,7 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
     if (HttpErrors.isUnauthorized(errorResponse)) {
       this.alertService.error(this.i18nService.translate('user_not_found_or_invalid_password'));
     } else {
+      this.alertService.error(this.i18nService.translate('failed_to_sign_in'));
       this.componentHelper.handleWebServiceCallError(errorResponse);
     }
   }

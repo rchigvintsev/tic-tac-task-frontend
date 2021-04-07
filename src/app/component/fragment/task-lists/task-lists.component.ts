@@ -36,7 +36,10 @@ export class TaskListsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_task_lists');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
     this.taskListService.getUpdatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
@@ -83,7 +86,10 @@ export class TaskListsComponent implements OnInit, OnDestroy {
       this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
         this.taskLists.push(createdTaskList);
         this.taskListForm.resetForm();
-      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+      }, errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_task_list');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      });
     }
   }
 

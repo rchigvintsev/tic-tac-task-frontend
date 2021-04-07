@@ -113,7 +113,7 @@ describe('PasswordResetComponent', () => {
       fixture.detectChanges();
 
       component.onPasswordResetFormSubmit();
-      expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('password_reset_confirmation_error'));
+      expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('failed_to_confirm_password_reset'));
     });
   });
 

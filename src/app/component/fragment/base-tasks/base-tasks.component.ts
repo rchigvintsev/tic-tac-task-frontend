@@ -113,7 +113,10 @@ export class BaseTasksComponent {
       this.beforeTaskCreate(this.taskFormModel);
       this.taskService.createTask(this.taskFormModel).subscribe(
         task => this.afterTaskCreate(task),
-        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+        errorResponse => {
+          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+        }
       );
     }
   }
@@ -122,6 +125,9 @@ export class BaseTasksComponent {
     this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
-    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+    }, errorResponse => {
+      const messageToDisplay = this.i18nService.translate('failed_to_complete_task');
+      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+    });
   }
 }

@@ -44,7 +44,10 @@ export class TaskCommentsComponent implements OnInit {
     this.taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = comments,
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_task_comments');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 
@@ -106,7 +109,10 @@ export class TaskCommentsComponent implements OnInit {
     this.pageRequest.page++;
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = this.comments.concat(comments),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_task_comments');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 
@@ -127,7 +133,10 @@ export class TaskCommentsComponent implements OnInit {
       this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
         this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
-      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+      }, errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_task_comment');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      });
     }
   }
 
@@ -140,13 +149,19 @@ export class TaskCommentsComponent implements OnInit {
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+      }, errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_task_comment');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      });
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+    }, errorResponse => {
+      const messageToDisplay = this.i18nService.translate('failed_to_delete_task_comment');
+      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+    });
   }
 }

@@ -54,7 +54,7 @@ export class PasswordResetConfirmationComponent implements OnInit {
     if (errorResponse.error.localizedMessage) {
       this.alertService.error(errorResponse.error.localizedMessage);
     } else {
-      this.alertService.error(this.i18nService.translate('password_reset_confirmation_error'));
+      this.alertService.error(this.i18nService.translate('failed_to_confirm_password_reset'));
     }
     this.componentHelper.handleWebServiceCallError(errorResponse);
   }

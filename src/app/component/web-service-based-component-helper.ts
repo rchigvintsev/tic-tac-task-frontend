@@ -19,7 +19,9 @@ export class WebServiceBasedComponentHelper {
       this.pageNavigationService.navigateToSigninPage();
     } else {
       this.logError(errorResponse);
-      this.showError(errorResponse, messageToDisplay);
+      if (messageToDisplay) {
+        this.showError(messageToDisplay);
+      }
     }
   }
 
@@ -41,18 +43,12 @@ export class WebServiceBasedComponentHelper {
     this.log.error(errorMessage);
   }
 
-  private showError(errorResponse: any, messageToDisplay: string = null) {
-    if (!messageToDisplay && errorResponse.error) {
-      messageToDisplay = errorResponse.error.localizedMessage;
-    }
-
-    if (messageToDisplay) {
-      this.snackBar.open(messageToDisplay, 'x', {
-        duration: 5000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snack-bar-warn']
-      });
-    }
+  private showError(messageToDisplay: string) {
+    this.snackBar.open(messageToDisplay, 'x', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snack-bar-warn']
+    });
   }
 }

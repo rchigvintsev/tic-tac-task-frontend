@@ -91,7 +91,7 @@ export class EmailConfirmationCallbackRouteGuard implements CanActivate {
         catchError(error => {
           this.log.error(`Failed to confirm email for user with id ${userId}: ${error}`);
           return of(this.router.createUrlTree([this.i18nService.currentLanguage.code, 'signin'],
-            {queryParams: {error: true, message: 'email_confirmation_error'}}));
+            {queryParams: {error: true, message: 'failed_to_confirm_email'}}));
         })
       );
     }

@@ -91,7 +91,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest).subscribe(
       tasks => this.tasks = this.tasks.concat(tasks),
       errorResponse => {
-        const messageToDisplay = this.i18nService.translate('task_loading_error');
+        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
       }
     );
@@ -110,7 +110,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
       this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
         tasks => this.tasks = tasks,
         errorResponse => {
-          const messageToDisplay = this.i18nService.translate('task_loading_error');
+          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
           this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
         }
       );

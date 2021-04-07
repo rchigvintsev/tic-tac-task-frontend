@@ -69,7 +69,7 @@ describe('SigninComponent', () => {
   });
 
   it('should show error message when error query parameter is present', () => {
-    expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('sign_in_error'));
+    expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('failed_to_sign_in'));
   });
 
   it('should sign in on signin form submit', () => {

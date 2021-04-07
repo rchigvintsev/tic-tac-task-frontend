@@ -53,7 +53,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       if (HttpErrors.isNotFound(errorResponse)) {
         this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        const messageToDisplay = this.i18nService.translate('task_loading_error');
+        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
       }
     });
@@ -72,7 +72,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
       this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe(
         tasks => this.tasks = this.tasks.concat(tasks),
         errorResponse => {
-          const messageToDisplay = this.i18nService.translate('task_loading_error');
+          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
           this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
         }
       );
@@ -113,7 +113,10 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     this.taskListService.addTask(this.taskList.id, task.id).subscribe(_ => {
       task.taskListId = this.taskList.id;
       super.afterTaskCreate(task);
-    }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+    }, errorResponse => {
+      const messageToDisplay = this.i18nService.translate('failed_to_add_task_to_task_list');
+      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+    });
   }
 
   protected onTitleEditingEnd() {
@@ -131,21 +134,30 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private saveTaskList() {
     this.taskListService.updateTaskList(this.taskList).subscribe(
       updatedTaskList => this.setTaskList(updatedTaskList),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_task_list');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 
   private completeTaskList() {
     this.taskListService.completeTaskList(this.taskList).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_complete_task_list');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 
   private deleteTaskList() {
     this.taskListService.deleteTaskList(this.taskList).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_delete_task_list');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 }

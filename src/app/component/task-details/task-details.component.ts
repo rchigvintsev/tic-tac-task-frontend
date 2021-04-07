@@ -84,12 +84,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       if (HttpErrors.isNotFound(errorResponse)) {
         this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        this.componentHelper.handleWebServiceCallError(errorResponse);
+        const messageToDisplay = this.i18nService.translate('failed_to_load_task');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
       }
     });
     this.taskService.getTags(taskId).subscribe(
       tags => this.initTags(tags),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_tags');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
 
     this.taskGroupService.getSelectedTaskGroup()
@@ -113,7 +117,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_task_lists');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
@@ -201,12 +208,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       if (taskListId) {
         this.taskListService.addTask(taskListId, this.task.id).subscribe(
           _ => this.task.taskListId = taskListId,
-          errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+          errorResponse => {
+            const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+            this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+          }
         );
       } else {
         this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe(
           _ => this.task.taskListId = null,
-          errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+          errorResponse => {
+            const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+            this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+          }
         );
       }
     }
@@ -316,7 +329,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         if (HttpErrors.isBadRequest(response)) {
           this.handleBadRequestError(response);
         } else {
-          this.componentHelper.handleWebServiceCallError(response);
+          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+          this.componentHelper.handleWebServiceCallError(response, messageToDisplay);
         }
       });
     }
@@ -325,7 +339,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private deleteTask() {
     this.taskService.deleteTask(this.taskFormModel).subscribe(
       () => this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_delete_task');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 
@@ -385,7 +402,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         const tag = this.availableTags[tagIndex];
         this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
           this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
-        }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+        }, errorResponse => {
+          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+        });
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
@@ -396,7 +416,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             ))
           ).subscribe(
             tag => this.tags.push(tag),
-            errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+            errorResponse => {
+              const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+              this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+            }
           );
         }
       }
@@ -409,7 +432,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
         this.tags.splice(tagIndex, 1);
         this.availableTags.push(tag);
-      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+      }, errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_task');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      });
     }
   }
 }

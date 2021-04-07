@@ -36,7 +36,10 @@ export class TagsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.tagService.getTags().subscribe(
       tags => this.tags = tags,
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_load_tags');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
     this.tagService.getCreatedTag()
       .pipe(takeUntil(this.componentDestroyed))
@@ -82,7 +85,10 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (!Strings.isBlank(this.tagFormModel.name)) {
       this.tagService.createTag(this.tagFormModel).subscribe(_ => {
         this.tagForm.resetForm();
-      }, errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse));
+      }, errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_save_tag');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      });
     }
   }
 

@@ -216,7 +216,7 @@ describe('RouteGuard', () => {
       snapshotMock.url = [new UrlSegment('account/email/confirmation', null)];
       snapshotMock.queryParams = {userId: 1, token: '4b1f7955-a406-4d36-8cbe-d6c61f39e27d'};
       guard.canActivate(snapshotMock, null).subscribe(urlTree => {
-        expect(urlTree.toString()).toBe('/en/signin?error=true&message=email_confirmation_error');
+        expect(urlTree.toString()).toBe('/en/signin?error=true&message=failed_to_confirm_email');
         done();
       });
     });

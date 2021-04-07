@@ -55,7 +55,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
       if (HttpErrors.isNotFound(errorResponse)) {
         this.pageNavigationService.navigateToNotFoundErrorPage();
       } else {
-        const messageToDisplay = this.i18nService.translate('task_loading_error');
+        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
       }
     });
@@ -74,7 +74,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
       this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest).subscribe(
         tasks => this.tasks = this.tasks.concat(tasks),
         errorResponse => {
-          const messageToDisplay = this.i18nService.translate('task_loading_error');
+          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
           this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
         }
       );
@@ -128,7 +128,10 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
     if (!this.tagFormModel.equals(this.tag)) {
       this.tagService.updateTag(this.tagFormModel).subscribe(
         savedTag => this.setTag(savedTag),
-        errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+        errorResponse => {
+          const messageToDisplay = this.i18nService.translate('failed_to_save_tag');
+          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+        }
       );
     }
   }
@@ -136,7 +139,10 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private deleteTag() {
     this.tagService.deleteTag(this.tagFormModel).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => this.componentHelper.handleWebServiceCallError(errorResponse)
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_delete_tag');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
     );
   }
 }

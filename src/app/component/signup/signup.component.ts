@@ -42,7 +42,7 @@ export class SignupComponent extends BaseSignComponent {
   }
 
   protected getDefaultErrorMessage(): string {
-    return this.i18nService.translate('sign_up_error');
+    return this.i18nService.translate('failed_to_sign_up');
   }
 
   private onSignUp() {
@@ -54,7 +54,8 @@ export class SignupComponent extends BaseSignComponent {
     if (errorResponse.error.localizedMessage) {
       this.alertService.error(errorResponse.error.localizedMessage);
     } else {
-      this.componentHelper.handleWebServiceCallError(errorResponse);
+      this.alertService.error(this.i18nService.translate('failed_to_sign_up'));
     }
+    this.componentHelper.handleWebServiceCallError(errorResponse);
   }
 }
