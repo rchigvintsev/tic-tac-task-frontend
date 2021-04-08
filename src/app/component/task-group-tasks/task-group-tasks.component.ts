@@ -103,9 +103,9 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
-    this.taskGroup = taskGroup;
-    this.pageRequest.page = 0;
-    if (taskGroup != null) {
+    if (taskGroup && this.taskGroup !== taskGroup) {
+      this.taskGroup = taskGroup;
+      this.pageRequest.page = 0;
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
       this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
         tasks => this.tasks = tasks,

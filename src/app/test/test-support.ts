@@ -20,7 +20,6 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {ComponentFixture} from '@angular/core/testing';
@@ -57,6 +56,7 @@ import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
+import {SimpleNotificationsModule} from "angular2-notifications";
 
 export class TestSupport {
   public static readonly IMPORTS = [
@@ -81,7 +81,6 @@ export class TestSupport {
     MatAutocompleteModule,
     MatExpansionModule,
     MatSelectModule,
-    MatSnackBarModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
@@ -94,7 +93,8 @@ export class TestSupport {
       }
     }),
     NgxMaterialTimepickerModule,
-    NgxJdenticonModule
+    NgxJdenticonModule,
+    SimpleNotificationsModule.forRoot()
   ];
 
   public static readonly DECLARATIONS = [

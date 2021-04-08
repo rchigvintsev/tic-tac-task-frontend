@@ -30,7 +30,7 @@ describe('TaskGroupTasksComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
+        TaskGroupService
       ]
     }).compileComponents();
   }));
@@ -40,6 +40,7 @@ describe('TaskGroupTasksComponent', () => {
     component = fixture.componentInstance;
 
     const injector = getTestBed();
+
     taskService = injector.get(TaskService);
 
     const router = injector.get(Router);
@@ -176,6 +177,13 @@ describe('TaskGroupTasksComponent', () => {
         component.onTaskListScroll();
         taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
         expect(taskService.getTasksByGroup).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
+      });
+    });
+
+    it('should not reload tasks on task group select when task group is not changed', () => {
+      fixture.whenStable().then(() => {
+        taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
+        expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
       });
     });
   });
