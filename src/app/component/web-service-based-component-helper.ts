@@ -1,16 +1,18 @@
-import {HttpErrors} from '../util/http-errors';
-import {AuthenticationService} from '../service/authentication.service';
-import {LogService} from '../service/log.service';
-import {PageNavigationService} from '../service/page-navigation.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {Injectable} from '@angular/core';
+
+import {NotificationsService} from 'angular2-notifications';
+
+import {LogService} from '../service/log.service';
+import {AuthenticationService} from '../service/authentication.service';
+import {PageNavigationService} from '../service/page-navigation.service';
+import {HttpErrors} from '../util/http-errors';
 
 @Injectable({providedIn: 'root'})
 export class WebServiceBasedComponentHelper {
   constructor(protected authenticationService: AuthenticationService,
               protected pageNavigationService: PageNavigationService,
               protected log: LogService,
-              protected snackBar: MatSnackBar) {
+              protected notificationsService: NotificationsService) {
   }
 
   handleWebServiceCallError(errorResponse: any, messageToDisplay: string = null) {
@@ -44,11 +46,11 @@ export class WebServiceBasedComponentHelper {
   }
 
   private showError(messageToDisplay: string) {
-    this.snackBar.open(messageToDisplay, 'x', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['snack-bar-warn']
+    this.notificationsService.error(null, messageToDisplay, {
+      timeOut: 5000,
+      showProgressBar: true,
+      pauseOnHover: true,
+      clickToClose: true
     });
   }
 }

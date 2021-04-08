@@ -23,7 +23,6 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconRegistry} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -36,6 +35,7 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {ColorBlockModule} from 'ngx-color/block';
 import {JDENTICON_CONFIG, NgxJdenticonModule} from 'ngx-jdenticon';
+import {SimpleNotificationsModule} from 'angular2-notifications';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -138,7 +138,6 @@ registerLocaleData(localeRu, 'ru');
     MatAutocompleteModule,
     MatExpansionModule,
     MatSelectModule,
-    MatSnackBarModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
@@ -151,7 +150,8 @@ registerLocaleData(localeRu, 'ru');
         deps: [HttpClient]
       }
     }),
-    NgxJdenticonModule
+    NgxJdenticonModule,
+    SimpleNotificationsModule.forRoot()
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
