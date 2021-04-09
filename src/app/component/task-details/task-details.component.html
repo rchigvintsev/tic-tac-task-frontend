@@ -33,6 +33,9 @@
       </button>
 
       <mat-menu #taskMenu="matMenu">
+        <button mat-menu-item (click)="onCompleteTaskButtonClick()">
+          {{ 'complete' | translate }}
+        </button>
         <button mat-menu-item (click)="onDeleteTaskButtonClick()">
           {{ 'delete' | translate }}
         </button>

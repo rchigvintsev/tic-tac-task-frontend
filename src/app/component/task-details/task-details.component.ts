@@ -225,6 +225,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCompleteTaskButtonClick() {
+    this.completeTask();
+  }
+
   onDeleteTaskButtonClick() {
     const title = this.i18nService.translate('attention');
     const content = this.i18nService.translate('delete_task_question');
@@ -336,9 +340,25 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  private completeTask() {
+    this.taskService.completeTask(this.taskFormModel).subscribe(
+      () => {
+        this.taskService.updateTaskCounters();
+        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY)
+      },
+      errorResponse => {
+        const messageToDisplay = this.i18nService.translate('failed_to_complete_task');
+        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+      }
+    );
+  }
+
   private deleteTask() {
     this.taskService.deleteTask(this.taskFormModel).subscribe(
-      () => this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY),
+      () => {
+        this.taskService.updateTaskCounters();
+        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY)
+      },
       errorResponse => {
         const messageToDisplay = this.i18nService.translate('failed_to_delete_task');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);

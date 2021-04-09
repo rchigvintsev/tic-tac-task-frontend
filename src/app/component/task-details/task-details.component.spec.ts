@@ -84,6 +84,7 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
+    spyOn(taskService, 'completeTask').and.returnValue(of(true));
     spyOn(taskService, 'deleteTask').and.returnValue(of(true));
     spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
     spyOn(taskService, 'assignTag').and.returnValue(of());
@@ -212,11 +213,35 @@ describe('TaskDetailsComponent', () => {
     });
   });
 
+  it('should complete task', () => {
+    fixture.whenStable().then(() => {
+      component.onCompleteTaskButtonClick();
+      fixture.detectChanges();
+      expect(taskService.completeTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should update task counters on task complete', () => {
+    fixture.whenStable().then(() => {
+      component.onCompleteTaskButtonClick();
+      fixture.detectChanges();
+      expect(taskService.updateTaskCounters).toHaveBeenCalled();
+    });
+  });
+
   it('should delete task', () => {
     fixture.whenStable().then(() => {
       component.onDeleteTaskButtonClick();
       fixture.detectChanges();
       expect(taskService.deleteTask).toHaveBeenCalled();
+    });
+  });
+
+  it('should update task counters on task delete', () => {
+    fixture.whenStable().then(() => {
+      component.onDeleteTaskButtonClick();
+      fixture.detectChanges();
+      expect(taskService.updateTaskCounters).toHaveBeenCalled();
     });
   });
 
