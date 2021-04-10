@@ -24,6 +24,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconRegistry} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -60,6 +61,7 @@ import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
 import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
+import {ProgressSpinnerDialogComponent} from './component/fragment/progress-spinner-dialog/progress-spinner-dialog.component';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {LocalizedDatePipe} from './pipe/localized-date.pipe';
@@ -111,6 +113,7 @@ registerLocaleData(localeRu, 'ru');
     AlertComponent,
     TagsComponent,
     TaskListsComponent,
+    ProgressSpinnerDialogComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ],
@@ -138,6 +141,7 @@ registerLocaleData(localeRu, 'ru');
     MatAutocompleteModule,
     MatExpansionModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
@@ -161,7 +165,7 @@ registerLocaleData(localeRu, 'ru');
     CookieService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmationDialogComponent, ColorPickerDialogComponent]
+  entryComponents: [ConfirmationDialogComponent, ColorPickerDialogComponent, ProgressSpinnerDialogComponent]
 })
 export class AppModule {
 }
