@@ -11,6 +11,7 @@ import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {I18nService} from '../../service/i18n.service';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
@@ -28,10 +29,11 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   constructor(i18nService: I18nService,
               componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
+              progressSpinnerService: ProgressSpinnerService,
+              pageNavigationService: PageNavigationService,
               private taskGroupService: TaskGroupService,
-              private pageNavigationService: PageNavigationService,
               private route: ActivatedRoute) {
-    super(i18nService, taskService, componentHelper);
+    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }
@@ -87,14 +89,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   }
 
   onTaskListScroll() {
-    this.pageRequest.page++;
-    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest).subscribe(
-      tasks => this.tasks = this.tasks.concat(tasks),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
-    );
+    this.loadMoreTasks(() => this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest));
   }
 
   protected beforeTaskCreate(task: Task) {
@@ -105,15 +100,9 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     if (taskGroup && this.taskGroup !== taskGroup) {
       this.taskGroup = taskGroup;
-      this.pageRequest.page = 0;
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
-      this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
-        tasks => this.tasks = tasks,
-        errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        }
-      );
+      this.tasks = [];
+      this.reloadTasks(() => this.taskService.getTasksByGroup(taskGroup, this.pageRequest));
     }
   }
 

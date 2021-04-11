@@ -10,6 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TaskGroupTasksComponent} from './task-group-tasks.component';
 import {ConfigService} from '../../service/config.service';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
@@ -48,6 +49,11 @@ describe('TaskGroupTasksComponent', () => {
 
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
+
+    const progressSpinnerService = injector.get(ProgressSpinnerService);
+    spyOn(progressSpinnerService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
+      observable.subscribe(onSuccess, onError);
+    });
   });
 
   describe('normally', () => {

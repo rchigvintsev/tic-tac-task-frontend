@@ -20,6 +20,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {ComponentFixture} from '@angular/core/testing';
@@ -29,6 +30,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorBlockModule} from 'ngx-color/block';
 import {NgxJdenticonModule} from 'ngx-jdenticon';
+import {SimpleNotificationsModule} from 'angular2-notifications';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -50,13 +52,13 @@ import {TaskDetailsComponent} from '../component/task-details/task-details.compo
 import {SidenavMenuComponent} from '../component/fragment/sidenav-menu/sidenav-menu.component';
 import {ConfirmationDialogComponent} from '../component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
+import {ProgressSpinnerDialogComponent} from '../component/fragment/progress-spinner-dialog/progress-spinner-dialog.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
-import {SimpleNotificationsModule} from "angular2-notifications";
 
 export class TestSupport {
   public static readonly IMPORTS = [
@@ -81,6 +83,7 @@ export class TestSupport {
     MatAutocompleteModule,
     MatExpansionModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
@@ -116,6 +119,7 @@ export class TestSupport {
     SidenavMenuComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
+    ProgressSpinnerDialogComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,

@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
+import {TestSupport} from '../../../test/test-support';
 import {ProgressSpinnerDialogComponent} from './progress-spinner-dialog.component';
 
 describe('ProgressSpinnerDialogComponent', () => {
@@ -8,7 +9,8 @@ describe('ProgressSpinnerDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProgressSpinnerDialogComponent]
+      declarations: TestSupport.DECLARATIONS,
+      imports: TestSupport.IMPORTS
     }).compileComponents();
   }));
 

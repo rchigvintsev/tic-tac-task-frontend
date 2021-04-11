@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="title">
   <div class="mat-card-header header-row">
     <div class="mat-card-title">
       <form *ngIf="titleEditing">
@@ -76,6 +76,10 @@
           </div>
         </div>
       </mat-list-item>
+
+      <div *ngIf=showInlineSpinner class="spinner-container">
+        <mat-spinner [diameter]="30"></mat-spinner>
+      </div>
     </mat-list>
   </mat-card-content>
 </mat-card>

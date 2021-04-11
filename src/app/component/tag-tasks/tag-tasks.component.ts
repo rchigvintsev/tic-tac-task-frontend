@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
-import {flatMap, map} from 'rxjs/operators';
+import {flatMap, map, tap} from 'rxjs/operators';
 
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
@@ -11,11 +11,11 @@ import {WebServiceBasedComponentHelper} from '../web-service-based-component-hel
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
 import {I18nService} from '../../service/i18n.service';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {Strings} from '../../util/strings';
-import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-tag-tasks',
@@ -30,11 +30,12 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   constructor(i18nService: I18nService,
               componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
-              private pageNavigationService: PageNavigationService,
+              progressSpinnerService: ProgressSpinnerService,
+              pageNavigationService: PageNavigationService,
               private route: ActivatedRoute,
               private tagService: TagService,
               private dialog: MatDialog) {
-    super(i18nService, taskService, componentHelper);
+    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -44,21 +45,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.pipe(
-      map(params => +params.id),
-      flatMap(tagId => this.tagService.getTag(tagId)),
-      flatMap(tag => {
-        this.setTag(tag);
-        return this.tagService.getUncompletedTasks(tag.id, this.pageRequest);
-      })
-    ).subscribe(tasks => this.tasks = tasks, errorResponse => {
-      if (HttpErrors.isNotFound(errorResponse)) {
-        this.pageNavigationService.navigateToNotFoundErrorPage();
-      } else {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
-    });
+    this.route.params.pipe(map(params => +params.id)).subscribe(tagId => this.onTagIdChange(tagId));
   }
 
   onTitleInputEscapeKeydown() {
@@ -70,14 +57,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
 
   onTaskListScroll() {
     if (this.tag) {
-      this.pageRequest.page++;
-      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest).subscribe(
-        tasks => this.tasks = this.tasks.concat(tasks),
-        errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        }
-      );
+      this.loadMoreTasks(() => this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest));
     }
   }
 
@@ -118,7 +98,14 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
     }
   }
 
-  private setTag(tag: Tag) {
+  private onTagIdChange(tagId: number) {
+    this.reloadTasks(() => this.tagService.getTag(tagId).pipe(
+      tap(tag => this.onTagLoad(tag)),
+      flatMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest))
+    ));
+  }
+
+  private onTagLoad(tag: Tag) {
     this.tag = tag;
     this.tagFormModel = tag.clone();
     this.title = tag.name;
@@ -127,7 +114,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private saveTag() {
     if (!this.tagFormModel.equals(this.tag)) {
       this.tagService.updateTag(this.tagFormModel).subscribe(
-        savedTag => this.setTag(savedTag),
+        savedTag => this.onTagLoad(savedTag),
         errorResponse => {
           const messageToDisplay = this.i18nService.translate('failed_to_save_tag');
           this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);

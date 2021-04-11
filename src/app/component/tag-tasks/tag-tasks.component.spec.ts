@@ -8,6 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {TestSupport} from '../../test/test-support';
 import {TagTasksComponent} from './tag-tasks.component';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {ConfigService} from '../../service/config.service';
 import {PageRequest} from '../../service/page-request';
 import {TagService} from '../../service/tag.service';
@@ -62,6 +63,11 @@ describe('TagTasksComponent', () => {
     spyOn(tagService, 'getUncompletedTasks').and.returnValue(of([]));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
     spyOn(tagService, 'deleteTag').and.returnValue(of(true));
+
+    const progressSpinnerService = injector.get(ProgressSpinnerService);
+    spyOn(progressSpinnerService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
+      observable.subscribe(onSuccess, onError);
+    });
 
     fixture.detectChanges();
   });

@@ -69,6 +69,7 @@ describe('BaseTasksComponent', () => {
     }));
 
     component = fixture.componentInstance;
+    component.title = 'Test title';
     component.tasks = tasks;
     component.taskFormEnabled = true;
     fixture.detectChanges();

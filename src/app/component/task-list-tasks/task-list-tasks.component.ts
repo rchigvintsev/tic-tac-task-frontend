@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
-import {flatMap, map} from 'rxjs/operators';
+import {flatMap, map, tap} from 'rxjs/operators';
 
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
@@ -10,12 +10,12 @@ import {WebServiceBasedComponentHelper} from '../web-service-based-component-hel
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {I18nService} from '../../service/i18n.service';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {Strings} from '../../util/strings';
-import {HttpErrors} from '../../util/http-errors';
 
 @Component({
   selector: 'app-task-list-tasks',
@@ -28,11 +28,12 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   constructor(i18nService: I18nService,
               componentHelper: WebServiceBasedComponentHelper,
               taskService: TaskService,
+              progressSpinnerService: ProgressSpinnerService,
+              pageNavigationService: PageNavigationService,
               private taskListService: TaskListService,
-              private pageNavigationService: PageNavigationService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, componentHelper);
+    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
@@ -42,21 +43,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   ngOnInit() {
-    this.route.params.pipe(
-      map(params => +params.id),
-      flatMap(id => this.taskListService.getTaskList(id)),
-      flatMap(taskList => {
-        this.setTaskList(taskList);
-        return this.taskListService.getTasks(taskList.id, this.pageRequest);
-      })
-    ).subscribe(tasks => this.tasks = tasks, errorResponse => {
-      if (HttpErrors.isNotFound(errorResponse)) {
-        this.pageNavigationService.navigateToNotFoundErrorPage();
-      } else {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
-    });
+    this.route.params.pipe(map(params => +params.id)).subscribe(taskListId => this.onTaskListIdChange(taskListId));
   }
 
   onTitleInputEscapeKeydown() {
@@ -126,14 +113,21 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     }
   }
 
-  private setTaskList(taskList: TaskList) {
+  private onTaskListIdChange(taskListId: number) {
+    this.reloadTasks(() => this.taskListService.getTaskList(taskListId).pipe(
+      tap(taskList => this.onTaskListLoad(taskList)),
+      flatMap(taskList => this.taskListService.getTasks(taskList.id, this.pageRequest))
+    ));
+  }
+
+  private onTaskListLoad(taskList: TaskList) {
     this.taskList = taskList;
     this.title = taskList.name;
   }
 
   private saveTaskList() {
     this.taskListService.updateTaskList(this.taskList).subscribe(
-      updatedTaskList => this.setTaskList(updatedTaskList),
+      updatedTaskList => this.onTaskListLoad(updatedTaskList),
       errorResponse => {
         const messageToDisplay = this.i18nService.translate('failed_to_save_task_list');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);

@@ -9,6 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TaskListTasksComponent} from './task-list-tasks.component';
 import {ConfigService} from '../../service/config.service';
+import {ProgressSpinnerService} from '../../service/progress-spinner.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {PageRequest} from '../../service/page-request';
@@ -78,6 +79,11 @@ describe('TaskListTasksComponent', () => {
 
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
+
+    const progressSpinnerService = injector.get(ProgressSpinnerService);
+    spyOn(progressSpinnerService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
+      observable.subscribe(onSuccess, onError);
+    });
 
     fixture.detectChanges();
   });

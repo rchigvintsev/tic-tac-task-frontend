@@ -101,6 +101,7 @@ registerLocaleData(localeRu, 'ru');
     TaskCommentsComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
+    ProgressSpinnerDialogComponent,
     NotBlankValidatorDirective,
     PasswordsMatchValidatorDirective,
     BaseSignComponent,
@@ -113,7 +114,6 @@ registerLocaleData(localeRu, 'ru');
     AlertComponent,
     TagsComponent,
     TaskListsComponent,
-    ProgressSpinnerDialogComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe
   ],

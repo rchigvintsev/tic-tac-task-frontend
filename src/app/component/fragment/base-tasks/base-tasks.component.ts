@@ -1,13 +1,18 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 
+import {Observable} from 'rxjs';
+
 import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
+import {ProgressSpinnerService} from '../../../service/progress-spinner.service';
+import {PageNavigationService} from '../../../service/page-navigation.service';
 import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
 import {PageRequest} from '../../../service/page-request';
 import {Strings} from '../../../util/strings';
+import {HttpErrors} from '../../../util/http-errors';
 
 export class MenuItem {
   constructor(public readonly name: string, public readonly handler: () => void) {
@@ -30,6 +35,7 @@ export class BaseTasksComponent {
   taskFormSubmitEnabled = false;
   taskFormModel = new Task();
   tasks: Array<Task>;
+  showInlineSpinner: boolean;
 
   @ViewChild('titleInput')
   titleElement: ElementRef;
@@ -40,6 +46,8 @@ export class BaseTasksComponent {
 
   constructor(public i18nService: I18nService,
               protected taskService: TaskService,
+              protected progressSpinnerService: ProgressSpinnerService,
+              protected pageNavigationService: PageNavigationService,
               protected componentHelper: WebServiceBasedComponentHelper) {
   }
 
@@ -76,15 +84,28 @@ export class BaseTasksComponent {
 
   onTaskCompleteCheckboxChange(task: Task) {
     // Let animation to complete
-    setTimeout(() => {
-      this.completeTask(task);
-    }, 300);
+    setTimeout(() => this.completeTask(task), 300);
   }
 
   protected onTitleEditingBegin() {
   }
 
   protected onTitleEditingEnd() {
+  }
+
+  protected reloadTasks(loadFunction: () => Observable<Task[]>) {
+    this.pageRequest.page = 0;
+    this.progressSpinnerService.showUntilExecuted(loadFunction(), tasks => this.tasks = tasks,
+        error => this.onTasksLoadError(error));
+  }
+
+  protected loadMoreTasks(loadFunction: () => Observable<Task[]>) {
+    this.showInlineSpinner = true;
+    this.pageRequest.page++;
+    loadFunction().subscribe(tasks => {
+      this.tasks = this.tasks.concat(tasks);
+      this.showInlineSpinner = false;
+    }, error => this.onTasksLoadError(error));
   }
 
   protected beforeTaskCreate(task: Task) {
@@ -95,6 +116,16 @@ export class BaseTasksComponent {
     this.tasks.push(task);
     this.taskForm.resetForm();
     this.taskService.updateTaskCounters();
+  }
+
+  private onTasksLoadError(error: any) {
+    this.showInlineSpinner = false;
+    if (HttpErrors.isNotFound(error)) {
+      this.pageNavigationService.navigateToNotFoundErrorPage();
+    } else {
+      const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
+      this.componentHelper.handleWebServiceCallError(error, messageToDisplay);
+    }
   }
 
   private beginTitleEditing() {
