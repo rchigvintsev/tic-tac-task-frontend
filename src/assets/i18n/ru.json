@@ -83,6 +83,7 @@
   "failed_to_delete_task": "Не удаётся удалить задачу",
   "failed_to_complete_task": "Не удаётся завершить задачу",
   "failed_to_load_tags": "Не удаётся загрузить метки",
+  "failed_to_load_tag": "Не удаётся загрузить метку",
   "failed_to_save_tag": "Не удаётся сохранить метку",
   "failed_to_delete_tag": "Не удаётся удалить метку",
   "failed_to_load_task_comments": "Не удаётся загрузить комментарии к задаче",

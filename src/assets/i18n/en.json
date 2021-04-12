@@ -83,6 +83,7 @@
   "failed_to_complete_task": "Failed to complete task",
   "failed_to_delete_task": "Failed to delete task",
   "failed_to_load_tags": "Failed to load tags",
+  "failed_to_load_tag": "Failed to load tag",
   "failed_to_save_tag": "Failed to save tag",
   "failed_to_delete_tag": "Failed to delete tag",
   "failed_to_load_task_comments": "Failed to load task comments",
