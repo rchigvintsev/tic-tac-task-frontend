@@ -1,12 +1,11 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, getTestBed, TestBed} from '@angular/core/testing';
-import {HttpEvent, HttpHandler, HttpRequest, HttpResponse} from '@angular/common/http';
-
-import {Observable, of} from 'rxjs';
+import {HttpRequest} from '@angular/common/http';
 
 import {TranslateService} from '@ngx-translate/core';
 import {AcceptLanguageInterceptor} from './accept-language.interceptor';
 import {TestSupport} from '../test/test-support';
+import {HttpHandlerMock} from '../test/http-handler-mock';
 
 describe('AcceptLanguageInterceptor', () => {
   let injector;
@@ -49,12 +48,3 @@ describe('AcceptLanguageInterceptor', () => {
     }, _ => fail('An error was not expected'));
   });
 });
-
-class HttpHandlerMock extends HttpHandler {
-  savedRequest: HttpRequest<any>;
-
-  handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
-    this.savedRequest = req;
-    return of(new HttpResponse());
-  }
-}

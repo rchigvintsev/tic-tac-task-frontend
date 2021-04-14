@@ -1,0 +1,59 @@
+import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {HttpRequest} from '@angular/common/http';
+
+import {throwError} from 'rxjs';
+
+import {HttpErrorTranslationInterceptor} from './http-error-translation.interceptor';
+import {HttpRequestError} from '../error/http-request.error';
+import {UnauthorizedRequestError} from '../error/unauthorized-request.error';
+import {ResourceNotFoundError} from '../error/resource-not-found.error';
+import {TestSupport} from '../test/test-support';
+import {HttpHandlerMock} from '../test/http-handler-mock';
+
+fdescribe('HttpErrorTranslationInterceptor', () => {
+  let injector;
+  let interceptor;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS
+    }).compileComponents();
+
+    injector = getTestBed();
+    interceptor = injector.get(HttpErrorTranslationInterceptor);
+  }));
+
+  it('should translate response with 401 status code to "UnauthorizedRequestError"', done => {
+    const url = '/';
+    const request = new HttpRequest('GET', url);
+    const handler = new HttpHandlerMock(() => throwError({url, status: 401}));
+
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
+      expect(error).toEqual(jasmine.any(UnauthorizedRequestError));
+      done();
+    });
+  });
+
+  it('should translate response with 404 status code to "ResourceNotFoundError"', done => {
+    const url = '/';
+    const request = new HttpRequest('GET', url);
+    const handler = new HttpHandlerMock(() => throwError({url, status: 404}));
+
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
+      expect(error).toEqual(jasmine.any(ResourceNotFoundError));
+      done();
+    });
+  });
+
+  it('should translate error response to "HttpRequestError" by default', done => {
+    const url = '/';
+    const request = new HttpRequest('GET', url);
+    const handler = new HttpHandlerMock(() => throwError({url, status: 500}));
+
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
+      expect(error).toEqual(jasmine.any(HttpRequestError));
+      done();
+    });
+  });
+});
