@@ -10,9 +10,9 @@ import {ResourceNotFoundError} from '../error/resource-not-found.error';
 import {TestSupport} from '../test/test-support';
 import {HttpHandlerMock} from '../test/http-handler-mock';
 
-fdescribe('HttpErrorTranslationInterceptor', () => {
+describe('HttpErrorTranslationInterceptor', () => {
   let injector;
-  let interceptor;
+  let interceptor: HttpErrorTranslationInterceptor;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
