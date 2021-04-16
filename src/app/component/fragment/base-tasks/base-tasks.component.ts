@@ -3,16 +3,19 @@ import {NgForm} from '@angular/forms';
 
 import {Observable} from 'rxjs';
 
-import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
+import {NotificationsService} from 'angular2-notifications';
+
 import {I18nService} from '../../../service/i18n.service';
+import {LogService} from '../../../service/log.service';
 import {TaskService} from '../../../service/task.service';
-import {ProgressSpinnerService} from '../../../service/progress-spinner.service';
+import {ProgressSpinnerDialogService} from '../../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
 import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
 import {PageRequest} from '../../../service/page-request';
+import {HttpRequestError} from '../../../error/http-request.error';
+import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
 import {Strings} from '../../../util/strings';
-import {HttpErrors} from '../../../util/http-errors';
 
 export class MenuItem {
   constructor(public readonly name: string, public readonly handler: () => void) {
@@ -45,10 +48,11 @@ export class BaseTasksComponent {
   protected pageRequest = new PageRequest();
 
   constructor(public i18nService: I18nService,
+              protected logService: LogService,
               protected taskService: TaskService,
-              protected progressSpinnerService: ProgressSpinnerService,
+              protected progressSpinnerDialogService: ProgressSpinnerDialogService,
               protected pageNavigationService: PageNavigationService,
-              protected componentHelper: WebServiceBasedComponentHelper) {
+              protected notificationsService: NotificationsService) {
   }
 
   onTitleTextClick() {
@@ -95,8 +99,8 @@ export class BaseTasksComponent {
 
   protected reloadTasks(loadFunction: () => Observable<Task[]>) {
     this.pageRequest.page = 0;
-    this.progressSpinnerService.showUntilExecuted(loadFunction(), tasks => this.tasks = tasks,
-        error => this.onTasksLoadError(error));
+    this.progressSpinnerDialogService.showUntilExecuted(loadFunction(), tasks => this.tasks = tasks,
+      (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 
   protected loadMoreTasks(loadFunction: () => Observable<Task[]>) {
@@ -105,7 +109,7 @@ export class BaseTasksComponent {
     loadFunction().subscribe(tasks => {
       this.tasks = this.tasks.concat(tasks);
       this.showInlineSpinner = false;
-    }, error => this.onTasksLoadError(error));
+    }, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 
   protected beforeTaskCreate(task: Task) {
@@ -118,13 +122,15 @@ export class BaseTasksComponent {
     this.taskService.updateTaskCounters();
   }
 
-  private onTasksLoadError(error: any) {
+  protected onHttpRequestError(error: HttpRequestError) {
     this.showInlineSpinner = false;
-    if (HttpErrors.isNotFound(error)) {
-      this.pageNavigationService.navigateToNotFoundErrorPage();
+    if (error instanceof ResourceNotFoundError) {
+      this.pageNavigationService.navigateToNotFoundErrorPage().then();
     } else {
-      const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-      this.componentHelper.handleWebServiceCallError(error, messageToDisplay);
+      this.logService.error(error.message);
+      if (error.localizedMessage) {
+        this.notificationsService.error(null, error.localizedMessage);
+      }
     }
   }
 
@@ -142,13 +148,8 @@ export class BaseTasksComponent {
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
       this.beforeTaskCreate(this.taskFormModel);
-      this.taskService.createTask(this.taskFormModel).subscribe(
-        task => this.afterTaskCreate(task),
-        errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        }
-      );
+      this.taskService.createTask(this.taskFormModel).subscribe(task => this.afterTaskCreate(task),
+        (error: HttpRequestError) => this.onHttpRequestError(error));
     }
   }
 
@@ -156,9 +157,6 @@ export class BaseTasksComponent {
     this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
-    }, errorResponse => {
-      const messageToDisplay = this.i18nService.translate('failed_to_complete_task');
-      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-    });
+    }, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 }

@@ -10,13 +10,14 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TaskGroupTasksComponent} from './task-group-tasks.component';
 import {ConfigService} from '../../service/config.service';
-import {ProgressSpinnerService} from '../../service/progress-spinner.service';
+import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
 import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
 import {TaskStatus} from '../../model/task-status';
+import {HttpRequestError} from '../../error/http-request.error';
 import any = jasmine.any;
 
 describe('TaskGroupTasksComponent', () => {
@@ -50,8 +51,8 @@ describe('TaskGroupTasksComponent', () => {
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
 
-    const progressSpinnerService = injector.get(ProgressSpinnerService);
-    spyOn(progressSpinnerService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
+    const progressSpinnerDialogService = injector.get(ProgressSpinnerDialogService);
+    spyOn(progressSpinnerDialogService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
       observable.subscribe(onSuccess, onError);
     });
   });
@@ -214,10 +215,9 @@ describe('TaskGroupTasksComponent', () => {
   });
 
   describe('when server responds with error', () => {
-    const errorResponse = {status: 500, url: 'http://backend.com/service', error: {message: 'Something went wrong...'}};
-
+    const response = {status: 500, url: 'http://backend.com/service', error: {message: 'Something went wrong...'}};
     beforeEach(() => {
-      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(errorResponse));
+      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(HttpRequestError.fromResponse(response)));
       spyOn(window.console, 'error');
       fixture.detectChanges();
     });
@@ -225,8 +225,8 @@ describe('TaskGroupTasksComponent', () => {
     it('should output error into console', () => {
       fixture.whenStable().then(() => {
         fixture.detectChanges();
-        const errorMessage = `HTTP failure response for ${errorResponse.url}: `
-          + `server responded with status 500 and message "${errorResponse.error.message}"`;
+        const errorMessage = `HTTP failure response for ${response.url}: `
+          + `server responded with status 500 and message "${response.error.message}"`;
         expect(window.console.error).toHaveBeenCalledWith(errorMessage);
       });
     });

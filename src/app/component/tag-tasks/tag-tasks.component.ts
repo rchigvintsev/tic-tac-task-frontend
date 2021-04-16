@@ -4,17 +4,20 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map, tap} from 'rxjs/operators';
 
+import {NotificationsService} from 'angular2-notifications';
+
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
+import {I18nService} from '../../service/i18n.service';
+import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
-import {I18nService} from '../../service/i18n.service';
-import {ProgressSpinnerService} from '../../service/progress-spinner.service';
+import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
+import {HttpRequestError} from '../../error/http-request.error';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -28,14 +31,15 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private tag: Tag;
 
   constructor(i18nService: I18nService,
-              componentHelper: WebServiceBasedComponentHelper,
+              logService: LogService,
               taskService: TaskService,
-              progressSpinnerService: ProgressSpinnerService,
+              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
-              private route: ActivatedRoute,
+              notificationsService: NotificationsService,
               private tagService: TagService,
+              private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
+    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -115,10 +119,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
     if (!this.tagFormModel.equals(this.tag)) {
       this.tagService.updateTag(this.tagFormModel).subscribe(
         savedTag => this.onTagLoad(savedTag),
-        errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_save_tag');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        }
+        (error: HttpRequestError) => this.onHttpRequestError(error)
       );
     }
   }
@@ -126,10 +127,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private deleteTag() {
     this.tagService.deleteTag(this.tagFormModel).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_delete_tag');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 }

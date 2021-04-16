@@ -64,6 +64,8 @@ import {TaskListsComponent} from './component/fragment/task-lists/task-lists.com
 import {ProgressSpinnerDialogComponent} from './component/fragment/progress-spinner-dialog/progress-spinner-dialog.component';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
+import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translation.interceptor';
+import {UnauthorizedRequestInterceptor} from './interceptor/unauthorized-request.interceptor';
 import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
 
@@ -161,6 +163,8 @@ registerLocaleData(localeRu, 'ru');
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
     {provide: APP_INITIALIZER, useFactory: initIcons, multi: true, deps: [MatIconRegistry, DomSanitizer]},
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedRequestInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorTranslationInterceptor, multi: true},
     {provide: JDENTICON_CONFIG, useValue: {backColor: '#fff'}},
     CookieService
   ],

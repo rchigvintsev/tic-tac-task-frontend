@@ -2,11 +2,11 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {getTestBed, TestBed} from '@angular/core/testing';
 
 import {TestSupport} from '../test/test-support';
-import {ProgressSpinnerService} from './progress-spinner.service';
+import {ProgressSpinnerDialogService} from './progress-spinner-dialog.service';
 
-describe('ProgressSpinnerService', () => {
+describe('ProgressSpinnerDialogService', () => {
   let injector: TestBed;
-  let service: ProgressSpinnerService;
+  let service: ProgressSpinnerDialogService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('ProgressSpinnerService', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
     injector = getTestBed();
-    service = injector.get(ProgressSpinnerService);
+    service = injector.get(ProgressSpinnerDialogService);
   });
 
   it('should be created', () => {

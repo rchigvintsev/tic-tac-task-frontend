@@ -6,12 +6,14 @@ import {takeUntil} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
+import {NotificationsService} from 'angular2-notifications';
+
 import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
+import {I18nService} from '../../service/i18n.service';
+import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {I18nService} from '../../service/i18n.service';
-import {ProgressSpinnerService} from '../../service/progress-spinner.service';
+import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
@@ -27,13 +29,14 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   private componentDestroyed = new Subject<boolean>();
 
   constructor(i18nService: I18nService,
-              componentHelper: WebServiceBasedComponentHelper,
+              logService: LogService,
               taskService: TaskService,
-              progressSpinnerService: ProgressSpinnerService,
+              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
+              notificationsService: NotificationsService,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute) {
-    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
+    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }
@@ -110,7 +113,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     let taskGroup = TaskGroup.valueOf(fragment);
     if (!taskGroup) {
       taskGroup = TaskGroup.TODAY;
-      this.pageNavigationService.navigateToTaskGroupPage(taskGroup);
+      this.pageNavigationService.navigateToTaskGroupPage(taskGroup).then();
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
   }

@@ -4,17 +4,20 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map, tap} from 'rxjs/operators';
 
+import {NotificationsService} from 'angular2-notifications';
+
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
+import {I18nService} from '../../service/i18n.service';
+import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
-import {I18nService} from '../../service/i18n.service';
-import {ProgressSpinnerService} from '../../service/progress-spinner.service';
+import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
+import {HttpRequestError} from '../../error/http-request.error';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -26,14 +29,15 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private taskList: TaskList;
 
   constructor(i18nService: I18nService,
-              componentHelper: WebServiceBasedComponentHelper,
+              logService: LogService,
               taskService: TaskService,
-              progressSpinnerService: ProgressSpinnerService,
+              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
+              notificationsService: NotificationsService,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, progressSpinnerService, pageNavigationService, componentHelper);
+    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
@@ -55,14 +59,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
 
   onTaskListScroll() {
     if (this.taskList) {
-      this.pageRequest.page++;
-      this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe(
-        tasks => this.tasks = this.tasks.concat(tasks),
-        errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_load_tasks');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        }
-      );
+      this.loadMoreTasks(() => this.taskListService.getTasks(this.taskList.id, this.pageRequest));
     }
   }
 
@@ -100,10 +97,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     this.taskListService.addTask(this.taskList.id, task.id).subscribe(_ => {
       task.taskListId = this.taskList.id;
       super.afterTaskCreate(task);
-    }, errorResponse => {
-      const messageToDisplay = this.i18nService.translate('failed_to_add_task_to_task_list');
-      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-    });
+    }, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 
   protected onTitleEditingEnd() {
@@ -128,30 +122,21 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private saveTaskList() {
     this.taskListService.updateTaskList(this.taskList).subscribe(
       updatedTaskList => this.onTaskListLoad(updatedTaskList),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_task_list');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 
   private completeTaskList() {
     this.taskListService.completeTaskList(this.taskList).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_complete_task_list');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 
   private deleteTaskList() {
     this.taskListService.deleteTaskList(this.taskList).subscribe(
       _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_delete_task_list');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 }
