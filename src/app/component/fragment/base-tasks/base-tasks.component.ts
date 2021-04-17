@@ -148,13 +148,13 @@ export class BaseTasksComponent {
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
       this.beforeTaskCreate(this.taskFormModel);
-      this.taskService.createTask(this.taskFormModel).subscribe(task => this.afterTaskCreate(task),
-        (error: HttpRequestError) => this.onHttpRequestError(error));
+      this.progressSpinnerDialogService.showUntilExecuted(this.taskService.createTask(this.taskFormModel),
+          task => this.afterTaskCreate(task), (error: HttpRequestError) => this.onHttpRequestError(error));
     }
   }
 
   private completeTask(task: Task) {
-    this.taskService.completeTask(task).subscribe(_ => {
+    this.progressSpinnerDialogService.showUntilExecuted(this.taskService.completeTask(task), _ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
     }, (error: HttpRequestError) => this.onHttpRequestError(error));
