@@ -52,7 +52,7 @@ import {TaskDetailsComponent} from '../component/task-details/task-details.compo
 import {SidenavMenuComponent} from '../component/fragment/sidenav-menu/sidenav-menu.component';
 import {ConfirmationDialogComponent} from '../component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
-import {ProgressSpinnerDialogComponent} from '../component/fragment/progress-spinner-dialog/progress-spinner-dialog.component';
+import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator/loading-indicator.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
@@ -119,7 +119,7 @@ export class TestSupport {
     SidenavMenuComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
-    ProgressSpinnerDialogComponent,
+    LoadingIndicatorComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,

@@ -61,7 +61,7 @@ import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
 import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
-import {ProgressSpinnerDialogComponent} from './component/fragment/progress-spinner-dialog/progress-spinner-dialog.component';
+import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translation.interceptor';
@@ -103,7 +103,7 @@ registerLocaleData(localeRu, 'ru');
     TaskCommentsComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
-    ProgressSpinnerDialogComponent,
+    LoadingIndicatorComponent,
     NotBlankValidatorDirective,
     PasswordsMatchValidatorDirective,
     BaseSignComponent,
@@ -169,7 +169,7 @@ registerLocaleData(localeRu, 'ru');
     CookieService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmationDialogComponent, ColorPickerDialogComponent, ProgressSpinnerDialogComponent]
+  entryComponents: [ConfirmationDialogComponent, ColorPickerDialogComponent, LoadingIndicatorComponent]
 })
 export class AppModule {
 }

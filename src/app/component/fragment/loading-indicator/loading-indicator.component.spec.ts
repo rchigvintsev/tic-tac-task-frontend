@@ -1,11 +1,11 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TestSupport} from '../../../test/test-support';
-import {ProgressSpinnerDialogComponent} from './progress-spinner-dialog.component';
+import {LoadingIndicatorComponent} from './loading-indicator.component';
 
-describe('ProgressSpinnerDialogComponent', () => {
-  let component: ProgressSpinnerDialogComponent;
-  let fixture: ComponentFixture<ProgressSpinnerDialogComponent>;
+describe('LoadingIndicatorComponent', () => {
+  let component: LoadingIndicatorComponent;
+  let fixture: ComponentFixture<LoadingIndicatorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('ProgressSpinnerDialogComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgressSpinnerDialogComponent);
+    fixture = TestBed.createComponent(LoadingIndicatorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
