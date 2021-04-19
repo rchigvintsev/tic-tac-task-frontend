@@ -12,7 +12,6 @@ import {I18nService} from '../../service/i18n.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
@@ -31,13 +30,12 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   constructor(i18nService: I18nService,
               logService: LogService,
               taskService: TaskService,
-              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
               notificationsService: NotificationsService,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
+    super(i18nService, logService, taskService, pageNavigationService, notificationsService);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
@@ -59,7 +57,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
 
   onTaskListScroll() {
     if (this.taskList) {
-      this.loadMoreTasks(() => this.taskListService.getTasks(this.taskList.id, this.pageRequest));
+      this.beforeTasksLoad();
+      this.taskListService.getTasks(this.taskList.id, this.pageRequest, false).subscribe(
+        tasks => this.afterTasksLoad(tasks),
+        (error: HttpRequestError) => this.onHttpRequestError(error)
+      );
     }
   }
 
@@ -108,10 +110,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   }
 
   private onTaskListIdChange(taskListId: number) {
-    this.reloadTasks(() => this.taskListService.getTaskList(taskListId).pipe(
+    this.pageRequest.page = 0;
+    this.taskListService.getTaskList(taskListId).pipe(
       tap(taskList => this.onTaskListLoad(taskList)),
       flatMap(taskList => this.taskListService.getTasks(taskList.id, this.pageRequest))
-    ));
+    ).subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 
   private onTaskListLoad(taskList: TaskList) {

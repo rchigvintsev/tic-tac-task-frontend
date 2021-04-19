@@ -1,18 +1,15 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 
-import {Observable} from 'rxjs';
-
 import {NotificationsService} from 'angular2-notifications';
 
 import {I18nService} from '../../../service/i18n.service';
 import {LogService} from '../../../service/log.service';
 import {TaskService} from '../../../service/task.service';
-import {ProgressSpinnerDialogService} from '../../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
+import {PageRequest} from '../../../service/page-request';
 import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
-import {PageRequest} from '../../../service/page-request';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
 import {Strings} from '../../../util/strings';
@@ -50,7 +47,6 @@ export class BaseTasksComponent {
   constructor(public i18nService: I18nService,
               protected logService: LogService,
               protected taskService: TaskService,
-              protected progressSpinnerDialogService: ProgressSpinnerDialogService,
               protected pageNavigationService: PageNavigationService,
               protected notificationsService: NotificationsService) {
   }
@@ -97,21 +93,6 @@ export class BaseTasksComponent {
   protected onTitleEditingEnd() {
   }
 
-  protected reloadTasks(loadFunction: () => Observable<Task[]>) {
-    this.pageRequest.page = 0;
-    this.progressSpinnerDialogService.showUntilExecuted(loadFunction(), tasks => this.tasks = tasks,
-      (error: HttpRequestError) => this.onHttpRequestError(error));
-  }
-
-  protected loadMoreTasks(loadFunction: () => Observable<Task[]>) {
-    this.showInlineSpinner = true;
-    this.pageRequest.page++;
-    loadFunction().subscribe(tasks => {
-      this.tasks = this.tasks.concat(tasks);
-      this.showInlineSpinner = false;
-    }, (error: HttpRequestError) => this.onHttpRequestError(error));
-  }
-
   protected beforeTaskCreate(task: Task) {
     task.status = TaskStatus.PROCESSED;
   }
@@ -120,6 +101,16 @@ export class BaseTasksComponent {
     this.tasks.push(task);
     this.taskForm.resetForm();
     this.taskService.updateTaskCounters();
+  }
+
+  protected beforeTasksLoad() {
+    this.showInlineSpinner = true;
+    this.pageRequest.page++;
+  }
+
+  protected afterTasksLoad(tasks: Task[]) {
+    this.tasks = this.tasks.concat(tasks);
+    this.showInlineSpinner = false;
   }
 
   protected onHttpRequestError(error: HttpRequestError) {
@@ -148,13 +139,15 @@ export class BaseTasksComponent {
   private createTask() {
     if (!Strings.isBlank(this.taskFormModel.title)) {
       this.beforeTaskCreate(this.taskFormModel);
-      this.progressSpinnerDialogService.showUntilExecuted(this.taskService.createTask(this.taskFormModel),
-          task => this.afterTaskCreate(task), (error: HttpRequestError) => this.onHttpRequestError(error));
+      this.taskService.createTask(this.taskFormModel).subscribe(
+        task => this.afterTaskCreate(task),
+        (error: HttpRequestError) => this.onHttpRequestError(error)
+      );
     }
   }
 
   private completeTask(task: Task) {
-    this.progressSpinnerDialogService.showUntilExecuted(this.taskService.completeTask(task), _ => {
+    this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
     }, (error: HttpRequestError) => this.onHttpRequestError(error));

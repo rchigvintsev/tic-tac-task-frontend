@@ -10,7 +10,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TaskGroupTasksComponent} from './task-group-tasks.component';
 import {ConfigService} from '../../service/config.service';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
@@ -50,11 +49,6 @@ describe('TaskGroupTasksComponent', () => {
 
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
-
-    const progressSpinnerDialogService = injector.get(ProgressSpinnerDialogService);
-    spyOn(progressSpinnerDialogService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
-      observable.subscribe(onSuccess, onError);
-    });
   });
 
   describe('normally', () => {
@@ -191,25 +185,6 @@ describe('TaskGroupTasksComponent', () => {
       fixture.whenStable().then(() => {
         taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
         expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
-  describe('when authentication is required', () => {
-    beforeEach(() => {
-      spyOn(taskService, 'getTasksByGroup').and.callFake(() => {
-        return throwError({status: 401});
-      });
-      fixture.detectChanges();
-    });
-
-    it('should render signin page', () => {
-      const injector = getTestBed();
-      const router = injector.get(Router);
-      const translate = injector.get(TranslateService);
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        expect(router.navigate).toHaveBeenCalledWith([translate.currentLang, 'signin']);
       });
     });
   });

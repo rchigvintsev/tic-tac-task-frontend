@@ -9,13 +9,13 @@ import {TranslateService} from '@ngx-translate/core';
 import {TestSupport} from '../../test/test-support';
 import {TaskListTasksComponent} from './task-list-tasks.component';
 import {ConfigService} from '../../service/config.service';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskList} from '../../model/task-list';
+import {ResourceNotFoundError} from "../../error/resource-not-found.error";
 import any = jasmine.any;
 
 const CURRENT_LANG = 'en';
@@ -79,11 +79,6 @@ describe('TaskListTasksComponent', () => {
 
     const translate = injector.get(TranslateService);
     translate.currentLang = 'en';
-
-    const progressSpinnerDialogService = injector.get(ProgressSpinnerDialogService);
-    spyOn(progressSpinnerDialogService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
-      observable.subscribe(onSuccess, onError);
-    });
 
     fixture.detectChanges();
   });
@@ -157,7 +152,9 @@ describe('TaskListTasksComponent', () => {
   });
 
   it('should navigate to "not-found" error page when task list is not found', () => {
-    taskListService.getTaskList = jasmine.createSpy('getTaskList').and.callFake(() => throwError({status: 404}));
+    taskListService.getTaskList = jasmine.createSpy('getTaskList').and.callFake(() => {
+      return throwError(ResourceNotFoundError.fromResponse({url: `/task-list/${taskList.id}`}));
+    });
     component.ngOnInit();
     fixture.whenStable().then(() => {
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);

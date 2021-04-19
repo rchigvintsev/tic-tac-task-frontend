@@ -6,7 +6,7 @@ import {of, Subject} from 'rxjs';
 import {TestSupport} from '../test/test-support';
 import {LoadingIndicatorService} from './loading-indicator.service';
 
-fdescribe('LoadingIndicatorService', () => {
+describe('LoadingIndicatorService', () => {
   let injector: TestBed;
   let service: LoadingIndicatorService;
 

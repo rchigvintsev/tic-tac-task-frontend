@@ -13,7 +13,6 @@ import {I18nService} from '../../service/i18n.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
@@ -33,13 +32,12 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   constructor(i18nService: I18nService,
               logService: LogService,
               taskService: TaskService,
-              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
               notificationsService: NotificationsService,
               private tagService: TagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
+    super(i18nService, logService, taskService, pageNavigationService, notificationsService);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -61,7 +59,11 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
 
   onTaskListScroll() {
     if (this.tag) {
-      this.loadMoreTasks(() => this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest));
+      this.beforeTasksLoad();
+      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest, false).subscribe(
+        tasks => this.afterTasksLoad(tasks),
+        (error: HttpRequestError) => this.onHttpRequestError(error)
+      );
     }
   }
 
@@ -96,17 +98,18 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   }
 
   protected onTitleEditingEnd() {
-    if (!Strings.isBlank(this.title)) {
+    if (!Strings.isBlank(this.title) && this.tagFormModel.name !== this.title) {
       this.tagFormModel.name = this.title;
       this.saveTag();
     }
   }
 
   private onTagIdChange(tagId: number) {
-    this.reloadTasks(() => this.tagService.getTag(tagId).pipe(
+    this.pageRequest.page = 0;
+    this.tagService.getTag(tagId).pipe(
       tap(tag => this.onTagLoad(tag)),
-      flatMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest))
-    ));
+      flatMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest, false))
+    ).subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 
   private onTagLoad(tag: Tag) {

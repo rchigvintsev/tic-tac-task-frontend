@@ -13,11 +13,11 @@ import {I18nService} from '../../service/i18n.service';
 import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
+import {HttpRequestError} from '../../error/http-request.error';
 
 @Component({
   selector: 'app-task-group-tasks',
@@ -31,12 +31,11 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   constructor(i18nService: I18nService,
               logService: LogService,
               taskService: TaskService,
-              progressSpinnerDialogService: ProgressSpinnerDialogService,
               pageNavigationService: PageNavigationService,
               notificationsService: NotificationsService,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute) {
-    super(i18nService, logService, taskService, progressSpinnerDialogService, pageNavigationService, notificationsService);
+    super(i18nService, logService, taskService, pageNavigationService, notificationsService);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }
@@ -92,7 +91,11 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   }
 
   onTaskListScroll() {
-    this.loadMoreTasks(() => this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest));
+    this.beforeTasksLoad();
+    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest, false).subscribe(
+      tasks => this.afterTasksLoad(tasks),
+      (error: HttpRequestError) => this.onHttpRequestError(error)
+    );
   }
 
   protected beforeTaskCreate(task: Task) {
@@ -105,7 +108,11 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
       this.taskGroup = taskGroup;
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
       this.tasks = [];
-      this.reloadTasks(() => this.taskService.getTasksByGroup(taskGroup, this.pageRequest));
+      this.pageRequest.page = 0;
+      this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
+        tasks => this.tasks = tasks,
+        (error: HttpRequestError) => this.onHttpRequestError(error)
+      );
     }
   }
 

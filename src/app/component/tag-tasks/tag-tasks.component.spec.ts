@@ -8,12 +8,12 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {TestSupport} from '../../test/test-support';
 import {TagTasksComponent} from './tag-tasks.component';
-import {ProgressSpinnerDialogService} from '../../service/progress-spinner-dialog.service';
 import {ConfigService} from '../../service/config.service';
 import {PageRequest} from '../../service/page-request';
 import {TagService} from '../../service/tag.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
+import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import any = jasmine.any;
 
 const CURRENT_LANG = 'en';
@@ -64,11 +64,6 @@ describe('TagTasksComponent', () => {
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
     spyOn(tagService, 'deleteTag').and.returnValue(of(true));
 
-    const progressSpinnerDialogService = injector.get(ProgressSpinnerDialogService);
-    spyOn(progressSpinnerDialogService, 'showUntilExecuted').and.callFake((observable, onSuccess, onError) => {
-      observable.subscribe(onSuccess, onError);
-    });
-
     fixture.detectChanges();
   });
 
@@ -79,7 +74,7 @@ describe('TagTasksComponent', () => {
   it('should load next task page on task list scroll', () => {
     fixture.whenStable().then(() => {
       component.onTaskListScroll();
-      expect(tagService.getUncompletedTasks).toHaveBeenCalledWith(any(Number), new PageRequest(1));
+      expect(tagService.getUncompletedTasks).toHaveBeenCalledWith(any(Number), new PageRequest(1), false);
     });
   });
 
@@ -98,6 +93,14 @@ describe('TagTasksComponent', () => {
       component.onTitleInputBlur();
       fixture.detectChanges();
       expect(tagService.updateTag).toHaveBeenCalled();
+    });
+  });
+
+  it('should not save tag on title input blur when tag name is not changed', () => {
+    fixture.whenStable().then(() => {
+      component.onTitleInputBlur();
+      fixture.detectChanges();
+      expect(tagService.updateTag).not.toHaveBeenCalled();
     });
   });
 
@@ -134,7 +137,9 @@ describe('TagTasksComponent', () => {
   });
 
   it('should navigate to "not-found" error page when tag is not found', () => {
-    tagService.getTag = jasmine.createSpy('getTag').and.callFake(() => throwError({status: 404}));
+    tagService.getTag = jasmine.createSpy('getTag').and.callFake(() => {
+      return throwError(ResourceNotFoundError.fromResponse({url: `/tag/${tag.id}`}));
+    });
     component.ngOnInit();
     fixture.whenStable().then(() => {
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
