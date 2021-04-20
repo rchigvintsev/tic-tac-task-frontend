@@ -2,16 +2,19 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {BehaviorSubject, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
+import {I18nService} from './i18n.service';
 import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
+import {HttpRequestError} from '../error/http-request.error';
 import {HttpContentOptions} from '../util/http-content-options';
 import {Assert} from '../util/assert';
 
@@ -21,7 +24,10 @@ export class TaskService {
 
   private readonly taskCounters = new Map<TaskGroup, BehaviorSubject<number>>();
 
-  constructor(private http: HttpClient, private config: ConfigService) {
+  constructor(private http: HttpClient,
+              private config: ConfigService,
+              private i18nService: I18nService,
+              private loadingIndicatorService: LoadingIndicatorService) {
     this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
     for (const taskGroup of TaskGroup.values()) {
       this.taskCounters.set(taskGroup, new BehaviorSubject<number>(null));
@@ -66,7 +72,7 @@ export class TaskService {
     return this.getTaskCount(taskGroup).pipe(map(count => count > 0));
   }
 
-  getTaskCount(taskGroup: TaskGroup, forceLoad: boolean = false): Observable<number> {
+  getTaskCount(taskGroup: TaskGroup, forceLoad = false): Observable<number> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
     const counter = this.taskCounters.get(taskGroup);
     const value = counter.getValue();
@@ -85,7 +91,9 @@ export class TaskService {
     });
   }
 
-  getTasksByGroup(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest()): Observable<Task[]> {
+  getTasksByGroup(taskGroup: TaskGroup,
+                  pageRequest: PageRequest = new PageRequest(),
+                  showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
 
     const path = TaskService.getPathForTaskGroup(taskGroup);
@@ -96,8 +104,14 @@ export class TaskService {
     params += pageRequest.toQueryParameters();
 
     const url = `${this.baseUrl}/${path}?${params}`;
-
-    return this.http.get<any>(url, {withCredentials: true}).pipe(
+    const observable = this.http.get<any>(url, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_tasks');
+          }
+        }
+      }),
       map(response => {
         const tasks = [];
         for (const json of response) {
@@ -106,40 +120,90 @@ export class TaskService {
         return tasks;
       })
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getTask(id: number): Observable<Task> {
-    return this.http.get<Task>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
+  getTask(id: number, showLoadingIndicator = true): Observable<Task> {
+    const observable = this.http.get<Task>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_task');
+          }
+        }
+      }),
       map(response => new Task().deserialize(response))
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  createTask(task: Task): Observable<Task> {
+  createTask(task: Task, showLoadingIndicator = true): Observable<Task> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    return this.http.post<any>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.post<any>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_save_task');
+          }
+        }
+      }),
       map(response => new Task().deserialize(response))
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  updateTask(task: Task): Observable<Task> {
+  updateTask(task: Task, showLoadingIndicator = true): Observable<Task> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    return this.http.put<any>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<any>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_save_task');
+          }
+        }
+      }),
       map(response => new Task().deserialize(response))
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  completeTask(task: Task): Observable<any> {
+  completeTask(task: Task, showLoadingIndicator = true): Observable<any> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    return this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, {withCredentials: true});
+    const observable = this.http.put<any>(`${this.baseUrl}/completed/${task.id}`, null, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_complete_task');
+          }
+        }
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  deleteTask(task: Task): Observable<any> {
+  deleteTask(task: Task, showLoadingIndicator = true): Observable<any> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    return this.http.delete<any>(`${this.baseUrl}/${task.id}`, {withCredentials: true});
+    const observable = this.http.delete<any>(`${this.baseUrl}/${task.id}`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_delete_task');
+          }
+        }
+      }),
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getTags(taskId: number): Observable<Tag[]> {
-    return this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, {withCredentials: true}).pipe(
+  getTags(taskId: number, showLoadingIndicator = true): Observable<Tag[]> {
+    const observable = this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_tags');
+          }
+        }
+      }),
       map(response => {
         const tags = [];
         for (const json of response) {
@@ -148,19 +212,48 @@ export class TaskService {
         return tags;
       })
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  assignTag(taskId: number, tagId: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, null, {withCredentials: true});
+  assignTag(taskId: number, tagId: number, showLoadingIndicator = true): Observable<void> {
+    const url = `${this.baseUrl}/${taskId}/tags/${tagId}`;
+    const observable = this.http.put<void>(url, null, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_assign_tag');
+          }
+        }
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  removeTag(taskId: number, tagId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, {withCredentials: true});
+  removeTag(taskId: number, tagId: number, showLoadingIndicator = true): Observable<void> {
+    const observable = this.http.delete<void>(`${this.baseUrl}/${taskId}/tags/${tagId}`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_remove_tag');
+          }
+        }
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getComments(taskId: number, pageRequest: PageRequest = new PageRequest()): Observable<TaskComment[]> {
+  getComments(taskId: number,
+              pageRequest: PageRequest = new PageRequest(),
+              showLoadingIndicator = true): Observable<TaskComment[]> {
     const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
-    return this.http.get<TaskComment[]>(url, {withCredentials: true}).pipe(
+    const observable = this.http.get<TaskComment[]>(url, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_task_comments');
+          }
+        }
+      }),
       map(response => {
         const comments = [];
         for (const json of response) {
@@ -169,16 +262,23 @@ export class TaskService {
         return comments;
       })
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  addComment(taskId: number, comment: TaskComment): Observable<TaskComment> {
+  addComment(taskId: number, comment: TaskComment, showLoadingIndicator = true): Observable<TaskComment> {
     Assert.notNullOrUndefined(comment, 'Task comment must not be null or undefined');
     const url = `${this.baseUrl}/${taskId}/comments`;
-    return this.http.post<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
-      map(response => {
-        return new TaskComment().deserialize(response);
-      })
+    const observable = this.http.post<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_save_task_comment');
+          }
+        }
+      }),
+      map(response => new TaskComment().deserialize(response))
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
   private loadTaskCount(taskGroup: TaskGroup): Observable<number> {

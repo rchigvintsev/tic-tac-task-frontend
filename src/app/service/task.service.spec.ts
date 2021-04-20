@@ -1,12 +1,16 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {MatDialogModule} from '@angular/material';
 
 import {skip} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
+import {TranslateModule} from '@ngx-translate/core';
+
 import {ConfigService} from './config.service';
 import {TaskService} from './task.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
@@ -21,10 +25,15 @@ describe('TaskService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MatDialogModule, TranslateModule.forRoot()],
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
+
     injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
+
     httpMock = injector.get(HttpTestingController);
     taskService = injector.get(TaskService);
   });
