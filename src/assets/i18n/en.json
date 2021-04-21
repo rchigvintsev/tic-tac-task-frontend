@@ -96,5 +96,6 @@
   "failed_to_save_task_list": "Failed to save task list",
   "failed_to_complete_task_list": "Failed to complete task list",
   "failed_to_delete_task_list": "Failed to delete task list",
-  "failed_to_add_task_to_task_list": "Failed to add task to task list"
+  "failed_to_add_task_to_task_list": "Failed to add task to task list",
+  "failed_to_remove_task_from_task_list": "Failed to remove task from task list"
 }

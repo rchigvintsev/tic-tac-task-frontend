@@ -3,6 +3,7 @@ import {HttpTestingController} from '@angular/common/http/testing';
 
 import {TaskListService} from './task-list.service';
 import {ConfigService} from './config.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {TaskList} from '../model/task-list';
 import {TestSupport} from '../test/test-support';
 import {Task} from '../model/task';
@@ -17,7 +18,12 @@ describe('TaskListService', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
+
     const injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
+
     httpMock = injector.get(HttpTestingController);
     taskListService = injector.get(TaskListService);
   });

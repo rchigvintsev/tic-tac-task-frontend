@@ -96,5 +96,6 @@
   "failed_to_save_task_list": "Не удаётся сохранить список задач",
   "failed_to_complete_task_list": "Не удаётся завершить список задач",
   "failed_to_delete_task_list": "Не удаётся удалить список задач",
-  "failed_to_add_task_to_task_list": "Не удаётся добавить задачу в список задач"
+  "failed_to_add_task_to_task_list": "Не удаётся добавить задачу в список задач",
+  "failed_to_remove_task_from_task_list": "Не удаётся удалить задачу из списка задач"
 }
