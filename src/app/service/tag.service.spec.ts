@@ -2,6 +2,7 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpTestingController} from '@angular/common/http/testing';
 
 import {TagService} from './tag.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {Tag} from '../model/tag';
 import {Task} from '../model/task';
 import {TestSupport} from '../test/test-support';
@@ -17,7 +18,12 @@ describe('TagService', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
+
     const injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
+
     httpMock = injector.get(HttpTestingController);
     tagService = injector.get(TagService);
   });
