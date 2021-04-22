@@ -2,17 +2,19 @@ import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testin
 import {By} from '@angular/platform-browser';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 
-import {of, Subject} from 'rxjs';
+import {EMPTY, of, Subject} from 'rxjs';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import {SidenavMenuComponent} from './sidenav-menu.component';
-import {TaskGroup} from '../../../model/task-group';
-import {TaskGroupService} from '../../../service/task-group.service';
 import {TestSupport} from '../../../test/test-support';
-import {ConfigService} from '../../../service/config.service';
-import {Config} from '../../../model/config';
+import {SidenavMenuComponent} from './sidenav-menu.component';
+import {TaskGroupService} from '../../../service/task-group.service';
 import {TaskService} from '../../../service/task.service';
+import {ConfigService} from '../../../service/config.service';
+import {TagService} from '../../../service/tag.service';
+import {TaskListService} from '../../../service/task-list.service';
+import {TaskGroup} from '../../../model/task-group';
+import {Config} from '../../../model/config';
 
 describe('SidenavMenuComponent', () => {
   let component: SidenavMenuComponent;
@@ -43,6 +45,12 @@ describe('SidenavMenuComponent', () => {
 
     const taskGroupService = injector.get(TaskGroupService);
     spyOn(taskGroupService, 'notifyTaskGroupSelected').and.stub();
+
+    const tagService = injector.get(TagService);
+    spyOn(tagService, 'getTags').and.returnValue(EMPTY);
+
+    const taskListService = injector.get(TaskListService);
+    spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(EMPTY);
 
     routerEvents = new Subject();
     const router = injector.get(Router);

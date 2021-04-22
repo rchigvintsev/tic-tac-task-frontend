@@ -1,6 +1,7 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController} from '@angular/common/http/testing';
 
+import {TestSupport} from '../test/test-support';
 import {TaskCommentService} from './task-comment.service';
 import {ConfigService} from './config.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
@@ -13,7 +14,8 @@ describe('TaskCommentService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
 

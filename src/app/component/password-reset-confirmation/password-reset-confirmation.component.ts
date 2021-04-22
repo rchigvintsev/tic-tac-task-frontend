@@ -47,7 +47,7 @@ export class PasswordResetConfirmationComponent implements OnInit {
 
   private onPasswordResetConfirm() {
     this.passwordResetConfirmationForm.resetForm();
-    this.pageNavigationService.navigateToSigninPage({error: false, message: 'password_reset_confirmed'});
+    this.pageNavigationService.navigateToSigninPage({error: false, message: 'password_reset_confirmed'}).then();
   }
 
   private onPasswordResetConfirmError(errorResponse: any) {

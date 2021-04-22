@@ -3,8 +3,8 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 
 import {TestSupport} from '../test/test-support';
 import {ConfigService} from './config.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {UserService} from './user.service';
-import {User} from '../model/user';
 
 describe('UserService', () => {
   let httpMock: HttpTestingController;
@@ -16,7 +16,12 @@ describe('UserService', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
+
     const injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
+
     httpMock = injector.get(HttpTestingController);
     userService = injector.get(UserService);
   });
@@ -24,22 +29,6 @@ describe('UserService', () => {
   it('should be created', () => {
     const service: UserService = TestBed.get(UserService);
     expect(service).toBeTruthy();
-  });
-
-  it('should create user', done => {
-    const testUser = new User().deserialize({email: 'alice@mail.com', password: 'secret', fullName: 'Alice'});
-    userService.createUser(testUser).subscribe(user => {
-      expect(user).toEqual(testUser);
-      done();
-    });
-
-    const request = httpMock.expectOne(userService.baseUrl);
-    expect(request.request.method).toBe('POST');
-    request.flush(testUser.serialize());
-  });
-
-  it('should throw error on user create when user is null', () => {
-    expect(() => userService.createUser(null)).toThrow(new Error('User must not be null or undefined'));
   });
 
   it('should confirm email', done => {

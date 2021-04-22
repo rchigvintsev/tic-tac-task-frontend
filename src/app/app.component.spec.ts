@@ -2,7 +2,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
 
-import {of} from 'rxjs';
+import {EMPTY, of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 import {AppComponent} from './app.component';
@@ -10,6 +10,8 @@ import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
 import {TestSupport} from './test/test-support';
 import {ConfigService} from './service/config.service';
+import {TagService} from './service/tag.service';
+import {TaskListService} from './service/task-list.service';
 import {Language} from './service/i18n.service';
 import {Config} from './model/config';
 
@@ -41,6 +43,12 @@ describe('AppComponent', () => {
 
     const configService = injector.get(ConfigService);
     configService.setConfig(new Config());
+
+    const tagService = injector.get(TagService);
+    spyOn(tagService, 'getTags').and.returnValue(EMPTY);
+
+    const taskListService = injector.get(TaskListService);
+    spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(EMPTY);
 
     authenticationService = injector.get(AuthenticationService);
     spyOn(authenticationService, 'signOut').and.returnValue(of(true));

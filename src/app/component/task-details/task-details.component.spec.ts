@@ -6,7 +6,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 import {Router} from '@angular/router';
 
-import {of, Subject, throwError} from 'rxjs';
+import {EMPTY, of, Subject, throwError} from 'rxjs';
 import {skip} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
@@ -89,6 +89,7 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
     spyOn(taskService, 'assignTag').and.returnValue(of());
     spyOn(taskService, 'removeTag').and.returnValue(of());
+    spyOn(taskService, 'getComments').and.returnValue(EMPTY);
 
     updatedTagSource = new Subject<Tag>();
     deletedTagSource = new Subject<Tag>();

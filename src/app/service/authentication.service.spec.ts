@@ -1,8 +1,9 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController} from '@angular/common/http/testing';
 
 import * as moment from 'moment';
 
+import {TestSupport} from '../test/test-support';
 import {AuthenticationService} from './authentication.service';
 import {ConfigService} from './config.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
@@ -18,7 +19,10 @@ describe('AuthenticationService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
+    TestBed.configureTestingModule({
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS
+    });
 
     injector = getTestBed();
 

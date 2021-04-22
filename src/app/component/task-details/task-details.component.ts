@@ -82,7 +82,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), errorResponse => {
       if (HttpErrors.isNotFound(errorResponse)) {
-        this.pageNavigationService.navigateToNotFoundErrorPage();
+        this.pageNavigationService.navigateToNotFoundErrorPage().then();
       } else {
         const messageToDisplay = this.i18nService.translate('failed_to_load_task');
         this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
@@ -344,7 +344,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.completeTask(this.taskFormModel).subscribe(
       () => {
         this.taskService.updateTaskCounters();
-        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY)
+        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
       errorResponse => {
         const messageToDisplay = this.i18nService.translate('failed_to_complete_task');
@@ -357,7 +357,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(this.taskFormModel).subscribe(
       () => {
         this.taskService.updateTaskCounters();
-        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY)
+        this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
       errorResponse => {
         const messageToDisplay = this.i18nService.translate('failed_to_delete_task');
