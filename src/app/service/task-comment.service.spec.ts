@@ -3,6 +3,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 
 import {TaskCommentService} from './task-comment.service';
 import {ConfigService} from './config.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {TaskComment} from '../model/task-comment';
 
 describe('TaskCommentService', () => {
@@ -15,7 +16,12 @@ describe('TaskCommentService', () => {
       imports: [HttpClientTestingModule],
       providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
     });
+
     injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
+
     httpMock = injector.get(HttpTestingController);
     taskCommentService = injector.get(TaskCommentService);
   });
