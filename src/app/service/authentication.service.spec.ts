@@ -5,6 +5,7 @@ import * as moment from 'moment';
 
 import {AuthenticationService} from './authentication.service';
 import {ConfigService} from './config.service';
+import {LoadingIndicatorService} from './loading-indicator.service';
 import {Config} from '../model/config';
 import {User} from '../model/user';
 
@@ -20,6 +21,9 @@ describe('AuthenticationService', () => {
     TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
 
     injector = getTestBed();
+
+    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
     service = injector.get(AuthenticationService);
     httpMock = injector.get(HttpTestingController);

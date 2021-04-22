@@ -39,6 +39,7 @@
   "sign_out": "Sign out",
   "failed_to_sign_in": "Something went wrong during signing in",
   "failed_to_sign_up": "Something went wrong during signing up",
+  "failed_to_sign_out": "Failed to sign out",
   "user_not_found_or_invalid_password": "User with this email is not found or password is not valid",
   "email": "Email",
   "full_name": "Name",
