@@ -10,7 +10,7 @@ export class TaskGroupService {
   private readonly selectedTaskGroup: Observable<TaskGroup>;
 
   constructor(@Optional() taskGroup: TaskGroup = null) {
-    this.selectedTaskGroupSource  = new BehaviorSubject<TaskGroup>(taskGroup);
+    this.selectedTaskGroupSource = new BehaviorSubject<TaskGroup>(taskGroup);
     this.selectedTaskGroup = this.selectedTaskGroupSource.asObservable();
   }
 
