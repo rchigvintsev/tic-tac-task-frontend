@@ -1,15 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map, tap} from 'rxjs/operators';
 
-import {NotificationsService} from 'angular2-notifications';
-
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {I18nService} from '../../service/i18n.service';
-import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
@@ -17,6 +14,7 @@ import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {HttpRequestError} from '../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -28,14 +26,13 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private taskList: TaskList;
 
   constructor(i18nService: I18nService,
-              logService: LogService,
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
-              notificationsService: NotificationsService,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) httpRequestErrorHandler: HttpRequestErrorHandler,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, logService, taskService, pageNavigationService, notificationsService);
+    super(i18nService, taskService, pageNavigationService, httpRequestErrorHandler);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [

@@ -15,6 +15,8 @@ import {ConfigService} from '../../../service/config.service';
 import {TaskService} from '../../../service/task.service';
 import {Task} from '../../../model/task';
 import {TestSupport} from '../../../test/test-support';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
 
 describe('BaseTasksComponent', () => {
   let component: BaseTasksComponent;
@@ -28,7 +30,8 @@ describe('BaseTasksComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)}
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
       ]
     }).compileComponents();
 

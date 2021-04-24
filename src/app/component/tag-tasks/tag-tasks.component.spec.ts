@@ -14,6 +14,8 @@ import {TagService} from '../../service/tag.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
 import any = jasmine.any;
 
 const CURRENT_LANG = 'en';
@@ -41,7 +43,8 @@ describe('TagTasksComponent', () => {
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: ActivatedRoute, useValue: {params: of([{id: 1}])}}
+        {provide: ActivatedRoute, useValue: {params: of([{id: 1}])}},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
       ]
     }).compileComponents();
   }));

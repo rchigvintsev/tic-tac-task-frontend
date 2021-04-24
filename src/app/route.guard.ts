@@ -108,7 +108,7 @@ export class PasswordResetConfirmationCallbackRouteGuard implements CanActivate 
     const token = route.queryParamMap.get('token');
     if (!userId || !token) {
       this.router.navigate([this.i18nService.currentLanguage.code, 'signin'],
-        {queryParams: {error: true, message: 'invalid_password_reset_confirmation_params'}});
+        {queryParams: {error: true, message: 'invalid_password_reset_confirmation_params'}}).then();
       return false;
     }
     return true;
@@ -124,7 +124,7 @@ export class UnauthenticatedOnlyRouteGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authenticationService.isUserSignedIn()) {
-      this.router.navigate([this.i18nService.currentLanguage.code]);
+      this.router.navigate([this.i18nService.currentLanguage.code]).then();
       return false;
     }
     return true;
@@ -142,7 +142,7 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
     if (this.authenticationService.isUserSignedIn()) {
       return true;
     }
-    this.router.navigate([this.i18nService.currentLanguage.code, 'signin']);
+    this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
     return false;
   }
 }

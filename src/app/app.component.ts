@@ -70,9 +70,7 @@ export class AppComponent implements OnInit, OnDestroy {
   onSignOutButtonClick() {
     this.authenticationService.signOut()
       .pipe(takeUntil(this.componentDestroyed))
-      .subscribe(() => {
-        this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
-      });
+      .subscribe(() => this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then());
   }
 
   onSidenavToggleButtonClick() {

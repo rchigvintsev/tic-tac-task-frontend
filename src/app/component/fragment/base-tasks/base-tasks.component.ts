@@ -1,10 +1,7 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 
-import {NotificationsService} from 'angular2-notifications';
-
 import {I18nService} from '../../../service/i18n.service';
-import {LogService} from '../../../service/log.service';
 import {TaskService} from '../../../service/task.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
 import {PageRequest} from '../../../service/page-request';
@@ -12,6 +9,7 @@ import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
 import {Strings} from '../../../util/strings';
 
 export class MenuItem {
@@ -45,10 +43,9 @@ export class BaseTasksComponent {
   protected pageRequest = new PageRequest();
 
   constructor(public i18nService: I18nService,
-              protected logService: LogService,
               protected taskService: TaskService,
               protected pageNavigationService: PageNavigationService,
-              protected notificationsService: NotificationsService) {
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) protected httpRequestErrorHandler: HttpRequestErrorHandler) {
   }
 
   onTitleTextClick() {
@@ -118,10 +115,7 @@ export class BaseTasksComponent {
     if (error instanceof ResourceNotFoundError) {
       this.pageNavigationService.navigateToNotFoundErrorPage().then();
     } else {
-      this.logService.error(error.message);
-      if (error.localizedMessage) {
-        this.notificationsService.error(null, error.localizedMessage);
-      }
+      this.httpRequestErrorHandler.handle(error);
     }
   }
 

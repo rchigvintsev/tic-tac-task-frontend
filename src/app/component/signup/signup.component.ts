@@ -2,12 +2,13 @@ import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {BaseSignComponent} from '../fragment/base-sign/base-sign.component';
 import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {ConfigService} from '../../service/config.service';
 import {AlertService} from '../../service/alert.service';
+import {LogService} from '../../service/log.service';
+import {HttpRequestError} from '../../error/http-request.error';
 
 @Component({
   selector: 'app-signup',
@@ -21,14 +22,12 @@ export class SignupComponent extends BaseSignComponent {
   @ViewChild('signupForm', {read: NgForm})
   signupForm: NgForm;
 
-  constructor(
-    alertService: AlertService,
-    i18nService: I18nService,
-    config: ConfigService,
-    activatedRoute: ActivatedRoute,
-    private componentHelper: WebServiceBasedComponentHelper,
-    private authenticationService: AuthenticationService
-  ) {
+  constructor(alertService: AlertService,
+              i18nService: I18nService,
+              config: ConfigService,
+              activatedRoute: ActivatedRoute,
+              private log: LogService,
+              private authenticationService: AuthenticationService) {
     super(alertService, i18nService, config, activatedRoute);
   }
 
@@ -36,7 +35,7 @@ export class SignupComponent extends BaseSignComponent {
     if (this.signupForm.valid) {
       this.authenticationService.signUp(this.email, this.fullName, this.password).subscribe(
         _ => this.onSignUp(),
-        response => this.onSignUpError(response)
+        (error: HttpRequestError) => this.onSignUpError(error)
       );
     }
   }
@@ -50,12 +49,9 @@ export class SignupComponent extends BaseSignComponent {
     this.signupForm.resetForm();
   }
 
-  private onSignUpError(errorResponse: any) {
-    if (errorResponse.error.localizedMessage) {
-      this.alertService.error(errorResponse.error.localizedMessage);
-    } else {
-      this.alertService.error(this.i18nService.translate('failed_to_sign_up'));
-    }
-    this.componentHelper.handleWebServiceCallError(errorResponse);
+  private onSignUpError(error: HttpRequestError) {
+    const localizedMessage = error.localizedMessage || this.i18nService.translate('failed_to_sign_up');
+    this.alertService.error(localizedMessage);
+    this.log.error(error.message);
   }
 }

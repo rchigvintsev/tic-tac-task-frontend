@@ -2,11 +2,12 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {UserService} from '../../service/user.service';
 import {I18nService} from '../../service/i18n.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {AlertService} from '../../service/alert.service';
+import {LogService} from '../../service/log.service';
+import {HttpRequestError} from '../../error/http-request.error';
 
 @Component({
   selector: 'app-password-reset-confirmation',
@@ -24,7 +25,7 @@ export class PasswordResetConfirmationComponent implements OnInit {
   private token: string;
 
   constructor(public i18nService: I18nService,
-              private componentHelper: WebServiceBasedComponentHelper,
+              private log: LogService,
               private userService: UserService,
               private pageNavigationService: PageNavigationService,
               private alertService: AlertService,
@@ -40,8 +41,10 @@ export class PasswordResetConfirmationComponent implements OnInit {
 
   onPasswordResetConfirmationFormSubmit() {
     if (this.passwordResetConfirmationForm.valid) {
-      this.userService.confirmPasswordReset(this.userId, this.token, this.password)
-        .subscribe(_ => this.onPasswordResetConfirm(), response => this.onPasswordResetConfirmError(response));
+      this.userService.confirmPasswordReset(this.userId, this.token, this.password).subscribe(
+        _ => this.onPasswordResetConfirm(),
+        (error: HttpRequestError) => this.onPasswordResetConfirmError(error)
+      );
     }
   }
 
@@ -50,12 +53,9 @@ export class PasswordResetConfirmationComponent implements OnInit {
     this.pageNavigationService.navigateToSigninPage({error: false, message: 'password_reset_confirmed'}).then();
   }
 
-  private onPasswordResetConfirmError(errorResponse: any) {
-    if (errorResponse.error.localizedMessage) {
-      this.alertService.error(errorResponse.error.localizedMessage);
-    } else {
-      this.alertService.error(this.i18nService.translate('failed_to_confirm_password_reset'));
-    }
-    this.componentHelper.handleWebServiceCallError(errorResponse);
+  private onPasswordResetConfirmError(error: HttpRequestError) {
+    const localizedMessage = error.localizedMessage || this.i18nService.translate('failed_to_confirm_password_reset');
+    this.alertService.error(localizedMessage);
+    this.log.error(error.message);
   }
 }

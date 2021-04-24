@@ -1,4 +1,4 @@
-import {getTestBed, TestBed} from '@angular/core/testing';
+import {fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {MatDialog} from '@angular/material';
 
 import {of, Subject} from 'rxjs';
@@ -23,24 +23,27 @@ describe('LoadingIndicatorService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should show loading indicator', () => {
+  it('should show loading indicator', fakeAsync(() => {
     const dialog = injector.get(MatDialog);
     spyOn(dialog, 'open').and.returnValue({close: () => {}});
 
     service.showUntilExecuted(of(true));
+    tick(500);
     expect(dialog.open).toHaveBeenCalled();
-  });
+  }));
 
-  it('should not show loading indicator if it is being shown already', () => {
+  it('should not show loading indicator if it is being shown already', fakeAsync(() => {
     const dialog = injector.get(MatDialog);
     spyOn(dialog, 'open').and.returnValue({close: () => {}});
 
     service.showUntilExecuted(of(true));
+    tick(500);
     service.showUntilExecuted(of(false));
+    tick(500);
     expect(dialog.open).toHaveBeenCalledTimes(1);
-  });
+  }));
 
-  it('should hide loading indicator on execution complete', () => {
+  it('should hide loading indicator on execution complete', fakeAsync(() => {
     const dialogRef = {} as any;
     dialogRef.close = jasmine.createSpy('close');
 
@@ -48,10 +51,11 @@ describe('LoadingIndicatorService', () => {
     spyOn(dialog, 'open').and.returnValue(dialogRef);
 
     service.showUntilExecuted(of(true)).subscribe();
+    tick(500);
     expect(dialogRef.close).toHaveBeenCalled();
-  });
+  }));
 
-  it('should hide loading indicator on last execution complete', () => {
+  it('should hide loading indicator on last execution complete', fakeAsync(() => {
     const dialogRef = {} as any;
     dialogRef.close = jasmine.createSpy('close');
 
@@ -60,13 +64,16 @@ describe('LoadingIndicatorService', () => {
 
     const subject1 = new Subject();
     service.showUntilExecuted(subject1).subscribe();
+    tick(500);
+
     const subject2 = new Subject();
     service.showUntilExecuted(subject2).subscribe();
+    tick(500);
 
     subject1.complete();
     expect(dialogRef.close).not.toHaveBeenCalled();
 
     subject2.complete();
     expect(dialogRef.close).toHaveBeenCalled();
-  });
+  }));
 });

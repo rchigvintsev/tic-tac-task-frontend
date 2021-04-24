@@ -68,6 +68,8 @@ import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translat
 import {UnauthorizedRequestInterceptor} from './interceptor/unauthorized-request.interceptor';
 import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
+import {HTTP_REQUEST_ERROR_HANDLER} from './error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from './error/handler/default-http-request-error.handler';
 
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -165,6 +167,7 @@ registerLocaleData(localeRu, 'ru');
     {provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedRequestInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorTranslationInterceptor, multi: true},
+    {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler},
     {provide: JDENTICON_CONFIG, useValue: {backColor: '#fff'}},
     CookieService
   ],

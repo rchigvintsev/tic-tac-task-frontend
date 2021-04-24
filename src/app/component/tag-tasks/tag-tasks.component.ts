@@ -1,22 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {flatMap, map, tap} from 'rxjs/operators';
 
-import {NotificationsService} from 'angular2-notifications';
-
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
 import {I18nService} from '../../service/i18n.service';
-import {LogService} from '../../service/log.service';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {HttpRequestError} from '../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -30,14 +28,13 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private tag: Tag;
 
   constructor(i18nService: I18nService,
-              logService: LogService,
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
-              notificationsService: NotificationsService,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) httpRequestErrorHandler: HttpRequestErrorHandler,
               private tagService: TagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, logService, taskService, pageNavigationService, notificationsService);
+    super(i18nService, taskService, pageNavigationService, httpRequestErrorHandler);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [

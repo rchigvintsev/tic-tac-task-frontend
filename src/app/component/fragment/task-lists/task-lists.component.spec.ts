@@ -9,6 +9,8 @@ import {TestSupport} from '../../../test/test-support';
 import {ConfigService} from '../../../service/config.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskList} from '../../../model/task-list';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
 
 describe('TaskListsComponent', () => {
   let component: TaskListsComponent;
@@ -23,7 +25,10 @@ describe('TaskListsComponent', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [
+        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
+      ]
     }).compileComponents();
   }));
 

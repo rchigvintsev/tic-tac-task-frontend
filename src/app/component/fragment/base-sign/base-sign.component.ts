@@ -15,12 +15,10 @@ export class BaseSignComponent implements OnInit {
 
   private readonly redirectUri: string;
 
-  constructor(
-    protected alertService: AlertService,
-    protected i18nService: I18nService,
-    private config: ConfigService,
-    private activatedRoute: ActivatedRoute
-  ) {
+  constructor(protected alertService: AlertService,
+              protected i18nService: I18nService,
+              private config: ConfigService,
+              private activatedRoute: ActivatedRoute) {
     const currentLang = i18nService.currentLanguage;
     this.redirectUri = `${this.config.selfBaseUrl}/${currentLang.code}/oauth2/authorization/callback`;
   }

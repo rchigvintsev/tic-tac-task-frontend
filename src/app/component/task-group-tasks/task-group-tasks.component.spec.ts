@@ -17,6 +17,8 @@ import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
 import {TaskStatus} from '../../model/task-status';
 import {HttpRequestError} from '../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
 import any = jasmine.any;
 
 describe('TaskGroupTasksComponent', () => {
@@ -31,6 +33,7 @@ describe('TaskGroupTasksComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler},
         TaskGroupService
       ]
     }).compileComponents();

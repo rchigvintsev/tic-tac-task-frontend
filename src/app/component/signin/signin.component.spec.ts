@@ -12,6 +12,7 @@ import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {Config} from '../../model/config';
 import {TestSupport} from '../../test/test-support';
+import {UnauthorizedRequestError} from "../../error/unauthorized-request.error";
 
 const CURRENT_LANG = 'en';
 
@@ -148,7 +149,9 @@ describe('SigninComponent', () => {
   });
 
   it('should show error message on sign in when server responded with 401 status code', () => {
-    (authenticationService.signIn as jasmine.Spy).and.callFake(() => throwError({status: 401}));
+    (authenticationService.signIn as jasmine.Spy).and.callFake(() => {
+      return throwError(UnauthorizedRequestError.fromResponse({url: '/'}));
+    });
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form
       component.email = 'alice@mail.com';

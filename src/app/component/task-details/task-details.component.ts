@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormControl, NgForm} from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
@@ -13,7 +13,6 @@ import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskListService} from '../../service/task-list.service';
@@ -25,6 +24,9 @@ import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskList} from '../../model/task-list';
 import {Tag} from '../../model/tag';
+import {HttpRequestError} from '../../error/http-request.error';
+import {ResourceNotFoundError} from '../../error/resource-not-found.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {Strings} from '../../util/strings';
 import {HttpErrors} from '../../util/http-errors';
@@ -60,14 +62,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private task: Task;
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(private componentHelper: WebServiceBasedComponentHelper,
+  constructor(private log: LogService,
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
               private taskListService: TaskListService,
               private tagService: TagService,
-              private log: LogService,
               private i18nService: I18nService,
               private pageNavigationService: PageNavigationService,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
               private route: ActivatedRoute,
               private dateAdapter: DateAdapter<any>,
               private dialog: MatDialog) {
@@ -80,20 +82,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
 
-    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), errorResponse => {
-      if (HttpErrors.isNotFound(errorResponse)) {
+    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), (error: HttpRequestError) => {
+      if (error instanceof ResourceNotFoundError) {
         this.pageNavigationService.navigateToNotFoundErrorPage().then();
       } else {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_task');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
+        this.httpRequestErrorHandler.handle(error);
       }
     });
     this.taskService.getTags(taskId).subscribe(
       tags => this.initTags(tags),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_tags');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
 
     this.taskGroupService.getSelectedTaskGroup()
@@ -117,10 +115,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_task_lists');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
@@ -133,7 +128,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   onBackButtonClick() {
-    this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY);
+    this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
   }
 
   onTitleTextClick() {
@@ -208,18 +203,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       if (taskListId) {
         this.taskListService.addTask(taskListId, this.task.id).subscribe(
           _ => this.task.taskListId = taskListId,
-          errorResponse => {
-            const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-            this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-          }
+          (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
         );
       } else {
         this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe(
           _ => this.task.taskListId = null,
-          errorResponse => {
-            const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-            this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-          }
+          (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
         );
       }
     }
@@ -305,7 +294,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private initAvailableTags(excludedTags: Tag[]) {
     this.tagService.getTags().pipe(
       map(allTags => allTags.filter(tag => excludedTags.findIndex(excludedTag => excludedTag.name === tag.name) < 0))
-    ).subscribe(availableTags => this.availableTags = availableTags);
+    ).subscribe(
+      availableTags => this.availableTags = availableTags,
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+    );
   }
 
   private beginTitleEditing() {
@@ -328,13 +320,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.clearErrors();
         this.initTaskModel(task);
         this.taskService.updateTaskCounters();
-      }, response => {
+      }, (error: HttpRequestError) => {
         this.clearErrors();
-        if (HttpErrors.isBadRequest(response)) {
-          this.handleBadRequestError(response);
+        if (HttpErrors.isBadRequest(error)) {
+          this.handleBadRequestError(error);
         } else {
-          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-          this.componentHelper.handleWebServiceCallError(response, messageToDisplay);
+          this.httpRequestErrorHandler.handle(error);
         }
       });
     }
@@ -346,10 +337,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_complete_task');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
   }
 
@@ -359,10 +347,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_delete_task');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
   }
 
@@ -422,24 +407,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         const tag = this.availableTags[tagIndex];
         this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
           this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
-        }, errorResponse => {
-          const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-          this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-        });
+        }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
           const newTag = new Tag(trimmedName);
           this.tagService.createTag(newTag).pipe(
-            flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(
-              map(_ => tag)
-            ))
+            flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
           ).subscribe(
             tag => this.tags.push(tag),
-            errorResponse => {
-              const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-              this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-            }
+            (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
           );
         }
       }
@@ -452,10 +429,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
         this.tags.splice(tagIndex, 1);
         this.availableTags.push(tag);
-      }, errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_task');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      });
+      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
     }
   }
 }

@@ -10,6 +10,7 @@ import {AlertService} from '../../service/alert.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {ConfigService} from '../../service/config.service';
 import {Config} from '../../model/config';
+import {HttpRequestError} from "../../error/http-request.error";
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
@@ -191,7 +192,7 @@ describe('SignupComponent', () => {
   it('should show localized error message on sign up', () => {
     const errorMessage = 'Very bad request';
     (authenticationService.signUp as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {localizedMessage: errorMessage}});
+      return throwError(HttpRequestError.fromResponse({status: 400, error: {localizedMessage: errorMessage}}));
     });
     fixture.whenStable().then(() => {
       // For some reason two-way binding does not work in tests when input is placed within form

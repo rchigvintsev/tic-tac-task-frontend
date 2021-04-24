@@ -1,10 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 
-import {WebServiceBasedComponentHelper} from '../web-service-based-component-helper';
 import {UserService} from '../../service/user.service';
 import {I18nService} from '../../service/i18n.service';
 import {AlertService} from '../../service/alert.service';
+import {HttpRequestError} from '../../error/http-request.error';
+import {LogService} from '../../service/log.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -18,7 +19,7 @@ export class PasswordResetComponent implements OnInit {
   email: string;
 
   constructor(public i18nService: I18nService,
-              private componentHelper: WebServiceBasedComponentHelper,
+              private log: LogService,
               private userService: UserService,
               private alertService: AlertService) {
   }
@@ -28,8 +29,10 @@ export class PasswordResetComponent implements OnInit {
 
   onPasswordResetFormSubmit() {
     if (this.passwordResetForm.valid) {
-      this.userService.resetPassword(this.email)
-        .subscribe(_ => this.onPasswordReset(), response => this.onPasswordResetError(response));
+      this.userService.resetPassword(this.email).subscribe(
+        _ => this.onPasswordReset(),
+        (error: HttpRequestError) => this.onPasswordResetError(error)
+      );
     }
   }
 
@@ -38,12 +41,9 @@ export class PasswordResetComponent implements OnInit {
     this.passwordResetForm.resetForm();
   }
 
-  private onPasswordResetError(errorResponse: any) {
-    if (errorResponse.error.localizedMessage) {
-      this.alertService.error(errorResponse.error.localizedMessage);
-    } else {
-      this.alertService.error(this.i18nService.translate('failed_to_confirm_password_reset'));
-    }
-    this.componentHelper.handleWebServiceCallError(errorResponse);
+  private onPasswordResetError(error: HttpRequestError) {
+    const localizedMessage = error.localizedMessage || this.i18nService.translate('failed_to_confirm_password_reset');
+    this.alertService.error(localizedMessage);
+    this.log.error(error.message);
   }
 }

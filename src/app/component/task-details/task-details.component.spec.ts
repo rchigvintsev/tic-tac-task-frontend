@@ -24,6 +24,9 @@ import {LogService} from '../../service/log.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
+import {ResourceNotFoundError} from "../../error/resource-not-found.error";
 
 const CURRENT_LANG = 'en';
 
@@ -55,6 +58,7 @@ describe('TaskDetailsComponent', () => {
         {provide: MatDialog, useClass: MatDialogMock},
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler},
         MatDatepickerModule
       ]
     }).compileComponents();
@@ -509,7 +513,9 @@ describe('TaskDetailsComponent', () => {
   });
 
   it('should navigate to "not-found" error page when task is not found', () => {
-    taskService.getTask = jasmine.createSpy('getTask').and.callFake(() => throwError({status: 404}));
+    taskService.getTask = jasmine.createSpy('getTask').and.callFake(() => {
+      return throwError(ResourceNotFoundError.fromResponse({url: '/'}));
+    });
     component.ngOnInit();
     fixture.whenStable().then(() => {
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);

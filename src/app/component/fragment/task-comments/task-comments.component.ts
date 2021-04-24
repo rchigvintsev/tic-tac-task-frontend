@@ -1,16 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 
 import * as moment from 'moment';
-import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
+
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {TaskService} from '../../../service/task.service';
 import {TaskCommentService} from '../../../service/task-comment.service';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskComment} from '../../../model/task-comment';
 import {PageRequest} from '../../../service/page-request';
+import {HttpRequestError} from '../../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
 import {Strings} from '../../../util/strings';
 
 @Component({
@@ -31,10 +33,10 @@ export class TaskCommentsComponent implements OnInit {
 
   private pageRequest = new PageRequest();
 
-  constructor(private componentHelper: WebServiceBasedComponentHelper,
-              private taskService: TaskService,
+  constructor(private taskService: TaskService,
               private commentService: TaskCommentService,
               private i18nService: I18nService,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
   }
@@ -44,10 +46,7 @@ export class TaskCommentsComponent implements OnInit {
     this.taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = comments,
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_task_comments');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
   }
 
@@ -109,10 +108,7 @@ export class TaskCommentsComponent implements OnInit {
     this.pageRequest.page++;
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = this.comments.concat(comments),
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_task_comments');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
   }
 
@@ -133,10 +129,7 @@ export class TaskCommentsComponent implements OnInit {
       this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
         this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
-      }, errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_task_comment');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      });
+      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
     }
   }
 
@@ -149,19 +142,13 @@ export class TaskCommentsComponent implements OnInit {
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      }, errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_task_comment');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      });
+      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, errorResponse => {
-      const messageToDisplay = this.i18nService.translate('failed_to_delete_task_comment');
-      this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-    });
+    }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
   }
 }

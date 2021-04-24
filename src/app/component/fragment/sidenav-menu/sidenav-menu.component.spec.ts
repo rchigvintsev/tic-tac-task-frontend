@@ -15,6 +15,8 @@ import {TagService} from '../../../service/tag.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskGroup} from '../../../model/task-group';
 import {Config} from '../../../model/config';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
 
 describe('SidenavMenuComponent', () => {
   let component: SidenavMenuComponent;
@@ -26,7 +28,8 @@ describe('SidenavMenuComponent', () => {
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
       providers: [
-        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)}
+        {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
       ]
     }).compileComponents();
   }));

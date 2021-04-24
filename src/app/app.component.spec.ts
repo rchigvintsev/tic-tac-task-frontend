@@ -1,4 +1,3 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
 
@@ -14,6 +13,8 @@ import {TagService} from './service/tag.service';
 import {TaskListService} from './service/task-list.service';
 import {Language} from './service/i18n.service';
 import {Config} from './model/config';
+import {HTTP_REQUEST_ERROR_HANDLER} from './error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from './error/handler/default-http-request-error.handler';
 
 const CURRENT_LANG = 'ru';
 
@@ -27,7 +28,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      providers: [{provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}]
     }).compileComponents();
   }));
 

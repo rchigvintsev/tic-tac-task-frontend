@@ -14,6 +14,8 @@ import {TaskCommentService} from '../../../service/task-comment.service';
 import {ConfigService} from '../../../service/config.service';
 import {TestSupport} from '../../../test/test-support';
 import {PageRequest} from '../../../service/page-request';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
 import any = jasmine.any;
 
 class MatDialogMock {
@@ -37,7 +39,8 @@ describe('TaskCommentsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}
+        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
       ]
     }).compileComponents();
   }));

@@ -1,16 +1,18 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
 import {I18nService} from '../../../service/i18n.service';
 import {TagService} from '../../../service/tag.service';
 import {Tag} from '../../../model/tag';
+import {HttpRequestError} from '../../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
 import {PathMatcher} from '../../../util/path-matcher';
 import {Strings} from '../../../util/strings';
+
 
 @Component({
   selector: 'app-tags',
@@ -28,7 +30,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   private componentDestroyed = new Subject<boolean>();
 
   constructor(public i18nService: I18nService,
-              private componentHelper: WebServiceBasedComponentHelper,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
               private tagService: TagService,
               private router: Router) {
   }
@@ -36,10 +38,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.tagService.getTags().subscribe(
       tags => this.tags = tags,
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_tags');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
     );
     this.tagService.getCreatedTag()
       .pipe(takeUntil(this.componentDestroyed))
@@ -83,12 +82,10 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   private createTag() {
     if (!Strings.isBlank(this.tagFormModel.name)) {
-      this.tagService.createTag(this.tagFormModel).subscribe(_ => {
-        this.tagForm.resetForm();
-      }, errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_tag');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      });
+      this.tagService.createTag(this.tagFormModel).subscribe(
+        _ => this.tagForm.resetForm(),
+        (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      );
     }
   }
 

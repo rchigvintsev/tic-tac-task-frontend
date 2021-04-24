@@ -9,6 +9,9 @@ import {I18nService} from '../../service/i18n.service';
 import {UserService} from '../../service/user.service';
 import {ConfigService} from '../../service/config.service';
 import {Config} from '../../model/config';
+import {HttpRequestError} from '../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
+import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
 
 describe('PasswordResetComponent', () => {
   let component: PasswordResetComponent;
@@ -20,7 +23,8 @@ describe('PasswordResetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
-      declarations: TestSupport.DECLARATIONS
+      declarations: TestSupport.DECLARATIONS,
+      providers: [{provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}]
     }).compileComponents();
   }));
 
@@ -88,7 +92,7 @@ describe('PasswordResetComponent', () => {
     fixture.whenStable().then(() => {
       const errorMessage = 'Very bad request';
       (userService.resetPassword as jasmine.Spy).and.callFake(() => {
-        return throwError({status: 400, error: {localizedMessage: errorMessage}});
+        return throwError(HttpRequestError.fromResponse({status: 400, error: {localizedMessage: errorMessage}}));
       });
 
       // For some reason two-way binding does not work in tests when input is placed within form

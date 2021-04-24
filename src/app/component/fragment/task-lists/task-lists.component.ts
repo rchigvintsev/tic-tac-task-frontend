@@ -1,16 +1,17 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {WebServiceBasedComponentHelper} from '../../web-service-based-component-helper';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskList} from '../../../model/task-list';
-import {PathMatcher} from '../../../util/path-matcher';
+import {HttpRequestError} from '../../../error/http-request.error';
+import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
 import {Strings} from '../../../util/strings';
+import {PathMatcher} from '../../../util/path-matcher';
 
 @Component({
   selector: 'app-task-lists',
@@ -28,19 +29,15 @@ export class TaskListsComponent implements OnInit, OnDestroy {
   private componentDestroyed = new Subject<boolean>();
 
   constructor(public i18nService: I18nService,
-              private componentHelper: WebServiceBasedComponentHelper,
               private taskListService: TaskListService,
+              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
               private router: Router) {
   }
 
   ngOnInit() {
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_load_task_lists');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      }
-    );
+      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
     this.taskListService.getUpdatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListUpdate(taskList));
@@ -86,10 +83,7 @@ export class TaskListsComponent implements OnInit, OnDestroy {
       this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
         this.taskLists.push(createdTaskList);
         this.taskListForm.resetForm();
-      }, errorResponse => {
-        const messageToDisplay = this.i18nService.translate('failed_to_save_task_list');
-        this.componentHelper.handleWebServiceCallError(errorResponse, messageToDisplay);
-      });
+      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
     }
   }
 
