@@ -17,7 +17,7 @@ export class UnauthorizedRequestInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError(error => {
-        if (error instanceof UnauthorizedRequestError) {
+        if (error instanceof UnauthorizedRequestError && !this.pageNavigationService.isOnSigninPage()) {
           this.authenticationService.removePrincipal();
           this.pageNavigationService.navigateToSigninPage().then();
           return EMPTY;

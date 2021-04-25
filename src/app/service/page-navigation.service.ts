@@ -3,10 +3,16 @@ import {Router} from '@angular/router';
 
 import {I18nService} from './i18n.service';
 import {TaskGroup} from '../model/task-group';
+import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
 export class PageNavigationService {
   constructor(public router: Router, private i18nService: I18nService) {
+  }
+
+  isOnSigninPage(): boolean {
+    const routerState = this.router.routerState.snapshot;
+    return /\/\w+\/signin/.test(routerState.url);
   }
 
   navigateToHomePage(): Promise<boolean> {
@@ -15,6 +21,7 @@ export class PageNavigationService {
   }
 
   navigateToTaskGroupPage(taskGroup: TaskGroup): Promise<boolean> {
+    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
     const currentLang = this.i18nService.currentLanguage;
     return this.router.navigate([currentLang.code, 'task'], {fragment: taskGroup.value});
   }

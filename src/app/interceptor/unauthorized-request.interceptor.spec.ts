@@ -48,4 +48,17 @@ describe('UnauthorizedRequestInterceptor', () => {
     await interceptor.intercept(request, handler).toPromise();
     expect(pageNavigationService.navigateToSigninPage).toHaveBeenCalled();
   });
+
+  it('should do nothing when unauthorized request error is occurred and current page is signin page', done => {
+    spyOn(pageNavigationService, 'isOnSigninPage').and.returnValue(true);
+
+    const url = '/login';
+    const request = new HttpRequest('POST', url, null);
+    const error = new UnauthorizedRequestError(url, 'Invalid password');
+    const handler = new HttpHandlerMock(() => throwError(error));
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), e => {
+      expect(e).toBe(error);
+      done();
+    });
+  });
 });
