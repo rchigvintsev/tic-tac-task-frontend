@@ -159,7 +159,7 @@ registerLocaleData(localeRu, 'ru');
       }
     }),
     NgxJdenticonModule,
-    SimpleNotificationsModule.forRoot()
+    SimpleNotificationsModule.forRoot({timeOut: 5000, showProgressBar: true, pauseOnHover: true, clickToClose: true})
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
