@@ -25,11 +25,11 @@ import {TaskGroup} from '../../model/task-group';
 import {TaskList} from '../../model/task-list';
 import {Tag} from '../../model/tag';
 import {HttpRequestError} from '../../error/http-request.error';
+import {BadRequestError} from '../../error/bad-request.error';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {Strings} from '../../util/strings';
-import {HttpErrors} from '../../util/http-errors';
 
 const START_OF_DAY_TIME = '00:00';
 const END_OF_DAY_TIME = '23:59';
@@ -322,7 +322,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.updateTaskCounters();
       }, (error: HttpRequestError) => {
         this.clearErrors();
-        if (HttpErrors.isBadRequest(error)) {
+        if (error instanceof BadRequestError) {
           this.handleBadRequestError(error);
         } else {
           this.httpRequestErrorHandler.handle(error);
@@ -351,31 +351,29 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private handleBadRequestError(response: any) {
-    if (response.error && response.error.fieldErrors) {
-      for (const fieldError of response.error.fieldErrors) {
-        const fieldName = fieldError.field;
-        const controls = [];
-        if (fieldName === 'deadline') {
-          controls.push(this.taskDetailsForm.controls.deadlineDate);
-          controls.push(this.taskDetailsForm.controls.deadlineTime);
-        } else {
-          const control = this.taskDetailsForm.controls[fieldName];
-          if (control) {
-            controls.push(control);
-          }
+  private handleBadRequestError(error: BadRequestError) {
+    for (const fieldError of error.fieldErrors) {
+      const fieldName = fieldError.field;
+      const controls = [];
+      if (fieldName === 'deadline') {
+        controls.push(this.taskDetailsForm.controls.deadlineDate);
+        controls.push(this.taskDetailsForm.controls.deadlineTime);
+      } else {
+        const control = this.taskDetailsForm.controls[fieldName];
+        if (control) {
+          controls.push(control);
         }
+      }
 
-        if (controls.length > 0) {
-          const message = fieldError.message;
-          this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
-          for (const control of controls) {
-            control.setErrors({valid: message});
-          }
-          this.errorStateMatchers.get(fieldName).errorState = true;
-        } else {
-          this.log.error(`Field ${fieldName} is not found`);
+      if (controls.length > 0) {
+        const message = fieldError.message;
+        this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
+        for (const control of controls) {
+          control.setErrors({valid: message});
         }
+        this.errorStateMatchers.get(fieldName).errorState = true;
+      } else {
+        this.log.error(`Field ${fieldName} is not found`);
       }
     }
   }

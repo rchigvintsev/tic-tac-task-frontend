@@ -26,7 +26,9 @@ import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
 import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
 import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
-import {ResourceNotFoundError} from "../../error/resource-not-found.error";
+import {HttpRequestError} from '../../error/http-request.error';
+import {BadRequestError} from '../../error/bad-request.error';
+import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 
 const CURRENT_LANG = 'en';
 
@@ -285,7 +287,11 @@ describe('TaskDetailsComponent', () => {
 
   it('should display server validation error', () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}});
+      return throwError(BadRequestError.fromResponse({
+        url: '/',
+        status: 400,
+        error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}}
+      ));
     });
     fixture.whenStable().then(() => {
       component.taskFormModel.deadline = moment().add(1, 'days').toDate();
@@ -301,7 +307,11 @@ describe('TaskDetailsComponent', () => {
 
   it('should ignore validation error when field is not found', () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 400, error: {fieldErrors: {absent: 'Must be present'}}});
+      return throwError(BadRequestError.fromResponse({
+        url: '/',
+        status: 400,
+        error: {fieldErrors: [{absent: 'Must be present'}]}}
+      ));
     });
     fixture.whenStable().then(() => {
       component.taskFormModel.deadline = moment().add(1, 'days').toDate();
@@ -314,9 +324,9 @@ describe('TaskDetailsComponent', () => {
     });
   });
 
-  it('should log service call error when field is not found', () => {
+  it('should log service call error', () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError({status: 500, error: {errors: ['Something went wrong']}});
+      return throwError(HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
     });
     const logService = fixture.debugElement.injector.get(LogService);
 

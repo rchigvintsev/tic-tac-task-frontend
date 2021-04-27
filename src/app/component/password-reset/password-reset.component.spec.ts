@@ -108,7 +108,7 @@ describe('PasswordResetComponent', () => {
   it('should show error message on password reset error', () => {
     fixture.whenStable().then(() => {
       (userService.resetPassword as jasmine.Spy).and.callFake(() => {
-        return throwError({status: 500, error: {message: 'Something went wrong'}});
+        return throwError(HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
       });
 
       // For some reason two-way binding does not work in tests when input is placed within form

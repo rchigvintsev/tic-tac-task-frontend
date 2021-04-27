@@ -5,6 +5,7 @@ import {throwError} from 'rxjs';
 
 import {HttpErrorTranslationInterceptor} from './http-error-translation.interceptor';
 import {HttpRequestError} from '../error/http-request.error';
+import {BadRequestError} from '../error/bad-request.error';
 import {UnauthorizedRequestError} from '../error/unauthorized-request.error';
 import {ResourceNotFoundError} from '../error/resource-not-found.error';
 import {TestSupport} from '../test/test-support';
@@ -23,6 +24,21 @@ describe('HttpErrorTranslationInterceptor', () => {
     injector = getTestBed();
     interceptor = injector.get(HttpErrorTranslationInterceptor);
   }));
+
+  it('should translate response with 400 status code to "BadRequestError"', done => {
+    const url = '/';
+    const request = new HttpRequest('GET', url);
+    const handler = new HttpHandlerMock(() => throwError({
+      url,
+      status: 400,
+      error: {fieldErrors: [{field: 'test', message: 'Invalid value'}]}
+    }));
+
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
+      expect(error).toEqual(jasmine.any(BadRequestError));
+      done();
+    });
+  });
 
   it('should translate response with 401 status code to "UnauthorizedRequestError"', done => {
     const url = '/';
