@@ -15,19 +15,21 @@ export class LoadingIndicatorService {
   }
 
   showUntilExecuted(observable: Observable<any>) {
-    if (this.executingObservables === 0) {
+    this.executingObservables++;
+    if (this.executingObservables === 1) {
       this.dialogRefSubject = new ReplaySubject<MatDialogRef<LoadingIndicatorComponent>>();
       setTimeout(() => {
-        const dialogRef = this.dialog.open(LoadingIndicatorComponent, {
-          panelClass: 'progress-spinner-dialog',
-          disableClose: true
-        });
-        this.dialogRefSubject.next(dialogRef);
+        if (this.executingObservables > 0) {
+          const dialogRef = this.dialog.open(LoadingIndicatorComponent, {
+            panelClass: 'progress-spinner-dialog',
+            disableClose: true
+          });
+          this.dialogRefSubject.next(dialogRef);
+        }
         this.dialogRefSubject.complete();
-      }, 0);
+      }, 200);
     }
 
-    this.executingObservables++;
     return observable.pipe(finalize(() => {
       this.executingObservables--;
       if (this.executingObservables === 0) {

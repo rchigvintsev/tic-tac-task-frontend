@@ -1,6 +1,7 @@
 import {fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {MatDialog} from '@angular/material';
 
+import {delay} from 'rxjs/operators';
 import {of, Subject} from 'rxjs';
 
 import {TestSupport} from '../test/test-support';
@@ -28,7 +29,7 @@ describe('LoadingIndicatorService', () => {
     spyOn(dialog, 'open').and.returnValue({close: () => {}});
 
     service.showUntilExecuted(of(true));
-    tick(500);
+    tick(400);
     expect(dialog.open).toHaveBeenCalled();
   }));
 
@@ -37,9 +38,9 @@ describe('LoadingIndicatorService', () => {
     spyOn(dialog, 'open').and.returnValue({close: () => {}});
 
     service.showUntilExecuted(of(true));
-    tick(500);
+    tick(400);
     service.showUntilExecuted(of(false));
-    tick(500);
+    tick(400);
     expect(dialog.open).toHaveBeenCalledTimes(1);
   }));
 
@@ -50,8 +51,8 @@ describe('LoadingIndicatorService', () => {
     const dialog = injector.get(MatDialog);
     spyOn(dialog, 'open').and.returnValue(dialogRef);
 
-    service.showUntilExecuted(of(true)).subscribe();
-    tick(500);
+    service.showUntilExecuted(of(true).pipe(delay(300))).subscribe();
+    tick(400);
     expect(dialogRef.close).toHaveBeenCalled();
   }));
 
@@ -64,11 +65,11 @@ describe('LoadingIndicatorService', () => {
 
     const subject1 = new Subject();
     service.showUntilExecuted(subject1).subscribe();
-    tick(500);
+    tick(400);
 
     const subject2 = new Subject();
     service.showUntilExecuted(subject2).subscribe();
-    tick(500);
+    tick(400);
 
     subject1.complete();
     expect(dialogRef.close).not.toHaveBeenCalled();
