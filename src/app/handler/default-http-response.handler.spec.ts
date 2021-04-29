@@ -2,15 +2,15 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 
 import {NotificationsService} from 'angular2-notifications';
 
-import {TestSupport} from '../../test/test-support';
-import {DefaultHttpRequestErrorHandler} from './default-http-request-error.handler';
-import {HttpRequestError} from '../http-request.error';
-import {LogService} from '../../service/log.service';
+import {TestSupport} from '../test/test-support';
+import {DefaultHttpResponseHandler} from './default-http-response.handler';
+import {LogService} from '../service/log.service';
+import {HttpRequestError} from '../error/http-request.error';
 
-describe('DefaultHttpRequestErrorHandler', () => {
+describe('DefaultHttpResponseHandler', () => {
   let log: LogService;
   let notificationsService: NotificationsService;
-  let handler: DefaultHttpRequestErrorHandler;
+  let handler: DefaultHttpResponseHandler;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,28 +24,35 @@ describe('DefaultHttpRequestErrorHandler', () => {
     spyOn(log, 'error').and.stub();
 
     notificationsService = injector.get(NotificationsService);
+    spyOn(notificationsService, 'success').and.stub();
     spyOn(notificationsService, 'error').and.stub();
 
-    handler = injector.get(DefaultHttpRequestErrorHandler);
+    handler = injector.get(DefaultHttpResponseHandler);
   });
 
   it('should log error message', () => {
     const message = 'Something went wrong';
     const error = new HttpRequestError('/', 500, message);
-    handler.handle(error);
+    handler.handleError(error);
 
     expect(log.error).toHaveBeenCalledWith(message);
   });
 
-  it('should show notification with localized error message', () => {
+  it('should show error notification on error handle', () => {
     const localizedMessage = 'Что-то пошло не так';
     const error = new HttpRequestError('/', 500, 'Something went wrong', localizedMessage);
-    handler.handle(error);
+    handler.handleError(error);
 
     expect(notificationsService.error).toHaveBeenCalledWith(null, localizedMessage);
   });
 
-  it('should throw error on handle when error object is null', () => {
-    expect(() => handler.handle(null)).toThrow(new Error('Error must not be null or undefined'));
+  it('should throw error on error handle when error object is null', () => {
+    expect(() => handler.handleError(null)).toThrow(new Error('Error must not be null or undefined'));
+  });
+
+  it('should show success notification on success handle', () => {
+    const message = 'Success!';
+    handler.handleSuccess(message);
+    expect(notificationsService.success).toHaveBeenCalledWith(null, message);
   });
 });

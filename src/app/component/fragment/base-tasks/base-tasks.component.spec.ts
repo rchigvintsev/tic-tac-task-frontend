@@ -15,8 +15,8 @@ import {ConfigService} from '../../../service/config.service';
 import {TaskService} from '../../../service/task.service';
 import {Task} from '../../../model/task';
 import {TestSupport} from '../../../test/test-support';
-import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
 
 describe('BaseTasksComponent', () => {
   let component: BaseTasksComponent;
@@ -31,7 +31,7 @@ describe('BaseTasksComponent', () => {
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)},
-        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]
     }).compileComponents();
 

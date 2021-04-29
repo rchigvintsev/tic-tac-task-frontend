@@ -9,7 +9,7 @@ import {Task} from '../../../model/task';
 import {TaskStatus} from '../../../model/task-status';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
 
 export class MenuItem {
@@ -45,7 +45,7 @@ export class BaseTasksComponent {
   constructor(public i18nService: I18nService,
               protected taskService: TaskService,
               protected pageNavigationService: PageNavigationService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) protected httpRequestErrorHandler: HttpRequestErrorHandler) {
+              @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler) {
   }
 
   onTitleTextClick() {
@@ -115,7 +115,7 @@ export class BaseTasksComponent {
     if (error instanceof ResourceNotFoundError) {
       this.pageNavigationService.navigateToNotFoundErrorPage().then();
     } else {
-      this.httpRequestErrorHandler.handle(error);
+      this.httpResponseHandler.handleError(error);
     }
   }
 

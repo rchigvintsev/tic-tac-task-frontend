@@ -15,8 +15,8 @@ import {TagService} from '../../../service/tag.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskGroup} from '../../../model/task-group';
 import {Config} from '../../../model/config';
-import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
 
 describe('SidenavMenuComponent', () => {
   let component: SidenavMenuComponent;
@@ -29,7 +29,7 @@ describe('SidenavMenuComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
-        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]
     }).compileComponents();
   }));

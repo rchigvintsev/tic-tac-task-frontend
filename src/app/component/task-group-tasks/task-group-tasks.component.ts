@@ -15,7 +15,7 @@ import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
 import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 
 @Component({
   selector: 'app-task-group-tasks',
@@ -29,10 +29,10 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   constructor(i18nService: I18nService,
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute) {
-    super(i18nService, taskService, pageNavigationService, httpRequestErrorHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }

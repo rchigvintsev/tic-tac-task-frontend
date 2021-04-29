@@ -13,8 +13,8 @@ import {TagService} from './service/tag.service';
 import {TaskListService} from './service/task-list.service';
 import {Language} from './service/i18n.service';
 import {Config} from './model/config';
-import {HTTP_REQUEST_ERROR_HANDLER} from './error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from './error/handler/default-http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER} from './handler/http-response.handler';
+import {DefaultHttpResponseHandler} from './handler/default-http-response.handler';
 
 const CURRENT_LANG = 'ru';
 
@@ -28,7 +28,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}]
+      providers: [{provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}]
     }).compileComponents();
   }));
 

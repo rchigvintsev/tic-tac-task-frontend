@@ -14,7 +14,7 @@ import {PageNavigationService} from '../../service/page-navigation.service';
 import {TaskGroup} from '../../model/task-group';
 import {Tag} from '../../model/tag';
 import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -30,11 +30,11 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   constructor(i18nService: I18nService,
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
               private tagService: TagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpRequestErrorHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [

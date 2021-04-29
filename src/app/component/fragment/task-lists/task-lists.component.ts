@@ -9,7 +9,7 @@ import {I18nService} from '../../../service/i18n.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskList} from '../../../model/task-list';
 import {HttpRequestError} from '../../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
 import {PathMatcher} from '../../../util/path-matcher';
 
@@ -30,14 +30,14 @@ export class TaskListsComponent implements OnInit, OnDestroy {
 
   constructor(public i18nService: I18nService,
               private taskListService: TaskListService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private router: Router) {
   }
 
   ngOnInit() {
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     this.taskListService.getUpdatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListUpdate(taskList));
@@ -83,7 +83,7 @@ export class TaskListsComponent implements OnInit, OnDestroy {
       this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
         this.taskLists.push(createdTaskList);
         this.taskListForm.resetForm();
-      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
   }
 

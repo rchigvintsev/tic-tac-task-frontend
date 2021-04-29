@@ -11,8 +11,8 @@ import {UserService} from '../../service/user.service';
 import {ConfigService} from '../../service/config.service';
 import {Config} from '../../model/config';
 import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
 
 describe('PasswordResetConfirmationComponent', () => {
   let component: PasswordResetConfirmationComponent;
@@ -26,7 +26,7 @@ describe('PasswordResetConfirmationComponent', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}]
+      providers: [{provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}]
     }).compileComponents();
   }));
 

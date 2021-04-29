@@ -7,7 +7,7 @@ import {MatCheckboxChange} from '@angular/material/checkbox';
 import {Router} from '@angular/router';
 
 import {EMPTY, of, Subject, throwError} from 'rxjs';
-import {skip} from 'rxjs/operators';
+import {delay, skip} from 'rxjs/operators';
 
 import {TranslateService} from '@ngx-translate/core';
 
@@ -24,11 +24,11 @@ import {LogService} from '../../service/log.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
-import {HTTP_REQUEST_ERROR_HANDLER} from '../../error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from '../../error/handler/default-http-request-error.handler';
 import {HttpRequestError} from '../../error/http-request.error';
 import {BadRequestError} from '../../error/bad-request.error';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
+import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
 
 const CURRENT_LANG = 'en';
 
@@ -60,7 +60,7 @@ describe('TaskDetailsComponent', () => {
         {provide: MatDialog, useClass: MatDialogMock},
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
-        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler},
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
         MatDatepickerModule
       ]
     }).compileComponents();
@@ -109,7 +109,7 @@ describe('TaskDetailsComponent', () => {
     taskListService = injector.get(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
     spyOn(taskListService, 'addTask').and.returnValue(of(true));
-    spyOn(taskListService, 'removeTask').and.returnValue(of(true));
+    spyOn(taskListService, 'removeTask').and.returnValue(of(true).pipe(delay(500)));
 
     const logService = injector.get(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -519,6 +519,16 @@ describe('TaskDetailsComponent', () => {
       component.onTaskListSelect();
       fixture.detectChanges();
       expect(taskListService.removeTask).toHaveBeenCalledWith(taskListId, task.id);
+    });
+  });
+
+  it('should ignore duplicated task list select event', () => {
+    fixture.whenStable().then(() => {
+      component.taskFormModel.taskListId = null;
+      component.onTaskListSelect();
+      component.onTaskListSelect();
+      fixture.detectChanges();
+      expect(taskListService.removeTask).toHaveBeenCalledTimes(1);
     });
   });
 

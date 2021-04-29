@@ -9,8 +9,8 @@ import {TestSupport} from '../../../test/test-support';
 import {ConfigService} from '../../../service/config.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {TaskList} from '../../../model/task-list';
-import {HTTP_REQUEST_ERROR_HANDLER} from '../../../error/handler/http-request-error.handler';
-import {DefaultHttpRequestErrorHandler} from '../../../error/handler/default-http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
 
 describe('TaskListsComponent', () => {
   let component: TaskListsComponent;
@@ -27,7 +27,7 @@ describe('TaskListsComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
-        {provide: HTTP_REQUEST_ERROR_HANDLER, useClass: DefaultHttpRequestErrorHandler}
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]
     }).compileComponents();
   }));

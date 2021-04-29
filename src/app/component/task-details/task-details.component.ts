@@ -27,8 +27,8 @@ import {Tag} from '../../model/tag';
 import {HttpRequestError} from '../../error/http-request.error';
 import {BadRequestError} from '../../error/bad-request.error';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
 
 const START_OF_DAY_TIME = '00:00';
@@ -69,7 +69,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private tagService: TagService,
               private i18nService: I18nService,
               private pageNavigationService: PageNavigationService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private route: ActivatedRoute,
               private dateAdapter: DateAdapter<any>,
               private dialog: MatDialog) {
@@ -86,12 +86,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       if (error instanceof ResourceNotFoundError) {
         this.pageNavigationService.navigateToNotFoundErrorPage().then();
       } else {
-        this.httpRequestErrorHandler.handle(error);
+        this.httpResponseHandler.handleError(error);
       }
     });
     this.taskService.getTags(taskId).subscribe(
       tags => this.initTags(tags),
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
 
     this.taskGroupService.getSelectedTaskGroup()
@@ -115,7 +115,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.taskListService.getUncompletedTaskLists().subscribe(
       taskLists => this.taskLists = taskLists,
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
@@ -202,15 +202,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     if (taskListId !== this.task.taskListId) {
       if (taskListId) {
         this.taskListService.addTask(taskListId, this.task.id).subscribe(
-          _ => this.task.taskListId = taskListId,
-          (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+          _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
+          (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
         );
       } else {
         this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe(
-          _ => this.task.taskListId = null,
-          (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+          _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
+          (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
         );
       }
+      this.task.taskListId = taskListId;
     }
   }
 
@@ -296,7 +297,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       map(allTags => allTags.filter(tag => excludedTags.findIndex(excludedTag => excludedTag.name === tag.name) < 0))
     ).subscribe(
       availableTags => this.availableTags = availableTags,
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
   }
 
@@ -320,12 +321,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.clearErrors();
         this.initTaskModel(task);
         this.taskService.updateTaskCounters();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
       }, (error: HttpRequestError) => {
         this.clearErrors();
         if (error instanceof BadRequestError) {
           this.handleBadRequestError(error);
         } else {
-          this.httpRequestErrorHandler.handle(error);
+          this.httpResponseHandler.handleError(error);
         }
       });
     }
@@ -337,7 +339,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
   }
 
@@ -347,7 +349,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
       },
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
   }
 
@@ -405,7 +407,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         const tag = this.availableTags[tagIndex];
         this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
           this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
-        }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+          this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
+        }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
@@ -413,8 +416,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
           this.tagService.createTag(newTag).pipe(
             flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
           ).subscribe(
-            tag => this.tags.push(tag),
-            (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+            tag => {
+              this.tags.push(tag);
+              this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
+            },
+            (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
           );
         }
       }
@@ -427,7 +433,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
         this.tags.splice(tagIndex, 1);
         this.availableTags.push(tag);
-      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
   }
 }

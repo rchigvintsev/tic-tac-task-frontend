@@ -12,7 +12,7 @@ import {I18nService} from '../../../service/i18n.service';
 import {TaskComment} from '../../../model/task-comment';
 import {PageRequest} from '../../../service/page-request';
 import {HttpRequestError} from '../../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
 
 @Component({
@@ -36,7 +36,7 @@ export class TaskCommentsComponent implements OnInit {
   constructor(private taskService: TaskService,
               private commentService: TaskCommentService,
               private i18nService: I18nService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
   }
@@ -46,7 +46,7 @@ export class TaskCommentsComponent implements OnInit {
     this.taskId = +this.route.snapshot.paramMap.get('id');
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = comments,
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
   }
 
@@ -108,7 +108,7 @@ export class TaskCommentsComponent implements OnInit {
     this.pageRequest.page++;
     this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
       comments => this.comments = this.comments.concat(comments),
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
   }
 
@@ -129,7 +129,7 @@ export class TaskCommentsComponent implements OnInit {
       this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
         this.comments.unshift(createdComment);
         this.newCommentForm.resetForm();
-      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
   }
 
@@ -142,13 +142,13 @@ export class TaskCommentsComponent implements OnInit {
         }
         this.comments[idx] = savedComment;
         this.setEditCommentFormModel(null);
-      }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
   }
 
   private deleteComment(comment: TaskComment) {
     this.commentService.deleteComment(comment).subscribe(() => {
       this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error));
+    }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
   }
 }

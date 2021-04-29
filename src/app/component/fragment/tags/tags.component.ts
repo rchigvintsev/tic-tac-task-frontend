@@ -9,10 +9,9 @@ import {I18nService} from '../../../service/i18n.service';
 import {TagService} from '../../../service/tag.service';
 import {Tag} from '../../../model/tag';
 import {HttpRequestError} from '../../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {PathMatcher} from '../../../util/path-matcher';
 import {Strings} from '../../../util/strings';
-
 
 @Component({
   selector: 'app-tags',
@@ -30,7 +29,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   private componentDestroyed = new Subject<boolean>();
 
   constructor(public i18nService: I18nService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) private httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private tagService: TagService,
               private router: Router) {
   }
@@ -38,7 +37,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.tagService.getTags().subscribe(
       tags => this.tags = tags,
-      (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
     this.tagService.getCreatedTag()
       .pipe(takeUntil(this.componentDestroyed))
@@ -84,7 +83,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (!Strings.isBlank(this.tagFormModel.name)) {
       this.tagService.createTag(this.tagFormModel).subscribe(
         _ => this.tagForm.resetForm(),
-        (error: HttpRequestError) => this.httpRequestErrorHandler.handle(error)
+        (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
       );
     }
   }

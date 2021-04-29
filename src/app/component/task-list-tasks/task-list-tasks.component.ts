@@ -14,7 +14,7 @@ import {Task} from '../../model/task';
 import {TaskList} from '../../model/task-list';
 import {TaskGroup} from '../../model/task-group';
 import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_REQUEST_ERROR_HANDLER, HttpRequestErrorHandler} from '../../error/handler/http-request-error.handler';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
 
 @Component({
@@ -28,11 +28,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   constructor(i18nService: I18nService,
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
-              @Inject(HTTP_REQUEST_ERROR_HANDLER) httpRequestErrorHandler: HttpRequestErrorHandler,
+              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpRequestErrorHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
