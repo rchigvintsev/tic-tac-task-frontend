@@ -118,7 +118,10 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
   private saveTag() {
     if (!this.tagFormModel.equals(this.tag)) {
       this.tagService.updateTag(this.tagFormModel).subscribe(
-        savedTag => this.onTagLoad(savedTag),
+        savedTag => {
+          this.onTagLoad(savedTag);
+          this.httpResponseHandler.handleSuccess(this.i18nService.translate('tag_saved'));
+        },
         (error: HttpRequestError) => this.onHttpRequestError(error)
       );
     }
@@ -126,7 +129,10 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
 
   private deleteTag() {
     this.tagService.deleteTag(this.tagFormModel).subscribe(
-      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      _ => {
+        this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('tag_deleted'));
+      },
       (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }

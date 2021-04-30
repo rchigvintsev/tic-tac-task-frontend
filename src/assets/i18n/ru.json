@@ -84,12 +84,16 @@
   "failed_to_delete_task": "Не удаётся удалить задачу",
   "failed_to_complete_task": "Не удаётся завершить задачу",
   "task_saved": "Задача сохранена",
+  "task_completed": "Задача завершена",
+  "task_deleted": "Задача удалена",
   "failed_to_load_tags": "Не удаётся загрузить метки",
   "failed_to_load_tag": "Не удаётся загрузить метку",
   "failed_to_save_tag": "Не удаётся сохранить метку",
   "failed_to_assign_tag": "Не удаётся назначить метку",
   "failed_to_remove_tag": "Не удаётся удалить метку",
   "failed_to_delete_tag": "Не удаётся удалить метку",
+  "tag_saved": "Метка сохранена",
+  "tag_deleted": "Метка удалена",
   "failed_to_load_task_comments": "Не удаётся загрузить комментарии к задаче",
   "failed_to_save_task_comment": "Не удаётся сохранить комментарий к задаче",
   "failed_to_delete_task_comment": "Не удаётся удалить комментарий к задаче",
@@ -99,5 +103,8 @@
   "failed_to_complete_task_list": "Не удаётся завершить список задач",
   "failed_to_delete_task_list": "Не удаётся удалить список задач",
   "failed_to_add_task_to_task_list": "Не удаётся добавить задачу в список задач",
-  "failed_to_remove_task_from_task_list": "Не удаётся удалить задачу из списка задач"
+  "failed_to_remove_task_from_task_list": "Не удаётся удалить задачу из списка задач",
+  "task_list_saved": "Список задач сохранён",
+  "task_list_completed": "Список задач завершён",
+  "task_list_deleted": "Список задач удалён"
 }

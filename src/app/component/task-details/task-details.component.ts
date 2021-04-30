@@ -338,6 +338,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       () => {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
       },
       (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
@@ -348,6 +349,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       () => {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_deleted'));
       },
       (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );

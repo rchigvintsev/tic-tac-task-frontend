@@ -121,21 +121,30 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
 
   private saveTaskList() {
     this.taskListService.updateTaskList(this.taskList).subscribe(
-      updatedTaskList => this.onTaskListLoad(updatedTaskList),
+      updatedTaskList => {
+        this.onTaskListLoad(updatedTaskList);
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_saved'));
+      },
       (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 
   private completeTaskList() {
     this.taskListService.completeTaskList(this.taskList).subscribe(
-      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      _ => {
+        this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_completed'));
+      },
       (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }
 
   private deleteTaskList() {
     this.taskListService.deleteTaskList(this.taskList).subscribe(
-      _ => this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY),
+      _ => {
+        this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_deleted'));
+      },
       (error: HttpRequestError) => this.onHttpRequestError(error)
     );
   }

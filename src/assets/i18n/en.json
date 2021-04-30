@@ -84,12 +84,16 @@
   "failed_to_complete_task": "Failed to complete task",
   "failed_to_delete_task": "Failed to delete task",
   "task_saved": "Task is saved",
+  "task_completed": "Task is completed",
+  "task_deleted": "Task is deleted",
   "failed_to_load_tags": "Failed to load tags",
   "failed_to_load_tag": "Failed to load tag",
   "failed_to_save_tag": "Failed to save tag",
   "failed_to_assign_tag": "Failed to assign tag",
   "failed_to_remove_tag": "Failed to remove tag",
   "failed_to_delete_tag": "Failed to delete tag",
+  "tag_saved": "Tag is saved",
+  "tag_deleted": "Tag is deleted",
   "failed_to_load_task_comments": "Failed to load task comments",
   "failed_to_save_task_comment": "Failed to save task comment",
   "failed_to_delete_task_comment": "Failed to delete task comment",
@@ -99,5 +103,8 @@
   "failed_to_complete_task_list": "Failed to complete task list",
   "failed_to_delete_task_list": "Failed to delete task list",
   "failed_to_add_task_to_task_list": "Failed to add task to task list",
-  "failed_to_remove_task_from_task_list": "Failed to remove task from task list"
+  "failed_to_remove_task_from_task_list": "Failed to remove task from task list",
+  "task_list_saved": "Task list is saved",
+  "task_list_completed": "Task list is completed",
+  "task_list_deleted": "Task list is deleted"
 }
