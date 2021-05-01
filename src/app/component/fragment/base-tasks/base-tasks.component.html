@@ -61,8 +61,6 @@
   <mat-card-content>
     <mat-list id="tasks" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll($event)">
       <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
-        <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
-
         <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]" class="list-row task-list-row">
           <div class="list-column title-column">
             <span>{{ task.title }}</span>
@@ -75,6 +73,8 @@
             </span>
           </div>
         </div>
+
+        <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
       </mat-list-item>
 
       <div *ngIf=showInlineSpinner class="spinner-container">
