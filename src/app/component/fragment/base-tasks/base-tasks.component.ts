@@ -144,6 +144,7 @@ export class BaseTasksComponent {
     this.taskService.completeTask(task).subscribe(_ => {
       this.tasks = this.tasks.filter(e => e.id !== task.id);
       this.taskService.updateTaskCounters();
+      this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
     }, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 }
