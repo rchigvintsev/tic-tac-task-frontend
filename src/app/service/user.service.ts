@@ -19,7 +19,7 @@ export class UserService {
               private config: ConfigService,
               private i18nService: I18nService,
               private loadingIndicatorService: LoadingIndicatorService) {
-    this.baseUrl = `${this.config.apiBaseUrl}/users`;
+    this.baseUrl = `${this.config.apiBaseUrl}/v1/users`;
   }
 
   confirmEmail(userId: number, token: string, showLoadingIndicator = true): Observable<any> {

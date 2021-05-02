@@ -106,7 +106,7 @@ describe('AuthenticationService', () => {
       expect(newUser.equals(user)).toBeTruthy();
       done();
     });
-    const request = httpMock.expectOne(`${configService.apiBaseUrl}/users`);
+    const request = httpMock.expectOne(`${configService.apiBaseUrl}/v1/users`);
     expect(request.request.method).toBe('POST');
     request.flush(newUser.serialize());
   });

@@ -28,7 +28,7 @@ export class TaskService {
               private config: ConfigService,
               private i18nService: I18nService,
               private loadingIndicatorService: LoadingIndicatorService) {
-    this.baseUrl = `${this.config.apiBaseUrl}/tasks`;
+    this.baseUrl = `${this.config.apiBaseUrl}/v1/tasks`;
     for (const taskGroup of TaskGroup.values()) {
       this.taskCounters.set(taskGroup, new BehaviorSubject<number>(null));
     }

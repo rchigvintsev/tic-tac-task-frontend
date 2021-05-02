@@ -19,7 +19,7 @@ export class TaskCommentService {
               private config: ConfigService,
               private i18nService: I18nService,
               private loadingIndicatorService: LoadingIndicatorService) {
-    this.baseUrl = `${this.config.apiBaseUrl}/task-comments`;
+    this.baseUrl = `${this.config.apiBaseUrl}/v1/task-comments`;
   }
 
   updateComment(comment: TaskComment, showLoadingIndicator = true): Observable<TaskComment> {

@@ -84,7 +84,7 @@ export class AuthenticationService {
     user.fullName = username;
     user.password = password;
 
-    const url = `${this.config.apiBaseUrl}/users`;
+    const url = `${this.config.apiBaseUrl}/v1/users`;
     const observable = this.httpClient.post<any>(url, user.serialize(), HttpContentOptions.JSON).pipe(
       map(response => new User().deserialize(response))
     );
