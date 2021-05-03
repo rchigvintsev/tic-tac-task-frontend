@@ -130,6 +130,18 @@
         </div>
       </div>
 
+      <div class="deadline-hot-button-container">
+        <button mat-button color="primary" (click)="onHotDeadlineButtonClick('today')">
+          {{ 'today' | translate }}
+        </button>
+        <button mat-button color="primary" (click)="onHotDeadlineButtonClick('tomorrow')">
+          {{ 'tomorrow' | translate }}
+        </button>
+        <button mat-button color="primary" (click)="onHotDeadlineButtonClick('in_week')">
+          {{ 'in_week' | translate }}
+        </button>
+      </div>
+
       <mat-form-field>
         <mat-chip-list #tagList aria-label="Tags">
           <mat-chip *ngFor="let tag of tags" [style.background-color]="tag.color" (removed)="onTagChipRemoved(tag)">

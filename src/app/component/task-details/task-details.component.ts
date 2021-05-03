@@ -234,6 +234,23 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onHotDeadlineButtonClick(deadline: string) {
+    switch (deadline) {
+      case 'today':
+        this.taskFormModel.deadline = moment().endOf('day').toDate();
+        break;
+      case 'tomorrow':
+        this.taskFormModel.deadline = moment().add(1, 'day').endOf('day').toDate();
+        break;
+      case 'in_week':
+        this.taskFormModel.deadline = moment().add(1, 'week').endOf('day').toDate();
+        break;
+      default:
+        throw new Error('Unsupported deadline code: ' + deadline);
+    }
+    this.saveTask();
+  }
+
   getFirstFieldErrorMessage(...fieldNames: string[]): string {
     for (const fieldName of fieldNames) {
       const control = this.taskDetailsForm.controls[fieldName];

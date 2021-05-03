@@ -541,4 +541,25 @@ describe('TaskDetailsComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
     });
   });
+
+  it('should set deadline to today using hot button', () => {
+    component.onHotDeadlineButtonClick('today');
+    expect(component.taskFormModel.deadline).toEqual(moment().endOf('day').toDate());
+  });
+
+  it('should set deadline to tomorrow using hot button', () => {
+    component.onHotDeadlineButtonClick('tomorrow');
+    expect(component.taskFormModel.deadline).toEqual(moment().add(1, 'day').endOf('day').toDate());
+  });
+
+  it('should set deadline to week using hot button', () => {
+    component.onHotDeadlineButtonClick('in_week');
+    expect(component.taskFormModel.deadline).toEqual(moment().add(1, 'week').endOf('day').toDate());
+  });
+
+  it('should throw error on deadline hot button click when deadline code is invalid', () => {
+    const deadlineCode = 'in_next_century';
+    expect(() => component.onHotDeadlineButtonClick(deadlineCode))
+      .toThrow(new Error('Unsupported deadline code: ' + deadlineCode));
+  });
 });
