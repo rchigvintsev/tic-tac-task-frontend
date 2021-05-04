@@ -32,7 +32,9 @@
          (mouseout)="onCommentContainerMouseOut(comment)">
       <div class="comment-header">
         <div class="comment-date-wrapper">
-          <span class="comment-date">{{ getRelativeCommentDate(comment) }}</span>
+          <span class="comment-date" [matTooltip]="comment.createdAt | localizedDate: 'medium'">
+            {{ getRelativeCommentDate(comment) }}
+          </span>
         </div>
 
         <div class="comment-menu-wrapper">
