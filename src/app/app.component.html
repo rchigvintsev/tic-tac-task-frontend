@@ -8,11 +8,12 @@
       <span>{{ title }}</span>
       <span class="space-filler"></span>
 
-      <div class="language-menu-container">
+      <div class="right-margin-8">
         <button mat-button [matMenuTriggerFor]="languages">
           {{ currentLanguage.name }}
           <mat-icon>arrow_drop_down</mat-icon>
         </button>
+
         <mat-menu #languages="matMenu">
           <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageButtonClick(lang)">
             {{ lang.name }}
@@ -20,14 +21,31 @@
         </mat-menu>
       </div>
 
-      <div *ngIf="principal" class="profile-info-container">
-        <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
-             alt="avatar" class="avatar round right-margin-8"/>
+      <div *ngIf="principal" class="profile-info-container" [class.right-margin-8]="mobileQuery.matches">
+        <button mat-button fxShow="true" fxHide.lt-sm="true" [matMenuTriggerFor]="profileActions">
+          <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
+               alt="avatar" class="avatar round"/>
 
-        <ng-template #identicon>
-          <svg [data-jdenticon-value]="principal.getEmail()" class="avatar right-margin-8"></svg>
-        </ng-template>
-        <button mat-button [matMenuTriggerFor]="profileActions">{{ principal.getName() }}</button>
+          <ng-template #identicon>
+            <svg [data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+          </ng-template>
+
+          {{ principal.getName() }}
+        </button>
+
+        <button mat-button
+                fxHide="true"
+                fxShow.lt-sm="true"
+                class="avatar-button"
+                [style.border-radius]="principal.getProfilePictureUrl() ? '50%' : '0'"
+                [matMenuTriggerFor]="profileActions">
+          <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
+               alt="avatar" class="avatar round"/>
+
+          <ng-template #identicon>
+            <svg [data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+          </ng-template>
+        </button>
 
         <mat-menu #profileActions="matMenu">
           <button mat-menu-item id="sign_out_menu_item" (click)="onSignOutButtonClick()">

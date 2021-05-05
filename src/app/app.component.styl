@@ -8,25 +8,32 @@
       flex: 1 1 auto;
     }
 
-    .profile-info-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      font-size: 16px;
-      margin-left: 8px;
-
-      .avatar {
-        width: 40px;
-        height: 40px;
-      }
-
-      .avatar.round {
-        border-radius: 50%;
-      }
-
+    mat-toolbar {
       button {
         padding-left: 8px;
         padding-right: 8px;
+      }
+
+      .profile-info-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 16px;
+
+        .avatar-button {
+          min-width: 40px;
+          max-width: 40px;
+          padding: 0;
+        }
+
+        .avatar {
+          width: 40px;
+          height: 40px;
+        }
+
+        .avatar.round {
+          border-radius: 50%;
+        }
       }
     }
   }
