@@ -49,6 +49,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
+    this.taskService.resetTaskCounters();
   }
 
   isRouterLinkActive(path: string, fragment: string = null): boolean {

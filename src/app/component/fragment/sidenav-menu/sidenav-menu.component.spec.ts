@@ -22,6 +22,7 @@ describe('SidenavMenuComponent', () => {
   let component: SidenavMenuComponent;
   let fixture: ComponentFixture<SidenavMenuComponent>;
   let routerEvents: Subject<RouterEvent>;
+  let taskService: TaskService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -43,8 +44,9 @@ describe('SidenavMenuComponent', () => {
     const configService = injector.get(ConfigService);
     configService.setConfig(new Config());
 
-    const taskService = injector.get(TaskService);
+    taskService = injector.get(TaskService);
     spyOn(taskService, 'getTaskCount').and.returnValue(of(3));
+    spyOn(taskService, 'resetTaskCounters').and.stub();
 
     const taskGroupService = injector.get(TaskGroupService);
     spyOn(taskGroupService, 'notifyTaskGroupSelected').and.stub();
@@ -89,5 +91,10 @@ describe('SidenavMenuComponent', () => {
       const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected[href="/en/task#all"]'));
       expect(selectedItem).toBeTruthy();
     });
+  });
+
+  it('should reset task counters on destroy', () => {
+    component.ngOnDestroy();
+    expect(taskService.resetTaskCounters).toHaveBeenCalled();
   });
 });

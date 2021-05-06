@@ -2,7 +2,7 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {MatDialogModule} from '@angular/material';
 
-import {skip} from 'rxjs/operators';
+import {first, skip} from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -217,6 +217,27 @@ describe('TaskService', () => {
     const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
+  });
+
+  it('should reset task counters', done => {
+    const subscription = taskService.getTaskCount(TaskGroup.ALL)
+      .pipe(skip(1))
+      .subscribe(_ => {
+        subscription.unsubscribe();
+        taskService.resetTaskCounters();
+        taskService.getTaskCount(TaskGroup.ALL).pipe(first()).subscribe(count => {
+          expect(count).toBe(0);
+          done();
+        });
+
+        const request2 = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+        expect(request2.request.method).toBe('GET');
+        request2.flush(2);
+      });
+
+    const request1 = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+    expect(request1.request.method).toBe('GET');
+    request1.flush(2);
   });
 
   it('should throw error on get tasks by group when task group is null', () => {

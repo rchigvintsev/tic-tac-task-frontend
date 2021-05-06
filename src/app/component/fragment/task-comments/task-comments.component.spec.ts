@@ -5,6 +5,8 @@ import {MatDialog} from '@angular/material';
 
 import {of} from 'rxjs';
 
+import {TranslateService} from '@ngx-translate/core';
+
 import * as moment from 'moment';
 
 import {TaskCommentsComponent} from './task-comments.component';
@@ -68,10 +70,13 @@ describe('TaskCommentsComponent', () => {
     spyOn(taskCommentService, 'updateComment').and.callFake(c => of(new TaskComment().deserialize(c)));
     spyOn(taskCommentService, 'deleteComment').and.returnValue(of(null));
 
+    const translate = injector.get(TranslateService);
+    translate.currentLang = 'ru';
+
+    moment.locale(translate.currentLang);
+
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    moment.locale('ru');
   });
 
   it('should create', () => {

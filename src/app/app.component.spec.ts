@@ -87,7 +87,7 @@ describe('AppComponent', () => {
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > button');
-    expect(element.textContent).toEqual(principal.getName());
+    expect(element.textContent.trim()).toEqual(principal.getName());
   });
 
   it('should render current user\'s avatar in toolbar', () => {
@@ -95,7 +95,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    const element = compiled.querySelector('mat-toolbar > div.profile-info-container > img.avatar');
+    const element = compiled.querySelector('mat-toolbar > div.profile-info-container img.avatar');
     expect(element.getAttribute('src')).toBe(principal.getProfilePictureUrl());
   });
 
@@ -106,7 +106,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    const element = compiled.querySelector('mat-toolbar > div.profile-info-container > svg.avatar');
+    const element = compiled.querySelector('mat-toolbar > div.profile-info-container svg.avatar');
     expect(element.getAttribute('data-jdenticon-value')).toBe(principal.getEmail());
   });
 

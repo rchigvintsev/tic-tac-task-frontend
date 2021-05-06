@@ -91,6 +91,10 @@ export class TaskService {
     });
   }
 
+  resetTaskCounters() {
+    this.taskCounters.forEach(counter => counter.next(null));
+  }
+
   getTasksByGroup(taskGroup: TaskGroup,
                   pageRequest: PageRequest = new PageRequest(),
                   showLoadingIndicator = true): Observable<Task[]> {
