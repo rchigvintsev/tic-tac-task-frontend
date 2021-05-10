@@ -113,7 +113,8 @@ export class TaskCommentsComponent implements OnInit {
   }
 
   getRelativeCommentDate(comment: TaskComment) {
-    return moment(comment.createdAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).fromNow();
+    const commentDate = comment.updatedAt || comment.createdAt;
+    return moment(commentDate, moment.HTML5_FMT.DATETIME_LOCAL_MS).fromNow();
   }
 
   private setNewCommentFormModel(comment) {

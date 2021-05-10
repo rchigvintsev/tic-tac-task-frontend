@@ -107,5 +107,6 @@
   "failed_to_remove_task_from_task_list": "Failed to remove task from task list",
   "task_list_saved": "Task list is saved",
   "task_list_completed": "Task list is completed",
-  "task_list_deleted": "Task list is deleted"
+  "task_list_deleted": "Task list is deleted",
+  "changed": "changed"
 }

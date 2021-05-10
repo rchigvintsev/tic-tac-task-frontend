@@ -32,8 +32,12 @@
          (mouseout)="onCommentContainerMouseOut(comment)">
       <div class="comment-header">
         <div class="comment-date-wrapper">
-          <span class="comment-date" [matTooltip]="comment.createdAt | localizedDate: 'medium'">
+          <span [matTooltip]="comment.createdAt | localizedDate: 'medium'">
             {{ getRelativeCommentDate(comment) }}
+          </span>
+
+          <span *ngIf="comment.updatedAt" class="comment-date-annotation">
+            ({{ 'changed' | translate }})
           </span>
         </div>
 
