@@ -58,6 +58,8 @@ describe('TaskCommentsComponent', () => {
     for (let i = 0; i < 3; i++) {
       comments.push(new TaskComment().deserialize({id: i + 1, commentText: `Test comment ${i + 1}`, createdAt}));
     }
+    comments[0].updatedAt = comments[0].createdAt;
+
     spyOn(taskService, 'getComments').and.returnValue(of(comments));
     spyOn(taskService, 'addComment').and.callFake((taskId, c) => {
       const comment = new TaskComment().deserialize(c);
@@ -209,6 +211,15 @@ describe('TaskCommentsComponent', () => {
     fixture.whenStable().then(() => {
       const relativeDate = component.getRelativeCommentDate(component.comments[0]);
       expect(relativeDate).toEqual('день назад');
+    });
+  });
+
+  it('should render annotation when comment was changed', () => {
+    fixture.whenStable().then(() => {
+      const commentId = component.comments[0].id;
+      const selector = By.css('.comment-' + commentId + ' .comment-header comment-date-annotation');
+      const annotation = fixture.debugElement.query(selector);
+      expect(annotation).toBeDefined();
     });
   });
 
