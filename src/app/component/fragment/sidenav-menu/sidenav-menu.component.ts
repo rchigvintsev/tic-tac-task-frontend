@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 
 import {Observable, Subject} from 'rxjs';
@@ -30,8 +30,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   constructor(public i18nService: I18nService,
               private taskGroupService: TaskGroupService,
               private taskService: TaskService,
-              private router: Router,
-              private cdr: ChangeDetectorRef) {
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -53,6 +52,10 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   }
 
   isRouterLinkActive(path: string, fragment: string = null): boolean {
+    return this.pathMatcher && this.pathMatcher.matches(path, fragment);
+  }
+
+  isFocused(path: string, fragment: string = null): boolean {
     return this.pathMatcher && this.pathMatcher.matches(path, fragment);
   }
 
@@ -81,7 +84,6 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   private setSelectedTaskGroup(taskGroup: TaskGroup, sendNotification: boolean = true) {
     if (this.selectedTaskGroup !== taskGroup) {
       this.selectedTaskGroup = taskGroup;
-      this.cdr.detectChanges();
       if (sendNotification) {
         this.taskGroupService.notifyTaskGroupSelected(taskGroup);
       }

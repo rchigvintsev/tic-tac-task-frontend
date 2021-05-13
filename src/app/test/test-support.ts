@@ -55,6 +55,7 @@ import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dia
 import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator/loading-indicator.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
+import {FocusedDirective} from '../component/focused.directive';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
@@ -125,7 +126,8 @@ export class TestSupport {
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
     NotBlankValidatorDirective,
-    PasswordsMatchValidatorDirective
+    PasswordsMatchValidatorDirective,
+    FocusedDirective
   ];
 
   static setInputValue(fixture: ComponentFixture<any>, inputId: string, value: string) {

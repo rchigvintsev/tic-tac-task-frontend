@@ -71,7 +71,7 @@ describe('TagsComponent', () => {
     routerEvents.next(new NavigationEnd(1, '/en/tag/1', null));
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item-selected.tag-1'));
+      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item.selected.tag-1'));
       expect(selectedItem).toBeTruthy();
     });
   });

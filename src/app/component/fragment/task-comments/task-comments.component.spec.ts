@@ -217,9 +217,9 @@ describe('TaskCommentsComponent', () => {
   it('should render annotation when comment was changed', () => {
     fixture.whenStable().then(() => {
       const commentId = component.comments[0].id;
-      const selector = By.css('.comment-' + commentId + ' .comment-header comment-date-annotation');
+      const selector = By.css('.comment-' + commentId + ' .comment-header .comment-date-annotation');
       const annotation = fixture.debugElement.query(selector);
-      expect(annotation).toBeDefined();
+      expect(annotation).toBeTruthy();
     });
   });
 

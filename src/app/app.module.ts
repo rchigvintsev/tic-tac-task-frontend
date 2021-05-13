@@ -62,6 +62,7 @@ import {AlertComponent} from './component/fragment/alert/alert.component';
 import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
+import {FocusedDirective} from './component/focused.directive';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translation.interceptor';
@@ -119,7 +120,8 @@ registerLocaleData(localeRu, 'ru');
     TagsComponent,
     TaskListsComponent,
     LocalizedDatePipe,
-    LocalizedRelativeDatePipe
+    LocalizedRelativeDatePipe,
+    FocusedDirective
   ],
   imports: [
     BrowserModule,

@@ -21,7 +21,8 @@
   <mat-list-item *ngFor="let taskList of taskLists"
                  [routerLink]="[i18nService.currentLanguage.code, 'task-list', taskList.id]"
                  [ngClass]="'task-list-' + taskList.id"
-                 [class.mat-list-item-selected]="isRouterLinkActive('task-list/' + taskList.id)">
+                 [class.selected]="isRouterLinkActive('task-list/' + taskList.id)"
+                 [appFocused]="isRouterLinkActive('task-list/' + taskList.id)">
     <div class="list-row task-list-list-row">
       <div class="list-column name-column">
         <span>{{ taskList.name }}</span>
