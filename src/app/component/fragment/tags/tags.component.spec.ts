@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {By} from '@angular/platform-browser';
 
@@ -21,7 +21,7 @@ describe('TagsComponent', () => {
   let deletedTagSource: Subject<Tag>;
   let routerEvents: Subject<RouterEvent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

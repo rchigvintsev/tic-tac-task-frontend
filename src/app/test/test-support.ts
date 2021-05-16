@@ -29,10 +29,9 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorBlockModule} from 'ngx-color/block';
-import {NgxJdenticonModule} from 'ngx-jdenticon';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 
-import {routes} from '../app-routing.module';
+import {_routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../component/fragment/alert/alert.component';
@@ -88,7 +87,7 @@ export class TestSupport {
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
-    RouterTestingModule.withRoutes(routes),
+    RouterTestingModule.withRoutes(_routes),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -97,7 +96,6 @@ export class TestSupport {
       }
     }),
     NgxMaterialTimepickerModule,
-    NgxJdenticonModule,
     SimpleNotificationsModule.forRoot()
   ];
 

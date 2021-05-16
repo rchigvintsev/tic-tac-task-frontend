@@ -1,10 +1,29 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, ModuleWithProviders, NgModule, NgModuleFactoryLoader, Optional, SkipSelf} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {Location} from '@angular/common';
 
 import {TranslateService} from '@ngx-translate/core';
 
-import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
+import {
+  CACHE_MECHANISM,
+  CACHE_NAME,
+  DEFAULT_LANG_FUNCTION,
+  DummyLocalizeParser,
+  getAppInitializer,
+  LOCALIZE_ROUTER_FORROOT_GUARD,
+  LocalizeParser,
+  LocalizeRouterConfigLoader,
+  LocalizeRouterModule,
+  LocalizeRouterService,
+  LocalizeRouterSettings,
+  ManualParserLoader,
+  ParserInitializer,
+  provideForRootGuard,
+  RAW_ROUTES,
+  USE_CACHED_LANG
+} from 'localize-router';
+import {LocalizeRouterConfig} from 'localize-router/src/localize-router.config';
+
 import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
@@ -25,7 +44,7 @@ import {
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
 
-export const routes: Routes = [
+export const _routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
   {path: 'task', component: TaskGroupTasksComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'task/:id', component: TaskDetailsComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
@@ -55,16 +74,48 @@ export function LocalizeHttpLoaderFactory(translate: TranslateService,
   return new ManualParserLoader(translate, location, settings, Array.from(AVAILABLE_LANGUAGES.keys()));
 }
 
+@NgModule()
+class CustomLocalizeRouterModule extends LocalizeRouterModule {
+  static forRoot(routes: Routes, config?: LocalizeRouterConfig): ModuleWithProviders<any> {
+    return {
+      ngModule: CustomLocalizeRouterModule,
+      providers: [
+        {
+          provide: LOCALIZE_ROUTER_FORROOT_GUARD,
+          useFactory: provideForRootGuard,
+          deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
+        },
+        {provide: USE_CACHED_LANG, useValue: config.useCachedLang},
+        {provide: CACHE_NAME, useValue: config.cacheName},
+        {provide: CACHE_MECHANISM, useValue: config.cacheMechanism},
+        {provide: DEFAULT_LANG_FUNCTION, useValue: config.defaultLangFunction},
+        LocalizeRouterSettings,
+        config.parser || {provide: LocalizeParser, useClass: DummyLocalizeParser},
+        {provide: RAW_ROUTES, multi: true, useValue: routes},
+        LocalizeRouterService,
+        ParserInitializer,
+        {provide: NgModuleFactoryLoader, useClass: LocalizeRouterConfigLoader},
+        {
+          provide: APP_INITIALIZER,
+          multi: true,
+          useFactory: getAppInitializer,
+          deps: [ParserInitializer, LocalizeParser, RAW_ROUTES]
+        }
+      ]
+    } as ModuleWithProviders<any>;
+  }
+}
+
 @NgModule({
   imports: [
-    LocalizeRouterModule.forRoot(routes, {
+    CustomLocalizeRouterModule.forRoot(_routes, {
       parser: {
         provide: LocalizeParser,
         useFactory: LocalizeHttpLoaderFactory,
         deps: [TranslateService, Location, LocalizeRouterSettings]
       }
     }),
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(_routes)
   ],
   exports: [RouterModule]
 })

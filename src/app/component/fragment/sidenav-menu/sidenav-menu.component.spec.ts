@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 
@@ -24,7 +24,7 @@ describe('SidenavMenuComponent', () => {
   let routerEvents: Subject<RouterEvent>;
   let taskService: TaskService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

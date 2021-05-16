@@ -1,5 +1,5 @@
 import {HttpRequest} from '@angular/common/http';
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {throwError} from 'rxjs';
 
@@ -16,7 +16,7 @@ describe('UnauthorizedRequestInterceptor', () => {
   let authenticationService: AuthenticationService;
   let pageNavigationService: PageNavigationService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS

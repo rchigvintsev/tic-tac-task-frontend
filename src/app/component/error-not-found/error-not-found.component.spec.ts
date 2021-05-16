@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {ErrorNotFoundComponent} from './error-not-found.component';
 import {TestSupport} from '../../test/test-support';
@@ -8,7 +8,7 @@ describe('ErrorNotFoundComponent', () => {
   let component: ErrorNotFoundComponent;
   let fixture: ComponentFixture<ErrorNotFoundComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

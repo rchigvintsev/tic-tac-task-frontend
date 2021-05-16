@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {Router} from '@angular/router';
 
 import {of, throwError} from 'rxjs';
@@ -22,7 +22,7 @@ describe('PasswordResetConfirmationComponent', () => {
   let userService: UserService;
   let router: Router;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

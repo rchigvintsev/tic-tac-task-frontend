@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 
 import {of, throwError} from 'rxjs';
@@ -10,7 +10,8 @@ import {AlertService} from '../../service/alert.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {ConfigService} from '../../service/config.service';
 import {Config} from '../../model/config';
-import {HttpRequestError} from "../../error/http-request.error";
+import {HttpRequestError} from '../../error/http-request.error';
+import {User} from "../../model/user";
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
@@ -19,7 +20,7 @@ describe('SignupComponent', () => {
   let alertService: AlertService;
   let authenticationService: AuthenticationService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
@@ -47,7 +48,8 @@ describe('SignupComponent', () => {
     spyOn(alertService, 'error').and.stub();
 
     authenticationService = injector.get(AuthenticationService);
-    spyOn(authenticationService, 'signUp').and.callFake((email, username) => of({email, fullName: username}));
+    spyOn(authenticationService, 'signUp').and.callFake((email, username) =>
+      of({email, fullName: username} as User));
 
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;

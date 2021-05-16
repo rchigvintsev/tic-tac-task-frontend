@@ -22,15 +22,15 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
   signinForm: NgForm;
 
   constructor(
-    alertService: AlertService,
     i18nService: I18nService,
+    alertService: AlertService,
     config: ConfigService,
     activatedRoute: ActivatedRoute,
     private log: LogService,
     private authenticationService: AuthenticationService,
     private pageNavigationService: PageNavigationService
   ) {
-    super(alertService, i18nService, config, activatedRoute);
+    super(i18nService, alertService, config, activatedRoute);
   }
 
   onSigninFormSubmit() {

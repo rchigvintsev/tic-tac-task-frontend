@@ -27,7 +27,7 @@
                alt="avatar" class="avatar round"/>
 
           <ng-template #identicon>
-            <svg [data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+            <svg [attr.data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
           </ng-template>
 
           {{ principal.getName() }}
@@ -43,7 +43,7 @@
                alt="avatar" class="avatar round"/>
 
           <ng-template #identicon>
-            <svg [data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+            <svg [attr.data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
           </ng-template>
         </button>
 

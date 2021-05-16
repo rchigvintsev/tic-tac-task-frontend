@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 
 import {of} from 'rxjs';
@@ -12,7 +12,7 @@ describe('BaseSignComponent', () => {
   let component: BaseSignComponent;
   let fixture: ComponentFixture<BaseSignComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

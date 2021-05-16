@@ -1,4 +1,4 @@
-import {async, ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
 
 import {EMPTY, of} from 'rxjs';
@@ -24,7 +24,7 @@ describe('AppComponent', () => {
   let router: Router;
   let authenticationService: AuthenticationService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

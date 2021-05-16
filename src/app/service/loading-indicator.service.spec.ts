@@ -1,5 +1,5 @@
 import {fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 
 import {delay} from 'rxjs/operators';
 import {of, Subject} from 'rxjs';

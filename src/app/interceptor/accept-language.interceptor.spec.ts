@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {HttpRequest} from '@angular/common/http';
 
 import {TranslateService} from '@ngx-translate/core';
@@ -12,7 +12,7 @@ describe('AcceptLanguageInterceptor', () => {
   let translateService;
   let interceptor;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

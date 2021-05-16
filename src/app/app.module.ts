@@ -1,18 +1,23 @@
+/*declare module '@angular/core' {
+  interface ModuleWithProviders<T = any> {
+    ngModule: Type<T>;
+    providers?: Provider[];
+  }
+}*/
+
 import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatToolbarModule
-} from '@angular/material';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox'
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
+import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
@@ -23,7 +28,6 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
-import {MatIconRegistry} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -35,7 +39,6 @@ import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {ColorBlockModule} from 'ngx-color/block';
-import {JDENTICON_CONFIG, NgxJdenticonModule} from 'ngx-jdenticon';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -160,9 +163,9 @@ registerLocaleData(localeRu, 'ru');
         deps: [HttpClient]
       }
     }),
-    NgxJdenticonModule,
     SimpleNotificationsModule.forRoot({timeOut: 5000, showProgressBar: true, pauseOnHover: true, clickToClose: true})
   ],
+  exports: [TranslateModule],
   providers: [
     {provide: APP_INITIALIZER, useFactory: loadConfig, multi: true, deps: [ConfigService]},
     {provide: APP_INITIALIZER, useFactory: initIcons, multi: true, deps: [MatIconRegistry, DomSanitizer]},
@@ -170,7 +173,6 @@ registerLocaleData(localeRu, 'ru');
     {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedRequestInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorTranslationInterceptor, multi: true},
     {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
-    {provide: JDENTICON_CONFIG, useValue: {backColor: '#fff'}},
     CookieService
   ],
   bootstrap: [AppComponent],

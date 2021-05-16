@@ -15,8 +15,8 @@ export class BaseSignComponent implements OnInit {
 
   private readonly redirectUri: string;
 
-  constructor(protected alertService: AlertService,
-              protected i18nService: I18nService,
+  constructor(public i18nService: I18nService,
+              protected alertService: AlertService,
               private config: ConfigService,
               private activatedRoute: ActivatedRoute) {
     const currentLang = i18nService.currentLanguage;

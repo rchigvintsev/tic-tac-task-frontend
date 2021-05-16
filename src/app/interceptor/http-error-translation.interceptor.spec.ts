@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {HttpRequest} from '@angular/common/http';
 
 import {throwError} from 'rxjs';
@@ -15,7 +15,7 @@ describe('HttpErrorTranslationInterceptor', () => {
   let injector;
   let interceptor: HttpErrorTranslationInterceptor;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS

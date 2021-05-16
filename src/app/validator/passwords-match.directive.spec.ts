@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {By} from '@angular/platform-browser';
@@ -22,7 +22,7 @@ describe('PasswordsMatchValidatorDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let component: TestComponent;
 
-  beforeEach(async(() => TestBed.configureTestingModule({
+  beforeEach(waitForAsync(() => TestBed.configureTestingModule({
     imports: [FormsModule],
     declarations: [TestComponent, PasswordsMatchValidatorDirective]
   })));

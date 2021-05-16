@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, getTestBed, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {By} from '@angular/platform-browser';
 
@@ -23,7 +23,7 @@ describe('BaseTasksComponent', () => {
   let fixture: ComponentFixture<BaseTasksComponent>;
   let taskService: TaskService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

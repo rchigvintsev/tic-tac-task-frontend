@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, Router, UrlSegment} from '@angular/router';
 
 import {of, throwError} from 'rxjs';
@@ -26,7 +26,7 @@ describe('RouteGuard', () => {
   let injector;
   let router;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,

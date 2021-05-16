@@ -1,5 +1,4 @@
-import {Directive, ElementRef, Input} from '@angular/core';
-import {OnChanges} from '@angular/core/src/metadata/lifecycle_hooks';
+import {Directive, ElementRef, Input, OnChanges} from '@angular/core';
 
 @Directive({selector: '[appFocused]'})
 export class FocusedDirective implements OnChanges {
