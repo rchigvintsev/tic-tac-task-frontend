@@ -11,7 +11,7 @@ export class LocalizedDatePipe implements PipeTransform {
   private datePipe: DatePipe;
 
   constructor(private translate: TranslateService) {
-    this.datePipe = new DatePipe(this.translate.currentLang);
+    this.datePipe = new DatePipe(this.getLanguage());
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.datePipe = new DatePipe(event.lang);
     });
@@ -22,5 +22,9 @@ export class LocalizedDatePipe implements PipeTransform {
       return value;
     }
     return this.datePipe.transform(value, pattern);
+  }
+
+  private getLanguage() {
+    return this.translate.currentLang || 'en';
   }
 }
