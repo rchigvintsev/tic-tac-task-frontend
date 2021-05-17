@@ -31,7 +31,7 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorBlockModule} from 'ngx-color/block';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 
-import {_routes} from '../app-routing.module';
+import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
 import {AppComponent} from '../app.component';
 import {AlertComponent} from '../component/fragment/alert/alert.component';
@@ -87,7 +87,7 @@ export class TestSupport {
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
-    RouterTestingModule.withRoutes(_routes),
+    RouterTestingModule.withRoutes(routes),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

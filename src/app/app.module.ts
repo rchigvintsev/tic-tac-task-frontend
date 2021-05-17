@@ -1,10 +1,3 @@
-/*declare module '@angular/core' {
-  interface ModuleWithProviders<T = any> {
-    ngModule: Type<T>;
-    providers?: Provider[];
-  }
-}*/
-
 import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
@@ -80,9 +73,9 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
 }
 
 export function loadConfig(configService: ConfigService) {
-  return (): Promise<void> => {
-    return configService.loadConfig();
-  };
+    return (): Promise<void> => {
+      return configService.loadConfig();
+    };
 }
 
 export function initIcons(iconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
