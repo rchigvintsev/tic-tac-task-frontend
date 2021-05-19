@@ -14,14 +14,14 @@ export class DefaultHttpResponseHandler implements HttpResponseHandler {
   }
 
   handleSuccess(message: string) {
-    this.notificationsService.success(null, message);
+    this.notificationsService.success('', message);
   }
 
   handleError(error: HttpRequestError) {
     Assert.notNullOrUndefined(error, 'Error must not be null or undefined');
     this.log.error(error.message);
     if (error.localizedMessage) {
-      this.notificationsService.error(null, error.localizedMessage);
+      this.notificationsService.error('', error.localizedMessage);
     }
   }
 }
