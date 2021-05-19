@@ -1,6 +1,6 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {MatDialogModule} from '@angular/material';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import {first, skip} from 'rxjs/operators';
 
