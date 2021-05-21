@@ -1,0 +1,56 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	modified:   package-lock.json
+	modified:   package.json
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   src/app/app.component.spec.ts
+	modified:   src/app/component/fragment/alert/alert.component.spec.ts
+	modified:   src/app/component/fragment/base-sign/base-sign.component.spec.ts
+	modified:   src/app/component/fragment/base-tasks/base-tasks.component.spec.ts
+	modified:   src/app/component/fragment/confirmation-dialog/confirmation-dialog.component.spec.ts
+	modified:   src/app/component/fragment/sidenav-menu/sidenav-menu.component.spec.ts
+	modified:   src/app/component/fragment/tags/tags.component.spec.ts
+	modified:   src/app/component/fragment/task-comments/task-comments.component.spec.ts
+	modified:   src/app/component/fragment/task-lists/task-lists.component.spec.ts
+	modified:   src/app/component/password-reset-confirmation/password-reset-confirmation.component.spec.ts
+	modified:   src/app/component/password-reset/password-reset.component.spec.ts
+	modified:   src/app/component/signin/signin.component.spec.ts
+	modified:   src/app/component/signup/signup.component.spec.ts
+	modified:   src/app/component/tag-tasks/tag-tasks.component.spec.ts
+	modified:   src/app/component/task-details/task-details.component.spec.ts
+	modified:   src/app/component/task-group-tasks/task-group-tasks.component.spec.ts
+	modified:   src/app/component/task-list-tasks/task-list-tasks.component.spec.ts
+	modified:   src/app/handler/default-http-response.handler.spec.ts
+	modified:   src/app/interceptor/accept-language.interceptor.spec.ts
+	modified:   src/app/interceptor/http-error-translation.interceptor.spec.ts
+	modified:   src/app/interceptor/unauthorized-request.interceptor.spec.ts
+	modified:   src/app/pipe/localized-date.pipe.spec.ts
+	modified:   src/app/pipe/localized-relative-date.pipe.spec.ts
+	modified:   src/app/route.guard.spec.ts
+	modified:   src/app/service/alert.service.spec.ts
+	modified:   src/app/service/authentication.service.spec.ts
+	modified:   src/app/service/config.service.spec.ts
+	modified:   src/app/service/i18n.service.spec.ts
+	modified:   src/app/service/loading-indicator.service.spec.ts
+	modified:   src/app/service/page-navigation.service.spec.ts
+	modified:   src/app/service/tag.service.spec.ts
+	modified:   src/app/service/task-comment.service.spec.ts
+	modified:   src/app/service/task-list.service.spec.ts
+	modified:   src/app/service/task.service.spec.ts
+	modified:   src/app/service/user.service.spec.ts
+	modified:   src/app/validator/not-blank.directive.spec.ts
+	modified:   src/app/validator/passwords-match.directive.spec.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	report
+
