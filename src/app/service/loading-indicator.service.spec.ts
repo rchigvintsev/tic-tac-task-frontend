@@ -1,5 +1,5 @@
 import {fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 import {delay} from 'rxjs/operators';
 import {of, Subject} from 'rxjs';
@@ -17,7 +17,7 @@ describe('LoadingIndicatorService', () => {
       declarations: TestSupport.DECLARATIONS
     });
     injector = getTestBed();
-    service = injector.get(LoadingIndicatorService);
+    service = injector.inject(LoadingIndicatorService);
   });
 
   it('should be created', () => {
@@ -25,8 +25,8 @@ describe('LoadingIndicatorService', () => {
   });
 
   it('should show loading indicator', fakeAsync(() => {
-    const dialog = injector.get(MatDialog);
-    spyOn(dialog, 'open').and.returnValue({close: () => {}});
+    const dialog = injector.inject(MatDialog);
+    spyOn(dialog, 'open').and.returnValue({close: () => {}} as MatDialogRef<any>);
 
     service.showUntilExecuted(of(true));
     tick(400);
@@ -34,8 +34,8 @@ describe('LoadingIndicatorService', () => {
   }));
 
   it('should not show loading indicator if it is being shown already', fakeAsync(() => {
-    const dialog = injector.get(MatDialog);
-    spyOn(dialog, 'open').and.returnValue({close: () => {}});
+    const dialog = injector.inject(MatDialog);
+    spyOn(dialog, 'open').and.returnValue({close: () => {}}  as MatDialogRef<any>);
 
     service.showUntilExecuted(of(true));
     tick(400);
@@ -48,7 +48,7 @@ describe('LoadingIndicatorService', () => {
     const dialogRef = {} as any;
     dialogRef.close = jasmine.createSpy('close');
 
-    const dialog = injector.get(MatDialog);
+    const dialog = injector.inject(MatDialog);
     spyOn(dialog, 'open').and.returnValue(dialogRef);
 
     service.showUntilExecuted(of(true).pipe(delay(300))).subscribe();
@@ -60,7 +60,7 @@ describe('LoadingIndicatorService', () => {
     const dialogRef = {} as any;
     dialogRef.close = jasmine.createSpy('close');
 
-    const dialog = injector.get(MatDialog);
+    const dialog = injector.inject(MatDialog);
     spyOn(dialog, 'open').and.returnValue(dialogRef);
 
     const subject1 = new Subject();

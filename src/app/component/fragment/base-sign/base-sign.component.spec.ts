@@ -17,12 +17,7 @@ describe('BaseSignComponent', () => {
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParamMap: of(convertToParamMap({error: true}))
-          }
-        }
+        {provide: ActivatedRoute, useValue: {queryParamMap: of(convertToParamMap({error: true}))}}
       ]
     }).compileComponents();
   }));
@@ -30,7 +25,7 @@ describe('BaseSignComponent', () => {
   beforeEach(() => {
     const injector = getTestBed();
 
-    const configService = injector.get(ConfigService);
+    const configService = injector.inject(ConfigService);
     configService.setConfig(new Config());
 
     fixture = TestBed.createComponent(BaseSignComponent);

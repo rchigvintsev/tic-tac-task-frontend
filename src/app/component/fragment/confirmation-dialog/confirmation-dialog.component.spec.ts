@@ -38,25 +38,23 @@ describe('ConfirmationDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return true when "Yes" button was clicked', () => {
+  it('should return true when "Yes" button was clicked', async () => {
     const matDialogRef = fixture.debugElement.injector.get(MatDialogRef);
     spyOn(matDialogRef, 'close');
     const yesButton = fixture.debugElement.query(By.css('#yes_button'));
-    fixture.whenStable().then(() => {
-      yesButton.nativeElement.click();
-      fixture.detectChanges();
-      expect(matDialogRef.close).toHaveBeenCalledWith({result: true});
-    });
+    await fixture.whenStable();
+    yesButton.nativeElement.click();
+    fixture.detectChanges();
+    expect(matDialogRef.close).toHaveBeenCalledWith({result: true});
   });
 
-  it('should return false when "No" button was clicked', () => {
+  it('should return false when "No" button was clicked', async () => {
     const matDialogRef = fixture.debugElement.injector.get(MatDialogRef);
     spyOn(matDialogRef, 'close');
     const noButton = fixture.debugElement.query(By.css('#no_button'));
-    fixture.whenStable().then(() => {
-      noButton.nativeElement.click();
-      fixture.detectChanges();
-      expect(matDialogRef.close).toHaveBeenCalledWith({result: false});
-    });
+    await fixture.whenStable();
+    noButton.nativeElement.click();
+    fixture.detectChanges();
+    expect(matDialogRef.close).toHaveBeenCalledWith({result: false});
   });
 });

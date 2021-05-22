@@ -31,14 +31,14 @@ describe('LocalizedDate', () => {
 
     injector = getTestBed();
 
-    translate = injector.get(TranslateService);
+    translate = injector.inject(TranslateService);
     translate.currentLang = 'en';
 
-    datePipe = injector.get(LocalizedDatePipe);
+    datePipe = injector.inject(LocalizedDatePipe);
   });
 
   it('should be created', () => {
-    const pipe: LocalizedDatePipe = TestBed.get(LocalizedDatePipe);
+    const pipe: LocalizedDatePipe = TestBed.inject(LocalizedDatePipe);
     expect(pipe).toBeTruthy();
   });
 

@@ -38,16 +38,16 @@ describe('RouteGuard', () => {
   beforeEach(() => {
     injector = getTestBed();
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = 'en';
   });
 
   describe('Localized', () => {
     beforeEach(() => {
-      guard = injector.get(LocalizedRouteGuard);
+      guard = injector.inject(LocalizedRouteGuard);
     });
 
     it('should navigate to 404 error page when valid language is present in URL', () => {
@@ -68,8 +68,8 @@ describe('RouteGuard', () => {
     let authenticationService;
 
     beforeEach(() => {
-      authenticationService = injector.get(AuthenticationService);
-      guard = injector.get(UnauthenticatedOnlyRouteGuard);
+      authenticationService = injector.inject(AuthenticationService);
+      guard = injector.inject(UnauthenticatedOnlyRouteGuard);
     });
 
     it('should deny access when current user is authenticated', () => {
@@ -88,8 +88,8 @@ describe('RouteGuard', () => {
     let authenticationService;
 
     beforeEach(() => {
-      authenticationService = injector.get(AuthenticationService);
-      guard = injector.get(AuthenticatedOnlyRouteGuard);
+      authenticationService = injector.inject(AuthenticationService);
+      guard = injector.inject(AuthenticatedOnlyRouteGuard);
     });
 
     it('should deny access when current user is not authenticated', () => {
@@ -108,8 +108,8 @@ describe('RouteGuard', () => {
     let authenticationService;
 
     beforeEach(() => {
-      authenticationService = injector.get(AuthenticationService);
-      guard = injector.get(OAuth2AuthorizationCallbackRouteGuard);
+      authenticationService = injector.inject(AuthenticationService);
+      guard = injector.inject(OAuth2AuthorizationCallbackRouteGuard);
     });
 
     it('should navigate to signin page when error occurred', () => {
@@ -157,8 +157,8 @@ describe('RouteGuard', () => {
     let userService: UserService;
 
     beforeEach(() => {
-      userService = injector.get(UserService);
-      guard = injector.get(EmailConfirmationCallbackRouteGuard);
+      userService = injector.inject(UserService);
+      guard = injector.inject(EmailConfirmationCallbackRouteGuard);
     });
 
     it('should navigate to signin page with error when query parameter "userId" is missing', done => {
@@ -224,7 +224,7 @@ describe('RouteGuard', () => {
 
   describe('PasswordResetConfirmationCallback', () => {
     beforeEach(() => {
-      guard = injector.get(PasswordResetConfirmationCallbackRouteGuard);
+      guard = injector.inject(PasswordResetConfirmationCallbackRouteGuard);
     });
 
     it('should navigate to signin page with error when query parameter "userId" is missing', () => {

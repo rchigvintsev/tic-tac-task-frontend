@@ -27,45 +27,45 @@ describe('AlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render info message', () => {
+  it('should render info message', async () => {
     const messageText = 'Info test';
     const alertService = fixture.debugElement.injector.get(AlertService);
     alertService.info(messageText);
 
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
-      const alertElement = compiled.querySelector('.alert.alert-info');
-      expect(alertElement).toBeTruthy();
-      expect(alertElement.textContent.trim()).toEqual(messageText);
-    });
+    await fixture.whenStable();
+
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const alertElement = compiled.querySelector('.alert.alert-info');
+    expect(alertElement).toBeTruthy();
+    expect(alertElement.textContent.trim()).toEqual(messageText);
   });
 
-  it('should render warning message', () => {
+  it('should render warning message', async () => {
     const messageText = 'Warning test';
     const alertService = fixture.debugElement.injector.get(AlertService);
     alertService.warn(messageText);
 
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
-      const alertElement = compiled.querySelector('.alert.alert-warn');
-      expect(alertElement).toBeTruthy();
-      expect(alertElement.textContent.trim()).toEqual(messageText);
-    });
+    await fixture.whenStable();
+
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const alertElement = compiled.querySelector('.alert.alert-warn');
+    expect(alertElement).toBeTruthy();
+    expect(alertElement.textContent.trim()).toEqual(messageText);
   });
 
-  it('should render error message', () => {
+  it('should render error message', async () => {
     const messageText = 'Error test';
     const alertService = fixture.debugElement.injector.get(AlertService);
     alertService.error(messageText);
 
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
-      const alertElement = compiled.querySelector('.alert.alert-error');
-      expect(alertElement).toBeTruthy();
-      expect(alertElement.textContent.trim()).toEqual(messageText);
-    });
+    await fixture.whenStable();
+
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const alertElement = compiled.querySelector('.alert.alert-error');
+    expect(alertElement).toBeTruthy();
+    expect(alertElement.textContent.trim()).toEqual(messageText);
   });
 });

@@ -20,14 +20,14 @@ describe('DefaultHttpResponseHandler', () => {
 
     const injector = getTestBed();
 
-    log = injector.get(LogService);
+    log = injector.inject(LogService);
     spyOn(log, 'error').and.stub();
 
-    notificationsService = injector.get(NotificationsService);
+    notificationsService = injector.inject(NotificationsService);
     spyOn(notificationsService, 'success').and.stub();
     spyOn(notificationsService, 'error').and.stub();
 
-    handler = injector.get(DefaultHttpResponseHandler);
+    handler = injector.inject(DefaultHttpResponseHandler);
   });
 
   it('should log error message', () => {
@@ -43,7 +43,7 @@ describe('DefaultHttpResponseHandler', () => {
     const error = new HttpRequestError('/', 500, 'Something went wrong', localizedMessage);
     handler.handleError(error);
 
-    expect(notificationsService.error).toHaveBeenCalledWith(null, localizedMessage);
+    expect(notificationsService.error).toHaveBeenCalledWith('', localizedMessage);
   });
 
   it('should throw error on error handle when error object is null', () => {
@@ -53,6 +53,6 @@ describe('DefaultHttpResponseHandler', () => {
   it('should show success notification on success handle', () => {
     const message = 'Success!';
     handler.handleSuccess(message);
-    expect(notificationsService.success).toHaveBeenCalledWith(null, message);
+    expect(notificationsService.success).toHaveBeenCalledWith('', message);
   });
 });

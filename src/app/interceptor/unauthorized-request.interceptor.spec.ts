@@ -24,13 +24,13 @@ describe('UnauthorizedRequestInterceptor', () => {
 
     injector = getTestBed();
 
-    authenticationService = injector.get(AuthenticationService);
+    authenticationService = injector.inject(AuthenticationService);
     spyOn(authenticationService, 'removePrincipal').and.stub();
 
-    pageNavigationService = injector.get(PageNavigationService);
+    pageNavigationService = injector.inject(PageNavigationService);
     spyOn(pageNavigationService, 'navigateToSigninPage').and.returnValue(Promise.resolve(true));
 
-    interceptor = injector.get(UnauthorizedRequestInterceptor);
+    interceptor = injector.inject(UnauthorizedRequestInterceptor);
   }));
 
   it('should remove principal when unauthorized request error is occurred', async () => {

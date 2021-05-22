@@ -17,7 +17,7 @@ import {User} from '../../model/user';
 import {HttpRequestError} from '../../error/http-request.error';
 import {initIcons} from '../../app.module';
 
-fdescribe('SignupComponent', () => {
+describe('SignupComponent', () => {
   let component: SignupComponent;
   let fixture: ComponentFixture<SignupComponent>;
   let i18nService: I18nService;

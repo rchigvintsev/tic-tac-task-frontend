@@ -22,7 +22,7 @@ describe('HttpErrorTranslationInterceptor', () => {
     }).compileComponents();
 
     injector = getTestBed();
-    interceptor = injector.get(HttpErrorTranslationInterceptor);
+    interceptor = injector.inject(HttpErrorTranslationInterceptor);
   }));
 
   it('should translate response with 400 status code to "BadRequestError"', done => {

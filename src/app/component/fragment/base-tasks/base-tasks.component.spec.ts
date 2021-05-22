@@ -37,12 +37,12 @@ describe('BaseTasksComponent', () => {
 
     const injector = getTestBed();
 
-    const translate = injector.get(TranslateService);
+    const translate = injector.inject(TranslateService);
     translate.currentLang = 'en';
 
     moment.locale(translate.currentLang);
 
-    const router = injector.get(Router);
+    const router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
   }));
 
@@ -82,71 +82,64 @@ describe('BaseTasksComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should begin title editing on title text click', () => {
-    fixture.whenStable().then(() => {
-      component.onTitleTextClick();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
+  it('should begin title editing on title text click', async () => {
+    await fixture.whenStable();
+    component.onTitleTextClick();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeTruthy();
   });
 
-  it('should end title editing on title input blur', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input blur', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should end title editing on title input enter keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.title = 'New title';
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input enter keydown', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.title = 'New title';
+    component.onTitleInputEnterKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should not end title editing on title input enter keydown when title is blank', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.title = ' ';
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
+  it('should not end title editing on title input enter keydown when title is blank', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.title = ' ';
+    component.onTitleInputEnterKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeTruthy();
   });
 
-  it('should end title editing on title input escape keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputEscapeKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input escape keydown', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.onTitleInputEscapeKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should hide title text element on click', () => {
+  it('should hide title text element on click', async () => {
     const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
     let titleSpan = fixture.debugElement.query(spanSelector);
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      titleSpan = fixture.debugElement.query(spanSelector);
-      expect(titleSpan).toBeFalsy();
-    });
+    await fixture.whenStable();
+    titleSpan.nativeElement.click();
+    fixture.detectChanges();
+    titleSpan = fixture.debugElement.query(spanSelector);
+    expect(titleSpan).toBeFalsy();
   });
 
-  it('should show title form on title text element click', () => {
+  it('should show title form on title text element click', async () => {
     const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title .title-text'));
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
-      expect(titleForm).toBeTruthy();
-    });
+    await fixture.whenStable();
+    titleSpan.nativeElement.click();
+    fixture.detectChanges();
+    const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
+    expect(titleForm).toBeTruthy();
   });
 
   it('should enable task form submit button when task title is not blank', () => {
@@ -161,70 +154,63 @@ describe('BaseTasksComponent', () => {
     expect(component.taskFormSubmitEnabled).toBeFalsy();
   });
 
-  it('should create task', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New task';
-      component.onTaskFormSubmit();
-      fixture.detectChanges();
-      expect(taskService.createTask).toHaveBeenCalled();
-    });
+  it('should create task', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New task';
+    component.onTaskFormSubmit();
+    fixture.detectChanges();
+    expect(taskService.createTask).toHaveBeenCalled();
   });
 
-  it('should not create task with blank title', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = ' ';
-      component.onTaskFormSubmit();
-      fixture.detectChanges();
-      expect(taskService.createTask).not.toHaveBeenCalled();
-    });
+  it('should not create task with blank title', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = ' ';
+    component.onTaskFormSubmit();
+    fixture.detectChanges();
+    expect(taskService.createTask).not.toHaveBeenCalled();
   });
 
-  it('should update task counters on task create', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New task';
-      component.onTaskFormSubmit();
-      fixture.detectChanges();
-      expect(taskService.updateTaskCounters).toHaveBeenCalled();
-    });
+  it('should update task counters on task create', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New task';
+    component.onTaskFormSubmit();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
-  it('should complete task', fakeAsync(() => {
+  it('should complete task', fakeAsync(async () => {
     const task1 = component.tasks[0];
     const task2 = component.tasks[1];
 
     component.onTaskCompleteCheckboxChange(task1);
     tick(400);
 
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      expect(taskService.completeTask).toHaveBeenCalledWith(task1);
-      expect(component.tasks.length).toEqual(2);
-      expect(component.tasks[0].id).toEqual(task2.id);
-    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(taskService.completeTask).toHaveBeenCalledWith(task1);
+    expect(component.tasks.length).toEqual(2);
+    expect(component.tasks[0].id).toEqual(task2.id);
   }));
 
-  it('should update task counters on task complete', fakeAsync(() => {
+  it('should update task counters on task complete', fakeAsync(async () => {
     component.onTaskCompleteCheckboxChange(component.tasks[0]);
     tick(400);
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      expect(taskService.updateTaskCounters).toHaveBeenCalled();
-    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   }));
 
-  it('should render task deadline', () => {
+  it('should render task deadline', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      const spanContent = compiled.querySelector('.task-2 .deadline-column span').textContent;
-      expect(spanContent).not.toBeNull();
-      expect(spanContent.trim()).toBe('in a month');
-    });
+    await fixture.whenStable();
+    const spanContent = compiled.querySelector('.task-2 .deadline-column span').textContent;
+    expect(spanContent).not.toBeNull();
+    expect(spanContent.trim()).toBe('in a month');
   });
 
-  it('should add "color-warn" class to deadline label when task is overdue', () => {
+  it('should add "color-warn" class to deadline label when task is overdue', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
-    });
+    await fixture.whenStable();
+    expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
   });
 });

@@ -16,8 +16,8 @@ describe('I18nService', () => {
     });
 
     const injector = getTestBed();
-    translate = injector.get(TranslateService);
-    service = injector.get(I18nService);
+    translate = injector.inject(TranslateService);
+    service = injector.inject(I18nService);
   });
 
   it('should return current language', () => {

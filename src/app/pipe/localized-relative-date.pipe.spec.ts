@@ -28,13 +28,13 @@ describe('LocalizedRelativeDate', () => {
       providers: [LocalizedRelativeDatePipe]
     });
     injector = getTestBed();
-    datePipe = injector.get(LocalizedRelativeDatePipe);
+    datePipe = injector.inject(LocalizedRelativeDatePipe);
 
     moment.locale('en');
   });
 
   it('should be created', () => {
-    const pipe: LocalizedRelativeDatePipe = TestBed.get(LocalizedRelativeDatePipe);
+    const pipe: LocalizedRelativeDatePipe = TestBed.inject(LocalizedRelativeDatePipe);
     expect(pipe).toBeTruthy();
   });
 

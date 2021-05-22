@@ -38,27 +38,27 @@ describe('SidenavMenuComponent', () => {
   beforeEach(() => {
     const injector = getTestBed();
 
-    const translate = injector.get(TranslateService);
+    const translate = injector.inject(TranslateService);
     translate.currentLang = 'en';
 
-    const configService = injector.get(ConfigService);
+    const configService = injector.inject(ConfigService);
     configService.setConfig(new Config());
 
-    taskService = injector.get(TaskService);
+    taskService = injector.inject(TaskService);
     spyOn(taskService, 'getTaskCount').and.returnValue(of(3));
     spyOn(taskService, 'resetTaskCounters').and.stub();
 
-    const taskGroupService = injector.get(TaskGroupService);
+    const taskGroupService = injector.inject(TaskGroupService);
     spyOn(taskGroupService, 'notifyTaskGroupSelected').and.stub();
 
-    const tagService = injector.get(TagService);
+    const tagService = injector.inject(TagService);
     spyOn(tagService, 'getTags').and.returnValue(EMPTY);
 
-    const taskListService = injector.get(TaskListService);
+    const taskListService = injector.inject(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(EMPTY);
 
     routerEvents = new Subject();
-    const router = injector.get(Router);
+    const router = injector.inject(Router);
     (router as any).events = routerEvents.asObservable();
 
     fixture = TestBed.createComponent(SidenavMenuComponent);
@@ -72,25 +72,23 @@ describe('SidenavMenuComponent', () => {
 
   it('should change selected task group on list item click', () => {
     component.onListItemClick(TaskGroup.TOMORROW);
-    const taskGroupService = getTestBed().get(TaskGroupService);
+    const taskGroupService = getTestBed().inject(TaskGroupService);
     expect(taskGroupService.notifyTaskGroupSelected).toHaveBeenCalledWith(TaskGroup.TOMORROW);
   });
 
-  it('should render task counters for groups of tasks', () => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const badgeSpan = fixture.debugElement.query(By.css('.mat-list .mat-list-item span.mat-badge'));
-      expect(badgeSpan).toBeTruthy();
-    });
+  it('should render task counters for groups of tasks', async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const badgeSpan = fixture.debugElement.query(By.css('.mat-list .mat-list-item span.mat-badge'));
+    expect(badgeSpan).toBeTruthy();
   });
 
-  it('should highlight selected menu item', () => {
+  it('should highlight selected menu item', async () => {
     routerEvents.next(new NavigationEnd(1, '/en/task#all', null));
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item.selected[href="/en/task#all"]'));
-      expect(selectedItem).toBeTruthy();
-    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item.selected[href="/en/task#all"]'));
+    expect(selectedItem).toBeTruthy();
   });
 
   it('should reset task counters on destroy', () => {

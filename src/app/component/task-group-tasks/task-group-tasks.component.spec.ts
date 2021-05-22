@@ -45,12 +45,12 @@ describe('TaskGroupTasksComponent', () => {
 
     const injector = getTestBed();
 
-    taskService = injector.get(TaskService);
+    taskService = injector.inject(TaskService);
 
-    const router = injector.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve());
+    const router = injector.inject(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
-    const translate = injector.get(TranslateService);
+    const translate = injector.inject(TranslateService);
     translate.currentLang = 'en';
   });
 
@@ -61,7 +61,7 @@ describe('TaskGroupTasksComponent', () => {
       spyOn(taskService, 'getTasksByGroup').and.returnValue(of([]));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
 
-      taskGroupService = injector.get(TaskGroupService);
+      taskGroupService = injector.inject(TaskGroupService);
       fixture.detectChanges();
     });
 
@@ -69,75 +69,70 @@ describe('TaskGroupTasksComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should create unscheduled unprocessed task when "INBOX" group is selected', () => {
+    it('should create unscheduled unprocessed task when "INBOX" group is selected', async () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.INBOX);
       const taskTitle = 'To be processed';
-      fixture.whenStable().then(() => {
-        component.taskFormModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
+      await fixture.whenStable();
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
 
-        expect(component.tasks[0].deadline).toBeUndefined();
-        expect(component.tasks[0].status).toEqual(TaskStatus.UNPROCESSED);
-      });
+      expect(component.tasks[0].deadline).toBeUndefined();
+      expect(component.tasks[0].status).toEqual(TaskStatus.UNPROCESSED);
     });
 
-    it('should create processed task scheduled for today when "TODAY" group is selected', () => {
+    it('should create processed task scheduled for today when "TODAY" group is selected', async () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
       const taskTitle = 'For today';
-      fixture.whenStable().then(() => {
-        component.taskFormModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
+      await fixture.whenStable();
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
 
-        const today = new Date();
-        today.setHours(23, 59, 59, 999);
-        expect(component.tasks[0].deadline).toEqual(today);
-        expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
-      });
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      expect(component.tasks[0].deadline).toEqual(today);
+      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
     });
 
-    it('should create processed task scheduled for today when "WEEK" group is selected', () => {
+    it('should create processed task scheduled for today when "WEEK" group is selected', async () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.WEEK);
       const taskTitle = 'For today';
-      fixture.whenStable().then(() => {
-        component.taskFormModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
+      await fixture.whenStable();
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
 
-        const today = new Date();
-        today.setHours(23, 59, 59, 999);
-        expect(component.tasks[0].deadline).toEqual(today);
-        expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
-      });
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      expect(component.tasks[0].deadline).toEqual(today);
+      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
     });
 
-    it('should create processed task scheduled for tomorrow when "TOMORROW" group is selected', () => {
+    it('should create processed task scheduled for tomorrow when "TOMORROW" group is selected', async () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TOMORROW);
       const taskTitle = 'For tomorrow';
-      fixture.whenStable().then(() => {
-        component.taskFormModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
+      await fixture.whenStable();
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
 
-        const tomorrow = moment().add(1, 'day').toDate();
-        tomorrow.setHours(23, 59, 59, 999);
-        expect(component.tasks[0].deadline).toEqual(tomorrow);
-        expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
-      });
+      const tomorrow = moment().add(1, 'day').toDate();
+      tomorrow.setHours(23, 59, 59, 999);
+      expect(component.tasks[0].deadline).toEqual(tomorrow);
+      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
     });
 
-    it('should create unscheduled processed task when "SOME_DAY" group is selected', () => {
+    it('should create unscheduled processed task when "SOME_DAY" group is selected', async () => {
       taskGroupService.notifyTaskGroupSelected(TaskGroup.SOME_DAY);
       const taskTitle = 'For some day';
-      fixture.whenStable().then(() => {
-        component.taskFormModel.title = taskTitle;
-        component.onTaskFormSubmit();
-        fixture.detectChanges();
+      await fixture.whenStable();
+      component.taskFormModel.title = taskTitle;
+      component.onTaskFormSubmit();
+      fixture.detectChanges();
 
-        expect(component.tasks[0].deadline).not.toBeDefined();
-        expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
-      });
+      expect(component.tasks[0].deadline).not.toBeDefined();
+      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
     });
 
     it('should render correct task list title depending on selected task group', () => {
@@ -169,44 +164,40 @@ describe('TaskGroupTasksComponent', () => {
         .toBe('scheduled_for_some_day');
     });
 
-    it('should load next task page on task list scroll', () => {
-      fixture.whenStable().then(() => {
-        component.onTaskListScroll();
-        expect(taskService.getTasksByGroup).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
-      });
+    it('should load next task page on task list scroll', async () => {
+      await fixture.whenStable();
+      component.onTaskListScroll();
+      expect(taskService.getTasksByGroup).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
     });
 
-    it('should start loading of tasks from first page when task group changed', () => {
-      fixture.whenStable().then(() => {
-        component.onTaskListScroll();
-        taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
-        expect(taskService.getTasksByGroup).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
-      });
+    it('should start loading of tasks from first page when task group changed', async () => {
+      await fixture.whenStable();
+      component.onTaskListScroll();
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
+      expect(taskService.getTasksByGroup).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
     });
 
-    it('should not reload tasks on task group select when task group is not changed', () => {
-      fixture.whenStable().then(() => {
-        taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
-        expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
-      });
+    it('should not reload tasks on task group select when task group is not changed', async () => {
+      await fixture.whenStable();
+      taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
+      expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('when server responds with error', () => {
-    const response = {status: 500, url: 'http://backend.com/service', error: {message: 'Something went wrong...'}};
+    const response = {status: 500, url: 'https://backend.com/service', error: {message: 'Something went wrong...'}};
     beforeEach(() => {
       spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(HttpRequestError.fromResponse(response)));
       spyOn(window.console, 'error');
       fixture.detectChanges();
     });
 
-    it('should output error into console', () => {
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        const errorMessage = `HTTP failure response for ${response.url}: `
-          + `server responded with status 500 and message "${response.error.message}"`;
-        expect(window.console.error).toHaveBeenCalledWith(errorMessage);
-      });
+    it('should output error into console', async () => {
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const errorMessage = `HTTP failure response for ${response.url}: `
+        + `server responded with status 500 and message "${response.error.message}"`;
+      expect(window.console.error).toHaveBeenCalledWith(errorMessage);
     });
   });
 });

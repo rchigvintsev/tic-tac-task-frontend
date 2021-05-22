@@ -26,16 +26,16 @@ describe('TaskService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, MatDialogModule, TranslateModule.forRoot()],
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}}]
     });
 
     injector = getTestBed();
 
-    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    const loadingIndicatorService = injector.inject(LoadingIndicatorService);
     spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
-    httpMock = injector.get(HttpTestingController);
-    taskService = injector.get(TaskService);
+    httpMock = injector.inject(HttpTestingController);
+    taskService = injector.inject(TaskService);
   });
 
   afterEach(() => httpMock.verify());

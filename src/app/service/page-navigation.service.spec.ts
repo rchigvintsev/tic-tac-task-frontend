@@ -21,13 +21,13 @@ describe('PageNavigationService', () => {
 
     const injector = getTestBed();
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     spyOn(router, 'navigate').and.callThrough();
 
-    service = injector.get(PageNavigationService);
+    service = injector.inject(PageNavigationService);
   });
 
   it('should be created', () => {

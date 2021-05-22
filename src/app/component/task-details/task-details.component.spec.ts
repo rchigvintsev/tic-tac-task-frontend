@@ -58,7 +58,7 @@ describe('TaskDetailsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
         MatDatepickerModule
@@ -70,7 +70,7 @@ describe('TaskDetailsComponent', () => {
     fixture = TestBed.createComponent(TaskDetailsComponent);
     const injector = getTestBed();
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
     task = new Task().deserialize({
@@ -83,10 +83,10 @@ describe('TaskDetailsComponent', () => {
       deadlineTimeExplicitlySet: true
     });
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
-    taskService = injector.get(TaskService);
+    taskService = injector.inject(TaskService);
     spyOn(taskService, 'getTask').and.returnValue(of(task));
     spyOn(taskService, 'updateTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
@@ -100,18 +100,18 @@ describe('TaskDetailsComponent', () => {
     updatedTagSource = new Subject<Tag>();
     deletedTagSource = new Subject<Tag>();
 
-    tagService = injector.get(TagService);
+    tagService = injector.inject(TagService);
     spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
     spyOn(tagService, 'createTag').and.callFake(t => of(t));
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
-    taskListService = injector.get(TaskListService);
+    taskListService = injector.inject(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
     spyOn(taskListService, 'addTask').and.returnValue(of(true));
     spyOn(taskListService, 'removeTask').and.returnValue(of(true).pipe(delay(500)));
 
-    const logService = injector.get(LogService);
+    const logService = injector.inject(LogService);
     spyOn(logService, 'error').and.callThrough();
 
     component = fixture.componentInstance;
@@ -127,129 +127,115 @@ describe('TaskDetailsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: component.selectedTaskGroup.value});
   });
 
-  it('should begin title editing on title text click', () => {
-    fixture.whenStable().then(() => {
-      component.onTitleTextClick();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
+  it('should begin title editing on title text click', async () => {
+    await fixture.whenStable();
+    component.onTitleTextClick();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeTruthy();
   });
 
-  it('should end title editing on title input blur', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input blur', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should end title editing on title input enter keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input enter keydown', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.onTitleInputEnterKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should not end title editing on title input enter keydown when title is blank', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.taskFormModel.title = ' ';
-      component.onTitleInputEnterKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeTruthy();
-    });
+  it('should not end title editing on title input enter keydown when title is blank', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.taskFormModel.title = ' ';
+    component.onTitleInputEnterKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeTruthy();
   });
 
-  it('should end title editing on title input escape keydown', () => {
-    fixture.whenStable().then(() => {
-      component.titleEditing = true;
-      component.onTitleInputEscapeKeydown();
-      fixture.detectChanges();
-      expect(component.titleEditing).toBeFalsy();
-    });
+  it('should end title editing on title input escape keydown', async () => {
+    await fixture.whenStable();
+    component.titleEditing = true;
+    component.onTitleInputEscapeKeydown();
+    fixture.detectChanges();
+    expect(component.titleEditing).toBeFalsy();
   });
 
-  it('should undo changes in title on title input escape keydown', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New title';
-      component.onTitleInputEscapeKeydown();
-      fixture.detectChanges();
-      expect(component.taskFormModel.title).toEqual(task.title);
-    });
+  it('should undo changes in title on title input escape keydown', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New title';
+    component.onTitleInputEscapeKeydown();
+    fixture.detectChanges();
+    expect(component.taskFormModel.title).toEqual(task.title);
   });
 
-  it('should hide title text element on click', () => {
+  it('should hide title text element on click', async () => {
     const spanSelector = By.css('.mat-card-header .mat-card-title .title-text');
     let titleSpan = fixture.debugElement.query(spanSelector);
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      titleSpan = fixture.debugElement.query(spanSelector);
-      expect(titleSpan).toBeFalsy();
-    });
+    await fixture.whenStable();
+    titleSpan.nativeElement.click();
+    fixture.detectChanges();
+    titleSpan = fixture.debugElement.query(spanSelector);
+    expect(titleSpan).toBeFalsy();
   });
 
-  it('should show title form on title text element click', () => {
+  it('should show title form on title text element click', async () => {
     const titleSpan = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title .title-text'));
-    fixture.whenStable().then(() => {
-      titleSpan.nativeElement.click();
-      fixture.detectChanges();
-      const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
-      expect(titleForm).toBeTruthy();
-    });
+    await fixture.whenStable();
+    titleSpan.nativeElement.click();
+    fixture.detectChanges();
+    const titleForm = fixture.debugElement.query(By.css('.mat-card-header .mat-card-title form'));
+    expect(titleForm).toBeTruthy();
   });
 
-  it('should save task on title input blur', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New title';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+  it('should save task on title input blur', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New title';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should not save task with blank title', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = ' ';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(taskService.updateTask).not.toHaveBeenCalled();
-    });
+  it('should not save task with blank title', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = ' ';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(taskService.updateTask).not.toHaveBeenCalled();
   });
 
-  it('should complete task', () => {
-    fixture.whenStable().then(() => {
-      component.onCompleteTaskButtonClick();
-      fixture.detectChanges();
-      expect(taskService.completeTask).toHaveBeenCalled();
-    });
+  it('should complete task', async () => {
+    await fixture.whenStable();
+    component.onCompleteTaskButtonClick();
+    fixture.detectChanges();
+    expect(taskService.completeTask).toHaveBeenCalled();
   });
 
-  it('should update task counters on task complete', () => {
-    fixture.whenStable().then(() => {
-      component.onCompleteTaskButtonClick();
-      fixture.detectChanges();
-      expect(taskService.updateTaskCounters).toHaveBeenCalled();
-    });
+  it('should update task counters on task complete', async () => {
+    await fixture.whenStable();
+    component.onCompleteTaskButtonClick();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
-  it('should delete task', () => {
-    fixture.whenStable().then(() => {
-      component.onDeleteTaskButtonClick();
-      fixture.detectChanges();
-      expect(taskService.deleteTask).toHaveBeenCalled();
-    });
+  it('should delete task', async () => {
+    await fixture.whenStable();
+    component.onDeleteTaskButtonClick();
+    fixture.detectChanges();
+    expect(taskService.deleteTask).toHaveBeenCalled();
   });
 
-  it('should update task counters on task delete', () => {
-    fixture.whenStable().then(() => {
-      component.onDeleteTaskButtonClick();
-      fixture.detectChanges();
-      expect(taskService.updateTaskCounters).toHaveBeenCalled();
-    });
+  it('should update task counters on task delete', async () => {
+    await fixture.whenStable();
+    component.onDeleteTaskButtonClick();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
   it('should navigate to current task group page on task delete', () => {
@@ -257,289 +243,266 @@ describe('TaskDetailsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
   });
 
-  it('should save task on description input blur', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.description = 'New description';
-      component.onDescriptionInputBlur();
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+  it('should save task on description input blur', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.description = 'New description';
+    component.onDescriptionInputBlur();
+    fixture.detectChanges();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should filter tag options on tag input value change', done => {
+  it('should filter tag options on tag input value change', (done) => {
     fixture.whenStable().then(() => {
       component.filteredTags.pipe(skip(1)).subscribe(filteredTags => {
-          expect(filteredTags).toEqual([new Tag('Green')]);
-          done();
+        expect(filteredTags).toEqual([new Tag('Green')]);
+        done();
       });
       component.tagControl.setValue('Gr');
       fixture.detectChanges();
     });
   });
 
-  it('should assign background color to tag chip according to tag color', () => {
+  it('should assign background color to tag chip according to tag color', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      const chip = compiled.querySelector('mat-chip-list mat-chip');
-      expect(chip.style['background-color']).toEqual('rgb(255, 0, 0)');
-    });
+    await fixture.whenStable();
+    const chip = compiled.querySelector('mat-chip-list mat-chip');
+    expect(chip.style['background-color']).toEqual('rgb(255, 0, 0)');
   });
 
-  it('should display server validation error', () => {
+  it('should display server validation error', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError(BadRequestError.fromResponse({
-        url: '/',
-        status: 400,
-        error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}}
+          url: '/',
+          status: 400,
+          error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}
+        }
       ));
     });
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
-      component.onDeadlineDateInputChange();
-      fixture.detectChanges();
+    await fixture.whenStable();
+    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.onDeadlineDateInputChange();
+    fixture.detectChanges();
 
-      const compiled = fixture.debugElement.nativeElement;
-      const deadlineError = compiled.querySelector('.deadline-error-container mat-error');
-      expect(deadlineError).toBeTruthy();
-      expect(deadlineError.textContent.trim()).toEqual('Must be valid');
-    });
+    const compiled = fixture.debugElement.nativeElement;
+    const deadlineError = compiled.querySelector('.deadline-error-container mat-error');
+    expect(deadlineError).toBeTruthy();
+    expect(deadlineError.textContent.trim()).toEqual('Must be valid');
   });
 
-  it('should ignore validation error when field is not found', () => {
+  it('should ignore validation error when field is not found', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError(BadRequestError.fromResponse({
-        url: '/',
-        status: 400,
-        error: {fieldErrors: [{absent: 'Must be present'}]}}
+          url: '/',
+          status: 400,
+          error: {fieldErrors: [{absent: 'Must be present'}]}
+        }
       ));
     });
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
-      component.onDeadlineDateInputChange();
-      fixture.detectChanges();
+    await fixture.whenStable();
+    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.onDeadlineDateInputChange();
+    fixture.detectChanges();
 
-      const compiled = fixture.debugElement.nativeElement;
-      const deadlineError = compiled.querySelector('mat-error');
-      expect(deadlineError).toBeFalsy();
-    });
+    const compiled = fixture.debugElement.nativeElement;
+    const deadlineError = compiled.querySelector('mat-error');
+    expect(deadlineError).toBeFalsy();
   });
 
-  it('should log service call error', () => {
+  it('should log service call error', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
       return throwError(HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
     });
     const logService = fixture.debugElement.injector.get(LogService);
 
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New title';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(logService.error).toHaveBeenCalled();
-    });
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New title';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(logService.error).toHaveBeenCalled();
   });
 
-  it('should save task on "deadlineDate" input change', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
-      component.onDeadlineDateInputChange();
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+  it('should save task on "deadlineDate" input change', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.onDeadlineDateInputChange();
+    fixture.detectChanges();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should set deadline time to end of day on "deadlineDate" input change when "deadlineTime" input is disabled', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = moment().add(1, 'days').toDate();
-      component.deadlineTimeEnabled = false;
-      component.onDeadlineDateInputChange();
-      fixture.detectChanges();
-      const momentTime = moment(component.taskFormModel.deadline);
-      expect(momentTime.hours()).toEqual(23);
-      expect(momentTime.minutes()).toEqual(59);
-    });
+  it('should set deadline time to end of day on "deadlineDate" input change when "deadlineTime" input is disabled', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.deadlineTimeEnabled = false;
+    component.onDeadlineDateInputChange();
+    fixture.detectChanges();
+    const momentTime = moment(component.taskFormModel.deadline);
+    expect(momentTime.hours()).toEqual(23);
+    expect(momentTime.minutes()).toEqual(59);
   });
 
-  it('should set deadline time to end of day on "deadlineTimeEnabled" checkbox uncheck', () => {
+  it('should set deadline time to end of day on "deadlineTimeEnabled" checkbox uncheck', async () => {
     const checkboxChangeEvent = new MatCheckboxChange();
     checkboxChangeEvent.checked = false;
 
-    fixture.whenStable().then(() => {
-      component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
-      fixture.detectChanges();
-      const momentTime = moment(component.taskFormModel.deadline);
-      expect(momentTime.hours()).toEqual(23);
-      expect(momentTime.minutes()).toEqual(59);
-    });
+    await fixture.whenStable();
+    component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
+    fixture.detectChanges();
+    const momentTime = moment(component.taskFormModel.deadline);
+    expect(momentTime.hours()).toEqual(23);
+    expect(momentTime.minutes()).toEqual(59);
   });
 
-  it('should save task on "deadlineDate" input clear', () => {
-    fixture.whenStable().then(() => {
-      component.onClearDeadlineDateButtonClick();
-      fixture.detectChanges();
-      expect(component.taskFormModel.deadline).toBeNull();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+  it('should save task on "deadlineDate" input clear', async () => {
+    await fixture.whenStable();
+    component.onClearDeadlineDateButtonClick();
+    fixture.detectChanges();
+    expect(component.taskFormModel.deadline).toBeNull();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should save task on "deadlineTimeEnabled" checkbox change', () => {
+  it('should save task on "deadlineTimeEnabled" checkbox change', async () => {
     const checkboxChangeEvent = new MatCheckboxChange();
     checkboxChangeEvent.checked = true;
 
-    fixture.whenStable().then(() => {
-      component.deadlineTime = '11:35';
-      component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+    await fixture.whenStable();
+    component.deadlineTime = '11:35';
+    component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
+    fixture.detectChanges();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should save task on deadline time change', () => {
-    fixture.whenStable().then(() => {
-      component.onDeadlineTimeSet('11:35');
-      fixture.detectChanges();
-      expect(taskService.updateTask).toHaveBeenCalled();
-    });
+  it('should save task on deadline time change', async () => {
+    await fixture.whenStable();
+    component.onDeadlineTimeSet('11:35');
+    fixture.detectChanges();
+    expect(taskService.updateTask).toHaveBeenCalled();
   });
 
-  it('should add "color-warn" class to "deadlineDate" input when task is overdue', () => {
+  it('should add "color-warn" class to "deadlineDate" input when task is overdue', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      expect(compiled.querySelector('form input[name="deadlineDate"].color-warn')).not.toBeNull();
-    });
+    await fixture.whenStable();
+    expect(compiled.querySelector('form input[name="deadlineDate"].color-warn')).not.toBeNull();
   });
 
-  it('should add "color-warn" class to "deadlineTime" input when task is overdue', () => {
+  it('should add "color-warn" class to "deadlineTime" input when task is overdue', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      expect(compiled.querySelector('form input[name="deadlineTime"].color-warn')).not.toBeNull();
-    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(compiled.querySelector('form input[name="deadlineTime"].color-warn')).not.toBeNull();
   });
 
-  it('should update task counters on task save', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.title = 'New title';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(taskService.updateTaskCounters).toHaveBeenCalled();
-    });
+  it('should update task counters on task save', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.title = 'New title';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
-  it('should disable "deadlineTimeEnabled" checkbox when deadline is not defined', () => {
+  it('should disable "deadlineTimeEnabled" checkbox when deadline is not defined', async () => {
     const compiled = fixture.debugElement.nativeElement;
-    fixture.whenStable().then(() => {
-      component.taskFormModel.deadline = null;
-      fixture.detectChanges();
-      expect(compiled.querySelector('.deadline-time-checkbox.mat-checkbox-disabled')).not.toBeNull();
-    });
+    await fixture.whenStable();
+    component.taskFormModel.deadline = null;
+    fixture.detectChanges();
+    expect(compiled.querySelector('.deadline-time-checkbox.mat-checkbox-disabled')).not.toBeNull();
   });
 
-  it('should assign existing tag to task on "tagInput" token end', () => {
-    fixture.whenStable().then(() => {
-      const event = {value: 'Green', input: {}} as any;
-      component.onTagInputTokenEnd(event);
-      fixture.detectChanges();
-      expect(taskService.assignTag).toHaveBeenCalled();
-    });
+  it('should assign existing tag to task on "tagInput" token end', async () => {
+    await fixture.whenStable();
+    const event = {value: 'Green', input: {}} as any;
+    component.onTagInputTokenEnd(event);
+    fixture.detectChanges();
+    expect(taskService.assignTag).toHaveBeenCalled();
   });
 
-  it('should assign new tag to task on "tagInput" token end', () => {
-    fixture.whenStable().then(() => {
-      const event = {value: 'Yellow', input: {}} as any;
-      component.onTagInputTokenEnd(event);
-      fixture.detectChanges();
-      expect(tagService.createTag).toHaveBeenCalled();
-      expect(taskService.assignTag).toHaveBeenCalled();
-    });
+  it('should assign new tag to task on "tagInput" token end', async () => {
+    await fixture.whenStable();
+    const event = {value: 'Yellow', input: {}} as any;
+    component.onTagInputTokenEnd(event);
+    fixture.detectChanges();
+    expect(tagService.createTag).toHaveBeenCalled();
+    expect(taskService.assignTag).toHaveBeenCalled();
   });
 
-  it('should assign tag to task on tag option select', () => {
-    fixture.whenStable().then(() => {
-      const event = {option: {viewValue: 'Blue'}} as any;
-      component.onTagOptionSelected(event);
-      fixture.detectChanges();
-      expect(taskService.assignTag).toHaveBeenCalled();
-    });
+  it('should assign tag to task on tag option select', async () => {
+    await fixture.whenStable();
+    const event = {option: {viewValue: 'Blue'}} as any;
+    component.onTagOptionSelected(event);
+    fixture.detectChanges();
+    expect(taskService.assignTag).toHaveBeenCalled();
   });
 
-  it('should remove tag from task on tag chip remove', () => {
-    fixture.whenStable().then(() => {
-      const tag = new Tag('Red');
-      component.onTagChipRemoved(tag);
-      fixture.detectChanges();
-      expect(taskService.removeTag).toHaveBeenCalled();
-    });
+  it('should remove tag from task on tag chip remove', async () => {
+    await fixture.whenStable();
+    const tag = new Tag('Red');
+    component.onTagChipRemoved(tag);
+    fixture.detectChanges();
+    expect(taskService.removeTag).toHaveBeenCalled();
   });
 
-  it('should update tag lists on tag update', () => {
-    fixture.whenStable().then(() => {
-      let updatedTag = component.tags[0].clone();
-      updatedTag.name = updatedTag.name.toUpperCase();
+  it('should update tag lists on tag update', async () => {
+    await fixture.whenStable();
+    let updatedTag = component.tags[0].clone();
+    updatedTag.name = updatedTag.name.toUpperCase();
 
-      updatedTagSource.next(updatedTag);
-      fixture.detectChanges();
+    updatedTagSource.next(updatedTag);
+    fixture.detectChanges();
 
-      expect(component.tags[0]).toEqual(updatedTag);
+    expect(component.tags[0]).toEqual(updatedTag);
 
-      updatedTag = component.availableTags[0].clone();
-      updatedTag.name = updatedTag.name.toUpperCase();
+    updatedTag = component.availableTags[0].clone();
+    updatedTag.name = updatedTag.name.toUpperCase();
 
-      updatedTagSource.next(updatedTag);
-      fixture.detectChanges();
-      expect(component.availableTags[0]).toEqual(updatedTag);
-    });
+    updatedTagSource.next(updatedTag);
+    fixture.detectChanges();
+    expect(component.availableTags[0]).toEqual(updatedTag);
   });
 
-  it('should update tag lists on tag delete', () => {
-    fixture.whenStable().then(() => {
-      deletedTagSource.next(component.tags[0]);
-      fixture.detectChanges();
-      expect(component.tags.length).toEqual(0);
+  it('should update tag lists on tag delete', async () => {
+    await fixture.whenStable();
+    deletedTagSource.next(component.tags[0]);
+    fixture.detectChanges();
+    expect(component.tags.length).toEqual(0);
 
-      deletedTagSource.next(component.availableTags[0]);
-      fixture.detectChanges();
-      expect(component.availableTags.length).toEqual(1);
-    });
+    deletedTagSource.next(component.availableTags[0]);
+    fixture.detectChanges();
+    expect(component.availableTags.length).toEqual(1);
   });
 
-  it('should include task in selected task list on task list select', () => {
+  it('should include task in selected task list on task list select', async () => {
     const taskListId = 3;
-    fixture.whenStable().then(() => {
-      component.taskFormModel.taskListId = taskListId;
-      component.onTaskListSelect();
-      fixture.detectChanges();
-      expect(taskListService.addTask).toHaveBeenCalledWith(taskListId, task.id);
-    });
+    await fixture.whenStable();
+    component.taskFormModel.taskListId = taskListId;
+    component.onTaskListSelect();
+    fixture.detectChanges();
+    expect(taskListService.addTask).toHaveBeenCalledWith(taskListId, task.id);
   });
 
-  it('should remove task from current task list on task list unselect', () => {
+  it('should remove task from current task list on task list unselect', async () => {
     const taskListId = component.taskFormModel.taskListId;
-    fixture.whenStable().then(() => {
-      component.taskFormModel.taskListId = null;
-      component.onTaskListSelect();
-      fixture.detectChanges();
-      expect(taskListService.removeTask).toHaveBeenCalledWith(taskListId, task.id);
-    });
+    await fixture.whenStable();
+    component.taskFormModel.taskListId = null;
+    component.onTaskListSelect();
+    fixture.detectChanges();
+    expect(taskListService.removeTask).toHaveBeenCalledWith(taskListId, task.id);
   });
 
-  it('should ignore duplicated task list select event', () => {
-    fixture.whenStable().then(() => {
-      component.taskFormModel.taskListId = null;
-      component.onTaskListSelect();
-      component.onTaskListSelect();
-      fixture.detectChanges();
-      expect(taskListService.removeTask).toHaveBeenCalledTimes(1);
-    });
+  it('should ignore duplicated task list select event', async () => {
+    await fixture.whenStable();
+    component.taskFormModel.taskListId = null;
+    component.onTaskListSelect();
+    component.onTaskListSelect();
+    fixture.detectChanges();
+    expect(taskListService.removeTask).toHaveBeenCalledTimes(1);
   });
 
-  it('should navigate to "not-found" error page when task is not found', () => {
+  it('should navigate to "not-found" error page when task is not found', async () => {
     taskService.getTask = jasmine.createSpy('getTask').and.callFake(() => {
       return throwError(ResourceNotFoundError.fromResponse({url: '/'}));
     });
     component.ngOnInit();
-    fixture.whenStable().then(() => {
-      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
-    });
+    await fixture.whenStable();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
   });
 
   it('should set deadline to today using hot button', () => {

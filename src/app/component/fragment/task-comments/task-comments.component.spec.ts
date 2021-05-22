@@ -52,7 +52,7 @@ describe('TaskCommentsComponent', () => {
 
     const injector = getTestBed();
 
-    taskService = injector.get(TaskService);
+    taskService = injector.inject(TaskService);
     const comments = [];
     const createdAt = moment().utc().subtract(1, 'days').format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
     for (let i = 0; i < 3; i++) {
@@ -68,11 +68,11 @@ describe('TaskCommentsComponent', () => {
       return of(comment);
     });
 
-    taskCommentService = injector.get(TaskCommentService);
+    taskCommentService = injector.inject(TaskCommentService);
     spyOn(taskCommentService, 'updateComment').and.callFake(c => of(new TaskComment().deserialize(c)));
     spyOn(taskCommentService, 'deleteComment').and.returnValue(of(null));
 
-    const translate = injector.get(TranslateService);
+    const translate = injector.inject(TranslateService);
     translate.currentLang = 'ru';
 
     moment.locale(translate.currentLang);
@@ -85,158 +85,142 @@ describe('TaskCommentsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should enable new comment form when comment text is not blank', () => {
-    fixture.whenStable().then(() => {
-      component.newCommentFormModel.commentText = 'New comment';
-      component.onNewCommentModelChange();
-      fixture.detectChanges();
-      expect(component.newCommentFormEnabled).toBeTruthy();
-    });
+  it('should enable new comment form when comment text is not blank', async () => {
+    await fixture.whenStable();
+    component.newCommentFormModel.commentText = 'New comment';
+    component.onNewCommentModelChange();
+    fixture.detectChanges();
+    expect(component.newCommentFormEnabled).toBeTruthy();
   });
 
-  it('should disable new comment form when comment text is blank', () => {
-    fixture.whenStable().then(() => {
-      component.newCommentFormModel.commentText = ' ';
-      component.onNewCommentModelChange();
-      fixture.detectChanges();
-      expect(component.newCommentFormEnabled).toBeFalsy();
-    });
+  it('should disable new comment form when comment text is blank', async () => {
+    await fixture.whenStable();
+    component.newCommentFormModel.commentText = ' ';
+    component.onNewCommentModelChange();
+    fixture.detectChanges();
+    expect(component.newCommentFormEnabled).toBeFalsy();
   });
 
-  it('should create comment', () => {
+  it('should create comment', async () => {
     const commentText = 'New comment';
-    fixture.whenStable().then(() => {
-      component.newCommentFormModel.commentText = commentText;
-      component.onNewCommentFormSubmit();
-      fixture.detectChanges();
-      expect(component.comments.length).toBe(4);
-      expect(component.comments[0].commentText).toEqual(commentText);
-    });
+    await fixture.whenStable();
+    component.newCommentFormModel.commentText = commentText;
+    component.onNewCommentFormSubmit();
+    fixture.detectChanges();
+    expect(component.comments.length).toBe(4);
+    expect(component.comments[0].commentText).toEqual(commentText);
   });
 
-  it('should create comment on Ctrl + Enter', () => {
+  it('should create comment on Ctrl + Enter', async () => {
     const commentText = 'New comment';
-    fixture.whenStable().then(() => {
-      component.newCommentFormModel.commentText = commentText;
-      component.onNewCommentInputKeyDown({ctrlKey: true, code: 'Enter'});
-      fixture.detectChanges();
-      expect(component.comments.length).toBe(4);
-      expect(component.comments[0].commentText).toEqual(commentText);
-    });
+    await fixture.whenStable();
+    component.newCommentFormModel.commentText = commentText;
+    component.onNewCommentInputKeyDown({ctrlKey: true, code: 'Enter'});
+    fixture.detectChanges();
+    expect(component.comments.length).toBe(4);
+    expect(component.comments[0].commentText).toEqual(commentText);
   });
 
-  it('should not create comment with blank comment text', () => {
-    fixture.whenStable().then(() => {
-      component.newCommentFormModel.commentText = ' ';
-      component.onNewCommentFormSubmit();
-      fixture.detectChanges();
-      expect(taskService.addComment).not.toHaveBeenCalled();
-    });
+  it('should not create comment with blank comment text', async () => {
+    await fixture.whenStable();
+    component.newCommentFormModel.commentText = ' ';
+    component.onNewCommentFormSubmit();
+    fixture.detectChanges();
+    expect(taskService.addComment).not.toHaveBeenCalled();
   });
 
-  it('should hide comment text element on edit comment button click', () => {
+  it('should hide comment text element on edit comment button click', async () => {
     const commentId = component.comments[0].id;
     const spanSelector = By.css('.comment-' + commentId + ' .comment-body .comment-text');
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(spanSelector)).toBeFalsy();
-    });
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(spanSelector)).toBeFalsy();
   });
 
-  it('should show edit comment form on edit comment button click', () => {
+  it('should show edit comment form on edit comment button click', async () => {
     const commentId = component.comments[0].id;
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      fixture.detectChanges();
-      const commentForm = fixture.debugElement.query(By.css('.comment-' + commentId + ' .comment-body form'));
-      expect(commentForm).toBeTruthy();
-    });
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    fixture.detectChanges();
+    const commentForm = fixture.debugElement.query(By.css('.comment-' + commentId + ' .comment-body form'));
+    expect(commentForm).toBeTruthy();
   });
 
-  it('should enable edit comment form when comment text is not blank', () => {
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      component.editCommentFormModel.commentText = 'Edited comment';
-      component.onEditCommentModelChange();
-      fixture.detectChanges();
-      expect(component.editCommentFormEnabled).toBeTruthy();
-    });
+  it('should enable edit comment form when comment text is not blank', async () => {
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    component.editCommentFormModel.commentText = 'Edited comment';
+    component.onEditCommentModelChange();
+    fixture.detectChanges();
+    expect(component.editCommentFormEnabled).toBeTruthy();
   });
 
-  it('should disable edit comment form when comment text is blank', () => {
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      component.editCommentFormModel.commentText = ' ';
-      component.onEditCommentModelChange();
-      fixture.detectChanges();
-      expect(component.editCommentFormEnabled).toBeFalsy();
-    });
+  it('should disable edit comment form when comment text is blank', async () => {
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    component.editCommentFormModel.commentText = ' ';
+    component.onEditCommentModelChange();
+    fixture.detectChanges();
+    expect(component.editCommentFormEnabled).toBeFalsy();
   });
 
-  it('should edit comment', () => {
+  it('should edit comment', async () => {
     const commentText = 'Edited comment';
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      component.editCommentFormModel.commentText = commentText;
-      component.onEditCommentFormSubmit();
-      fixture.detectChanges();
-      expect(component.comments[0].commentText).toEqual(commentText);
-    });
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    component.editCommentFormModel.commentText = commentText;
+    component.onEditCommentFormSubmit();
+    fixture.detectChanges();
+    expect(component.comments[0].commentText).toEqual(commentText);
   });
 
-  it('should not save edited comment with blank comment text', () => {
+  it('should not save edited comment with blank comment text', async () => {
     const commentText = component.comments[0].commentText;
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      component.editCommentFormModel.commentText = ' ';
-      component.onEditCommentFormSubmit();
-      fixture.detectChanges();
-      expect(component.comments[0].commentText).toEqual(commentText);
-    });
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    component.editCommentFormModel.commentText = ' ';
+    component.onEditCommentFormSubmit();
+    fixture.detectChanges();
+    expect(component.comments[0].commentText).toEqual(commentText);
   });
 
-  it('should restore original comment text on cancel edit comment button click', () => {
+  it('should restore original comment text on cancel edit comment button click', async () => {
     const commentText = component.comments[0].commentText;
-    fixture.whenStable().then(() => {
-      component.onEditCommentButtonClick(component.comments[0]);
-      component.editCommentFormModel.commentText = 'Edited comment';
-      component.onCancelEditCommentButtonClick();
-      fixture.detectChanges();
-      expect(component.comments[0].commentText).toEqual(commentText);
-    });
+    await fixture.whenStable();
+    component.onEditCommentButtonClick(component.comments[0]);
+    component.editCommentFormModel.commentText = 'Edited comment';
+    component.onCancelEditCommentButtonClick();
+    fixture.detectChanges();
+    expect(component.comments[0].commentText).toEqual(commentText);
   });
 
-  it('should render relative comment date in Russian', () => {
-    fixture.whenStable().then(() => {
-      const relativeDate = component.getRelativeCommentDate(component.comments[0]);
-      expect(relativeDate).toEqual('день назад');
-    });
+  it('should render relative comment date in Russian', async () => {
+    await fixture.whenStable();
+    const relativeDate = component.getRelativeCommentDate(component.comments[0]);
+    expect(relativeDate).toEqual('день назад');
   });
 
-  it('should render annotation when comment was changed', () => {
-    fixture.whenStable().then(() => {
-      const commentId = component.comments[0].id;
-      const selector = By.css('.comment-' + commentId + ' .comment-header .comment-date-annotation');
-      const annotation = fixture.debugElement.query(selector);
-      expect(annotation).toBeTruthy();
-    });
+  it('should render annotation when comment was changed', async () => {
+    await fixture.whenStable();
+    const commentId = component.comments[0].id;
+    const selector = By.css('.comment-' + commentId + ' .comment-header .comment-date-annotation');
+    const annotation = fixture.debugElement.query(selector);
+    expect(annotation).toBeTruthy();
   });
 
-  it('should delete comment', () => {
-    fixture.whenStable().then(() => {
-      const commentToDelete = component.comments[0];
-      component.onDeleteCommentButtonClick(commentToDelete);
-      fixture.detectChanges();
-      expect(component.comments.length).toBe(2);
-      expect(component.comments[0]).not.toEqual(commentToDelete);
-    });
+  it('should delete comment', async () => {
+    await fixture.whenStable();
+    const commentToDelete = component.comments[0];
+    component.onDeleteCommentButtonClick(commentToDelete);
+    fixture.detectChanges();
+    expect(component.comments.length).toBe(2);
+    expect(component.comments[0]).not.toEqual(commentToDelete);
   });
 
-  it('should load next comment page on comment list scroll', () => {
-    fixture.whenStable().then(() => {
-      component.onCommentListScroll();
-      expect(taskService.getComments).toHaveBeenCalledWith(any(Number), new PageRequest(1));
-    });
+  it('should load next comment page on comment list scroll', async () => {
+    await fixture.whenStable();
+    component.onCommentListScroll();
+    expect(taskService.getComments).toHaveBeenCalledWith(any(Number), new PageRequest(1));
   });
 });

@@ -39,22 +39,22 @@ describe('AppComponent', () => {
 
     const injector = getTestBed();
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    const configService = injector.get(ConfigService);
+    const configService = injector.inject(ConfigService);
     configService.setConfig(new Config());
 
-    const tagService = injector.get(TagService);
+    const tagService = injector.inject(TagService);
     spyOn(tagService, 'getTags').and.returnValue(EMPTY);
 
-    const taskListService = injector.get(TaskListService);
+    const taskListService = injector.inject(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(EMPTY);
 
-    authenticationService = injector.get(AuthenticationService);
+    authenticationService = injector.inject(AuthenticationService);
     spyOn(authenticationService, 'signOut').and.returnValue(of(true));
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
     router.navigateByUrl = jasmine.createSpy('navigateByUrl').and.callFake(() => Promise.resolve());
 
@@ -62,7 +62,7 @@ describe('AppComponent', () => {
     user.id = 1;
     user.email = 'john.doe@mail.com';
     user.fullName = 'John Doe';
-    user.profilePictureUrl = 'http://example.com/avatar.png';
+    user.profilePictureUrl = 'https://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
     authenticationService.setPrincipal(user);
   });
@@ -120,13 +120,12 @@ describe('AppComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'signin']);
   });
 
-  it('should toggle sidenav', () => {
+  it('should toggle sidenav', async () => {
     fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      component.sidenav.toggle = jasmine.createSpy('toggle').and.callFake(() => Promise.resolve());
-      component.onSidenavToggleButtonClick();
-      expect(component.sidenav.toggle).toHaveBeenCalled();
-    });
+    await fixture.whenStable();
+    component.sidenav.toggle = jasmine.createSpy('toggle').and.callFake(() => Promise.resolve());
+    component.onSidenavToggleButtonClick();
+    expect(component.sidenav.toggle).toHaveBeenCalled();
   });
 
   it('should hide sidenav when user is not authenticated', () => {

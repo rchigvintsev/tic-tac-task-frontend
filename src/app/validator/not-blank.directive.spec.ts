@@ -32,20 +32,20 @@ describe('NotBlankValidatorDirective', () => {
     component = fixture.componentInstance;
   });
 
-  it('should mark form as invalid when input value is blank', () => {
+  it('should mark form as invalid when input value is blank', async () => {
     const testForm = component.testForm;
     const testInput = fixture.debugElement.query(By.css('[name=testInput]'));
 
-    fixture.whenStable().then(() => {
-      testInput.nativeElement.value = ' ';
-      testInput.nativeElement.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
 
-      expect(testForm.control.valid).toBeFalsy();
-      expect(testForm.control.hasError('notBlank', ['testInput'])).toBeTruthy();
+    testInput.nativeElement.value = ' ';
+    testInput.nativeElement.dispatchEvent(new Event('input'));
 
-      const testInputControl = testForm.control.get('testInput');
-      expect(testInputControl.valid).toBeFalsy();
-      expect(testInputControl.hasError('notBlank')).toBeTruthy();
-    });
+    expect(testForm.control.valid).toBeFalsy();
+    expect(testForm.control.hasError('notBlank', ['testInput'])).toBeTruthy();
+
+    const testInputControl = testForm.control.get('testInput');
+    expect(testInputControl.valid).toBeFalsy();
+    expect(testInputControl.hasError('notBlank')).toBeTruthy();
   });
 });

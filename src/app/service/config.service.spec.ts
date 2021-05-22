@@ -12,8 +12,8 @@ describe('ConfigService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({imports: [HttpClientTestingModule]});
     injector = getTestBed();
-    httpMock = injector.get(HttpTestingController);
-    configService = injector.get(ConfigService);
+    httpMock = injector.inject(HttpTestingController);
+    configService = injector.inject(ConfigService);
   });
 
   afterEach(() => httpMock.verify());
@@ -25,8 +25,8 @@ describe('ConfigService', () => {
 
   it('should load config', done => {
     const config = {
-      apiBaseUrl: 'http://backend.com',
-      selfBaseUrl: 'http://frontend.com'
+      apiBaseUrl: 'https://backend.com',
+      selfBaseUrl: 'https://frontend.com'
     };
     configService.loadConfig().then(() => {
       expect(configService.apiBaseUrl).toBe(config.apiBaseUrl);

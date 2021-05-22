@@ -1,5 +1,8 @@
+import {APP_INITIALIZER} from '@angular/core';
 import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
+import {MatIconRegistry} from '@angular/material/icon';
+import {DomSanitizer} from '@angular/platform-browser';
 
 import {of, throwError} from 'rxjs';
 
@@ -12,7 +15,8 @@ import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {Config} from '../../model/config';
 import {TestSupport} from '../../test/test-support';
-import {UnauthorizedRequestError} from "../../error/unauthorized-request.error";
+import {UnauthorizedRequestError} from '../../error/unauthorized-request.error';
+import {initIcons} from '../../app.module';
 
 const CURRENT_LANG = 'en';
 
@@ -29,12 +33,8 @@ describe('SigninComponent', () => {
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParamMap: of(convertToParamMap({error: 'true', message: 'default'}))
-          }
-        }
+        {provide: ActivatedRoute, useValue: {queryParamMap: of(convertToParamMap({error: 'true', message: 'default'}))}},
+        {provide: APP_INITIALIZER, useFactory: initIcons, multi: true, deps: [MatIconRegistry, DomSanitizer]},
       ]
     }).compileComponents();
   }));
@@ -42,22 +42,22 @@ describe('SigninComponent', () => {
   beforeEach(() => {
     const injector = getTestBed();
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    i18nService = injector.get(I18nService);
+    i18nService = injector.inject(I18nService);
 
-    const configService = injector.get(ConfigService);
+    const configService = injector.inject(ConfigService);
     configService.setConfig(new Config());
 
-    alertService = injector.get(AlertService);
+    alertService = injector.inject(AlertService);
     spyOn(alertService, 'error').and.stub();
 
-    authenticationService = injector.get(AuthenticationService);
+    authenticationService = injector.inject(AuthenticationService);
     spyOn(authenticationService, 'signIn').and.callFake(username => of({sub: username}));
     spyOn(authenticationService, 'setPrincipal').and.callThrough();
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
     fixture = TestBed.createComponent(SigninComponent);
@@ -73,116 +73,108 @@ describe('SigninComponent', () => {
     expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('failed_to_sign_in'));
   });
 
-  it('should sign in on signin form submit', () => {
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice@mail.com';
-      component.password = 'secret';
+  it('should sign in on signin form submit', async () => {
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = 'alice@mail.com';
+    component.password = 'secret';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(authenticationService.setPrincipal).toHaveBeenCalled();
-    });
+    component.onSigninFormSubmit();
+    expect(authenticationService.setPrincipal).toHaveBeenCalled();
   });
 
-  it('should navigate to home page on sign in', () => {
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice@mail.com';
-      component.password = 'secret';
+  it('should navigate to home page on sign in', async () => {
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = 'alice@mail.com';
+    component.password = 'secret';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG]);
-    });
+    component.onSigninFormSubmit();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG]);
   });
 
-  it('should not sign in when email is empty', () => {
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = '';
-      component.password = 'secret';
+  it('should not sign in when email is empty', async () => {
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = '';
+    component.password = 'secret';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(authenticationService.signIn).not.toHaveBeenCalled();
-    });
+    component.onSigninFormSubmit();
+    expect(authenticationService.signIn).not.toHaveBeenCalled();
   });
 
-  it('should not sign in when email is not valid', () => {
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice';
-      component.password = 'secret';
+  it('should not sign in when email is not valid', async () => {
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = 'alice';
+    component.password = 'secret';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(authenticationService.signIn).not.toHaveBeenCalled();
-    });
+    component.onSigninFormSubmit();
+    expect(authenticationService.signIn).not.toHaveBeenCalled();
   });
 
-  it('should not sign in when password is blank', () => {
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice@mail.com';
-      component.password = ' ';
+  it('should not sign in when password is blank', async () => {
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = 'alice@mail.com';
+    component.password = ' ';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(authenticationService.signIn).not.toHaveBeenCalled();
-    });
+    component.onSigninFormSubmit();
+    expect(authenticationService.signIn).not.toHaveBeenCalled();
   });
 
-  it('should show error message on sign in when server responded with 401 status code', () => {
+  it('should show error message on sign in when server responded with 401 status code', async () => {
     (authenticationService.signIn as jasmine.Spy).and.callFake(() => {
       return throwError(UnauthorizedRequestError.fromResponse({url: '/'}));
     });
-    fixture.whenStable().then(() => {
-      // For some reason two-way binding does not work in tests when input is placed within form
-      component.email = 'alice@mail.com';
-      component.password = 'secret';
+    await fixture.whenStable();
+    // For some reason two-way binding does not work in tests when input is placed within form
+    component.email = 'alice@mail.com';
+    component.password = 'secret';
 
-      TestSupport.setInputValue(fixture, 'email_input', component.email);
-      TestSupport.setInputValue(fixture, 'password_input', component.password);
-      fixture.detectChanges();
+    TestSupport.setInputValue(fixture, 'email_input', component.email);
+    TestSupport.setInputValue(fixture, 'password_input', component.password);
+    fixture.detectChanges();
 
-      component.onSigninFormSubmit();
-      expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('user_not_found_or_invalid_password'));
-    });
+    component.onSigninFormSubmit();
+    expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('user_not_found_or_invalid_password'));
   });
 
-  it('should render link to signup page', () => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
-      const signupLink = compiled.querySelector('.sign-container mat-card mat-card-footer a[href="/en/signup"]');
-      expect(signupLink).toBeTruthy();
-      expect(signupLink.textContent.trim()).toBe('sign_up_proposal');
-    });
+  it('should render link to signup page', async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const signupLink = compiled.querySelector('.sign-container mat-card mat-card-footer a[href="/en/signup"]');
+    expect(signupLink).toBeTruthy();
+    expect(signupLink.textContent.trim()).toBe('sign_up_proposal');
   });
 
-  it('should render link to password reset page', () => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
-      const signupLink = compiled.querySelector('.sign-container mat-card a[href="/en/account/password/reset"]');
-      expect(signupLink).toBeTruthy();
-      expect(signupLink.textContent.trim()).toBe('forgot_password');
-    });
+  it('should render link to password reset page', async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const signupLink = compiled.querySelector('.sign-container mat-card a[href="/en/account/password/reset"]');
+    expect(signupLink).toBeTruthy();
+    expect(signupLink.textContent.trim()).toBe('forgot_password');
   });
 });

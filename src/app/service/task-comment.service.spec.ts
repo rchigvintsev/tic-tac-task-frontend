@@ -16,16 +16,16 @@ describe('TaskCommentService', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}}]
     });
 
     injector = getTestBed();
 
-    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    const loadingIndicatorService = injector.inject(LoadingIndicatorService);
     spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
-    httpMock = injector.get(HttpTestingController);
-    taskCommentService = injector.get(TaskCommentService);
+    httpMock = injector.inject(HttpTestingController);
+    taskCommentService = injector.inject(TaskCommentService);
   });
 
   afterEach(() => httpMock.verify());

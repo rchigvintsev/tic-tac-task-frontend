@@ -19,7 +19,7 @@ describe('AlertService', () => {
       providers: [{provide: Router, useValue: {events: new Subject()}}]
     });
     injector = getTestBed();
-    service = injector.get(AlertService);
+    service = injector.inject(AlertService);
   });
 
 
@@ -30,8 +30,8 @@ describe('AlertService', () => {
   it('should clear message on navigation start', done => {
     service.info('Test message');
 
-    const router = injector.get(Router);
-    router.events.next(new NavigationStart(1, '/'));
+    const router = injector.inject(Router);
+    (router.events as Subject<any>).next(new NavigationStart(1, '/'));
 
     service.getMessage().subscribe(message => { expect(message).toBeNull(); done(); });
   });

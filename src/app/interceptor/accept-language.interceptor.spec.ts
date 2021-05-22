@@ -3,6 +3,7 @@ import {getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {HttpRequest} from '@angular/common/http';
 
 import {TranslateService} from '@ngx-translate/core';
+
 import {AcceptLanguageInterceptor} from './accept-language.interceptor';
 import {TestSupport} from '../test/test-support';
 import {HttpHandlerMock} from '../test/http-handler-mock';
@@ -20,8 +21,8 @@ describe('AcceptLanguageInterceptor', () => {
     }).compileComponents();
 
     injector = getTestBed();
-    translateService = injector.get(TranslateService);
-    interceptor = injector.get(AcceptLanguageInterceptor);
+    translateService = injector.inject(TranslateService);
+    interceptor = injector.inject(AcceptLanguageInterceptor);
   }));
 
   it('should add "Accept-Language" header', done => {

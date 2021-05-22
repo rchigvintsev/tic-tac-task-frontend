@@ -26,15 +26,15 @@ describe('AuthenticationService', () => {
 
     injector = getTestBed();
 
-    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    const loadingIndicatorService = injector.inject(LoadingIndicatorService);
     spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
-    service = injector.get(AuthenticationService);
-    httpMock = injector.get(HttpTestingController);
+    service = injector.inject(AuthenticationService);
+    httpMock = injector.inject(HttpTestingController);
 
     const appConfig = new Config();
     appConfig.apiBaseUrl = 'http://backend.com';
-    configService = injector.get(ConfigService);
+    configService = injector.inject(ConfigService);
     configService.setConfig(appConfig);
   });
 

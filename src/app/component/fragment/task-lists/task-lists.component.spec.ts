@@ -26,7 +26,7 @@ describe('TaskListsComponent', () => {
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
       providers: [
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]
     }).compileComponents();
@@ -36,7 +36,7 @@ describe('TaskListsComponent', () => {
     fixture = TestBed.createComponent(TaskListsComponent);
     const injector = getTestBed();
 
-    taskListService = injector.get(TaskListService);
+    taskListService = injector.inject(TaskListService);
     const taskLists = [];
     for (let i = 0; i < 3; i++) {
       taskLists.push(new TaskList().deserialize({id: i + 1, name: `Test task list ${i + 1}`}));
@@ -58,7 +58,7 @@ describe('TaskListsComponent', () => {
     spyOn(taskListService, 'getDeletedTaskList').and.returnValue(deletedTaskListSource.asObservable());
 
     routerEvents = new Subject();
-    const router = injector.get(Router);
+    const router = injector.inject(Router);
     (router as any).events = routerEvents.asObservable();
 
     component = fixture.componentInstance;
@@ -69,40 +69,36 @@ describe('TaskListsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should highlight selected menu item', () => {
+  it('should highlight selected menu item', async () => {
     routerEvents.next(new NavigationEnd(1, '/en/task-list/1', null));
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item.selected.task-list-1'));
-      expect(selectedItem).toBeTruthy();
-    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const selectedItem = fixture.debugElement.query(By.css('.mat-list .mat-list-item.selected.task-list-1'));
+    expect(selectedItem).toBeTruthy();
   });
 
-  it('should update list of task lists on task list update', () => {
-    fixture.whenStable().then(() => {
-      const updatedTaskList = new TaskList().deserialize({id: 1, name: 'Updated task list'});
-      updatedTaskListSource.next(updatedTaskList);
-      fixture.detectChanges();
-      expect(component.taskLists[0].name).toEqual(updatedTaskList.name);
-    });
+  it('should update list of task lists on task list update', async () => {
+    await fixture.whenStable();
+    const updatedTaskList = new TaskList().deserialize({id: 1, name: 'Updated task list'});
+    updatedTaskListSource.next(updatedTaskList);
+    fixture.detectChanges();
+    expect(component.taskLists[0].name).toEqual(updatedTaskList.name);
   });
 
-  it('should update list of task lists on task list complete', () => {
-    fixture.whenStable().then(() => {
-      const completedTaskList = new TaskList().deserialize({id: 1, name: 'Completed task list', completed: true});
-      completedTaskListSource.next(completedTaskList);
-      fixture.detectChanges();
-      expect(component.taskLists.length).toBe(2);
-    });
+  it('should update list of task lists on task list complete', async () => {
+    await fixture.whenStable();
+    const completedTaskList = new TaskList().deserialize({id: 1, name: 'Completed task list', completed: true});
+    completedTaskListSource.next(completedTaskList);
+    fixture.detectChanges();
+    expect(component.taskLists.length).toBe(2);
   });
 
-  it('should update list of task lists on task list delete', () => {
-    fixture.whenStable().then(() => {
-      const deletedTaskList = new TaskList().deserialize({id: 1});
-      deletedTaskListSource.next(deletedTaskList);
-      fixture.detectChanges();
-      expect(component.taskLists.length).toBe(2);
-    });
+  it('should update list of task lists on task list delete', async () => {
+    await fixture.whenStable();
+    const deletedTaskList = new TaskList().deserialize({id: 1});
+    deletedTaskListSource.next(deletedTaskList);
+    fixture.detectChanges();
+    expect(component.taskLists.length).toBe(2);
   });
 
   it('should enable task list form submit button when task list name is not blank', () => {
@@ -117,24 +113,22 @@ describe('TaskListsComponent', () => {
     expect(component.taskListFormSubmitEnabled).toBeFalsy();
   });
 
-  it('should create task list', () => {
+  it('should create task list', async () => {
     const taskListName = 'New task list';
-    fixture.whenStable().then(() => {
-      component.taskListFormModel.name = taskListName;
-      component.onTaskListFormSubmit();
-      fixture.detectChanges();
-      expect(taskListService.createTaskList).toHaveBeenCalled();
-      expect(component.taskLists.length).toBe(4);
-      expect(component.taskLists[3].name).toEqual(taskListName);
-    });
+    await fixture.whenStable();
+    component.taskListFormModel.name = taskListName;
+    component.onTaskListFormSubmit();
+    fixture.detectChanges();
+    expect(taskListService.createTaskList).toHaveBeenCalled();
+    expect(component.taskLists.length).toBe(4);
+    expect(component.taskLists[3].name).toEqual(taskListName);
   });
 
-  it('should not create task list with blank name', () => {
-    fixture.whenStable().then(() => {
-      component.taskListFormModel.name = ' ';
-      component.onTaskListFormSubmit();
-      fixture.detectChanges();
-      expect(taskListService.createTaskList).not.toHaveBeenCalled();
-    });
+  it('should not create task list with blank name', async () => {
+    await fixture.whenStable();
+    component.taskListFormModel.name = ' ';
+    component.onTaskListFormSubmit();
+    fixture.detectChanges();
+    expect(taskListService.createTaskList).not.toHaveBeenCalled();
   });
 });

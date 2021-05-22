@@ -55,13 +55,13 @@ describe('TagTasksComponent', () => {
 
     const injector = getTestBed();
 
-    const translateService = injector.get(TranslateService);
+    const translateService = injector.inject(TranslateService);
     translateService.currentLang = CURRENT_LANG;
 
-    router = injector.get(Router);
+    router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
-    tagService = injector.get(TagService);
+    tagService = injector.inject(TagService);
     spyOn(tagService, 'getTag').and.returnValue(of(tag));
     spyOn(tagService, 'getUncompletedTasks').and.returnValue(of([]));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));
@@ -74,78 +74,69 @@ describe('TagTasksComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load next task page on task list scroll', () => {
-    fixture.whenStable().then(() => {
-      component.onTaskListScroll();
-      expect(tagService.getUncompletedTasks).toHaveBeenCalledWith(any(Number), new PageRequest(1), false);
-    });
+  it('should load next task page on task list scroll', async () => {
+    await fixture.whenStable();
+    component.onTaskListScroll();
+    expect(tagService.getUncompletedTasks).toHaveBeenCalledWith(any(Number), new PageRequest(1), false);
   });
 
-  it('should undo changes in title on title input escape keydown', () => {
-    fixture.whenStable().then(() => {
-      component.title = 'New name';
-      component.onTitleInputEscapeKeydown();
-      fixture.detectChanges();
-      expect(component.title).toEqual(tag.name);
-    });
+  it('should undo changes in title on title input escape keydown', async () => {
+    await fixture.whenStable();
+    component.title = 'New name';
+    component.onTitleInputEscapeKeydown();
+    fixture.detectChanges();
+    expect(component.title).toEqual(tag.name);
   });
 
-  it('should save tag on title input blur', () => {
-    fixture.whenStable().then(() => {
-      component.title = 'New name';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(tagService.updateTag).toHaveBeenCalled();
-    });
+  it('should save tag on title input blur', async () => {
+    await fixture.whenStable();
+    component.title = 'New name';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(tagService.updateTag).toHaveBeenCalled();
   });
 
-  it('should not save tag on title input blur when tag name is not changed', () => {
-    fixture.whenStable().then(() => {
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(tagService.updateTag).not.toHaveBeenCalled();
-    });
+  it('should not save tag on title input blur when tag name is not changed', async () => {
+    await fixture.whenStable();
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(tagService.updateTag).not.toHaveBeenCalled();
   });
 
-  it('should not save tag with blank name', () => {
-    fixture.whenStable().then(() => {
-      component.title = ' ';
-      component.onTitleInputBlur();
-      fixture.detectChanges();
-      expect(tagService.updateTag).not.toHaveBeenCalled();
-    });
+  it('should not save tag with blank name', async () => {
+    await fixture.whenStable();
+    component.title = ' ';
+    component.onTitleInputBlur();
+    fixture.detectChanges();
+    expect(tagService.updateTag).not.toHaveBeenCalled();
   });
 
-  it('should save tag on tag color change', () => {
-    fixture.whenStable().then(() => {
-      component.onChangeColorButtonClick();
-      fixture.detectChanges();
-      expect(tagService.updateTag).toHaveBeenCalled();
-    });
+  it('should save tag on tag color change', async () => {
+    await fixture.whenStable();
+    component.onChangeColorButtonClick();
+    fixture.detectChanges();
+    expect(tagService.updateTag).toHaveBeenCalled();
   });
 
-  it('should delete tag', () => {
-    fixture.whenStable().then(() => {
-      component.onDeleteTagButtonClick();
-      fixture.detectChanges();
-      expect(tagService.deleteTag).toHaveBeenCalled();
-    });
+  it('should delete tag', async () => {
+    await fixture.whenStable();
+    component.onDeleteTagButtonClick();
+    fixture.detectChanges();
+    expect(tagService.deleteTag).toHaveBeenCalled();
   });
 
-  it('should navigate to "tasks-for-today" page on tag delete', () => {
-    fixture.whenStable().then(() => {
-      component.onDeleteTagButtonClick();
-      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
-    });
+  it('should navigate to "tasks-for-today" page on tag delete', async () => {
+    await fixture.whenStable();
+    component.onDeleteTagButtonClick();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'task'], {fragment: TaskGroup.TODAY.value});
   });
 
-  it('should navigate to "not-found" error page when tag is not found', () => {
+  it('should navigate to "not-found" error page when tag is not found', async () => {
     tagService.getTag = jasmine.createSpy('getTag').and.callFake(() => {
       return throwError(ResourceNotFoundError.fromResponse({url: `/tag/${tag.id}`}));
     });
     component.ngOnInit();
-    fixture.whenStable().then(() => {
-      expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
-    });
+    await fixture.whenStable();
+    expect(router.navigate).toHaveBeenCalledWith([CURRENT_LANG, 'error', '404']);
   });
 });

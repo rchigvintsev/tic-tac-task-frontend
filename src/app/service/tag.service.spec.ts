@@ -16,20 +16,20 @@ describe('TagService', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}]
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}}]
     });
 
     const injector = getTestBed();
 
-    const loadingIndicatorService = injector.get(LoadingIndicatorService);
+    const loadingIndicatorService = injector.inject(LoadingIndicatorService);
     spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
-    httpMock = injector.get(HttpTestingController);
-    tagService = injector.get(TagService);
+    httpMock = injector.inject(HttpTestingController);
+    tagService = injector.inject(TagService);
   });
 
   it('should be created', () => {
-    const service: TagService = TestBed.get(TagService);
+    const service: TagService = TestBed.inject(TagService);
     expect(service).toBeTruthy();
   });
 
