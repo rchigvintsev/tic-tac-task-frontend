@@ -29,7 +29,7 @@ describe('BaseTasksComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.INBOX)},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]

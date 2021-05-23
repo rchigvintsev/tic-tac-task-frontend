@@ -32,7 +32,8 @@
             "styles": [
               "src/styles.styl"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["localize-router"]
           },
           "configurations": {
             "production": {
