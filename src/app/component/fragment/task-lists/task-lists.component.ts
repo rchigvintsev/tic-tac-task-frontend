@@ -16,7 +16,7 @@ import {PathMatcher} from '../../../util/path-matcher';
 @Component({
   selector: 'app-task-lists',
   templateUrl: './task-lists.component.html',
-  styleUrls: ['./task-lists.component.styl']
+  styleUrls: ['./task-lists.component.scss']
 })
 export class TaskListsComponent implements OnInit, OnDestroy {
   @ViewChild('taskListForm')

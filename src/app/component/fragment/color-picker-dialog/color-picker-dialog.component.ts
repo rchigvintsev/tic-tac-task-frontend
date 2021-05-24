@@ -6,7 +6,7 @@ import {ColorEvent} from 'ngx-color';
 @Component({
   selector: 'app-color-picker-dialog',
   templateUrl: './color-picker-dialog.component.html',
-  styleUrls: ['./color-picker-dialog.component.styl']
+  styleUrls: ['./color-picker-dialog.component.scss']
 })
 export class ColorPickerDialogComponent {
   readonly COLORS = [

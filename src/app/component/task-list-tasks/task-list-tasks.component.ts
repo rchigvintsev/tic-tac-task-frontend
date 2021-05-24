@@ -20,7 +20,7 @@ import {Strings} from '../../util/strings';
 @Component({
   selector: 'app-task-list-tasks',
   templateUrl: '../fragment/base-tasks/base-tasks.component.html',
-  styleUrls: ['../fragment/base-tasks/base-tasks.component.styl']
+  styleUrls: ['../fragment/base-tasks/base-tasks.component.scss']
 })
 export class TaskListTasksComponent extends BaseTasksComponent implements OnInit {
   private taskList: TaskList;

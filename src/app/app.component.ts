@@ -18,7 +18,7 @@ import {AuthenticatedPrincipal} from './security/authenticated-principal';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.styl'],
+  styleUrls: ['./app.component.scss'],
   providers: [TaskGroupService]
 })
 export class AppComponent implements OnInit, OnDestroy {

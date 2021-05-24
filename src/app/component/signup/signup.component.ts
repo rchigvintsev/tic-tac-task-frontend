@@ -13,7 +13,7 @@ import {HttpRequestError} from '../../error/http-request.error';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['../fragment/base-sign/base-sign.component.styl']
+  styleUrls: ['../fragment/base-sign/base-sign.component.scss']
 })
 export class SignupComponent extends BaseSignComponent {
   fullName: string;

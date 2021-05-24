@@ -1,6 +1,6 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css"
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons')
-@import "variables.styl"
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import "variables.scss";
 
 body {
   margin: 0;
@@ -9,27 +9,27 @@ body {
   background-color: #f5f5f5;
 
   .color-primary {
-    color: color-primary;
+    color: $color-primary;
   }
 
   .color-primary:disabled {
-    color: rgba(color-primary, .38) !important;
+    color: rgba($color-primary, .38) !important;
   }
 
   .color-accent {
-    color: color-accent;
+    color: $color-accent;
   }
 
   .color-accent:disabled {
-    color: rgba(color-accent, .38) !important;
+    color: rgba($color-accent, .38) !important;
   }
 
   .color-warn {
-    color: color-warn;
+    color: $color-warn;
   }
 
   .color-warn:disabled {
-    color: rgba(color-warn, .38) !important;
+    color: rgba($color-warn, .38) !important;
   }
 
   form {
@@ -67,25 +67,25 @@ body {
 
   .timepicker {
     .timepicker__header {
-      background-color: color-primary !important;
+      background-color: $color-primary !important;
     }
 
     .timepicker__body {
       .clock-face__clock-hand {
-        background-color: color-primary !important;
+        background-color: $color-primary !important;
 
         &::after {
-          background-color: color-primary !important;
+          background-color: $color-primary !important;
         }
 
         &::before {
-          border-color: color-primary !important;
+          border-color: $color-primary !important;
         }
       }
 
       .clock-face__number {
         > span.active {
-          background-color: color-primary !important;
+          background-color: $color-primary !important;
         }
       }
     }

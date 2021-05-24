@@ -15,7 +15,7 @@ import {UnauthorizedRequestError} from '../../error/unauthorized-request.error';
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
-  styleUrls: ['../fragment/base-sign/base-sign.component.styl']
+  styleUrls: ['../fragment/base-sign/base-sign.component.scss']
 })
 export class SigninComponent extends BaseSignComponent implements OnInit {
   @ViewChild('signinForm', {read: NgForm})

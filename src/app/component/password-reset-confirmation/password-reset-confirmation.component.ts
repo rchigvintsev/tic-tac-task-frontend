@@ -12,7 +12,7 @@ import {HttpRequestError} from '../../error/http-request.error';
 @Component({
   selector: 'app-password-reset-confirmation',
   templateUrl: './password-reset-confirmation.component.html',
-  styleUrls: ['./password-reset-confirmation.component.styl']
+  styleUrls: ['./password-reset-confirmation.component.scss']
 })
 export class PasswordResetConfirmationComponent implements OnInit {
   @ViewChild('passwordResetConfirmationForm', {read: NgForm})

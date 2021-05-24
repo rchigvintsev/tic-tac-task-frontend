@@ -7,7 +7,7 @@ import {ConfigService} from '../../../service/config.service';
 @Component({
   selector: 'app-base-sign',
   templateUrl: './base-sign.component.html',
-  styleUrls: ['./base-sign.component.styl']
+  styleUrls: ['./base-sign.component.scss']
 })
 export class BaseSignComponent implements OnInit {
   email: string;

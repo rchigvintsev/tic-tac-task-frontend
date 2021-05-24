@@ -10,7 +10,7 @@ import {LogService} from '../../service/log.service';
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
-  styleUrls: ['./password-reset.component.styl']
+  styleUrls: ['./password-reset.component.scss']
 })
 export class PasswordResetComponent implements OnInit {
   @ViewChild('passwordResetForm', {read: NgForm})

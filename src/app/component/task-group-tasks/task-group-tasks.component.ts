@@ -20,7 +20,7 @@ import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-res
 @Component({
   selector: 'app-task-group-tasks',
   templateUrl: '../fragment/base-tasks/base-tasks.component.html',
-  styleUrls: ['../fragment/base-tasks/base-tasks.component.styl']
+  styleUrls: ['../fragment/base-tasks/base-tasks.component.scss']
 })
 export class TaskGroupTasksComponent extends BaseTasksComponent implements OnInit, OnDestroy {
   private taskGroup: TaskGroup;

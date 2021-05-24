@@ -20,7 +20,7 @@ export class MenuItem {
 @Component({
   selector: 'app-base-tasks',
   templateUrl: './base-tasks.component.html',
-  styleUrls: ['./base-tasks.component.styl']
+  styleUrls: ['./base-tasks.component.scss']
 })
 export class BaseTasksComponent {
   title = '';

@@ -16,7 +16,7 @@ import {Strings} from '../../../util/strings';
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
-  styleUrls: ['./tags.component.styl']
+  styleUrls: ['./tags.component.scss']
 })
 export class TagsComponent implements OnInit, OnDestroy {
   @ViewChild('tagForm')

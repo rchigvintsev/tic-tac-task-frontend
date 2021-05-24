@@ -37,7 +37,7 @@ const END_OF_DAY_TIME = '23:59';
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
-  styleUrls: ['./task-details.component.styl']
+  styleUrls: ['./task-details.component.scss']
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('title')
