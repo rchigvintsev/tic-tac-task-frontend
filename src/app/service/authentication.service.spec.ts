@@ -19,6 +19,8 @@ describe('AuthenticationService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
+    localStorage.removeItem(PRINCIPAL_KEY);
+
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS
@@ -33,13 +35,9 @@ describe('AuthenticationService', () => {
     httpMock = injector.inject(HttpTestingController);
 
     const appConfig = new Config();
-    appConfig.apiBaseUrl = 'http://backend.com';
+    appConfig.apiBaseUrl = 'https://backend.com';
     configService = injector.inject(ConfigService);
     configService.setConfig(appConfig);
-  });
-
-  afterEach(() => {
-    localStorage.removeItem(PRINCIPAL_KEY);
   });
 
   it('should be created', () => {
