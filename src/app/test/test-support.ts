@@ -29,7 +29,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ColorBlockModule} from 'ngx-color/block';
-import {SimpleNotificationsModule} from 'angular2-notifications';
+import {ToastrModule} from 'ngx-toastr';
 
 import {routes} from '../app-routing.module';
 import {TranslateHttpLoaderFactory} from '../app.module';
@@ -96,7 +96,7 @@ export class TestSupport {
       }
     }),
     NgxMaterialTimepickerModule,
-    SimpleNotificationsModule.forRoot()
+    ToastrModule.forRoot({timeOut: 100})
   ];
 
   public static readonly DECLARATIONS = [

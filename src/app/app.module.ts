@@ -32,7 +32,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {ColorCircleModule} from 'ngx-color/circle';
-import {SimpleNotificationsModule} from 'angular2-notifications';
+import {ToastrModule} from 'ngx-toastr';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -156,7 +156,7 @@ registerLocaleData(localeRu, 'ru');
         deps: [HttpClient]
       }
     }),
-    SimpleNotificationsModule.forRoot({timeOut: 5000, showProgressBar: true, pauseOnHover: true, clickToClose: true})
+    ToastrModule.forRoot({timeOut: 5000, progressBar: true, positionClass: 'toast-bottom-right', newestOnTop: false})
   ],
   exports: [TranslateModule],
   providers: [

@@ -1,6 +1,6 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 
-import {NotificationsService} from 'angular2-notifications';
+import {ToastrService} from 'ngx-toastr';
 
 import {TestSupport} from '../test/test-support';
 import {DefaultHttpResponseHandler} from './default-http-response.handler';
@@ -9,7 +9,7 @@ import {HttpRequestError} from '../error/http-request.error';
 
 describe('DefaultHttpResponseHandler', () => {
   let log: LogService;
-  let notificationsService: NotificationsService;
+  let toastrService: ToastrService;
   let handler: DefaultHttpResponseHandler;
 
   beforeEach(() => {
@@ -23,9 +23,9 @@ describe('DefaultHttpResponseHandler', () => {
     log = injector.inject(LogService);
     spyOn(log, 'error').and.stub();
 
-    notificationsService = injector.inject(NotificationsService);
-    spyOn(notificationsService, 'success').and.stub();
-    spyOn(notificationsService, 'error').and.stub();
+    toastrService = injector.inject(ToastrService);
+    spyOn(toastrService, 'success').and.stub();
+    spyOn(toastrService, 'error').and.stub();
 
     handler = injector.inject(DefaultHttpResponseHandler);
   });
@@ -43,7 +43,7 @@ describe('DefaultHttpResponseHandler', () => {
     const error = new HttpRequestError('/', 500, 'Something went wrong', localizedMessage);
     handler.handleError(error);
 
-    expect(notificationsService.error).toHaveBeenCalledWith('', localizedMessage);
+    expect(toastrService.error).toHaveBeenCalledWith(localizedMessage);
   });
 
   it('should throw error on error handle when error object is null', () => {
@@ -53,6 +53,6 @@ describe('DefaultHttpResponseHandler', () => {
   it('should show success notification on success handle', () => {
     const message = 'Success!';
     handler.handleSuccess(message);
-    expect(notificationsService.success).toHaveBeenCalledWith('', message);
+    expect(toastrService.success).toHaveBeenCalledWith(message);
   });
 });

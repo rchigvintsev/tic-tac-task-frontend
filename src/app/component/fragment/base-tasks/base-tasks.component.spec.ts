@@ -183,7 +183,7 @@ describe('BaseTasksComponent', () => {
     const task2 = component.tasks[1];
 
     component.onTaskCompleteCheckboxChange(task1);
-    tick(400);
+    tick(1000);
 
     await fixture.whenStable();
     fixture.detectChanges();
@@ -194,7 +194,7 @@ describe('BaseTasksComponent', () => {
 
   it('should update task counters on task complete', fakeAsync(async () => {
     component.onTaskCompleteCheckboxChange(component.tasks[0]);
-    tick(400);
+    tick(1000);
     await fixture.whenStable();
     fixture.detectChanges();
     expect(taskService.updateTaskCounters).toHaveBeenCalled();
