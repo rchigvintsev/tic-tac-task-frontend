@@ -52,6 +52,7 @@ import {SidenavMenuComponent} from '../component/fragment/sidenav-menu/sidenav-m
 import {ConfirmationDialogComponent} from '../component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator/loading-indicator.component';
+import {AccountComponent} from '../component/account/account.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {FocusedDirective} from '../component/focused.directive';
@@ -119,6 +120,7 @@ export class TestSupport {
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
     LoadingIndicatorComponent,
+    AccountComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,
