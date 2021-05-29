@@ -108,5 +108,6 @@
   "task_list_saved": "Task list is saved",
   "task_list_completed": "Task list is completed",
   "task_list_deleted": "Task list is deleted",
-  "changed": "changed"
+  "changed": "changed",
+  "settings": "Settings"
 }

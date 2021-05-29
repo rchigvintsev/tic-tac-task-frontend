@@ -48,6 +48,9 @@
         </button>
 
         <mat-menu #profileActions="matMenu">
+          <a mat-menu-item id="settings_menu_item" [routerLink]="['/', i18nService.currentLanguage.code, 'account']">
+            {{ 'settings' | translate }}
+          </a>
           <button mat-menu-item id="sign_out_menu_item" (click)="onSignOutButtonClick()">
             {{ 'sign_out' | translate }}
           </button>

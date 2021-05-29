@@ -7,6 +7,7 @@ import {TaskListTasksComponent} from './component/task-list-tasks/task-list-task
 import {TaskDetailsComponent} from './component/task-details/task-details.component';
 import {SigninComponent} from './component/signin/signin.component';
 import {SignupComponent} from './component/signup/signup.component';
+import {AccountComponent} from './component/account/account.component';
 import {PasswordResetComponent} from './component/password-reset/password-reset.component';
 import {PasswordResetConfirmationComponent} from './component/password-reset-confirmation/password-reset-confirmation.component';
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
@@ -34,6 +35,7 @@ export const routes: Routes = [
     component: DummyComponent,
     canActivate: [OAuth2AuthorizationCallbackRouteGuard]
   },
+  {path: 'account', component: AccountComponent, canActivate: [AuthenticatedOnlyRouteGuard]},
   {path: 'account/password/reset', component: PasswordResetComponent, canActivate: [UnauthenticatedOnlyRouteGuard]},
   {
     path: 'account/password/reset/confirmation',

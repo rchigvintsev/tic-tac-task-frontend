@@ -32,8 +32,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(private router: Router,
-              private i18nService: I18nService,
+  constructor(public i18nService: I18nService,
+              private router: Router,
               private authenticationService: AuthenticationService,
               media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -41,6 +41,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private static isErrorPage(url: string): boolean {
     return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
+  }
+
+  private static isAccountPage(url: string): boolean {
+    return /^(\/[a-z]{2})?\/account$/.test(url);
   }
 
   ngOnInit() {
@@ -83,7 +87,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.principal && !AppComponent.isErrorPage(event.url);
+      this.showSidenav = this.principal
+        && !(AppComponent.isErrorPage(event.url) || AppComponent.isAccountPage(event.url));
     }
   }
 

@@ -139,6 +139,11 @@ describe('AppComponent', () => {
     expect(component.showSidenav).toBeFalsy();
   });
 
+  it('should hide sidenav on account page', () => {
+    component.onRouterEvent(new NavigationEnd(1, '/account', null));
+    expect(component.showSidenav).toBeFalsy();
+  });
+
   it('should switch language', () => {
     component.onLanguageButtonClick(new Language('en', null));
     expect(router.navigateByUrl).toHaveBeenCalled();

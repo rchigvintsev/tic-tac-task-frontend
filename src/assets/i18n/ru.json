@@ -108,5 +108,6 @@
   "task_list_saved": "Список задач сохранён",
   "task_list_completed": "Список задач завершён",
   "task_list_deleted": "Список задач удалён",
-  "changed": "изменён"
+  "changed": "изменён",
+  "settings": "Настройки"
 }
