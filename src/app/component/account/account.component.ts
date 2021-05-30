@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-
-import {AuthenticatedPrincipal} from '../../security/authenticated-principal';
 import {AuthenticationService} from '../../service/authentication.service';
+import {User} from '../../model/user';
 
 @Component({
   selector: 'app-account',
@@ -9,13 +8,13 @@ import {AuthenticationService} from '../../service/authentication.service';
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
+  userFormModel = new User();
+
   constructor(private authenticationService: AuthenticationService) {
+    const principal = authenticationService.getPrincipal();
+    this.userFormModel.fullName = principal.getName();
   }
 
   ngOnInit(): void {
-  }
-
-  get principal(): AuthenticatedPrincipal {
-    return this.authenticationService.getPrincipal();
   }
 }

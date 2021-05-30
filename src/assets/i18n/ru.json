@@ -109,5 +109,6 @@
   "task_list_completed": "Список задач завершён",
   "task_list_deleted": "Список задач удалён",
   "changed": "изменён",
-  "settings": "Настройки"
+  "settings": "Настройки",
+  "account_settings": "Настройки аккаунта"
 }

@@ -109,5 +109,6 @@
   "task_list_completed": "Task list is completed",
   "task_list_deleted": "Task list is deleted",
   "changed": "changed",
-  "settings": "Settings"
+  "settings": "Settings",
+  "account_settings": "Account settings"
 }
