@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+
+import {I18nService} from '../../service/i18n.service';
 import {AuthenticationService} from '../../service/authentication.service';
 import {User} from '../../model/user';
 
@@ -10,7 +12,7 @@ import {User} from '../../model/user';
 export class AccountComponent implements OnInit {
   userFormModel = new User();
 
-  constructor(private authenticationService: AuthenticationService) {
+  constructor(public i18nService: I18nService, private authenticationService: AuthenticationService) {
     const principal = authenticationService.getPrincipal();
     this.userFormModel.fullName = principal.getName();
   }

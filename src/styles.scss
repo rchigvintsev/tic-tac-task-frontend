@@ -174,27 +174,24 @@ body {
   }
 
   mat-card {
+    .mat-card-header {
+      .mat-card-title {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        margin-left: 8px;
+        flex-grow: 1;
+
+        form {
+          mat-form-field {
+            width: 100%;
+          }
+        }
+      }
+    }
+
     form {
       display: flex;
       flex-direction: column;
-    }
-  }
-
-  .header-row {
-    display: flex;
-    flex-direction: row;
-
-    .mat-card-title {
-      margin-top: 10px;
-      margin-bottom: 15px;
-      margin-left: 8px;
-      flex-grow: 1;
-
-      form {
-        mat-form-field {
-          width: 100%;
-        }
-      }
     }
   }
 

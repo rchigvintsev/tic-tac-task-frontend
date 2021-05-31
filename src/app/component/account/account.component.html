@@ -1,8 +1,12 @@
 <div fxFlex fxLayout="row" fxLayoutAlign="center none">
   <mat-card fxFlex="100" fxFlex.gt-sm="80">
-    <mat-card-header>
+    <div fxLayout="row" class="mat-card-header">
       <mat-card-title>{{ 'account_settings' | translate }}</mat-card-title>
-    </mat-card-header>
+
+      <a mat-icon-button aria-label="Close button" [routerLink]="['/', i18nService.currentLanguage.code, 'task']">
+        <mat-icon>close</mat-icon>
+      </a>
+    </div>
 
     <mat-card-content>
       <div fxFlex fxLayout="row" fxLayout.lt-md="column">
