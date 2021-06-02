@@ -5,6 +5,7 @@ import {TestSupport} from '../test/test-support';
 import {ConfigService} from './config.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
 import {UserService} from './user.service';
+import {User} from '../model/user';
 
 describe('UserService', () => {
   let httpMock: HttpTestingController;
@@ -27,7 +28,7 @@ describe('UserService', () => {
   });
 
   it('should be created', () => {
-    const service: UserService = TestBed.get(UserService);
+    const service: UserService = TestBed.inject(UserService);
     expect(service).toBeTruthy();
   });
 
@@ -55,5 +56,22 @@ describe('UserService', () => {
     const request = httpMock.expectOne(`${userService.baseUrl}/${userId}/password/reset/confirmation/${token}`);
     expect(request.request.method).toBe('POST');
     request.flush(null);
+  });
+
+  it('should update user', done => {
+    const testUser = new User().deserialize({id: 1, email: 'alice@mail.com'});
+
+    userService.updateUser(testUser).subscribe(user => {
+      expect(user).toEqual(testUser);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${userService.baseUrl}/${testUser.id}`);
+    expect(request.request.method).toBe('PUT');
+    request.flush(testUser);
+  });
+
+  it('should throw error on user update when user is null', () => {
+    expect(() => userService.updateUser(null)).toThrowError('User must not be null or undefined');
   });
 });

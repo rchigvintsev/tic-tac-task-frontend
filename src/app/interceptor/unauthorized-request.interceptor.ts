@@ -18,7 +18,7 @@ export class UnauthorizedRequestInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError(error => {
         if (error instanceof UnauthorizedRequestError && !this.pageNavigationService.isOnSigninPage()) {
-          this.authenticationService.removePrincipal();
+          this.authenticationService.removeUser();
           this.pageNavigationService.navigateToSigninPage().then();
           return EMPTY;
         }

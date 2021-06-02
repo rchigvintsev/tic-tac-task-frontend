@@ -21,29 +21,29 @@
         </mat-menu>
       </div>
 
-      <div *ngIf="principal" class="profile-info-container" [class.right-margin-8]="mobileQuery.matches">
+      <div *ngIf="user" class="profile-info-container" [class.right-margin-8]="mobileQuery.matches">
         <button mat-button fxShow="true" fxHide.lt-sm="true" [matMenuTriggerFor]="profileActions">
-          <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
+          <img *ngIf="user.profilePictureUrl; else identicon" [src]="user.profilePictureUrl"
                alt="avatar" class="avatar round"/>
 
           <ng-template #identicon>
-            <svg [attr.data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+            <svg [attr.data-jdenticon-value]="user.email" class="avatar"></svg>
           </ng-template>
 
-          {{ principal.getName() }}
+          {{ user.fullName }}
         </button>
 
         <button mat-button
                 fxHide="true"
                 fxShow.lt-sm="true"
                 class="avatar-button"
-                [style.border-radius]="principal.getProfilePictureUrl() ? '50%' : '0'"
+                [style.border-radius]="user.profilePictureUrl ? '50%' : '0'"
                 [matMenuTriggerFor]="profileActions">
-          <img *ngIf="principal.getProfilePictureUrl(); else identicon" [src]="principal.getProfilePictureUrl()"
+          <img *ngIf="user.profilePictureUrl; else identicon" [src]="user.profilePictureUrl"
                alt="avatar" class="avatar round"/>
 
           <ng-template #identicon>
-            <svg [attr.data-jdenticon-value]="principal.getEmail()" class="avatar"></svg>
+            <svg [attr.data-jdenticon-value]="user.email" class="avatar"></svg>
           </ng-template>
         </button>
 

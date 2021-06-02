@@ -55,7 +55,7 @@ describe('SigninComponent', () => {
 
     authenticationService = injector.inject(AuthenticationService);
     spyOn(authenticationService, 'signIn').and.callFake(username => of({sub: username}));
-    spyOn(authenticationService, 'setPrincipal').and.callThrough();
+    spyOn(authenticationService, 'setUser').and.callThrough();
 
     router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
@@ -84,7 +84,7 @@ describe('SigninComponent', () => {
     fixture.detectChanges();
 
     component.onSigninFormSubmit();
-    expect(authenticationService.setPrincipal).toHaveBeenCalled();
+    expect(authenticationService.setUser).toHaveBeenCalled();
   });
 
   it('should navigate to home page on sign in', async () => {

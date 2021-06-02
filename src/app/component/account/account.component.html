@@ -21,6 +21,7 @@
                        name="fullName"
                        type="text"
                        [(ngModel)]="userFormModel.fullName"
+                       (blur)="onFullNameInputBlur()"
                        placeholder="{{ 'name' | translate }}"
                        maxlength="50"
                        required

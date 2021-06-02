@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
@@ -10,6 +10,7 @@ import {LoadingIndicatorService} from './loading-indicator.service';
 import {HttpRequestError} from '../error/http-request.error';
 import {HttpContentOptions} from '../util/http-content-options';
 import {Assert} from '../util/assert';
+import {User} from '../model/user';
 
 @Injectable({providedIn: 'root'})
 export class UserService {
@@ -54,6 +55,14 @@ export class UserService {
           }
         }
       })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
+  updateUser(user: User, showLoadingIndicator = true): Observable<User> {
+    Assert.notNullOrUndefined(user, 'User must not be null or undefined');
+    const observable = this.http.put<any>(`${this.baseUrl}/${user.id}`, user.serialize(), HttpContentOptions.JSON).pipe(
+      map(response => new User().deserialize(response))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }

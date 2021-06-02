@@ -1,30 +1,13 @@
 import {AbstractEntity} from './abstract-entity';
-import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 import {Objects} from '../util/objects';
 
-export class User extends AbstractEntity<User> implements AuthenticatedPrincipal {
+export class User extends AbstractEntity<User> {
   id: number;
   email: string;
   password: string;
   fullName: string;
   profilePictureUrl: string;
   validUntilSeconds: number;
-
-  getId(): number {
-    return this.id;
-  }
-
-  getEmail(): string {
-    return this.email;
-  }
-
-  getName(): string {
-    return this.fullName;
-  }
-
-  getProfilePictureUrl(): string {
-    return this.profilePictureUrl;
-  }
 
   isValid(): boolean {
     return this.validUntilSeconds && Math.round(Date.now() / 1000) < this.validUntilSeconds;

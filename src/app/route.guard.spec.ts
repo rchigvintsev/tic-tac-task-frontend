@@ -127,7 +127,7 @@ describe('RouteGuard', () => {
       expect(router.navigate).toHaveBeenCalledWith(['en']);
     });
 
-    it('should set authenticated principal', () => {
+    it('should set authenticated user', () => {
       const nextDay = moment().utc().add(1, 'days');
       const claims = {
         sub: '1',
@@ -143,13 +143,13 @@ describe('RouteGuard', () => {
 
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
 
-      const principal = authenticationService.getPrincipal();
-      expect(principal).not.toBeNull();
-      expect(principal.isValid()).toBeTruthy();
-      expect(principal.getId()).toEqual(claims.sub);
-      expect(principal.getEmail()).toEqual(claims.email);
-      expect(principal.getName()).toEqual(claims.name);
-      expect(principal.getProfilePictureUrl()).toEqual(claims.picture);
+      const user = authenticationService.getUser();
+      expect(user).not.toBeNull();
+      expect(user.isValid()).toBeTruthy();
+      expect(user.id).toEqual(claims.sub);
+      expect(user.email).toEqual(claims.email);
+      expect(user.fullName).toEqual(claims.name);
+      expect(user.profilePictureUrl).toEqual(claims.picture);
     });
   });
 

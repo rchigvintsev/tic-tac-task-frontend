@@ -110,5 +110,7 @@
   "task_list_deleted": "Список задач удалён",
   "changed": "изменён",
   "settings": "Настройки",
-  "account_settings": "Настройки аккаунта"
+  "account_settings": "Настройки аккаунта",
+  "failed_to_save_account_settings": "Не удаётся сохранить настройки аккаунта",
+  "account_settings_saved": "Настройки аккаунта сохранены"
 }

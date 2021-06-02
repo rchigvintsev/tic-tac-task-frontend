@@ -10,7 +10,7 @@ import {LoadingIndicatorService} from './loading-indicator.service';
 import {Config} from '../model/config';
 import {User} from '../model/user';
 
-const PRINCIPAL_KEY = 'principal';
+const AUTHENTICATED_USER_KEY = 'authenticated-user';
 
 describe('AuthenticationService', () => {
   let injector: TestBed;
@@ -19,7 +19,7 @@ describe('AuthenticationService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    localStorage.removeItem(PRINCIPAL_KEY);
+    localStorage.removeItem(AUTHENTICATED_USER_KEY);
 
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
@@ -44,37 +44,37 @@ describe('AuthenticationService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should treat current user authenticated when valid authenticated principal is present', () => {
+  it('should treat current user authenticated when valid authenticated user is present', () => {
     const nextDay = moment().utc().add(1, 'days');
     const user = new User().deserialize({
       email: 'john.doe@mail.com',
       validUntilSeconds: Math.round(nextDay.toDate().getTime() / 1000)
     });
-    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
+    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
     expect(service.isUserSignedIn()).toBeTruthy();
   });
 
-  it('should treat current user unauthenticated when authenticated principal is not set', () => {
+  it('should treat current user unauthenticated when authenticated user is not set', () => {
     expect(service.isUserSignedIn()).toBeFalsy();
   });
 
-  it('should treat current user unauthenticated when authenticated principal is invalid', () => {
-    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(new User()));
+  it('should treat current user unauthenticated when authenticated user is invalid', () => {
+    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(new User()));
     expect(service.isUserSignedIn()).toBeFalsy();
   });
 
-  it('should return authenticated principal', () => {
+  it('should return authenticated user', () => {
     const user = new User().deserialize({validUntilSeconds: Math.round(Date.now() / 1000) + 60 * 60});
-    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(user));
-    expect(service.getPrincipal()).not.toBeNull();
+    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
+    expect(service.getUser()).not.toBeNull();
   });
 
-  it('should return null on principal get when authenticated principal is not set', () => {
-    expect(service.getPrincipal()).toBeNull();
+  it('should return null on user get when authenticated user is not set', () => {
+    expect(service.getUser()).toBeNull();
   });
 
-  it('should throw error on principal set when principal is null', () => {
-    expect(() => service.setPrincipal(null)).toThrowError('Principal must not be null or undefined');
+  it('should throw error on user set when user is null', () => {
+    expect(() => service.setUser(null)).toThrowError('User must not be null or undefined');
   });
 
   it('should sign out', () => {

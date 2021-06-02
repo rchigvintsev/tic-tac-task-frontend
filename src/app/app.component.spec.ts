@@ -64,7 +64,7 @@ describe('AppComponent', () => {
     user.fullName = 'John Doe';
     user.profilePictureUrl = 'https://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
-    authenticationService.setPrincipal(user);
+    authenticationService.setUser(user);
   });
 
   it('should create the app', () => {
@@ -82,32 +82,32 @@ describe('AppComponent', () => {
   });
 
   it('should render current user\'s name in toolbar', () => {
-    const principal = authenticationService.getPrincipal();
+    const user = authenticationService.getUser();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('.page > header > mat-toolbar > div.profile-info-container > button');
-    expect(element.textContent.trim()).toEqual(principal.getName());
+    expect(element.textContent.trim()).toEqual(user.fullName);
   });
 
   it('should render current user\'s avatar in toolbar', () => {
-    const principal = authenticationService.getPrincipal();
+    const user = authenticationService.getUser();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('mat-toolbar > div.profile-info-container img.avatar');
-    expect(element.getAttribute('src')).toBe(principal.getProfilePictureUrl());
+    expect(element.getAttribute('src')).toBe(user.profilePictureUrl);
   });
 
   it('should render user\'s identicon in toolbar when user does not have a profile picture URL', () => {
-    const principal = authenticationService.getPrincipal();
-    (principal as User).profilePictureUrl = null;
-    authenticationService.setPrincipal(principal);
+    const user = authenticationService.getUser();
+    user.profilePictureUrl = null;
+    authenticationService.setUser(user);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     const element = compiled.querySelector('mat-toolbar > div.profile-info-container svg.avatar');
-    expect(element.getAttribute('data-jdenticon-value')).toBe(principal.getEmail());
+    expect(element.getAttribute('data-jdenticon-value')).toBe(user.email);
   });
 
   it('should sign out on corresponding menu item select', () => {
@@ -129,7 +129,7 @@ describe('AppComponent', () => {
   });
 
   it('should hide sidenav when user is not authenticated', () => {
-    authenticationService.removePrincipal();
+    authenticationService.removeUser();
     component.onRouterEvent(new NavigationEnd(1, '/', null));
     expect(component.showSidenav).toBeFalsy();
   });

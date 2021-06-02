@@ -10,12 +10,11 @@ import {User} from '../model/user';
 import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
-import {AuthenticatedPrincipal} from '../security/authenticated-principal';
 import {HttpRequestError} from '../error/http-request.error';
 import {HttpContentOptions} from '../util/http-content-options';
 import {Assert} from '../util/assert';
 
-const PRINCIPAL_KEY = 'principal';
+const AUTHENTICATED_USER_KEY = 'authenticated-user';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
@@ -28,34 +27,34 @@ export class AuthenticationService {
               private loadingIndicatorService: LoadingIndicatorService) {
   }
 
-  getPrincipal(): AuthenticatedPrincipal {
+  getUser(): User {
     if (!this.user) {
-      const principal = localStorage.getItem(PRINCIPAL_KEY);
-      if (principal) {
-        this.user = new User().deserialize(JSON.parse(principal));
+      const user = localStorage.getItem(AUTHENTICATED_USER_KEY);
+      if (user) {
+        this.user = new User().deserialize(JSON.parse(user));
       }
     }
     if (this.user && !this.user.isValid()) {
-      this.removePrincipal();
+      this.removeUser();
     }
     return this.user;
   }
 
-  setPrincipal(principal: AuthenticatedPrincipal) {
-    Assert.notNullOrUndefined(principal, 'Principal must not be null or undefined');
-    localStorage.setItem(PRINCIPAL_KEY, JSON.stringify(principal));
+  setUser(user: User) {
+    Assert.notNullOrUndefined(user, 'User must not be null or undefined');
+    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
   }
 
-  removePrincipal() {
-    localStorage.removeItem(PRINCIPAL_KEY);
+  removeUser() {
+    localStorage.removeItem(AUTHENTICATED_USER_KEY);
     this.user = null;
   }
 
-  parseAccessTokenClaims(encodedClaims: string): AuthenticatedPrincipal {
+  parseAccessTokenClaims(encodedClaims: string): User {
     return JSON.parse(this.jwtHelper.urlBase64Decode(encodedClaims));
   }
 
-  createPrincipal(claims: any) {
+  createUser(claims: any) {
     const user = new User();
     user.id = claims.sub;
     user.email = claims.email;
@@ -66,7 +65,7 @@ export class AuthenticationService {
   }
 
   isUserSignedIn(): boolean {
-    return this.getPrincipal() != null;
+    return this.getUser() != null;
   }
 
   signIn(username: string, password: string, showLoadingIndicator = true): Observable<any> {
@@ -95,7 +94,7 @@ export class AuthenticationService {
     const url = `${this.config.apiBaseUrl}/logout`;
     const observable = this.httpClient.post<any>(url, null, HttpContentOptions.JSON).pipe(
       tap({
-        complete: () => this.removePrincipal(),
+        complete: () => this.removeUser(),
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
             error.localizedMessage = this.i18nService.translate('failed_to_sign_out');

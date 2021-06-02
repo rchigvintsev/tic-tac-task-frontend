@@ -13,7 +13,7 @@ import * as moment from 'moment';
 import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';
-import {AuthenticatedPrincipal} from './security/authenticated-principal';
+import {User} from './model/user';
 
 @Component({
   selector: 'app-root',
@@ -67,8 +67,8 @@ export class AppComponent implements OnInit, OnDestroy {
     return this.i18nService.currentLanguage;
   }
 
-  get principal(): AuthenticatedPrincipal {
-    return this.authenticationService.getPrincipal();
+  get user(): User {
+    return this.authenticationService.getUser();
   }
 
   onSignOutButtonClick() {
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.principal
+      this.showSidenav = this.user
         && !(AppComponent.isErrorPage(event.url) || AppComponent.isAccountPage(event.url));
     }
   }
