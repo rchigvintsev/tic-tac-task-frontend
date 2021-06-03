@@ -1,5 +1,7 @@
 import {ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 
+import {of} from 'rxjs';
+
 import {AccountComponent} from './account.component';
 import {TestSupport} from '../../test/test-support';
 import {AuthenticationService} from '../../service/authentication.service';
@@ -7,10 +9,12 @@ import {ConfigService} from '../../service/config.service';
 import {User} from '../../model/user';
 import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
+import {UserService} from '../../service/user.service';
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
   let fixture: ComponentFixture<AccountComponent>;
+  let userService: UserService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,6 +40,9 @@ describe('AccountComponent', () => {
     const authenticationService = injector.inject(AuthenticationService);
     authenticationService.setUser(user);
 
+    userService = injector.inject(UserService);
+    spyOn(userService, 'updateUser').and.callFake(u => of(u));
+
     fixture = TestBed.createComponent(AccountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -43,5 +50,13 @@ describe('AccountComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should save user on full name input blur', async () => {
+    await fixture.whenStable();
+    component.userFormModel.fullName = 'Doe John';
+    component.onFullNameInputBlur();
+    fixture.detectChanges();
+    expect(userService.updateUser).toHaveBeenCalled();
   });
 });
