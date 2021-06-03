@@ -46,10 +46,15 @@ export class AccountComponent implements OnInit {
         })
       ).subscribe(u => {
         this.userFormModel = u;
+        this.setAuthenticatedUser(u)
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('account_settings_saved'));
-      }, (error: HttpRequestError) => {
-        this.httpResponseHandler.handleError(error);
-      });
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
+  }
+
+  private setAuthenticatedUser(user: User) {
+    const currentUser = this.authenticationService.getUser();
+    user.validUntilSeconds = currentUser.validUntilSeconds;
+    this.authenticationService.setUser(user);
   }
 }

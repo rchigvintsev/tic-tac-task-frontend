@@ -14,6 +14,7 @@ import {UserService} from '../../service/user.service';
 describe('AccountComponent', () => {
   let component: AccountComponent;
   let fixture: ComponentFixture<AccountComponent>;
+  let authenticationService: AuthenticationService;
   let userService: UserService;
 
   beforeEach(async () => {
@@ -37,8 +38,9 @@ describe('AccountComponent', () => {
     user.profilePictureUrl = 'https://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
 
-    const authenticationService = injector.inject(AuthenticationService);
-    authenticationService.setUser(user);
+    authenticationService = injector.inject(AuthenticationService);
+    spyOn(authenticationService, 'getUser').and.returnValue(user);
+    spyOn(authenticationService, 'setUser').and.stub();
 
     userService = injector.inject(UserService);
     spyOn(userService, 'updateUser').and.callFake(u => of(u));
@@ -59,4 +61,12 @@ describe('AccountComponent', () => {
     fixture.detectChanges();
     expect(userService.updateUser).toHaveBeenCalled();
   });
+
+  it('should update authenticated user on user save', async () => {
+    await fixture.whenStable();
+    component.userFormModel.fullName = 'Doe John';
+    component.onFullNameInputBlur();
+    fixture.detectChanges();
+    expect(authenticationService.setUser).toHaveBeenCalled();
+  })
 });
