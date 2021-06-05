@@ -10,10 +10,15 @@
 
     <mat-card-content>
       <div fxFlex fxLayout="row" fxLayout.lt-md="column">
-        <div fxFlex="100" fxFlex.gt-sm="35">
+        <div fxFlex="100" fxFlex.gt-sm="30" fxLayoutAlign="center center">
+          <img *ngIf="userFormModel.profilePictureUrl; else identicon" [src]="userFormModel.profilePictureUrl"
+               alt="avatar" class="avatar"/>
 
+          <ng-template #identicon>
+            <svg [attr.data-jdenticon-value]="userFormModel.email" class="avatar"></svg>
+          </ng-template>
         </div>
-        <div fxFlex="100" fxFlex.gt-sm="65">
+        <div fxFlex="100" fxFlex.gt-sm="70">
           <form>
             <mat-form-field>
               <label>
