@@ -1,5 +1,5 @@
 <div fxFlex fxLayout="row" fxLayoutAlign="center none">
-  <mat-card fxFlex="100" fxFlex.gt-sm="80">
+  <mat-card class="account-settings-container">
     <div fxLayout="row" class="mat-card-header">
       <mat-card-title>{{ 'account_settings' | translate }}</mat-card-title>
 
@@ -9,8 +9,8 @@
     </div>
 
     <mat-card-content>
-      <div fxFlex fxLayout="row" fxLayout.lt-md="column">
-        <div fxFlex="100" fxFlex.gt-sm="30" fxLayoutAlign="center center">
+      <div fxFlex fxLayout="row" fxLayout.lt-sm="column">
+        <div fxFlex="30" fxFlex.lt-sm="100" fxLayoutAlign="center center">
           <img *ngIf="userFormModel.profilePictureUrl; else identicon" [src]="userFormModel.profilePictureUrl"
                alt="avatar" class="avatar"/>
 
@@ -18,7 +18,7 @@
             <svg [attr.data-jdenticon-value]="userFormModel.email" class="avatar"></svg>
           </ng-template>
         </div>
-        <div fxFlex="100" fxFlex.gt-sm="70">
+        <div fxFlex="70" fxFlex.lt-sm="100">
           <form>
             <mat-form-field>
               <label>

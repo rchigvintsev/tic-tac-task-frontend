@@ -1,5 +1,10 @@
-.avatar {
-  max-width: 150px;
-  max-height: 150px;
-  padding: 16px;
+.account-settings-container {
+  width: 100%;
+  max-width: 750px;
+
+  .avatar {
+    max-width: 150px;
+    max-height: 150px;
+    padding: 16px;
+  }
 }
