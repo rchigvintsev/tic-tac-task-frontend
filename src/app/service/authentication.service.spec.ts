@@ -66,15 +66,15 @@ describe('AuthenticationService', () => {
   it('should return authenticated user', () => {
     const user = new User().deserialize({validUntilSeconds: Math.round(Date.now() / 1000) + 60 * 60});
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
-    expect(service.getUser()).not.toBeNull();
+    expect(service.getAuthenticatedUser()).not.toBeNull();
   });
 
   it('should return null on user get when authenticated user is not set', () => {
-    expect(service.getUser()).toBeNull();
+    expect(service.getAuthenticatedUser()).toBeNull();
   });
 
   it('should throw error on user set when user is null', () => {
-    expect(() => service.setUser(null)).toThrowError('User must not be null or undefined');
+    expect(() => service.setAuthenticatedUser(null)).toThrowError('User must not be null or undefined');
   });
 
   it('should sign out', () => {
@@ -116,5 +116,22 @@ describe('AuthenticationService', () => {
   it('should throw error on sign up when username is null', () => {
     expect(() => service.signUp('alice@mail.com', null, 'secret'))
       .toThrowError('Username must not be null or undefined');
+  });
+
+  it('should notify about changed authenticated user on authenticated user set', done => {
+    const user = new User();
+    service.onAuthenticatedUserChange.subscribe(u => {
+      expect(u).toBe(user);
+      done();
+    });
+    service.setAuthenticatedUser(user);
+  });
+
+  it('should notify about changed authenticated user on authenticated user remove', done => {
+    service.onAuthenticatedUserChange.subscribe(u => {
+      expect(u).toBeNull();
+      done();
+    });
+    service.removeAuthenticatedUser();
   });
 });

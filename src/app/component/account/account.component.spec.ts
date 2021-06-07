@@ -39,8 +39,8 @@ describe('AccountComponent', () => {
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
 
     authenticationService = injector.inject(AuthenticationService);
-    spyOn(authenticationService, 'getUser').and.returnValue(user);
-    spyOn(authenticationService, 'setUser').and.stub();
+    spyOn(authenticationService, 'getAuthenticatedUser').and.returnValue(user);
+    spyOn(authenticationService, 'setAuthenticatedUser').and.stub();
 
     userService = injector.inject(UserService);
     spyOn(userService, 'updateUser').and.callFake(u => of(u));
@@ -67,6 +67,6 @@ describe('AccountComponent', () => {
     component.userFormModel.fullName = 'Doe John';
     component.onFullNameInputBlur();
     fixture.detectChanges();
-    expect(authenticationService.setUser).toHaveBeenCalled();
+    expect(authenticationService.setAuthenticatedUser).toHaveBeenCalled();
   })
 });

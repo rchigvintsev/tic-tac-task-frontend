@@ -30,7 +30,7 @@ describe('RouteGuard', () => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
-      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}}],
+      providers: [{provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}}],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
@@ -105,7 +105,7 @@ describe('RouteGuard', () => {
   });
 
   describe('OAuth2AuthorizationCallback', () => {
-    let authenticationService;
+    let authenticationService: AuthenticationService;
 
     beforeEach(() => {
       authenticationService = injector.inject(AuthenticationService);
@@ -133,7 +133,7 @@ describe('RouteGuard', () => {
         sub: '1',
         email: 'john.doe@mail.com',
         name: 'John Doe',
-        picture: 'http://example.com/avatar.png',
+        picture: 'https://example.com/avatar.png',
         exp: Math.round(nextDay.toDate().getTime() / 1000)
       };
 
@@ -143,10 +143,10 @@ describe('RouteGuard', () => {
 
       expect(guard.canActivate(snapshotMock, null)).toBeTruthy();
 
-      const user = authenticationService.getUser();
+      const user = authenticationService.getAuthenticatedUser();
       expect(user).not.toBeNull();
       expect(user.isValid()).toBeTruthy();
-      expect(user.id).toEqual(claims.sub);
+      expect(user.id).toEqual(parseInt(claims.sub, 10));
       expect(user.email).toEqual(claims.email);
       expect(user.fullName).toEqual(claims.name);
       expect(user.profilePictureUrl).toEqual(claims.picture);

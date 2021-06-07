@@ -47,8 +47,8 @@ export class SigninComponent extends BaseSignComponent implements OnInit {
   }
 
   private onSignIn(accessTokenClaims: any) {
-    const user = this.authenticationService.createUser(accessTokenClaims);
-    this.authenticationService.setUser(user);
+    const user = this.authenticationService.createAuthenticatedUser(accessTokenClaims);
+    this.authenticationService.setAuthenticatedUser(user);
     this.pageNavigationService.navigateToHomePage().then();
   }
 

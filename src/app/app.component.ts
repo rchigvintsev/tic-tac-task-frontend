@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   mobileQuery: MediaQueryList;
   showSidenav = false;
   availableLanguages: Language[];
+  authenticatedUser: User;
 
   private componentDestroyed = new Subject<boolean>();
 
@@ -49,12 +50,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.availableLanguages = this.i18nService.availableLanguages;
+    this.authenticatedUser = this.authenticationService.getAuthenticatedUser();
+
     moment.locale(this.i18nService.currentLanguage.code);
     this.i18nService.onLanguageChange
       .pipe(takeUntil(this.componentDestroyed))
-      .subscribe((event: LangChangeEvent) => {
-        moment.locale(event.lang);
-      });
+      .subscribe((event: LangChangeEvent) => moment.locale(event.lang));
+    this.authenticationService.onAuthenticatedUserChange
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(user => this.onAuthenticatedUserChange(user));
     this.router.events.subscribe((event: RouterEvent) => this.onRouterEvent(event));
   }
 
@@ -65,10 +69,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   get currentLanguage(): Language {
     return this.i18nService.currentLanguage;
-  }
-
-  get user(): User {
-    return this.authenticationService.getUser();
   }
 
   onSignOutButtonClick() {
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.user
+      this.showSidenav = this.authenticatedUser
         && !(AppComponent.isErrorPage(event.url) || AppComponent.isAccountPage(event.url));
     }
   }
@@ -116,6 +116,10 @@ export class AppComponent implements OnInit, OnDestroy {
     if (languageChanged) {
       this.router.navigateByUrl(urlTree).then();
     }
+  }
+
+  private onAuthenticatedUserChange(user: User) {
+    this.authenticatedUser = user;
   }
 }
 

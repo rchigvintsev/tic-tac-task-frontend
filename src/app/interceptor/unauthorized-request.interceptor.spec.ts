@@ -25,7 +25,7 @@ describe('UnauthorizedRequestInterceptor', () => {
     injector = getTestBed();
 
     authenticationService = injector.inject(AuthenticationService);
-    spyOn(authenticationService, 'removeUser').and.stub();
+    spyOn(authenticationService, 'removeAuthenticatedUser').and.stub();
 
     pageNavigationService = injector.inject(PageNavigationService);
     spyOn(pageNavigationService, 'navigateToSigninPage').and.returnValue(Promise.resolve(true));
@@ -38,7 +38,7 @@ describe('UnauthorizedRequestInterceptor', () => {
     const request = new HttpRequest('GET', url);
     const handler = new HttpHandlerMock(() => throwError(new UnauthorizedRequestError(url, 'Unauthorized')));
     await interceptor.intercept(request, handler).toPromise();
-    expect(authenticationService.removeUser).toHaveBeenCalled();
+    expect(authenticationService.removeAuthenticatedUser).toHaveBeenCalled();
   });
 
   it('should navigate to signin page when unauthorized request error is occurred', async () => {

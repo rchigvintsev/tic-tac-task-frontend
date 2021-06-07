@@ -64,7 +64,7 @@ describe('AppComponent', () => {
     user.fullName = 'John Doe';
     user.profilePictureUrl = 'https://example.com/avatar.png';
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
-    authenticationService.setUser(user);
+    authenticationService.setAuthenticatedUser(user);
   });
 
   it('should create the app', () => {
@@ -82,7 +82,7 @@ describe('AppComponent', () => {
   });
 
   it('should render current user\'s name in toolbar', () => {
-    const user = authenticationService.getUser();
+    const user = authenticationService.getAuthenticatedUser();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -91,7 +91,7 @@ describe('AppComponent', () => {
   });
 
   it('should render current user\'s avatar in toolbar', () => {
-    const user = authenticationService.getUser();
+    const user = authenticationService.getAuthenticatedUser();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -100,9 +100,9 @@ describe('AppComponent', () => {
   });
 
   it('should render user\'s identicon in toolbar when user does not have a profile picture URL', () => {
-    const user = authenticationService.getUser();
+    const user = authenticationService.getAuthenticatedUser();
     user.profilePictureUrl = null;
-    authenticationService.setUser(user);
+    authenticationService.setAuthenticatedUser(user);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -129,7 +129,7 @@ describe('AppComponent', () => {
   });
 
   it('should hide sidenav when user is not authenticated', () => {
-    authenticationService.removeUser();
+    authenticationService.removeAuthenticatedUser();
     component.onRouterEvent(new NavigationEnd(1, '/', null));
     expect(component.showSidenav).toBeFalsy();
   });

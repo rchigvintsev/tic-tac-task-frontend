@@ -22,7 +22,7 @@ export class AccountComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private userService: UserService,
               @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler) {
-    const user = authenticationService.getUser();
+    const user = authenticationService.getAuthenticatedUser();
     this.userFormModel = user.clone();
   }
 
@@ -34,7 +34,7 @@ export class AccountComponent implements OnInit {
   }
 
   private saveUser() {
-    const user = this.authenticationService.getUser();
+    const user = this.authenticationService.getAuthenticatedUser();
     if (this.userFormModel.fullName !== user.fullName) {
       this.userService.updateUser(this.userFormModel).pipe(
         tap({
@@ -45,7 +45,7 @@ export class AccountComponent implements OnInit {
           }
         })
       ).subscribe(u => {
-        this.userFormModel = u;
+        this.userFormModel = u.clone();
         this.setAuthenticatedUser(u)
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('account_settings_saved'));
       }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
@@ -53,8 +53,8 @@ export class AccountComponent implements OnInit {
   }
 
   private setAuthenticatedUser(user: User) {
-    const currentUser = this.authenticationService.getUser();
+    const currentUser = this.authenticationService.getAuthenticatedUser();
     user.validUntilSeconds = currentUser.validUntilSeconds;
-    this.authenticationService.setUser(user);
+    this.authenticationService.setAuthenticatedUser(user);
   }
 }
