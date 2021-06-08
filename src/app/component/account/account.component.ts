@@ -8,6 +8,7 @@ import {UserService} from '../../service/user.service';
 import {User} from '../../model/user';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
+import {Strings} from '../../util/strings';
 
 
 @Component({
@@ -35,6 +36,10 @@ export class AccountComponent implements OnInit {
 
   private saveUser() {
     const user = this.authenticationService.getAuthenticatedUser();
+    if (Strings.isBlank(this.userFormModel.fullName)) {
+      this.userFormModel.fullName = user.fullName;
+    }
+
     if (this.userFormModel.fullName !== user.fullName) {
       this.userService.updateUser(this.userFormModel).pipe(
         tap({

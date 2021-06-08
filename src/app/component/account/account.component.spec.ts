@@ -62,6 +62,14 @@ describe('AccountComponent', () => {
     expect(userService.updateUser).toHaveBeenCalled();
   });
 
+  it('should not save user with blank full name', async () => {
+    await fixture.whenStable();
+    component.userFormModel.fullName = ' ';
+    component.onFullNameInputBlur();
+    fixture.detectChanges();
+    expect(userService.updateUser).not.toHaveBeenCalled();
+  });
+
   it('should update authenticated user on user save', async () => {
     await fixture.whenStable();
     component.userFormModel.fullName = 'Doe John';

@@ -48,6 +48,7 @@ export class AuthenticationService {
   setAuthenticatedUser(user: User) {
     Assert.notNullOrUndefined(user, 'User must not be null or undefined');
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
+    this.user = user;
     this.notifyAuthenticatedUserChanged(user);
   }
 
