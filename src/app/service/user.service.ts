@@ -66,4 +66,14 @@ export class UserService {
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
+
+  updateProfilePicture(user: User, profilePictureFile: File, showLoadingIndicator = true): Observable<string> {
+    Assert.notNullOrUndefined(user, 'User must not be null or undefined');
+    Assert.notNullOrUndefined(profilePictureFile, 'Profile picture file must not be null or undefined');
+    const formData = new FormData();
+    formData.append('profilePicture', profilePictureFile, profilePictureFile.name);
+    const url = `${this.baseUrl}/${user.id}/profile-picture`;
+    const observable = this.http.put<any>(url, formData, {withCredentials: true}).pipe(map(_ => url));
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
 }

@@ -74,4 +74,35 @@ describe('UserService', () => {
   it('should throw error on user update when user is null', () => {
     expect(() => userService.updateUser(null)).toThrowError('User must not be null or undefined');
   });
+
+  it('should update profile picture', done => {
+    const imageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/'
+      + 'lK3Q6wAAAABJRU5ErkJggg==';
+    fetch(imageData).then(response => response.blob()).then(blob => {
+      const testUser = new User().deserialize({id: 1, email: 'alice@mail.com'});
+      const profilePictureFile = new File([blob], 'test.png', {type: 'image/png'});
+      const profilePictureUrl = `${userService.baseUrl}/${testUser.id}/profile-picture`;
+
+      userService.updateProfilePicture(testUser, profilePictureFile).subscribe(result => {
+        expect(result).toBe(profilePictureUrl);
+        done();
+      });
+
+      const request = httpMock.expectOne(profilePictureUrl);
+      expect(request.request.method).toBe('PUT');
+      request.flush({});
+    });
+  });
+
+  it('should throw error on profile picture update when user is null', () => {
+    const profilePictureFile = {} as File;
+    expect(() => userService.updateProfilePicture(null, profilePictureFile))
+      .toThrowError('User must not be null or undefined');
+  });
+
+  it('should throw error on profile picture update when profile picture file is null', () => {
+    const testUser = new User().deserialize({id: 1, email: 'alice@mail.com'});
+    expect(() => userService.updateProfilePicture(testUser, null))
+      .toThrowError('Profile picture file must not be null or undefined');
+  });
 });
