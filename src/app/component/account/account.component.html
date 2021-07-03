@@ -10,15 +10,31 @@
 
     <mat-card-content>
       <div fxFlex fxLayout="row" fxLayout.lt-sm="column">
-        <div fxFlex="30" fxFlex.lt-sm="100" fxLayoutAlign="center center">
+        <div fxFlex="40" fxFlex.lt-sm="100" fxLayout="column" fxLayoutAlign="center center">
           <img *ngIf="userFormModel.profilePictureUrl; else identicon" [src]="userFormModel.profilePictureUrl"
-               alt="avatar" class="avatar"/>
+               alt="profile-picture" class="profile-picture"/>
 
           <ng-template #identicon>
-            <svg [attr.data-jdenticon-value]="userFormModel.email" class="avatar"></svg>
+            <svg [attr.data-jdenticon-value]="userFormModel.email" class="profile-picture"></svg>
           </ng-template>
+
+          <form class="profile-picture-form">
+            <div>
+              <label>
+                <input name="profilePicture" type="file" accept=".jpg, .jpeg, .png" onclick="this.value = null"
+                       (change)="onProfilePictureFileChange($event)">
+              </label>
+            </div>
+
+            <div>
+              <button mat-raised-button type="submit" color="primary" (click)="onProfilePictureFormSubmit()">
+                {{ 'upload_photo' | translate }}
+              </button>
+            </div>
+          </form>
         </div>
-        <div fxFlex="70" fxFlex.lt-sm="100">
+
+        <div fxFlex="60" fxFlex.lt-sm="100">
           <form>
             <mat-form-field>
               <label>

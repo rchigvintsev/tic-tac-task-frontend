@@ -76,5 +76,16 @@ describe('AccountComponent', () => {
     component.onFullNameInputBlur();
     fixture.detectChanges();
     expect(authenticationService.setAuthenticatedUser).toHaveBeenCalled();
-  })
+  });
+
+  it('should update profile picture on profile picture form submit', async () => {
+    const newProfilePictureUrl = 'https://backend.com/users/1/profile-picture';
+    spyOn(userService, 'updateProfilePicture').and.callFake(() => of(newProfilePictureUrl));
+
+    await fixture.whenStable();
+    component.profilePictureFile = {} as File;
+    component.onProfilePictureFormSubmit();
+    fixture.detectChanges();
+    expect(userService.updateProfilePicture).toHaveBeenCalled();
+  });
 });

@@ -18,6 +18,7 @@ import {Strings} from '../../util/strings';
 })
 export class AccountComponent implements OnInit {
   userFormModel = new User();
+  profilePictureFile: File;
 
   constructor(public i18nService: I18nService,
               private authenticationService: AuthenticationService,
@@ -34,6 +35,14 @@ export class AccountComponent implements OnInit {
     this.saveUser();
   }
 
+  onProfilePictureFileChange(event) {
+    this.profilePictureFile = event.target.files[0];
+  }
+
+  onProfilePictureFormSubmit() {
+    this.saveProfilePicture();
+  }
+
   private saveUser() {
     const user = this.authenticationService.getAuthenticatedUser();
     if (Strings.isBlank(this.userFormModel.fullName)) {
@@ -42,18 +51,32 @@ export class AccountComponent implements OnInit {
 
     if (this.userFormModel.fullName !== user.fullName) {
       this.userService.updateUser(this.userFormModel).pipe(
-        tap({
-          error: (error: HttpRequestError) => {
-            if (!error.localizedMessage) {
-              error.localizedMessage = this.i18nService.translate('failed_to_save_account_settings');
-            }
-          }
-        })
+        tap({error: (error: HttpRequestError) => this.provideLocalizedErrorMessageIfEmpty(error)})
       ).subscribe(u => {
         this.userFormModel = u.clone();
         this.setAuthenticatedUser(u)
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('account_settings_saved'));
       }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+    }
+  }
+
+  private saveProfilePicture() {
+    if (this.profilePictureFile) {
+      const user = this.authenticationService.getAuthenticatedUser();
+      this.userService.updateProfilePicture(user, this.profilePictureFile).pipe(
+        tap({error: (error: HttpRequestError) => this.provideLocalizedErrorMessageIfEmpty(error)})
+      ).subscribe(profilePictureUrl => {
+        profilePictureUrl += '?' + Date.now();
+        this.userFormModel.profilePictureUrl = user.profilePictureUrl = profilePictureUrl;
+        this.setAuthenticatedUser(user)
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('account_settings_saved'));
+      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+    }
+  }
+
+  private provideLocalizedErrorMessageIfEmpty(error: HttpRequestError) {
+    if (!error.localizedMessage) {
+      error.localizedMessage = this.i18nService.translate('failed_to_save_account_settings');
     }
   }
 
