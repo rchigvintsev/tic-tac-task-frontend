@@ -36,7 +36,7 @@ export class AccountComponent implements OnInit {
   }
 
   onProfilePictureFileChange(event) {
-    this.profilePictureFile = event.target.files[0];
+    this.profilePictureFile = event ? event.target.files[0] : null;
   }
 
   onProfilePictureFormSubmit() {

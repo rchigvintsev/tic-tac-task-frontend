@@ -21,13 +21,15 @@
           <form class="profile-picture-form">
             <div>
               <label>
-                <input name="profilePicture" type="file" accept=".jpg, .jpeg, .png" onclick="this.value = null"
+                <input #profilePictureInput name="profilePicture" type="file" accept=".jpg, .jpeg, .png"
+                       (click)="profilePictureInput.value = null; onProfilePictureFileChange(null)"
                        (change)="onProfilePictureFileChange($event)">
               </label>
             </div>
 
             <div>
-              <button mat-raised-button type="submit" color="primary" (click)="onProfilePictureFormSubmit()">
+              <button mat-raised-button type="submit" color="primary" (click)="onProfilePictureFormSubmit()"
+                      [disabled]="!profilePictureFile">
                 {{ 'upload_photo' | translate }}
               </button>
             </div>

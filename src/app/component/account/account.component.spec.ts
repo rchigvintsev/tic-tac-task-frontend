@@ -1,4 +1,5 @@
 import {ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
@@ -87,5 +88,23 @@ describe('AccountComponent', () => {
     component.onProfilePictureFormSubmit();
     fixture.detectChanges();
     expect(userService.updateProfilePicture).toHaveBeenCalled();
+  });
+
+  it('should not update profile picture on profile picture form submit when profile picture file is null', async () => {
+    spyOn(userService, 'updateProfilePicture').and.stub();
+
+    await fixture.whenStable();
+    component.profilePictureFile = null;
+    component.onProfilePictureFormSubmit();
+    fixture.detectChanges();
+    expect(userService.updateProfilePicture).not.toHaveBeenCalled();
+  });
+
+  it('should disable profile picture form submit button when profile picture file is null', async () => {
+    await fixture.whenStable();
+    component.profilePictureFile = null;
+    fixture.detectChanges();
+    const submitButton = fixture.debugElement.query(By.css('form.profile-picture-form button[type="submit"]'));
+    expect(submitButton.nativeElement.disabled).toBeTruthy();
   });
 });
