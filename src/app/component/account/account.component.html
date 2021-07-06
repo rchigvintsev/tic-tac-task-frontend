@@ -51,6 +51,17 @@
                        notBlank/>
               </label>
             </mat-form-field>
+
+            <mat-form-field>
+              <label>
+                <input matInput
+                       name="email"
+                       type="email"
+                       [value]="userFormModel.email"
+                       placeholder="{{ 'email' | translate }}"
+                       disabled/>
+              </label>
+            </mat-form-field>
           </form>
         </div>
       </div>
