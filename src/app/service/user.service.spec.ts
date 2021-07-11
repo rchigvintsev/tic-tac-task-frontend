@@ -58,6 +58,14 @@ describe('UserService', () => {
     request.flush(null);
   });
 
+  it('should change password', done => {
+    const testUser = new User().deserialize({id: 1, email: 'alice@mail.com'});
+    userService.changePassword(testUser, 'secret', 's3cret').subscribe(_ => done());
+    const request = httpMock.expectOne(`${userService.baseUrl}/${testUser.id}/password`);
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+  });
+
   it('should update user', done => {
     const testUser = new User().deserialize({id: 1, email: 'alice@mail.com'});
 

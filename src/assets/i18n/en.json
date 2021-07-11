@@ -76,6 +76,7 @@
   "password_reset_confirmed": "Password was changed. Please use it to sign in.",
   "failed_to_confirm_email": "Something went wrong during email confirmation",
   "failed_to_confirm_password_reset": "Something went wrong during password reset confirmation",
+  "failed_to_change_password": "Failed to change password",
   "have_no_account_yet": "Have no account yet?",
   "already_have_account": "Already have an account?",
   "forgot_password": "Forgot password?",

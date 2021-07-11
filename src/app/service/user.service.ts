@@ -44,7 +44,10 @@ export class UserService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  confirmPasswordReset(userId: number, token: string, password: string, showLoadingIndicator = true) {
+  confirmPasswordReset(userId: number,
+                       token: string,
+                       password: string,
+                       showLoadingIndicator = true): Observable<any> {
     const url = `${this.baseUrl}/${userId}/password/reset/confirmation/${token}`;
     const body = 'password=' + encodeURIComponent(password);
     const observable = this.http.post<any>(url, body, HttpContentOptions.FORM).pipe(
@@ -52,6 +55,20 @@ export class UserService {
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
             error.localizedMessage = this.i18nService.translate('failed_to_confirm_password_reset');
+          }
+        }
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
+  changePassword(user: User, currentPassword: string, newPassword: string, showLoadingIndicator = true) {
+    const body = `currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`;
+    const observable = this.http.post<any>(`${this.baseUrl}/${user.id}/password`, body, HttpContentOptions.FORM).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_change_password');
           }
         }
       })
