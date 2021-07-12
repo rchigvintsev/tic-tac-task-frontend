@@ -8,8 +8,8 @@ import {PasswordsMatchValidatorDirective} from './passwords-match.directive';
 @Component({
   template: `
     <form #testForm="ngForm" passwordsMatch>
-      <input name="password" type="password" ngModel>
-      <input name="password-repeat" type="password" ngModel>
+      <input name="newPassword" type="password" ngModel>
+      <input name="newPasswordRepeat" type="password" ngModel>
     </form>
   `
 })
@@ -35,25 +35,25 @@ describe('PasswordsMatchValidatorDirective', () => {
 
   it('should mark form as invalid when passwords do not match', async () => {
     const testForm = component.testForm;
-    const passwordInput = fixture.debugElement.query(By.css('[name=password]'));
-    const passwordRepeatInput = fixture.debugElement.query(By.css('[name=password-repeat]'));
+    const newPasswordInput = fixture.debugElement.query(By.css('[name=newPassword]'));
+    const newPasswordRepeatInput = fixture.debugElement.query(By.css('[name=newPasswordRepeat]'));
 
     await fixture.whenStable();
-    passwordInput.nativeElement.value = '12345';
-    passwordInput.nativeElement.dispatchEvent(new Event('input'));
+    newPasswordInput.nativeElement.value = '12345';
+    newPasswordInput.nativeElement.dispatchEvent(new Event('input'));
 
-    passwordRepeatInput.nativeElement.value = '54321';
-    passwordRepeatInput.nativeElement.dispatchEvent(new Event('input'));
+    newPasswordRepeatInput.nativeElement.value = '54321';
+    newPasswordRepeatInput.nativeElement.dispatchEvent(new Event('input'));
 
     expect(testForm.control.valid).toBeFalsy();
-    expect(testForm.control.hasError('passwordsMatch', ['password'])).toBeTruthy();
-    expect(testForm.control.hasError('passwordsMatch', ['password-repeat'])).toBeTruthy();
+    expect(testForm.control.hasError('passwordsMatch', ['newPassword'])).toBeTruthy();
+    expect(testForm.control.hasError('passwordsMatch', ['newPasswordRepeat'])).toBeTruthy();
 
-    const passwordInputControl = testForm.control.get('password');
+    const passwordInputControl = testForm.control.get('newPassword');
     expect(passwordInputControl.valid).toBeFalsy();
     expect(passwordInputControl.hasError('passwordsMatch')).toBeTruthy();
 
-    const passwordRepeatInputControl = testForm.control.get('password-repeat');
+    const passwordRepeatInputControl = testForm.control.get('newPasswordRepeat');
     expect(passwordRepeatInputControl.valid).toBeFalsy();
     expect(passwordRepeatInputControl.hasError('passwordsMatch')).toBeTruthy();
   });

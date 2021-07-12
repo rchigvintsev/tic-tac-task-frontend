@@ -18,8 +18,8 @@ export class PasswordResetConfirmationComponent implements OnInit {
   @ViewChild('passwordResetConfirmationForm', {read: NgForm})
   passwordResetConfirmationForm: NgForm;
 
-  password: string;
-  repeatedPassword: string;
+  newPassword: string;
+  newPasswordRepeated: string;
 
   private userId: number;
   private token: string;
@@ -41,7 +41,7 @@ export class PasswordResetConfirmationComponent implements OnInit {
 
   onPasswordResetConfirmationFormSubmit() {
     if (this.passwordResetConfirmationForm.valid) {
-      this.userService.confirmPasswordReset(this.userId, this.token, this.password).subscribe(
+      this.userService.confirmPasswordReset(this.userId, this.token, this.newPassword).subscribe(
         _ => this.onPasswordResetConfirm(),
         (error: HttpRequestError) => this.onPasswordResetConfirmError(error)
       );

@@ -59,6 +59,7 @@ import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
 import {AccountComponent} from './component/account/account.component';
+import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
 import {FocusedDirective} from './component/focused.directive';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
@@ -74,9 +75,9 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
 }
 
 export function loadConfig(configService: ConfigService) {
-    return (): Promise<void> => {
-      return configService.loadConfig();
-    };
+  return (): Promise<void> => {
+    return configService.loadConfig();
+  };
 }
 
 export function initIcons(iconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
@@ -117,6 +118,7 @@ registerLocaleData(localeRu, 'ru');
     TagsComponent,
     TaskListsComponent,
     AccountComponent,
+    ChangePasswordComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
     FocusedDirective

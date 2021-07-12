@@ -60,9 +60,9 @@ describe('PasswordResetConfirmationComponent', () => {
   it('should confirm password reset on password reset confirmation form submit', async () => {
     await fixture.whenStable();
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.repeatedPassword = component.password = 'qwerty';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPasswordRepeated = component.newPassword = 'qwerty';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();
@@ -72,9 +72,9 @@ describe('PasswordResetConfirmationComponent', () => {
   it('should navigate to signin page when password reset is confirmed', async () => {
     await fixture.whenStable();
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.repeatedPassword = component.password = 'qwerty';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPasswordRepeated = component.newPassword = 'qwerty';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();
@@ -85,9 +85,9 @@ describe('PasswordResetConfirmationComponent', () => {
   it('should not confirm password reset when password is blank', async () => {
     await fixture.whenStable();
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.repeatedPassword = component.password = ' ';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPasswordRepeated = component.newPassword = ' ';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();
@@ -97,10 +97,10 @@ describe('PasswordResetConfirmationComponent', () => {
   it('should not confirm password reset when passwords do not match', async () => {
     await fixture.whenStable();
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.password = '12345';
-    component.repeatedPassword = '54321';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPassword = '12345';
+    component.newPasswordRepeated = '54321';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();
@@ -115,9 +115,9 @@ describe('PasswordResetConfirmationComponent', () => {
     });
 
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.repeatedPassword = component.password = 'qwerty';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPasswordRepeated = component.newPassword = 'qwerty';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();
@@ -131,9 +131,9 @@ describe('PasswordResetConfirmationComponent', () => {
     });
 
     // For some reason two-way binding does not work in tests when input is placed within form
-    component.repeatedPassword = component.password = 'qwerty';
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    component.newPasswordRepeated = component.newPassword = 'qwerty';
+    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onPasswordResetConfirmationFormSubmit();

@@ -37,11 +37,11 @@
         <mat-form-field>
           <label>
             <input matInput
-                   id="password_input"
+                   id="new_password_input"
                    type="password"
-                   name="password"
+                   name="newPassword"
                    [(ngModel)]="password"
-                   #passwordInput="ngModel"
+                   #newPasswordInput="ngModel"
                    placeholder="{{ 'password' | translate }}"
                    required
                    notBlank>
@@ -51,17 +51,17 @@
         <mat-form-field>
           <label>
             <input matInput
-                   id="password_repeat_input"
+                   id="new_password_repeat_input"
                    type="password"
-                   name="password-repeat"
-                   [(ngModel)]="repeatedPassword"
-                   #passwordRepeatInput="ngModel"
+                   name="newPasswordRepeat"
+                   [(ngModel)]="newPasswordRepeated"
+                   #newPasswordRepeatInput="ngModel"
                    placeholder="{{ 'password_repeat' | translate }}"
                    required
                    notBlank>
           </label>
 
-          <mat-error *ngIf="passwordInput?.errors?.passwordsMatch && passwordRepeatInput?.errors?.passwordsMatch">
+          <mat-error *ngIf="newPasswordInput?.errors?.passwordsMatch && newPasswordRepeatInput?.errors?.passwordsMatch">
             {{ 'passwords_not_match' | translate }}
           </mat-error>
         </mat-form-field>

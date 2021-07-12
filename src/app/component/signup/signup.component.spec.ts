@@ -65,12 +65,12 @@ describe('SignupComponent', () => {
     // For some reason two-way binding does not work in tests when input is placed within form
     component.email = 'alice@mail.com';
     component.fullName = 'Alice';
-    component.repeatedPassword = component.password = 'secret';
+    component.newPasswordRepeated = component.password = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -83,12 +83,12 @@ describe('SignupComponent', () => {
     component.email = '';
     component.fullName = 'Alice';
     component.password = 'secret';
-    component.repeatedPassword = 'secret';
+    component.newPasswordRepeated = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -101,12 +101,12 @@ describe('SignupComponent', () => {
     component.email = 'alice';
     component.fullName = 'Alice';
     component.password = 'secret';
-    component.repeatedPassword = 'secret';
+    component.newPasswordRepeated = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -119,12 +119,12 @@ describe('SignupComponent', () => {
     component.email = 'alice@mail.com';
     component.fullName = ' ';
     component.password = 'secret';
-    component.repeatedPassword = 'secret';
+    component.newPasswordRepeated = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -136,12 +136,12 @@ describe('SignupComponent', () => {
     // For some reason two-way binding does not work in tests when input is placed within form
     component.email = 'alice@mail.com';
     component.fullName = 'Alice';
-    component.repeatedPassword = component.password = ' ';
+    component.newPasswordRepeated = component.password = ' ';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -154,12 +154,12 @@ describe('SignupComponent', () => {
     component.email = 'alice@mail.com';
     component.fullName = 'Alice';
     component.password = '12345';
-    component.repeatedPassword = '54321';
+    component.newPasswordRepeated = '54321';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -172,12 +172,12 @@ describe('SignupComponent', () => {
     component.email = 'alice@mail.com';
     component.fullName = 'Alice';
     component.password = 'secret';
-    component.repeatedPassword = 'secret';
+    component.newPasswordRepeated = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();
@@ -194,12 +194,12 @@ describe('SignupComponent', () => {
     component.email = 'alice@mail.com';
     component.fullName = 'Alice';
     component.password = 'secret';
-    component.repeatedPassword = 'secret';
+    component.newPasswordRepeated = 'secret';
 
     TestSupport.setInputValue(fixture, 'email_input', component.email);
     TestSupport.setInputValue(fixture, 'full_name_input', component.fullName);
-    TestSupport.setInputValue(fixture, 'password_input', component.password);
-    TestSupport.setInputValue(fixture, 'password_repeat_input', component.repeatedPassword);
+    TestSupport.setInputValue(fixture, 'new_password_input', component.password);
+    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
     fixture.detectChanges();
 
     component.onSignupFormSubmit();

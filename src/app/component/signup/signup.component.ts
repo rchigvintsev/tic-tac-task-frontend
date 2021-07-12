@@ -17,7 +17,7 @@ import {HttpRequestError} from '../../error/http-request.error';
 })
 export class SignupComponent extends BaseSignComponent {
   fullName: string;
-  repeatedPassword: string;
+  newPasswordRepeated: string;
 
   @ViewChild('signupForm', {read: NgForm})
   signupForm: NgForm;

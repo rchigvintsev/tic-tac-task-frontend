@@ -9,26 +9,26 @@ function isControlDirty(control: AbstractControl): boolean {
 
 function passwordsMatchValidator(): ValidatorFn {
   return (form: FormGroup): ValidationErrors => {
-    const passwordControl = form.controls.password;
-    const passwordRepeatControl = form.controls['password-repeat'];
+    const newPasswordControl = form.controls.newPassword;
+    const newPasswordRepeatControl = form.controls.newPasswordRepeat;
 
-    if (isControlDirty(passwordControl) && isControlDirty(passwordRepeatControl)) {
-      const password = passwordControl.value;
-      const repeatedPassword = passwordRepeatControl.value;
-      if (password !== repeatedPassword) {
-        passwordControl.markAsTouched();
-        passwordControl.setErrors({passwordsMatch: true});
-        passwordRepeatControl.markAsTouched();
-        passwordRepeatControl.setErrors({passwordsMatch: true});
+    if (isControlDirty(newPasswordControl) && isControlDirty(newPasswordRepeatControl)) {
+      const newPassword = newPasswordControl.value;
+      const repeatedNewPassword = newPasswordRepeatControl.value;
+      if (newPassword !== repeatedNewPassword) {
+        newPasswordControl.markAsTouched();
+        newPasswordControl.setErrors({passwordsMatch: true});
+        newPasswordRepeatControl.markAsTouched();
+        newPasswordRepeatControl.setErrors({passwordsMatch: true});
       } else {
-        if (!Strings.isBlank(password)) {
-          passwordControl.setErrors(null);
-          passwordControl.markAsUntouched();
+        if (!Strings.isBlank(newPassword)) {
+          newPasswordControl.setErrors(null);
+          newPasswordControl.markAsUntouched();
         }
 
-        if (!Strings.isBlank(repeatedPassword)) {
-          passwordRepeatControl.setErrors(null);
-          passwordRepeatControl.markAsUntouched();
+        if (!Strings.isBlank(repeatedNewPassword)) {
+          newPasswordRepeatControl.setErrors(null);
+          newPasswordRepeatControl.markAsUntouched();
         }
       }
     }

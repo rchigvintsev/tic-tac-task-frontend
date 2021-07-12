@@ -55,6 +55,7 @@ import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator
 import {AccountComponent} from '../component/account/account.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
+import {ChangePasswordComponent} from '../component/fragment/change-password/change-password.component';
 import {FocusedDirective} from '../component/focused.directive';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
@@ -121,6 +122,7 @@ export class TestSupport {
     ColorPickerDialogComponent,
     LoadingIndicatorComponent,
     AccountComponent,
+    ChangePasswordComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     LocalizedDatePipe,
