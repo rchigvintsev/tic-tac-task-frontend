@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 
 import {tap} from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import {User} from '../../model/user';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
-
+import {ChangePasswordComponent, PasswordChangeEvent} from '../fragment/change-password/change-password.component';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +19,9 @@ import {Strings} from '../../util/strings';
 export class AccountComponent implements OnInit {
   userFormModel = new User();
   profilePictureFile: File;
+
+  @ViewChild('changePasswordComponent')
+  changePasswordComponent: ChangePasswordComponent;
 
   constructor(public i18nService: I18nService,
               private authenticationService: AuthenticationService,
@@ -41,6 +44,10 @@ export class AccountComponent implements OnInit {
 
   onProfilePictureFormSubmit() {
     this.saveProfilePicture();
+  }
+
+  onPasswordChange(event: PasswordChangeEvent) {
+    this.changePassword(event.currentPassword, event.newPassword);
   }
 
   private saveUser() {
@@ -72,6 +79,14 @@ export class AccountComponent implements OnInit {
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('account_settings_saved'));
       }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
+  }
+
+  private changePassword(currentPassword: string, newPassword: string) {
+    const user = this.authenticationService.getAuthenticatedUser();
+    this.userService.changePassword(user, currentPassword, newPassword).subscribe(_ => {
+      this.changePasswordComponent.reset();
+      this.httpResponseHandler.handleSuccess(this.i18nService.translate('password_changed'));
+    }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
   }
 
   private provideLocalizedErrorMessageIfEmpty(error: HttpRequestError) {

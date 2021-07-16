@@ -10,7 +10,7 @@
 
     <mat-card-content>
       <div fxFlex fxLayout="row" fxLayout.lt-sm="column">
-        <div fxFlex="1 0 40" fxFlex.lt-sm="100" fxLayout="column" fxLayoutAlign="center center">
+        <div fxFlex="1 0 40" fxFlex.lt-sm="100" fxLayout="column" fxLayoutAlign="start center">
           <img *ngIf="userFormModel.profilePictureUrl; else identicon" [src]="userFormModel.profilePictureUrl"
                alt="profile-picture" class="profile-picture"/>
 
@@ -63,6 +63,13 @@
               </label>
             </mat-form-field>
           </form>
+
+          <mat-card>
+            <mat-card-content>
+              <app-change-password #changePasswordComponent (passwordChange)="onPasswordChange($event)">
+              </app-change-password>
+            </mat-card-content>
+          </mat-card>
         </div>
       </div>
     </mat-card-content>

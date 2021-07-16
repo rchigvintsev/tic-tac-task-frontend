@@ -9,8 +9,7 @@ import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
 export class DefaultHttpResponseHandler implements HttpResponseHandler {
-  constructor(private log: LogService,
-              private toastr: ToastrService) {
+  constructor(private log: LogService, private toastr: ToastrService) {
   }
 
   handleSuccess(message: string) {

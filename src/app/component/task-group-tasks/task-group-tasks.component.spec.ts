@@ -32,7 +32,7 @@ describe('TaskGroupTasksComponent', () => {
       imports: TestSupport.IMPORTS,
       declarations: TestSupport.DECLARATIONS,
       providers: [
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
         TaskGroupService
       ]

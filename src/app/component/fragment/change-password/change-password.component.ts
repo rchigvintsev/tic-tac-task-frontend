@@ -25,6 +25,10 @@ export class ChangePasswordComponent implements OnInit {
       this.passwordChange.emit(new PasswordChangeEvent(this.currentPassword, this.newPassword));
     }
   }
+
+  reset() {
+    this.changePasswordForm.resetForm();
+  }
 }
 
 export class PasswordChangeEvent {
