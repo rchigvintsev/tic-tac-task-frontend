@@ -116,5 +116,6 @@
   "account_settings": "Настройки аккаунта",
   "failed_to_save_account_settings": "Не удаётся сохранить настройки аккаунта",
   "account_settings_saved": "Настройки аккаунта сохранены",
-  "upload_photo": "Загрузить фотографию"
+  "upload_photo": "Загрузить фотографию",
+  "password_changed": "Пароль изменён"
 }

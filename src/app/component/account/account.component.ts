@@ -8,8 +8,9 @@ import {UserService} from '../../service/user.service';
 import {User} from '../../model/user';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
-import {Strings} from '../../util/strings';
 import {ChangePasswordComponent, PasswordChangeEvent} from '../fragment/change-password/change-password.component';
+import {BadRequestError} from '../../error/bad-request.error';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-account',
@@ -86,7 +87,12 @@ export class AccountComponent implements OnInit {
     this.userService.changePassword(user, currentPassword, newPassword).subscribe(_ => {
       this.changePasswordComponent.reset();
       this.httpResponseHandler.handleSuccess(this.i18nService.translate('password_changed'));
-    }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+    }, (error: HttpRequestError) => {
+      if (error instanceof BadRequestError) {
+        this.handleBadRequestError(error);
+      }
+      this.httpResponseHandler.handleError(error)
+    });
   }
 
   private provideLocalizedErrorMessageIfEmpty(error: HttpRequestError) {
@@ -99,5 +105,14 @@ export class AccountComponent implements OnInit {
     const currentUser = this.authenticationService.getAuthenticatedUser();
     user.validUntilSeconds = currentUser.validUntilSeconds;
     this.authenticationService.setAuthenticatedUser(user);
+  }
+
+  private handleBadRequestError(error: BadRequestError) {
+    for (const fieldError of error.fieldErrors) {
+      const fieldName = fieldError.field;
+      if (fieldName === 'currentPassword') {
+        this.changePasswordComponent.currentPasswordValid = false;
+      }
+    }
   }
 }

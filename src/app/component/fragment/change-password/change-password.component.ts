@@ -29,6 +29,16 @@ export class ChangePasswordComponent implements OnInit {
   reset() {
     this.changePasswordForm.resetForm();
   }
+
+  set currentPasswordValid(currentPasswordValid: boolean) {
+    const currentPasswordCtrl = this.changePasswordForm.controls.currentPassword;
+    if (currentPasswordValid) {
+      currentPasswordCtrl.setErrors(null);
+    } else {
+      currentPasswordCtrl.setErrors({valid: 'Invalid password'});
+    }
+    currentPasswordCtrl.markAsTouched();
+  }
 }
 
 export class PasswordChangeEvent {

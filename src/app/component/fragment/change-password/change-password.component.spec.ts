@@ -71,4 +71,15 @@ describe('ChangePasswordComponent', () => {
     component.onChangePasswordFormSubmit();
     expect(passwordChangeEventEmitter.emit).not.toHaveBeenCalled();
   });
+
+  it('should display error when current password is not valid', async () => {
+    await fixture.whenStable();
+    component.currentPasswordValid = false;
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    const errorElement = compiled.querySelector('mat-error');
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.textContent.trim()).toEqual('invalid_password');
+  });
 });
