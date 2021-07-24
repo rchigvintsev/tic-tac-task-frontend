@@ -1,5 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {UserService} from '../../service/user.service';
@@ -8,6 +7,8 @@ import {PageNavigationService} from '../../service/page-navigation.service';
 import {AlertService} from '../../service/alert.service';
 import {LogService} from '../../service/log.service';
 import {HttpRequestError} from '../../error/http-request.error';
+import {PasswordChangeEvent} from '../fragment/change-password/change-password.component';
+import {Strings} from "../../util/strings";
 
 @Component({
   selector: 'app-password-reset-confirmation',
@@ -15,12 +16,6 @@ import {HttpRequestError} from '../../error/http-request.error';
   styleUrls: ['./password-reset-confirmation.component.scss']
 })
 export class PasswordResetConfirmationComponent implements OnInit {
-  @ViewChild('passwordResetConfirmationForm', {read: NgForm})
-  passwordResetConfirmationForm: NgForm;
-
-  newPassword: string;
-  newPasswordRepeated: string;
-
   private userId: number;
   private token: string;
 
@@ -39,9 +34,9 @@ export class PasswordResetConfirmationComponent implements OnInit {
     });
   }
 
-  onPasswordResetConfirmationFormSubmit() {
-    if (this.passwordResetConfirmationForm.valid) {
-      this.userService.confirmPasswordReset(this.userId, this.token, this.newPassword).subscribe(
+  onPasswordChange(event: PasswordChangeEvent) {
+    if (!Strings.isBlank(event.newPassword)) {
+      this.userService.confirmPasswordReset(this.userId, this.token, event.newPassword).subscribe(
         _ => this.onPasswordResetConfirm(),
         (error: HttpRequestError) => this.onPasswordResetConfirmError(error)
       );
@@ -49,7 +44,6 @@ export class PasswordResetConfirmationComponent implements OnInit {
   }
 
   private onPasswordResetConfirm() {
-    this.passwordResetConfirmationForm.resetForm();
     this.pageNavigationService.navigateToSigninPage({error: false, message: 'password_reset_confirmed'}).then();
   }
 

@@ -1,5 +1,7 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+
+import {I18nService} from '../../../service/i18n.service';
 
 @Component({
   selector: 'app-change-password',
@@ -7,6 +9,13 @@ import {NgForm} from '@angular/forms';
   styleUrls: ['./change-password.component.scss']
 })
 export class ChangePasswordComponent implements OnInit {
+  @Input()
+  submitButtonLabel: string;
+  @Input()
+  submitButtonWidth = 'auto';
+  @Input()
+  currentPasswordRequired = true;
+
   @ViewChild('changePasswordForm', {read: NgForm})
   changePasswordForm: NgForm;
 
@@ -16,6 +25,10 @@ export class ChangePasswordComponent implements OnInit {
 
   @Output()
   passwordChange = new EventEmitter<PasswordChangeEvent>();
+
+  constructor(i18nService: I18nService) {
+    this.submitButtonLabel = i18nService.translate('post');
+  }
 
   ngOnInit(): void {
   }
@@ -32,12 +45,14 @@ export class ChangePasswordComponent implements OnInit {
 
   set currentPasswordValid(currentPasswordValid: boolean) {
     const currentPasswordCtrl = this.changePasswordForm.controls.currentPassword;
-    if (currentPasswordValid) {
-      currentPasswordCtrl.setErrors(null);
-    } else {
-      currentPasswordCtrl.setErrors({valid: 'Invalid password'});
+    if (currentPasswordCtrl) {
+      if (currentPasswordValid) {
+        currentPasswordCtrl.setErrors(null);
+      } else {
+        currentPasswordCtrl.setErrors({valid: 'Invalid password'});
+      }
+      currentPasswordCtrl.markAsTouched();
     }
-    currentPasswordCtrl.markAsTouched();
   }
 }
 

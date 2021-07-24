@@ -13,6 +13,7 @@ import {Config} from '../../model/config';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
+import {PasswordChangeEvent} from '../fragment/change-password/change-password.component';
 
 describe('PasswordResetConfirmationComponent', () => {
   let component: PasswordResetConfirmationComponent;
@@ -57,86 +58,38 @@ describe('PasswordResetConfirmationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should confirm password reset on password reset confirmation form submit', async () => {
-    await fixture.whenStable();
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPasswordRepeated = component.newPassword = 'qwerty';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
+  it('should confirm password reset on password change', () => {
+    component.onPasswordChange(new PasswordChangeEvent(null, 'qwerty'));
     expect(userService.confirmPasswordReset).toHaveBeenCalled();
   });
 
-  it('should navigate to signin page when password reset is confirmed', async () => {
-    await fixture.whenStable();
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPasswordRepeated = component.newPassword = 'qwerty';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
+  it('should navigate to signin page when password reset is confirmed', () => {
+    component.onPasswordChange(new PasswordChangeEvent(null, 'qwerty'));
     expect(router.navigate).toHaveBeenCalledWith(['en', 'signin'],
       {queryParams: {error: false, message: 'password_reset_confirmed'}});
   });
 
-  it('should not confirm password reset when password is blank', async () => {
-    await fixture.whenStable();
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPasswordRepeated = component.newPassword = ' ';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
+  it('should not confirm password reset when password is blank', () => {
+    component.onPasswordChange(new PasswordChangeEvent(null, ' '));
     expect(userService.confirmPasswordReset).not.toHaveBeenCalled();
   });
 
-  it('should not confirm password reset when passwords do not match', async () => {
-    await fixture.whenStable();
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPassword = '12345';
-    component.newPasswordRepeated = '54321';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
-    expect(userService.confirmPasswordReset).not.toHaveBeenCalled();
-  });
-
-  it('should show localized error message on password reset confirm error', async () => {
-    await fixture.whenStable();
+  it('should show localized error message on password reset confirm error', () => {
     const errorMessage = 'Very bad request';
     (userService.confirmPasswordReset as jasmine.Spy).and.callFake(() => {
       return throwError(HttpRequestError.fromResponse({status: 400, error: {localizedMessage: errorMessage}}));
     });
 
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPasswordRepeated = component.newPassword = 'qwerty';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
+    component.onPasswordChange(new PasswordChangeEvent(null, 'qwerty'));
     expect(alertService.error).toHaveBeenCalledWith(errorMessage);
   });
 
-  it('should show error message on password reset confirm error', async () => {
-    await fixture.whenStable();
+  it('should show error message on password reset confirm error', () => {
     (userService.confirmPasswordReset as jasmine.Spy).and.callFake(() => {
       return throwError(HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
     });
 
-    // For some reason two-way binding does not work in tests when input is placed within form
-    component.newPasswordRepeated = component.newPassword = 'qwerty';
-    TestSupport.setInputValue(fixture, 'new_password_input', component.newPassword);
-    TestSupport.setInputValue(fixture, 'new_password_repeat_input', component.newPasswordRepeated);
-    fixture.detectChanges();
-
-    component.onPasswordResetConfirmationFormSubmit();
+    component.onPasswordChange(new PasswordChangeEvent(null, 'qwerty'));
     expect(alertService.error).toHaveBeenCalledWith(i18nService.translate('failed_to_confirm_password_reset'));
   });
 
