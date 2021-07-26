@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 
 import {tap} from 'rxjs/operators';
 
@@ -18,6 +18,11 @@ import {Strings} from '../../util/strings';
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
+  private static DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE = 1024 * 1024 * 3; // 3 MB
+
+  @Input()
+  profilePictureFileMaxSize = AccountComponent.DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE
+
   userFormModel = new User();
   profilePictureFile: File;
 
@@ -51,6 +56,14 @@ export class AccountComponent implements OnInit {
     this.changePassword(event.currentPassword, event.newPassword);
   }
 
+  isValidProfilePictureFileSelected(): boolean {
+    return this.profilePictureFile && this.validateProfilePictureFileSize(this.profilePictureFile);
+  }
+
+  get profilePictureFileMaxSizeInMegabytes(): number {
+    return Math.round(this.profilePictureFileMaxSize / 1024 / 1000);
+  }
+
   private saveUser() {
     const user = this.authenticationService.getAuthenticatedUser();
     if (Strings.isBlank(this.userFormModel.fullName)) {
@@ -69,7 +82,7 @@ export class AccountComponent implements OnInit {
   }
 
   private saveProfilePicture() {
-    if (this.profilePictureFile) {
+    if (this.isValidProfilePictureFileSelected()) {
       const user = this.authenticationService.getAuthenticatedUser();
       this.userService.updateProfilePicture(user, this.profilePictureFile).pipe(
         tap({error: (error: HttpRequestError) => this.provideLocalizedErrorMessageIfEmpty(error)})
@@ -93,6 +106,10 @@ export class AccountComponent implements OnInit {
       }
       this.httpResponseHandler.handleError(error)
     });
+  }
+
+  private validateProfilePictureFileSize(profilePictureFile: File): boolean {
+    return profilePictureFile.size <= this.profilePictureFileMaxSize;
   }
 
   private provideLocalizedErrorMessageIfEmpty(error: HttpRequestError) {

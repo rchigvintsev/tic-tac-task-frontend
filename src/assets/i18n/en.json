@@ -117,5 +117,6 @@
   "failed_to_save_account_settings": "Failed to save account settings",
   "account_settings_saved": "Account settings are saved",
   "upload_photo": "Upload photo",
-  "password_changed": "Password is changed"
+  "password_changed": "Password is changed",
+  "file_size_too_large": "File size must not be greater than {0} Mb"
 }

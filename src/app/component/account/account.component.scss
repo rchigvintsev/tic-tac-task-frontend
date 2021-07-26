@@ -14,5 +14,10 @@
     div:first-child {
       margin-bottom: 16px;
     }
+
+    mat-error {
+      font-size: 13px;
+      margin-top: 8px;
+    }
   }
 }

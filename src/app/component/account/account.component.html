@@ -25,11 +25,15 @@
                        (click)="profilePictureInput.value = null; onProfilePictureFileChange(null)"
                        (change)="onProfilePictureFileChange($event)">
               </label>
+
+              <mat-error *ngIf="profilePictureFile?.size > profilePictureFileMaxSize">
+                {{ 'file_size_too_large' | translate | messageFormat: profilePictureFileMaxSizeInMegabytes }}
+              </mat-error>
             </div>
 
             <div>
               <button mat-raised-button type="submit" color="primary" (click)="onProfilePictureFormSubmit()"
-                      [disabled]="!profilePictureFile">
+                      [disabled]="!isValidProfilePictureFileSelected()">
                 {{ 'upload_photo' | translate }}
               </button>
             </div>

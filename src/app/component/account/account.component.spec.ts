@@ -84,13 +84,13 @@ describe('AccountComponent', () => {
     spyOn(userService, 'updateProfilePicture').and.callFake(() => of(newProfilePictureUrl));
 
     await fixture.whenStable();
-    component.profilePictureFile = {} as File;
+    component.profilePictureFile = {size: 1024} as File;
     component.onProfilePictureFormSubmit();
     fixture.detectChanges();
     expect(userService.updateProfilePicture).toHaveBeenCalled();
   });
 
-  it('should not update profile picture on profile picture form submit when profile picture file is null', async () => {
+  it('should not update profile picture on profile picture form submit when file is null', async () => {
     spyOn(userService, 'updateProfilePicture').and.stub();
 
     await fixture.whenStable();
@@ -100,11 +100,39 @@ describe('AccountComponent', () => {
     expect(userService.updateProfilePicture).not.toHaveBeenCalled();
   });
 
-  it('should disable profile picture form submit button when profile picture file is null', async () => {
+  it('should not update profile picture on profile picture form submit when file size is too large ', async () => {
+    spyOn(userService, 'updateProfilePicture').and.stub();
+
+    await fixture.whenStable();
+    component.profilePictureFile = {size: 1024 * 1024 * 5} as File;
+    component.onProfilePictureFormSubmit();
+    fixture.detectChanges();
+    expect(userService.updateProfilePicture).not.toHaveBeenCalled();
+  });
+
+  it('should disable profile picture form submit button when file is null', async () => {
     await fixture.whenStable();
     component.profilePictureFile = null;
     fixture.detectChanges();
     const submitButton = fixture.debugElement.query(By.css('form.profile-picture-form button[type="submit"]'));
     expect(submitButton.nativeElement.disabled).toBeTruthy();
+  });
+
+  it('should disable profile picture form submit button when file size is too large', async () => {
+    await fixture.whenStable();
+    component.profilePictureFile = {size: 1024 * 1024 * 5} as File;
+    fixture.detectChanges();
+    const submitButton = fixture.debugElement.query(By.css('form.profile-picture-form button[type="submit"]'));
+    expect(submitButton.nativeElement.disabled).toBeTruthy();
+  });
+
+  it('should render error when profile picture file size is too large', async () => {
+    await fixture.whenStable();
+    component.profilePictureFile = {size: 1024 * 1024 * 5} as File;
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const errorElement = compiled.querySelector('form.profile-picture-form mat-error');
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.textContent.trim()).toEqual('file_size_too_large');
   });
 });
