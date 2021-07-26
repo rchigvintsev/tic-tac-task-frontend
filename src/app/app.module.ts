@@ -67,6 +67,7 @@ import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translat
 import {UnauthorizedRequestInterceptor} from './interceptor/unauthorized-request.interceptor';
 import {LocalizedDatePipe} from './pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from './pipe/localized-relative-date.pipe';
+import {MessageFormatPipe} from './pipe/message-format.pipe';
 import {HTTP_RESPONSE_HANDLER} from './handler/http-response.handler';
 import {DefaultHttpResponseHandler} from './handler/default-http-response.handler';
 
@@ -121,6 +122,7 @@ registerLocaleData(localeRu, 'ru');
     ChangePasswordComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
+    MessageFormatPipe,
     FocusedDirective
   ],
   imports: [

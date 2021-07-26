@@ -59,6 +59,7 @@ import {ChangePasswordComponent} from '../component/fragment/change-password/cha
 import {FocusedDirective} from '../component/focused.directive';
 import {LocalizedDatePipe} from '../pipe/localized-date.pipe';
 import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
+import {MessageFormatPipe} from '../pipe/message-format.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
 
@@ -127,6 +128,7 @@ export class TestSupport {
     DummyComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
+    MessageFormatPipe,
     NotBlankValidatorDirective,
     PasswordsMatchValidatorDirective,
     FocusedDirective
