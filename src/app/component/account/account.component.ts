@@ -18,7 +18,7 @@ import {Strings} from '../../util/strings';
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
-  private static DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE = 1024 * 1024 * 3; // 3 MB
+  private static DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE = 1024 * 1024 * 3; // 3 Mb
 
   @Input()
   profilePictureFileMaxSize = AccountComponent.DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE

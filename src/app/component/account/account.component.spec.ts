@@ -118,7 +118,7 @@ describe('AccountComponent', () => {
     expect(submitButton.nativeElement.disabled).toBeTruthy();
   });
 
-  it('should disable profile picture form submit button when file size is too large', async () => {
+  it('should disable profile picture form submit button when file is too large', async () => {
     await fixture.whenStable();
     component.profilePictureFile = {size: 1024 * 1024 * 5} as File;
     fixture.detectChanges();
@@ -126,13 +126,13 @@ describe('AccountComponent', () => {
     expect(submitButton.nativeElement.disabled).toBeTruthy();
   });
 
-  it('should render error when profile picture file size is too large', async () => {
+  it('should render error when profile picture file is too large', async () => {
     await fixture.whenStable();
     component.profilePictureFile = {size: 1024 * 1024 * 5} as File;
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     const errorElement = compiled.querySelector('form.profile-picture-form mat-error');
     expect(errorElement).toBeTruthy();
-    expect(errorElement.textContent.trim()).toEqual('file_size_too_large');
+    expect(errorElement.textContent.trim()).toEqual('file_too_large');
   });
 });
