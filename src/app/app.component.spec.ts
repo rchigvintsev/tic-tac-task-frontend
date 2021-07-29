@@ -1,5 +1,6 @@
 import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
+import {By} from '@angular/platform-browser';
 
 import {EMPTY, of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
@@ -63,6 +64,7 @@ describe('AppComponent', () => {
     user.email = 'john.doe@mail.com';
     user.fullName = 'John Doe';
     user.profilePictureUrl = 'https://example.com/avatar.png';
+    user.admin = true;
     user.validUntilSeconds = Math.round(Date.now() / 1000) + 60 * 60;
     authenticationService.setAuthenticatedUser(user);
   });
@@ -142,6 +144,18 @@ describe('AppComponent', () => {
   it('should hide sidenav on account page', () => {
     component.onRouterEvent(new NavigationEnd(1, '/account', null));
     expect(component.showSidenav).toBeFalsy();
+  });
+
+  it('should render link to admin area when user is admin', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.debugElement.nativeElement;
+    const userMenuButton = compiled.querySelector('mat-toolbar > div.profile-info-container > button');
+    userMenuButton.click();
+
+    const element = fixture.debugElement.query(By.css('#admin_area_menu_item'));
+    expect(element).toBeTruthy();
   });
 
   it('should switch language', () => {
