@@ -68,6 +68,7 @@ export class AuthenticationService {
     user.email = claims.email;
     user.fullName = claims.name;
     user.profilePictureUrl = claims.picture;
+    user.admin = claims.admin;
     user.validUntilSeconds = claims.exp;
     return user;
   }

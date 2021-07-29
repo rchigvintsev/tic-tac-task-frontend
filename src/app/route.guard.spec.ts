@@ -134,6 +134,7 @@ describe('RouteGuard', () => {
         email: 'john.doe@mail.com',
         name: 'John Doe',
         picture: 'https://example.com/avatar.png',
+        admin: false,
         exp: Math.round(nextDay.toDate().getTime() / 1000)
       };
 
