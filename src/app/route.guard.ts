@@ -8,6 +8,7 @@ import {I18nService} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {UserService} from './service/user.service';
 import {LogService} from './service/log.service';
+import {Routes} from './util/routes';
 
 @Injectable({providedIn: 'root'})
 export class LocalizedRouteGuard implements CanActivate {
@@ -17,7 +18,7 @@ export class LocalizedRouteGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree {
     const lang = this.getLanguageFromUrl(route.url);
     if (lang != null) {
-      return this.navigateTo404Page(lang);
+      return Routes.getNotFoundErrorPageUrl(this.router, lang);
     }
     return this.navigateToTargetPage(this.i18nService.currentLanguage.code, route);
   }
@@ -38,10 +39,6 @@ export class LocalizedRouteGuard implements CanActivate {
       commands.push(segment.path);
     }
     return this.router.createUrlTree(commands, {queryParams: route.queryParams});
-  }
-
-  private navigateTo404Page(language: string): UrlTree {
-    return this.router.createUrlTree([language, 'error', '404']);
   }
 }
 
@@ -143,6 +140,24 @@ export class AuthenticatedOnlyRouteGuard implements CanActivate {
       return true;
     }
     this.router.navigate([this.i18nService.currentLanguage.code, 'signin']).then();
+    return false;
+  }
+}
+
+@Injectable({providedIn: 'root'})
+export class AdminOnlyRouteGuard implements CanActivate {
+  constructor(private authenticationService: AuthenticationService,
+              private i18nService: I18nService,
+              private router: Router) {
+  }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const user = this.authenticationService.getAuthenticatedUser();
+    if (user && user.admin) {
+      return true;
+    }
+    const notFoundPageUrl = Routes.getNotFoundErrorPageUrl(this.router, this.i18nService.currentLanguage.code);
+    this.router.navigateByUrl(notFoundPageUrl).then();
     return false;
   }
 }

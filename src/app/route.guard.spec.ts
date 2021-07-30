@@ -9,6 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 
 import {
+  AdminOnlyRouteGuard,
   AuthenticatedOnlyRouteGuard,
   EmailConfirmationCallbackRouteGuard,
   LocalizedRouteGuard,
@@ -20,6 +21,7 @@ import {AuthenticationService} from './service/authentication.service';
 import {TestSupport} from './test/test-support';
 import {ConfigService} from './service/config.service';
 import {UserService} from './service/user.service';
+import {User} from './model/user';
 
 describe('RouteGuard', () => {
   let guard;
@@ -40,6 +42,7 @@ describe('RouteGuard', () => {
 
     router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
+    router.navigateByUrl = jasmine.createSpy('navigateByUrl').and.callFake(() => Promise.resolve());
 
     const translateService = injector.inject(TranslateService);
     translateService.currentLang = 'en';
@@ -100,6 +103,38 @@ describe('RouteGuard', () => {
 
     it('should allow access when current user is authenticated', () => {
       spyOn(authenticationService, 'isUserSignedIn').and.returnValue(true);
+      expect(guard.canActivate(null, null)).toBeTruthy();
+    });
+  });
+
+  describe('AdminOnly', () => {
+    let authenticationService;
+
+    beforeEach(() => {
+      authenticationService = injector.inject(AuthenticationService);
+      guard = injector.inject(AdminOnlyRouteGuard);
+    });
+
+    it('should deny access when current user is not defined', () => {
+      spyOn(authenticationService, 'getAuthenticatedUser').and.returnValue(null);
+
+      expect(guard.canActivate(null, null)).toBeFalsy();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(router.createUrlTree(['en', 'error', '404']));
+    });
+
+    it('should deny access when current user is not admin', () => {
+      const user = new User();
+      user.admin = false;
+      spyOn(authenticationService, 'getAuthenticatedUser').and.returnValue(user);
+
+      expect(guard.canActivate(null, null)).toBeFalsy();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(router.createUrlTree(['en', 'error', '404']));
+    });
+
+    it('should allow access when current user is admin', () => {
+      const user = new User();
+      user.admin = true;
+      spyOn(authenticationService, 'getAuthenticatedUser').and.returnValue(user);
       expect(guard.canActivate(null, null)).toBeTruthy();
     });
   });

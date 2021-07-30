@@ -11,7 +11,7 @@ import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
 import {HttpRequestError} from '../error/http-request.error';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 
 const AUTHENTICATED_USER_KEY = 'authenticated-user';
@@ -79,7 +79,7 @@ export class AuthenticationService {
 
   signIn(username: string, password: string, showLoadingIndicator = true): Observable<any> {
     const body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-    const observable = this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, HttpContentOptions.FORM);
+    const observable = this.httpClient.post<any>(`${this.config.apiBaseUrl}/login`, body, HttpRequestOptions.FORM);
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
@@ -93,7 +93,7 @@ export class AuthenticationService {
     user.password = password;
 
     const url = `${this.config.apiBaseUrl}/v1/users`;
-    const observable = this.httpClient.post<any>(url, user.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.httpClient.post<any>(url, user.serialize(), HttpRequestOptions.JSON).pipe(
       map(response => new User().deserialize(response))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
@@ -101,7 +101,7 @@ export class AuthenticationService {
 
   signOut(showLoadingIndicator = true): Observable<any> {
     const url = `${this.config.apiBaseUrl}/logout`;
-    const observable = this.httpClient.post<any>(url, null, HttpContentOptions.JSON).pipe(
+    const observable = this.httpClient.post<any>(url, null, HttpRequestOptions.JSON).pipe(
       tap({
         complete: () => this.removeAuthenticatedUser(),
         error: (error: HttpRequestError) => {

@@ -15,7 +15,7 @@ import {I18nService} from './i18n.service';
 import {TaskGroup} from '../model/task-group';
 import {PageRequest} from './page-request';
 import {HttpRequestError} from '../error/http-request.error';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
@@ -143,7 +143,7 @@ export class TaskService {
 
   createTask(task: Task, showLoadingIndicator = true): Observable<Task> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    const observable = this.http.post<any>(this.baseUrl, task.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.post<any>(this.baseUrl, task.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -158,7 +158,7 @@ export class TaskService {
 
   updateTask(task: Task, showLoadingIndicator = true): Observable<Task> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    const observable = this.http.put<any>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<any>(`${this.baseUrl}/${task.id}`, task.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -272,7 +272,7 @@ export class TaskService {
   addComment(taskId: number, comment: TaskComment, showLoadingIndicator = true): Observable<TaskComment> {
     Assert.notNullOrUndefined(comment, 'Task comment must not be null or undefined');
     const url = `${this.baseUrl}/${taskId}/comments`;
-    const observable = this.http.post<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.post<TaskComment>(url, comment.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {

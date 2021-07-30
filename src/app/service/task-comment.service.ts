@@ -8,7 +8,7 @@ import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {HttpRequestError} from '../error/http-request.error';
 
 @Injectable({providedIn: 'root'})
@@ -24,7 +24,7 @@ export class TaskCommentService {
 
   updateComment(comment: TaskComment, showLoadingIndicator = true): Observable<TaskComment> {
     const url = `${this.baseUrl}/${comment.id}`;
-    const observable = this.http.put<TaskComment>(url, comment.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<TaskComment>(url, comment.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {

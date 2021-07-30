@@ -11,7 +11,7 @@ import {TaskList} from '../model/task-list';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
 import {HttpRequestError} from '../error/http-request.error';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
@@ -85,7 +85,7 @@ export class TaskListService {
 
   createTaskList(taskList: TaskList, showLoadingIndicator = true): Observable<TaskList> {
     Assert.notNullOrUndefined(taskList, 'Task list must not be null or undefined');
-    const observable = this.http.post<TaskList>(this.baseUrl, taskList.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.post<TaskList>(this.baseUrl, taskList.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -102,7 +102,7 @@ export class TaskListService {
   updateTaskList(taskList: TaskList, showLoadingIndicator = true): Observable<TaskList> {
     Assert.notNullOrUndefined(taskList, 'Task list must not be null or undefined');
     const url = `${this.baseUrl}/${taskList.id}`;
-    const observable = this.http.put<TaskList>(url, taskList.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<TaskList>(url, taskList.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {

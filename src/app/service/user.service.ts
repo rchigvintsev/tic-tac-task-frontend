@@ -8,7 +8,7 @@ import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
 import {HttpRequestError} from '../error/http-request.error';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 import {User} from '../model/user';
 
@@ -32,7 +32,7 @@ export class UserService {
   resetPassword(email: string, showLoadingIndicator = true): Observable<any> {
     Assert.notBlank(email, 'Email must not be blank');
     const body = 'email=' + encodeURIComponent(email);
-    const observable = this.http.post<any>(`${this.baseUrl}/password/reset`, body, HttpContentOptions.FORM).pipe(
+    const observable = this.http.post<any>(`${this.baseUrl}/password/reset`, body, HttpRequestOptions.FORM).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -50,7 +50,7 @@ export class UserService {
                        showLoadingIndicator = true): Observable<any> {
     const url = `${this.baseUrl}/${userId}/password/reset/confirmation/${token}`;
     const body = 'password=' + encodeURIComponent(password);
-    const observable = this.http.post<any>(url, body, HttpContentOptions.FORM).pipe(
+    const observable = this.http.post<any>(url, body, HttpRequestOptions.FORM).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -64,7 +64,7 @@ export class UserService {
 
   changePassword(user: User, currentPassword: string, newPassword: string, showLoadingIndicator = true) {
     const body = `currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`;
-    const observable = this.http.post<any>(`${this.baseUrl}/${user.id}/password`, body, HttpContentOptions.FORM).pipe(
+    const observable = this.http.post<any>(`${this.baseUrl}/${user.id}/password`, body, HttpRequestOptions.FORM).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -78,7 +78,7 @@ export class UserService {
 
   updateUser(user: User, showLoadingIndicator = true): Observable<User> {
     Assert.notNullOrUndefined(user, 'User must not be null or undefined');
-    const observable = this.http.put<any>(`${this.baseUrl}/${user.id}`, user.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<any>(`${this.baseUrl}/${user.id}`, user.serialize(), HttpRequestOptions.JSON).pipe(
       map(response => new User().deserialize(response))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;

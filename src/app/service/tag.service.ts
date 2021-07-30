@@ -11,7 +11,7 @@ import {Tag} from '../model/tag';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
 import {HttpRequestError} from '../error/http-request.error';
-import {HttpContentOptions} from '../util/http-content-options';
+import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
@@ -79,7 +79,7 @@ export class TagService {
 
   createTag(tag: Tag, showLoadingIndicator = true): Observable<Tag> {
     Assert.notNullOrUndefined(tag, 'Tag must not be null or undefined');
-    const observable = this.http.post<Tag>(this.baseUrl, tag.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.post<Tag>(this.baseUrl, tag.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -95,7 +95,7 @@ export class TagService {
 
   updateTag(tag: Tag, showLoadingIndicator = true): Observable<Tag> {
     Assert.notNullOrUndefined(tag, 'Tag must not be null or undefined');
-    const observable = this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), HttpContentOptions.JSON).pipe(
+    const observable = this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
