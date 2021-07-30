@@ -48,6 +48,10 @@ export class AppComponent implements OnInit, OnDestroy {
     return /^(\/[a-z]{2})?\/account$/.test(url);
   }
 
+  private static isAdminAreaPage(url: string): boolean {
+    return /^(\/[a-z]{2})?\/admin$/.test(url);
+  }
+
   ngOnInit() {
     this.availableLanguages = this.i18nService.availableLanguages;
     this.authenticatedUser = this.authenticationService.getAuthenticatedUser();
@@ -87,8 +91,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.authenticatedUser
-        && !(AppComponent.isErrorPage(event.url) || AppComponent.isAccountPage(event.url));
+      this.showSidenav = this.authenticatedUser && !(
+        AppComponent.isErrorPage(event.url)
+        || AppComponent.isAccountPage(event.url)
+        || AppComponent.isAdminAreaPage(event.url)
+      );
     }
   }
 

@@ -146,6 +146,11 @@ describe('AppComponent', () => {
     expect(component.showSidenav).toBeFalsy();
   });
 
+  it('should hide sidenav on admin area page', () => {
+    component.onRouterEvent(new NavigationEnd(1, '/admin', null));
+    expect(component.showSidenav).toBeFalsy();
+  });
+
   it('should render link to admin area when user is admin', async () => {
     fixture.detectChanges();
     await fixture.whenStable();

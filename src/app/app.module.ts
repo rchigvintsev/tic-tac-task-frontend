@@ -59,6 +59,7 @@ import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
 import {AccountComponent} from './component/account/account.component';
+import {AdminAreaComponent} from './component/admin-area/admin-area.component';
 import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
 import {FocusedDirective} from './component/focused.directive';
 import {ConfigService} from './service/config.service';
@@ -119,6 +120,7 @@ registerLocaleData(localeRu, 'ru');
     TagsComponent,
     TaskListsComponent,
     AccountComponent,
+    AdminAreaComponent,
     ChangePasswordComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,

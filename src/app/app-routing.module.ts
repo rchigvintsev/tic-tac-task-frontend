@@ -14,6 +14,7 @@ import {ErrorNotFoundComponent} from './component/error-not-found/error-not-foun
 import {DummyComponent} from './component/dummy/dummy.component';
 import {CustomLocalizeRouterModule} from './i18n/custom-localize-router.module';
 import {
+  AdminOnlyRouteGuard,
   AuthenticatedOnlyRouteGuard,
   EmailConfirmationCallbackRouteGuard,
   LocalizedRouteGuard,
@@ -21,6 +22,7 @@ import {
   PasswordResetConfirmationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
+import {AdminAreaComponent} from "./component/admin-area/admin-area.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
@@ -43,6 +45,7 @@ export const routes: Routes = [
     canActivate: [UnauthenticatedOnlyRouteGuard, PasswordResetConfirmationCallbackRouteGuard]
   },
   {path: 'account/email/confirmation', component: DummyComponent, canActivate: [EmailConfirmationCallbackRouteGuard]},
+  {path: 'admin', component: AdminAreaComponent, canActivate: [AdminOnlyRouteGuard]},
   {path: 'error/404', component: ErrorNotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];
