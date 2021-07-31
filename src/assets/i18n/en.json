@@ -119,5 +119,6 @@
   "upload_photo": "Upload photo",
   "password_changed": "Password is changed",
   "file_too_large": "File size must not be greater than {0} Mb",
-  "admin_area": "Admin area"
+  "admin_area": "Admin area",
+  "users": "Users"
 }

@@ -22,6 +22,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -152,6 +155,9 @@ registerLocaleData(localeRu, 'ru');
     MatExpansionModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,

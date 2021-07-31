@@ -21,6 +21,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {ComponentFixture} from '@angular/core/testing';
@@ -53,6 +56,7 @@ import {ConfirmationDialogComponent} from '../component/fragment/confirmation-di
 import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator/loading-indicator.component';
 import {AccountComponent} from '../component/account/account.component';
+import {AdminAreaComponent} from '../component/admin-area/admin-area.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
 import {ChangePasswordComponent} from '../component/fragment/change-password/change-password.component';
@@ -87,6 +91,9 @@ export class TestSupport {
     MatExpansionModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
@@ -123,6 +130,7 @@ export class TestSupport {
     ColorPickerDialogComponent,
     LoadingIndicatorComponent,
     AccountComponent,
+    AdminAreaComponent,
     ChangePasswordComponent,
     ErrorNotFoundComponent,
     DummyComponent,
