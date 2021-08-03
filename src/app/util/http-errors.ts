@@ -10,6 +10,10 @@ export class HttpErrors {
     return response.status === 401;
   }
 
+  static isForbidden(response: any): boolean {
+    return response.status === 403;
+  }
+
   static isNotFound(response: any): boolean {
     return response.status === 404;
   }

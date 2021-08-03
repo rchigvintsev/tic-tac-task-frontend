@@ -6,6 +6,7 @@ import {catchError} from 'rxjs/operators';
 
 import {HttpRequestError} from '../error/http-request.error';
 import {UnauthorizedRequestError} from '../error/unauthorized-request.error';
+import {ForbiddenRequestError} from '../error/forbidden-request.error';
 import {BadRequestError} from '../error/bad-request.error';
 import {ResourceNotFoundError} from '../error/resource-not-found.error';
 import {HttpErrors} from '../util/http-errors';
@@ -17,6 +18,9 @@ export class HttpErrorTranslationInterceptor implements HttpInterceptor {
       catchError(error => {
         if (HttpErrors.isUnauthorized(error)) {
           return throwError(UnauthorizedRequestError.fromResponse(error));
+        }
+        if (HttpErrors.isForbidden(error)) {
+          return throwError(ForbiddenRequestError.fromResponse(error));
         }
         if (HttpErrors.isBadRequest(error)) {
           return throwError(BadRequestError.fromResponse(error));

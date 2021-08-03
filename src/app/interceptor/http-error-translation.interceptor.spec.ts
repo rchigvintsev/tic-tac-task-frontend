@@ -7,6 +7,7 @@ import {HttpErrorTranslationInterceptor} from './http-error-translation.intercep
 import {HttpRequestError} from '../error/http-request.error';
 import {BadRequestError} from '../error/bad-request.error';
 import {UnauthorizedRequestError} from '../error/unauthorized-request.error';
+import {ForbiddenRequestError} from '../error/forbidden-request.error';
 import {ResourceNotFoundError} from '../error/resource-not-found.error';
 import {TestSupport} from '../test/test-support';
 import {HttpHandlerMock} from '../test/http-handler-mock';
@@ -47,6 +48,17 @@ describe('HttpErrorTranslationInterceptor', () => {
 
     interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
       expect(error).toEqual(jasmine.any(UnauthorizedRequestError));
+      done();
+    });
+  });
+
+  it('should translate response with 403 status code to "ForbiddenRequestError"', done => {
+    const url = '/';
+    const request = new HttpRequest('GET', url);
+    const handler = new HttpHandlerMock(() => throwError({url, status: 403}));
+
+    interceptor.intercept(request, handler).subscribe(_ => fail('An error was expected'), error => {
+      expect(error).toEqual(jasmine.any(ForbiddenRequestError));
       done();
     });
   });
