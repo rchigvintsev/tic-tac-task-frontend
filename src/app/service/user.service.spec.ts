@@ -32,6 +32,34 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should return total number of users', done => {
+    const userCount = 2;
+    userService.getUserCount().subscribe(count => {
+      expect(count).toBe(userCount);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${userService.baseUrl}/count`);
+    expect(request.request.method).toBe('GET');
+    request.flush(userCount);
+  });
+
+  it('should return all users', done => {
+    const testUsers = [];
+    testUsers.push(new User().deserialize({id: 1, email: 'user1@mail.com', fullName: 'User 1'}));
+    testUsers.push(new User().deserialize({id: 2, email: 'user2@mail.com', fullName: 'User 2'}));
+
+    userService.getUsers().subscribe(users => {
+      expect(users.length).toBe(2);
+      expect(users).toEqual(testUsers);
+      done();
+    });
+
+    const request = httpMock.expectOne(userService.baseUrl);
+    expect(request.request.method).toBe('GET');
+    request.flush(testUsers);
+  });
+
   it('should confirm email', done => {
     const userId = 1;
     const token = 'K1Mb2ByFcfYndPmuFijB';

@@ -120,5 +120,7 @@
   "password_changed": "Password is changed",
   "file_too_large": "File size must not be greater than {0} Mb",
   "admin_area": "Admin area",
-  "users": "Users"
+  "users": "Users",
+  "failed_to_load_users": "Failed to load users",
+  "failed_to_load_user_count": "Failed to load total number of users"
 }

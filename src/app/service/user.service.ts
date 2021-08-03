@@ -23,6 +23,37 @@ export class UserService {
     this.baseUrl = `${this.config.apiBaseUrl}/v1/users`;
   }
 
+  getUserCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/count`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_user_count');
+          }
+        }
+      })
+    );
+  }
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.baseUrl, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_users');
+          }
+        }
+      }),
+      map(response => {
+        const users = [];
+        for (const json of response) {
+          users.push(new User().deserialize(json));
+        }
+        return users;
+      })
+    );
+  }
+
   confirmEmail(userId: number, token: string, showLoadingIndicator = true): Observable<any> {
     const url = `${this.baseUrl}/${userId}/email/confirmation/${token}`;
     const observable = this.http.post<any>(url, null, {withCredentials: true});
