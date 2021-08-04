@@ -43,6 +43,7 @@
   "user_not_found_or_invalid_password": "User with this email is not found or password is not valid",
   "email": "Email",
   "full_name": "Name",
+  "picture": "Picture",
   "password": "Password",
   "current_password": "Current password",
   "password_repeat": "Password again",
@@ -122,5 +123,6 @@
   "admin_area": "Admin area",
   "users": "Users",
   "failed_to_load_users": "Failed to load users",
-  "failed_to_load_user_count": "Failed to load total number of users"
+  "failed_to_load_user_count": "Failed to load total number of users",
+  "admin": "Admin"
 }

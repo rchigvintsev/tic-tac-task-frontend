@@ -2,7 +2,29 @@
   width: 100%;
   max-width: 960px;
 
-  table {
-    width: 100%;
+  .mat-elevation-z8 {
+    margin: 16px;
+    overflow-x: scroll;
+
+    .mat-table {
+      width: 100%;
+
+      th.mat-header-cell:not(:last-of-type), td.mat-cell:not(:last-of-type), td.mat-footer-cell:not(:last-of-type) {
+        padding-right: 16px;
+      }
+
+      th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+        display: table-cell;
+        width: 100%;
+        word-wrap: initial;
+        line-break: unset;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      tr.mat-header-row, tr.mat-row, tr.mat-footer-row {
+        display: table-row;
+      }
+    }
   }
 }

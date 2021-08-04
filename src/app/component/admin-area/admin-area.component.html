@@ -11,18 +11,42 @@
     <mat-card-content>
       <mat-tab-group>
         <mat-tab label="{{ 'users' | translate }}">
-            <div class="mat-elevation-z8" style="margin: 16px">
+            <div class="mat-elevation-z8">
               <table mat-table [dataSource]="userDataSource">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'email' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                </ng-container>
+
                 <ng-container matColumnDef="name">
                   <th mat-header-cell *matHeaderCellDef>{{ 'name' | translate }}</th>
                   <td mat-cell *matCellDef="let element">{{ element.fullName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="profilePictureUrl">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'picture' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.profilePictureUrl }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="admin">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'admin' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.admin ? '✓' : '' }}</td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
               </table>
 
-              <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons aria-label="Select page of users">
+              <mat-paginator #userPaginator
+                             [length]="totalNumberOfUsers"
+                             [pageSizeOptions]="[10, 20]"
+                             showFirstLastButtons
+                             aria-label="Select page of users">
               </mat-paginator>
             </div>
         </mat-tab>

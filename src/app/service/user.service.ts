@@ -11,6 +11,7 @@ import {HttpRequestError} from '../error/http-request.error';
 import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 import {User} from '../model/user';
+import {PageRequest} from './page-request';
 
 @Injectable({providedIn: 'root'})
 export class UserService {
@@ -35,8 +36,9 @@ export class UserService {
     );
   }
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl, {withCredentials: true}).pipe(
+  getUsers(pageRequest: PageRequest = new PageRequest()): Observable<User[]> {
+    const url = `${this.baseUrl}?${pageRequest.toQueryParameters()}`
+    return this.http.get<User[]>(url, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
