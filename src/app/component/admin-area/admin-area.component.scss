@@ -15,15 +15,19 @@
 
       th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
         display: table-cell;
-        width: 100%;
         word-wrap: initial;
         line-break: unset;
         white-space: nowrap;
         overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       tr.mat-header-row, tr.mat-row, tr.mat-footer-row {
         display: table-row;
+      }
+
+      td.cell-profile-picture {
+        max-width: 300px;
       }
     }
   }

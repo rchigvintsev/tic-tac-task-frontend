@@ -15,27 +15,27 @@
               <table mat-table [dataSource]="userDataSource">
                 <ng-container matColumnDef="id">
                   <th mat-header-cell *matHeaderCellDef>ID</th>
-                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                  <td mat-cell *matCellDef="let element" class="cell-id">{{ element.id }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="email">
                   <th mat-header-cell *matHeaderCellDef>{{ 'email' | translate }}</th>
-                  <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                  <td mat-cell *matCellDef="let element" class="cell-email">{{ element.email }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
                   <th mat-header-cell *matHeaderCellDef>{{ 'name' | translate }}</th>
-                  <td mat-cell *matCellDef="let element">{{ element.fullName }}</td>
+                  <td mat-cell *matCellDef="let element" class="cell-name">{{ element.fullName }}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="profilePictureUrl">
+                <ng-container matColumnDef="profilePicture">
                   <th mat-header-cell *matHeaderCellDef>{{ 'picture' | translate }}</th>
-                  <td mat-cell *matCellDef="let element">{{ element.profilePictureUrl }}</td>
+                  <td mat-cell *matCellDef="let element" class="cell-profile-picture">{{ element.profilePictureUrl }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="admin">
                   <th mat-header-cell *matHeaderCellDef>{{ 'admin' | translate }}</th>
-                  <td mat-cell *matCellDef="let element">{{ element.admin ? '✓' : '' }}</td>
+                  <td mat-cell *matCellDef="let element" class="cell-admin">{{ element.admin ? '✓' : '' }}</td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="userColumns"></tr>

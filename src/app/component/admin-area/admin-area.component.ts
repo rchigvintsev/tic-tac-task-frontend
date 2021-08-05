@@ -12,7 +12,7 @@ import {PageRequest} from '../../service/page-request';
   styleUrls: ['./admin-area.component.scss']
 })
 export class AdminAreaComponent implements OnInit, AfterViewInit {
-  userColumns: string[] = ['id', 'email', 'name', 'profilePictureUrl', 'admin'];
+  userColumns: string[] = ['id', 'email', 'name', 'profilePicture', 'admin'];
   userDataSource: User[] = [];
   totalNumberOfUsers = 0;
 
