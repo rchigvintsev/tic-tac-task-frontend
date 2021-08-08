@@ -124,5 +124,10 @@
   "users": "Users",
   "failed_to_load_users": "Failed to load users",
   "failed_to_load_user_count": "Failed to load total number of users",
-  "admin": "Admin"
+  "admin": "Admin",
+  "blocked": "Blocked",
+  "block_user": "Block user",
+  "unblock_user": "Unblock user",
+  "user_blocked": "User is blocked",
+  "user_unblocked": "User is unblocked"
 }

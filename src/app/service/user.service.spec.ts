@@ -55,7 +55,7 @@ describe('UserService', () => {
       done();
     });
 
-    const request = httpMock.expectOne(userService.baseUrl);
+    const request = httpMock.expectOne(`${userService.baseUrl}?page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testUsers);
   });

@@ -8,6 +8,7 @@ export class User extends AbstractEntity<User> {
   fullName: string;
   profilePictureUrl: string;
   admin: boolean;
+  enabled: boolean;
   validUntilSeconds: number;
 
   isValid(): boolean {
@@ -21,6 +22,7 @@ export class User extends AbstractEntity<User> {
     this.fullName = input.fullName;
     this.profilePictureUrl = input.profilePictureUrl;
     this.admin = input.admin;
+    this.enabled = input.enabled;
     this.validUntilSeconds = input.validUntilSeconds;
     return this;
   }
@@ -33,6 +35,7 @@ export class User extends AbstractEntity<User> {
     clone.fullName = this.fullName;
     clone.profilePictureUrl = this.profilePictureUrl;
     clone.admin = this.admin;
+    clone.enabled = this.enabled;
     clone.validUntilSeconds = this.validUntilSeconds;
     return clone;
   }
@@ -44,6 +47,7 @@ export class User extends AbstractEntity<User> {
       && Objects.equals(this.fullName, other.fullName)
       && Objects.equals(this.profilePictureUrl, other.profilePictureUrl)
       && Objects.equals(this.admin, other.admin)
+      && Objects.equals(this.enabled, other.enabled)
       && Objects.equals(this.validUntilSeconds, other.validUntilSeconds);
   }
 }

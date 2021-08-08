@@ -12,7 +12,7 @@
       <mat-tab-group>
         <mat-tab label="{{ 'users' | translate }}">
             <div class="mat-elevation-z8">
-              <table mat-table [dataSource]="userDataSource">
+              <table mat-table [dataSource]="userDataSource" class="user-table">
                 <ng-container matColumnDef="id">
                   <th mat-header-cell *matHeaderCellDef>ID</th>
                   <td mat-cell *matCellDef="let element" class="cell-id">{{ element.id }}</td>
@@ -36,6 +36,34 @@
                 <ng-container matColumnDef="admin">
                   <th mat-header-cell *matHeaderCellDef>{{ 'admin' | translate }}</th>
                   <td mat-cell *matCellDef="let element" class="cell-admin">{{ element.admin ? '✓' : '' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="blocked">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'blocked' | translate }}</th>
+                  <td mat-cell *matCellDef="let element" class="cell-blocked">{{ element.enabled ? '' : '✓' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions" sticky>
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let element" class="cell-actions">
+                    <button *ngIf="element.enabled"
+                            mat-icon-button
+                            color="warn"
+                            matTooltip="{{ 'block_user' | translate }}"
+                            (click)="onBlockUserButtonClick(element)"
+                            [disabled]="element.id === authenticatedUser.id">
+                      <mat-icon>do_not_disturb_on</mat-icon>
+                    </button>
+
+                    <button *ngIf="!element.enabled"
+                            mat-icon-button
+                            color="primary"
+                            matTooltip="{{ 'unblock_user' | translate }}"
+                            (click)="onUnblockUserButtonClick(element)"
+                            [disabled]="element.id === authenticatedUser.id">
+                      <mat-icon>do_not_disturb_off</mat-icon>
+                    </button>
+                  </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="userColumns"></tr>

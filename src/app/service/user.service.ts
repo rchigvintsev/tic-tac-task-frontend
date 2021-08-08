@@ -24,8 +24,8 @@ export class UserService {
     this.baseUrl = `${this.config.apiBaseUrl}/v1/users`;
   }
 
-  getUserCount(): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/count`, {withCredentials: true}).pipe(
+  getUserCount(showLoadingIndicator = true): Observable<number> {
+    const observable = this.http.get<number>(`${this.baseUrl}/count`, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -34,11 +34,12 @@ export class UserService {
         }
       })
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getUsers(pageRequest: PageRequest = new PageRequest()): Observable<User[]> {
+  getUsers(pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<User[]> {
     const url = `${this.baseUrl}?${pageRequest.toQueryParameters()}`
-    return this.http.get<User[]>(url, {withCredentials: true}).pipe(
+    const observable = this.http.get<User[]>(url, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -54,6 +55,7 @@ export class UserService {
         return users;
       })
     );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
   confirmEmail(userId: number, token: string, showLoadingIndicator = true): Observable<any> {
