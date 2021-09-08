@@ -79,6 +79,7 @@ describe('TaskListTasksComponent', () => {
 
     taskService = injector.inject(TaskService);
     spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));
+    spyOn(taskService, 'updateTaskCounters').and.stub();
 
     const translate = injector.inject(TranslateService);
     translate.currentLang = 'en';
@@ -125,6 +126,12 @@ describe('TaskListTasksComponent', () => {
     component.onCompleteTaskListButtonClick();
     fixture.detectChanges();
     expect(taskListService.completeTaskList).toHaveBeenCalled();
+  });
+
+  it('should update task counters on task list complete', async () => {
+    await fixture.whenStable();
+    component.onCompleteTaskListButtonClick();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
   it('should navigate to "tasks-for-today" page on task list complete', async () => {

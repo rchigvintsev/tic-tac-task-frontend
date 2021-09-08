@@ -132,6 +132,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
   private completeTaskList() {
     this.taskListService.completeTaskList(this.taskList).subscribe(
       _ => {
+        this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_completed'));
       },
