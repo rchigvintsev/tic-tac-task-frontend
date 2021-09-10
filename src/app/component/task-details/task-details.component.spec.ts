@@ -15,14 +15,15 @@ import * as moment from 'moment';
 
 import {TaskDetailsComponent} from './task-details.component';
 import {Task} from '../../model/task';
+import {TaskList} from '../../model/task-list';
 import {Tag} from '../../model/tag';
+import {TaskGroup} from '../../model/task-group';
 import {TaskService} from '../../service/task.service';
 import {TagService} from '../../service/tag.service';
 import {TaskListService} from '../../service/task-list.service';
 import {ConfigService} from '../../service/config.service';
 import {LogService} from '../../service/log.service';
 import {TaskGroupService} from '../../service/task-group.service';
-import {TaskGroup} from '../../model/task-group';
 import {TestSupport} from '../../test/test-support';
 import {HttpRequestError} from '../../error/http-request.error';
 import {BadRequestError} from '../../error/bad-request.error';
@@ -49,6 +50,7 @@ describe('TaskDetailsComponent', () => {
   let taskListService: TaskListService;
   let updatedTagSource: Subject<Tag>;
   let deletedTagSource: Subject<Tag>;
+  let createdTaskListSource: Subject<TaskList>;
   let task: Task;
 
   beforeEach(waitForAsync(() => {
@@ -106,10 +108,13 @@ describe('TaskDetailsComponent', () => {
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
+    createdTaskListSource = new Subject<TaskList>();
+
     taskListService = injector.inject(TaskListService);
     spyOn(taskListService, 'getUncompletedTaskLists').and.returnValue(of([]));
     spyOn(taskListService, 'addTask').and.returnValue(of(true));
     spyOn(taskListService, 'removeTask').and.returnValue(of(true).pipe(delay(500)));
+    spyOn(taskListService, 'getCreatedTaskList').and.returnValue(createdTaskListSource.asObservable());
 
     const logService = injector.inject(LogService);
     spyOn(logService, 'error').and.callThrough();
@@ -524,5 +529,14 @@ describe('TaskDetailsComponent', () => {
     const deadlineCode = 'in_next_century';
     expect(() => component.onHotDeadlineButtonClick(deadlineCode))
       .toThrow(new Error('Unsupported deadline code: ' + deadlineCode));
+  });
+
+  it('should update available task lists on task list create', async () => {
+    await fixture.whenStable();
+
+    const newTaskList = new TaskList().deserialize({id: 1, name: 'New task list'});
+    createdTaskListSource.next(newTaskList);
+    fixture.detectChanges();
+    expect(component.taskLists.length).toEqual(1);
   });
 });

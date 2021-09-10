@@ -117,6 +117,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       taskLists => this.taskLists = taskLists,
       (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     );
+    this.taskListService.getCreatedTaskList()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(createdTaskList => this.onTaskListCreate(createdTaskList));
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
     this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
@@ -290,6 +293,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.availableTags.splice(tagIndex, 1);
       }
     }
+  }
+
+  private onTaskListCreate(taskList: TaskList) {
+    this.taskLists.push(taskList);
   }
 
   private initTaskModel(task: Task) {
