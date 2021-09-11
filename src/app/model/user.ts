@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
@@ -10,6 +12,7 @@ export class User extends AbstractEntity<User> {
   admin: boolean;
   enabled: boolean;
   validUntilSeconds: number;
+  createdAt: Date;
 
   isValid(): boolean {
     return this.validUntilSeconds && Math.round(Date.now() / 1000) < this.validUntilSeconds;
@@ -24,6 +27,9 @@ export class User extends AbstractEntity<User> {
     this.admin = input.admin;
     this.enabled = input.enabled;
     this.validUntilSeconds = input.validUntilSeconds;
+    if (input.createdAt) {
+      this.createdAt = moment.utc(input.createdAt, moment.HTML5_FMT.DATETIME_LOCAL_MS).toDate();
+    }
     return this;
   }
 
@@ -37,6 +43,7 @@ export class User extends AbstractEntity<User> {
     clone.admin = this.admin;
     clone.enabled = this.enabled;
     clone.validUntilSeconds = this.validUntilSeconds;
+    clone.createdAt = this.createdAt;
     return clone;
   }
 
@@ -48,6 +55,7 @@ export class User extends AbstractEntity<User> {
       && Objects.equals(this.profilePictureUrl, other.profilePictureUrl)
       && Objects.equals(this.admin, other.admin)
       && Objects.equals(this.enabled, other.enabled)
-      && Objects.equals(this.validUntilSeconds, other.validUntilSeconds);
+      && Objects.equals(this.validUntilSeconds, other.validUntilSeconds)
+      && Objects.equals(this.createdAt, other.createdAt);
   }
 }

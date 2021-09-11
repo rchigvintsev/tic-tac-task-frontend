@@ -18,7 +18,7 @@ import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-res
 })
 export class AdminAreaComponent implements OnInit, AfterViewInit {
   authenticatedUser: User;
-  userColumns: string[] = ['id', 'email', 'name', 'profilePicture', 'admin', 'blocked', 'actions'];
+  userColumns: string[] = ['id', 'email', 'name', 'registrationTime', 'profilePicture', 'admin', 'blocked', 'actions'];
   userDataSource: User[] = [];
   totalNumberOfUsers = 0;
 
