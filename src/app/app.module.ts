@@ -44,6 +44,7 @@ import {BaseTasksComponent} from './component/fragment/base-tasks/base-tasks.com
 import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
+import {ArchiveComponent} from './component/archived-tasks/archive.component';
 import {TaskDetailsComponent} from './component/task-details/task-details.component';
 import {TaskCommentsComponent} from './component/fragment/task-comments/task-comments.component';
 import {ConfirmationDialogComponent} from './component/fragment/confirmation-dialog/confirmation-dialog.component';
@@ -105,6 +106,7 @@ registerLocaleData(localeRu, 'ru');
     TaskGroupTasksComponent,
     TagTasksComponent,
     TaskListTasksComponent,
+    ArchiveComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,

@@ -106,25 +106,14 @@ export class TaskService {
       params += '&';
     }
     params += pageRequest.toQueryParameters();
-
     const url = `${this.baseUrl}/${path}?${params}`;
-    const observable = this.http.get<any>(url, {withCredentials: true}).pipe(
-      tap({
-        error: (error: HttpRequestError) => {
-          if (!error.localizedMessage) {
-            error.localizedMessage = this.i18nService.translate('failed_to_load_tasks');
-          }
-        }
-      }),
-      map(response => {
-        const tasks = [];
-        for (const json of response) {
-          tasks.push(new Task().deserialize(json));
-        }
-        return tasks;
-      })
-    );
-    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+    return this.loadTasks(url, showLoadingIndicator);
+  }
+
+  getArchivedTasks(pageRequest: PageRequest = new PageRequest(),
+                   showLoadingIndicator = true): Observable<Task[]> {
+    const url = `${this.baseUrl}/completed?${pageRequest.toQueryParameters()}`;
+    return this.loadTasks(url, showLoadingIndicator);
   }
 
   getTask(id: number, showLoadingIndicator = true): Observable<Task> {
@@ -295,5 +284,25 @@ export class TaskService {
     }
 
     return this.http.get<number>(url, {withCredentials: true});
+  }
+
+  private loadTasks(url: string, showLoadingIndicator = true): Observable<Task[]> {
+    const observable = this.http.get<Task[]>(url, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_load_tasks');
+          }
+        }
+      }),
+      map(response => {
+        const tasks = [];
+        for (const json of response) {
+          tasks.push(new Task().deserialize(json));
+        }
+        return tasks;
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 }

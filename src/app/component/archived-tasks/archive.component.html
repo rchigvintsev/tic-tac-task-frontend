@@ -1,0 +1,23 @@
+<mat-card>
+  <div fxLayout="row" class="mat-card-header">
+    <div class="mat-card-title">
+      {{ 'archive' | translate }}
+    </div>
+  </div>
+
+  <mat-card-content>
+    <mat-list id="tasks" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll()">
+      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
+        <div class="list-row task-list-row">
+          <div class="list-column title-column">
+            <span>{{ task.title }}</span>
+          </div>
+        </div>
+      </mat-list-item>
+
+      <div *ngIf=showInlineSpinner class="spinner-container">
+        <mat-spinner [diameter]="30"></mat-spinner>
+      </div>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

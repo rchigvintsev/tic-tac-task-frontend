@@ -1,0 +1,12 @@
+#tasks {
+  .mat-list-item {
+    &:hover {
+      background: rgba(0, 0, 0, .04)
+    }
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+  }
+}

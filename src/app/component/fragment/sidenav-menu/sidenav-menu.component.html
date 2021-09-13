@@ -117,5 +117,15 @@
         <app-task-lists></app-task-lists>
       </mat-expansion-panel>
     </mat-accordion>
+
+    <mat-divider></mat-divider>
+
+    <a mat-list-item
+       [routerLink]="[i18nService.currentLanguage.code, 'archive']"
+       [class.selected]="isRouterLinkActive('archive')"
+       [appFocused]="isFocused('archive')">
+      <mat-icon mat-list-icon>inventory_2</mat-icon>
+      <span matLine>{{ 'archive' | translate }}</span>
+    </a>
   </mat-list>
 </mat-nav-list>

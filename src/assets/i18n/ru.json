@@ -130,5 +130,6 @@
   "unblock_user": "Разблокировать пользователя",
   "user_blocked": "Пользователь заблокирован",
   "user_unblocked": "Пользователь разблокирован",
-  "registration_time": "Время регистрации"
+  "registration_time": "Время регистрации",
+  "archive": "Архив"
 }

@@ -1,0 +1,62 @@
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
+
+import {of} from 'rxjs';
+
+import {TestSupport} from '../../test/test-support';
+import {ArchiveComponent} from './archive.component';
+import {ConfigService} from '../../service/config.service';
+import {TaskService} from '../../service/task.service';
+import {PageRequest} from '../../service/page-request';
+import {Task} from '../../model/task';
+import {TaskStatus} from '../../model/task-status';
+import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
+
+describe('ArchiveComponent', () => {
+  let component: ArchiveComponent;
+  let fixture: ComponentFixture<ArchiveComponent>;
+  let taskService: TaskService;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: TestSupport.IMPORTS,
+      declarations: TestSupport.DECLARATIONS,
+      providers: [
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
+      ]
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ArchiveComponent);
+    component = fixture.componentInstance;
+
+    const injector = getTestBed();
+
+    const tasks = [
+      new Task().deserialize({id: 1, title: 'Task 1', status: TaskStatus.COMPLETED}),
+      new Task().deserialize({id: 2, title: 'Task 2', status: TaskStatus.COMPLETED})
+    ];
+
+    taskService = injector.inject(TaskService);
+    spyOn(taskService, 'getArchivedTasks').and.returnValue(of(tasks));
+
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should load archived tasks on init', async () => {
+    await fixture.whenStable();
+    expect(taskService.getArchivedTasks).toHaveBeenCalled();
+  });
+
+  it('should load next task page on task list scroll', async () => {
+    await fixture.whenStable();
+    component.onTaskListScroll();
+    expect(taskService.getArchivedTasks).toHaveBeenCalledWith(new PageRequest(1));
+  });
+});

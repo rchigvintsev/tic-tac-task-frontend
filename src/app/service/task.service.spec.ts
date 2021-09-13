@@ -15,6 +15,7 @@ import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
 import {Tag} from '../model/tag';
 import {TaskComment} from '../model/task-comment';
+import {TaskStatus} from '../model/task-status';
 
 const DATE_FORMAT = moment.HTML5_FMT.DATETIME_LOCAL_MS;
 
@@ -246,6 +247,22 @@ describe('TaskService', () => {
 
   it('should throw error on get task count when task group is null', () => {
     expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
+  });
+
+  it('should return archived tasks', done => {
+    const testTasks = [];
+    testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: TaskStatus.COMPLETED}));
+    testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: TaskStatus.COMPLETED}));
+
+    taskService.getArchivedTasks().subscribe(tasks => {
+      expect(tasks.length).toBe(2);
+      expect(tasks).toEqual(testTasks);
+      done();
+    });
+
+    const request = httpMock.expectOne(`${taskService.baseUrl}/completed?page=0&size=20`);
+    expect(request.request.method).toBe('GET');
+    request.flush(testTasks);
   });
 
   it('should return task by id', done => {
