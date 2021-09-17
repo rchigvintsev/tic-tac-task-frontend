@@ -12,6 +12,13 @@
           <div class="list-column title-column">
             <span>{{ task.title }}</span>
           </div>
+
+          <button mat-icon-button
+                  color="primary"
+                  matTooltip="{{ 'restore' | translate }}"
+                  (click)="onTaskRestoreButtonClick(task)">
+            <mat-icon>unarchive</mat-icon>
+          </button>
         </div>
       </mat-list-item>
 

@@ -174,6 +174,20 @@ export class TaskService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
+  restoreTask(task: Task, showLoadingIndicator = true): Observable<any> {
+    Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
+    const observable = this.http.delete<any>(`${this.baseUrl}/completed/${task.id}`, {withCredentials: true}).pipe(
+      tap({
+        error: (error: HttpRequestError) => {
+          if (!error.localizedMessage) {
+            error.localizedMessage = this.i18nService.translate('failed_to_restore_task');
+          }
+        }
+      })
+    );
+    return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
   deleteTask(task: Task, showLoadingIndicator = true): Observable<any> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
     const observable = this.http.delete<any>(`${this.baseUrl}/${task.id}`, {withCredentials: true}).pipe(

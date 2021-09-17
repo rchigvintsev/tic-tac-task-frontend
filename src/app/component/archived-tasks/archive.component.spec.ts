@@ -41,6 +41,8 @@ describe('ArchiveComponent', () => {
 
     taskService = injector.inject(TaskService);
     spyOn(taskService, 'getArchivedTasks').and.returnValue(of(tasks));
+    spyOn(taskService, 'restoreTask').and.returnValue(of(true));
+    spyOn(taskService, 'updateTaskCounters').and.stub();
 
     fixture.detectChanges();
   });
@@ -58,5 +60,23 @@ describe('ArchiveComponent', () => {
     await fixture.whenStable();
     component.onTaskListScroll();
     expect(taskService.getArchivedTasks).toHaveBeenCalledWith(new PageRequest(1));
+  });
+
+  it('should restore task on task restore button click', async () => {
+    await fixture.whenStable();
+
+    const task = component.tasks[0];
+    component.onTaskRestoreButtonClick(task);
+    fixture.detectChanges();
+
+    expect(taskService.restoreTask).toHaveBeenCalledWith(task);
+    expect(component.tasks.length).toEqual(1);
+  });
+
+  it('should update task counters on task restore', async () => {
+    component.onTaskRestoreButtonClick(component.tasks[0]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 });

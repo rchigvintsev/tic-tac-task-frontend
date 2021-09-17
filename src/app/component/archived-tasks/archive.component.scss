@@ -3,6 +3,16 @@
     &:hover {
       background: rgba(0, 0, 0, .04)
     }
+
+    .task-list-row {
+      align-items: center;
+      height: 100%;
+
+      .list-column {
+        flex-grow: 1;
+        flex-basis: 0;
+      }
+    }
   }
 
   .spinner-container {
