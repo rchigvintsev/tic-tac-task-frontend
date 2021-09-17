@@ -9,6 +9,10 @@
     }
 
     mat-toolbar {
+      .application-title {
+        font-size: inherit;
+      }
+
       button {
         padding-left: 8px;
         padding-right: 8px;

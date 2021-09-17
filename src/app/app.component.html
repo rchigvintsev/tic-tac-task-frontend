@@ -5,7 +5,7 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <span>{{ title }}</span>
+      <a mat-button [routerLink]="['/', i18nService.currentLanguage.code]" class="application-title">{{ title }}</a>
       <span class="space-filler"></span>
 
       <div class="right-margin-8">
