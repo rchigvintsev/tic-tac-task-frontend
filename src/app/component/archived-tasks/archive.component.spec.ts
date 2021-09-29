@@ -41,7 +41,7 @@ describe('ArchiveComponent', () => {
 
     taskService = injector.inject(TaskService);
     spyOn(taskService, 'getArchivedTasks').and.returnValue(of(tasks));
-    spyOn(taskService, 'restoreTask').and.returnValue(of(true));
+    spyOn(taskService, 'restoreTask').and.callFake(t => of(t));
     spyOn(taskService, 'updateTaskCounters').and.stub();
 
     fixture.detectChanges();

@@ -304,7 +304,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`);
     expect(request.request.method).toBe('PUT');
-    request.flush(testTask);
+    request.flush(testTask.serialize());
   });
 
   it('should throw error on task update when task is null', () => {
@@ -326,11 +326,27 @@ describe('TaskService', () => {
 
   it('should restore task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Test task', status: TaskStatus.COMPLETED});
-    taskService.restoreTask(testTask).subscribe(_ => done());
+    const restoredTestTask = testTask.clone();
+    restoredTestTask.status = TaskStatus.PROCESSED;
+
+    taskService.restoreTask(testTask).subscribe(task => {
+      expect(task.status).toEqual(restoredTestTask.status);
+      done();
+    });
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/completed/${testTask.id}`);
     expect(request.request.method).toBe('DELETE');
-    request.flush(null);
+    request.flush(restoredTestTask.serialize());
+  });
+
+  it('should notify about restored task', done => {
+    const testTask = new Task().deserialize({id: 1, name: 'Test task', status: TaskStatus.PROCESSED});
+    taskService.getRestoredTask().subscribe(task => {
+      expect(task).toEqual(testTask);
+      done();
+    });
+    taskService.restoreTask(testTask).subscribe(() => {});
+    httpMock.expectOne(`${taskService.baseUrl}/completed/${testTask.id}`).flush(testTask.serialize());
   });
 
   it('should throw error on task restore when task is null', () => {

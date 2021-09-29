@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
 import * as moment from 'moment';
@@ -24,6 +24,9 @@ export class TaskService {
 
   private readonly taskCounters = new Map<TaskGroup, BehaviorSubject<number>>();
 
+  private readonly restoredTaskSource: Subject<Task>;
+  private readonly restoredTask: Observable<Task>;
+
   constructor(private http: HttpClient,
               private config: ConfigService,
               private i18nService: I18nService,
@@ -32,6 +35,9 @@ export class TaskService {
     for (const taskGroup of TaskGroup.values()) {
       this.taskCounters.set(taskGroup, new BehaviorSubject<number>(null));
     }
+
+    this.restoredTaskSource = new Subject<Task>();
+    this.restoredTask = this.restoredTaskSource.asObservable();
   }
 
   private static getPathForTaskGroup(taskGroup: TaskGroup): string {
@@ -93,6 +99,10 @@ export class TaskService {
 
   resetTaskCounters() {
     this.taskCounters.forEach(counter => counter.next(null));
+  }
+
+  getRestoredTask(): Observable<Task> {
+    return this.restoredTask;
   }
 
   getTasksByGroup(taskGroup: TaskGroup,
@@ -174,16 +184,18 @@ export class TaskService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  restoreTask(task: Task, showLoadingIndicator = true): Observable<any> {
+  restoreTask(task: Task, showLoadingIndicator = true): Observable<Task> {
     Assert.notNullOrUndefined(task, 'Task must not be null or undefined');
-    const observable = this.http.delete<any>(`${this.baseUrl}/completed/${task.id}`, {withCredentials: true}).pipe(
+    const observable = this.http.delete<Task>(`${this.baseUrl}/completed/${task.id}`, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
             error.localizedMessage = this.i18nService.translate('failed_to_restore_task');
           }
         }
-      })
+      }),
+      map(response => new Task().deserialize(response)),
+      tap(restoredTask => this.notifyTaskRestored(restoredTask))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
@@ -318,5 +330,9 @@ export class TaskService {
       })
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
+  private notifyTaskRestored(task: Task) {
+    this.restoredTaskSource.next(task);
   }
 }

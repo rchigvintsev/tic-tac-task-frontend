@@ -8,7 +8,9 @@ import {TaskListsComponent} from './task-lists.component';
 import {TestSupport} from '../../../test/test-support';
 import {ConfigService} from '../../../service/config.service';
 import {TaskListService} from '../../../service/task-list.service';
+import {TaskService} from '../../../service/task.service';
 import {TaskList} from '../../../model/task-list';
+import {Task} from '../../../model/task';
 import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
 
@@ -16,9 +18,11 @@ describe('TaskListsComponent', () => {
   let component: TaskListsComponent;
   let fixture: ComponentFixture<TaskListsComponent>;
   let taskListService: TaskListService;
+  let taskService: TaskService;
   let updatedTaskListSource: Subject<TaskList>;
   let completedTaskListSource: Subject<TaskList>;
   let deletedTaskListSource: Subject<TaskList>;
+  let restoredTaskSource: Subject<Task>;
   let routerEvents: Subject<RouterEvent>;
 
   beforeEach(waitForAsync(() => {
@@ -56,6 +60,11 @@ describe('TaskListsComponent', () => {
     spyOn(taskListService, 'getCompletedTaskList').and.returnValue(completedTaskListSource.asObservable());
     deletedTaskListSource = new Subject<TaskList>();
     spyOn(taskListService, 'getDeletedTaskList').and.returnValue(deletedTaskListSource.asObservable());
+
+    taskService = injector.inject(TaskService);
+
+    restoredTaskSource = new Subject<Task>();
+    spyOn(taskService, 'getRestoredTask').and.returnValue(restoredTaskSource.asObservable());
 
     routerEvents = new Subject();
     const router = injector.inject(Router);
@@ -99,6 +108,17 @@ describe('TaskListsComponent', () => {
     deletedTaskListSource.next(deletedTaskList);
     fixture.detectChanges();
     expect(component.taskLists.length).toBe(2);
+  });
+
+  it('should update list of task lists on task restore', async () => {
+    await fixture.whenStable();
+    const restoredTaskList = new TaskList().deserialize({id: 1000, name: 'Restored task list'})
+    const restoredTask = new Task().deserialize({id: 1, taskListId: restoredTaskList.id, name: 'Restored task'});
+    spyOn(taskListService, 'getTaskList').and.returnValue(of(restoredTaskList));
+
+    restoredTaskSource.next(restoredTask);
+    fixture.detectChanges();
+    expect(component.taskLists.length).toBe(4);
   });
 
   it('should enable task list form submit button when task list name is not blank', () => {

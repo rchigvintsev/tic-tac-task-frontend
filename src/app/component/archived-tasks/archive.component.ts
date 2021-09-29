@@ -44,7 +44,7 @@ export class ArchiveComponent implements OnInit {
 
   private restoreTask(task: Task) {
     this.taskService.restoreTask(task).subscribe(
-      _ => this.onTaskRestore(task),
+      restoredTask => this.onTaskRestore(restoredTask),
       (error: HttpRequestError) => this.onHttpRequestError(error)
     )
   }

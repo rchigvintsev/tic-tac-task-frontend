@@ -80,7 +80,7 @@ describe('AppComponent', () => {
   it('should render title in toolbar', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.page > header > mat-toolbar > span').textContent).toContain('Orchestra');
+    expect(compiled.querySelector('.page > header .application-title').textContent).toContain('Orchestra');
   });
 
   it('should render current user\'s name in toolbar', () => {

@@ -45,7 +45,7 @@ export class TaskListService {
     this.completedTaskListSource = new Subject<TaskList>();
     this.completedTaskList = this.completedTaskListSource.asObservable();
 
-    this.deletedTaskListSource  = new Subject<TaskList>();
+    this.deletedTaskListSource = new Subject<TaskList>();
     this.deletedTaskList = this.deletedTaskListSource.asObservable();
   }
 

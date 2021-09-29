@@ -7,7 +7,9 @@ import {takeUntil} from 'rxjs/operators';
 
 import {I18nService} from '../../../service/i18n.service';
 import {TaskListService} from '../../../service/task-list.service';
+import {TaskService} from '../../../service/task.service';
 import {TaskList} from '../../../model/task-list';
+import {Task} from '../../../model/task';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
@@ -30,6 +32,7 @@ export class TaskListsComponent implements OnInit, OnDestroy {
 
   constructor(public i18nService: I18nService,
               private taskListService: TaskListService,
+              private taskService: TaskService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private router: Router) {
   }
@@ -47,6 +50,10 @@ export class TaskListsComponent implements OnInit, OnDestroy {
     this.taskListService.getDeletedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskList => this.onTaskListDelete(taskList));
+
+    this.taskService.getRestoredTask()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(task => this.onTaskRestore(task));
 
     this.pathMatcher = PathMatcher.fromUrlTree(this.router.parseUrl(this.router.url));
 
@@ -88,7 +95,7 @@ export class TaskListsComponent implements OnInit, OnDestroy {
   }
 
   private onTaskListUpdate(updatedTaskList: TaskList) {
-    const index = this.taskLists.findIndex(taskList => taskList.id === updatedTaskList.id);
+    const index = this.findTaskListIndex(updatedTaskList.id);
     if (index >= 0) {
       this.taskLists[index] = updatedTaskList;
     }
@@ -102,10 +109,24 @@ export class TaskListsComponent implements OnInit, OnDestroy {
     this.removeTaskList(deletedTaskList);
   }
 
+  private onTaskRestore(restoredTask: Task) {
+    const taskListId = restoredTask.taskListId;
+    if (taskListId) {
+      const index = this.findTaskListIndex(taskListId);
+      if (index < 0) {
+        this.taskListService.getTaskList(taskListId, false).subscribe(taskList => this.taskLists.push(taskList));
+      }
+    }
+  }
+
   private removeTaskList(taskList: TaskList) {
-    const index = this.taskLists.findIndex(e => e.id === taskList.id);
+    const index = this.findTaskListIndex(taskList.id);
     if (index >= 0) {
       this.taskLists.splice(index, 1);
     }
+  }
+
+  private findTaskListIndex(id: number): number {
+    return this.taskLists.findIndex(taskList => taskList.id === id);
   }
 }
