@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 
-import {flatMap} from 'rxjs/internal/operators';
+import {flatMap} from 'rxjs/operators';
 
 import {I18nService} from '../../service/i18n.service';
 import {UserService} from '../../service/user.service';

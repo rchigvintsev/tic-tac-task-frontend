@@ -73,14 +73,14 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have a title 'Orchestra'`, () => {
-    expect(component.title).toEqual('Orchestra');
+  it(`should have a title 'Toledo'`, () => {
+    expect(component.title).toEqual('Toledo');
   });
 
   it('should render title in toolbar', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.page > header .application-title').textContent).toContain('Orchestra');
+    expect(compiled.querySelector('.page > header .application-title').textContent).toContain('Toledo');
   });
 
   it('should render current user\'s name in toolbar', () => {

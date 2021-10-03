@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav')
   sidenav: MatSidenav;
 
-  title = 'Orchestra';
+  title = 'Toledo';
   mobileQuery: MediaQueryList;
   showSidenav = false;
   availableLanguages: Language[];
