@@ -118,22 +118,16 @@ body {
         padding-right: 0 !important;
       }
 
-      mat-list mat-list-item {
-        .mat-list-item-content {
-          padding-right: 8px !important;
-        }
+      mat-list mat-list-item .list-row {
+        .name-column {
+          display: flex;
+          align-items: center;
 
-        .list-row {
-          .name-column {
-            display: flex;
-            align-items: center;
-
-            span {
-              width: 222px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
+          span {
+            width: 230px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
         }
       }
@@ -198,5 +192,70 @@ body {
   .progress-spinner-dialog .mat-dialog-container {
     box-shadow: none;
     background: rgba(0, 0, 0, 0.0);
+  }
+
+  .task-list-item .mat-list-item-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 16px;
+    height: 100%;
+
+    .drag-handle {
+      margin-right: 8px;
+    }
+
+    mat-checkbox {
+      margin-left: 16px;
+    }
+
+    .task-list-row {
+      align-items: center;
+      height: 100%;
+
+      .list-column {
+        flex-grow: 1;
+        flex-basis: 0;
+      }
+
+      .title-column {
+        margin-right: 16px;
+        flex-grow: 7;
+      }
+
+      .deadline-column {
+        min-width: 120px;
+        text-align: right;
+
+        span {
+          text-decoration: underline dotted;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .deadline-column {
+          min-width: 60px;
+        }
+      }
+    }
+  }
+
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    opacity: 1;
+    background-color: white;
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 }

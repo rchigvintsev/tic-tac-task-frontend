@@ -28,6 +28,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
@@ -162,6 +163,7 @@ registerLocaleData(localeRu, 'ru');
     MatPaginatorModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
+    DragDropModule,
     InfiniteScrollModule,
     NgxMaterialTimepickerModule,
     ColorCircleModule,
