@@ -79,6 +79,9 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    this.taskService.getUpdatedTask()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(task => this.onTaskUpdate(task))
     this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
   }
 
@@ -110,6 +113,18 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
         tasks => this.tasks = tasks,
         (error: HttpRequestError) => this.onHttpRequestError(error)
       );
+    }
+  }
+
+  private onTaskUpdate(updatedTask: Task) {
+    if (this.taskGroup !== TaskGroup.ALL) {
+      const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+      if (index >= 0) {
+        this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest).subscribe(
+          tasks => this.tasks = tasks,
+          (error: HttpRequestError) => this.onHttpRequestError(error)
+        );
+      }
     }
   }
 

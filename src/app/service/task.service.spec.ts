@@ -307,6 +307,16 @@ describe('TaskService', () => {
     request.flush(testTask.serialize());
   });
 
+  it('should notify about updated task', done => {
+    const testTask = new Task().deserialize({id: 1, name: 'Test task'});
+    taskService.getUpdatedTask().subscribe(task => {
+      expect(task).toEqual(testTask);
+      done();
+    });
+    taskService.updateTask(testTask).subscribe(() => {});
+    httpMock.expectOne(`${taskService.baseUrl}/${testTask.id}`).flush(testTask.serialize());
+  });
+
   it('should throw error on task update when task is null', () => {
     expect(() => taskService.updateTask(null)).toThrowError('Task must not be null or undefined');
   });

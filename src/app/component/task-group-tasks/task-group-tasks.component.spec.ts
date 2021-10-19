@@ -55,10 +55,16 @@ describe('TaskGroupTasksComponent', () => {
   });
 
   describe('normally', () => {
+    let tasks: Task[];
+
     beforeEach(() => {
       const injector = getTestBed();
 
-      spyOn(taskService, 'getTasksByGroup').and.returnValue(of([]));
+      tasks = [
+        new Task().deserialize({id: 1, title: 'Task 1'}),
+        new Task().deserialize({id: 2, title: 'Task 2'})
+      ]
+      spyOn(taskService, 'getTasksByGroup').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
 
       taskGroupService = injector.inject(TaskGroupService);
@@ -77,8 +83,8 @@ describe('TaskGroupTasksComponent', () => {
       component.onTaskFormSubmit();
       fixture.detectChanges();
 
-      expect(component.tasks[0].deadline).toBeUndefined();
-      expect(component.tasks[0].status).toEqual(TaskStatus.UNPROCESSED);
+      expect(component.tasks[2].deadline).toBeUndefined();
+      expect(component.tasks[2].status).toEqual(TaskStatus.UNPROCESSED);
     });
 
     it('should create processed task scheduled for today when "TODAY" group is selected', async () => {
@@ -91,8 +97,8 @@ describe('TaskGroupTasksComponent', () => {
 
       const today = new Date();
       today.setHours(23, 59, 59, 999);
-      expect(component.tasks[0].deadline).toEqual(today);
-      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
+      expect(component.tasks[2].deadline).toEqual(today);
+      expect(component.tasks[2].status).toEqual(TaskStatus.PROCESSED);
     });
 
     it('should create processed task scheduled for today when "WEEK" group is selected', async () => {
@@ -105,8 +111,8 @@ describe('TaskGroupTasksComponent', () => {
 
       const today = new Date();
       today.setHours(23, 59, 59, 999);
-      expect(component.tasks[0].deadline).toEqual(today);
-      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
+      expect(component.tasks[2].deadline).toEqual(today);
+      expect(component.tasks[2].status).toEqual(TaskStatus.PROCESSED);
     });
 
     it('should create processed task scheduled for tomorrow when "TOMORROW" group is selected', async () => {
@@ -119,8 +125,8 @@ describe('TaskGroupTasksComponent', () => {
 
       const tomorrow = moment().add(1, 'day').toDate();
       tomorrow.setHours(23, 59, 59, 999);
-      expect(component.tasks[0].deadline).toEqual(tomorrow);
-      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
+      expect(component.tasks[2].deadline).toEqual(tomorrow);
+      expect(component.tasks[2].status).toEqual(TaskStatus.PROCESSED);
     });
 
     it('should create unscheduled processed task when "SOME_DAY" group is selected', async () => {
@@ -131,8 +137,8 @@ describe('TaskGroupTasksComponent', () => {
       component.onTaskFormSubmit();
       fixture.detectChanges();
 
-      expect(component.tasks[0].deadline).not.toBeDefined();
-      expect(component.tasks[0].status).toEqual(TaskStatus.PROCESSED);
+      expect(component.tasks[2].deadline).not.toBeDefined();
+      expect(component.tasks[2].status).toEqual(TaskStatus.PROCESSED);
     });
 
     it('should render correct task list title depending on selected task group', () => {
@@ -181,6 +187,12 @@ describe('TaskGroupTasksComponent', () => {
       await fixture.whenStable();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
       expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reload tasks on task update', async () => {
+      await fixture.whenStable();
+      taskService.notifyTaskUpdated(tasks[0]);
+      expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(2);
     });
   });
 

@@ -24,6 +24,9 @@ export class TaskService {
 
   private readonly taskCounters = new Map<TaskGroup, BehaviorSubject<number>>();
 
+  private readonly updatedTaskSource: Subject<Task>;
+  private readonly updatedTask: Observable<Task>;
+
   private readonly restoredTaskSource: Subject<Task>;
   private readonly restoredTask: Observable<Task>;
 
@@ -35,6 +38,9 @@ export class TaskService {
     for (const taskGroup of TaskGroup.values()) {
       this.taskCounters.set(taskGroup, new BehaviorSubject<number>(null));
     }
+
+    this.updatedTaskSource = new Subject<Task>();
+    this.updatedTask = this.updatedTaskSource.asObservable();
 
     this.restoredTaskSource = new Subject<Task>();
     this.restoredTask = this.restoredTaskSource.asObservable();
@@ -101,6 +107,10 @@ export class TaskService {
     this.taskCounters.forEach(counter => counter.next(null));
   }
 
+  getUpdatedTask(): Observable<Task> {
+    return this.updatedTask;
+  }
+
   getRestoredTask(): Observable<Task> {
     return this.restoredTask;
   }
@@ -165,7 +175,8 @@ export class TaskService {
           }
         }
       }),
-      map(response => new Task().deserialize(response))
+      map(response => new Task().deserialize(response)),
+      tap(updatedTask => this.notifyTaskUpdated(updatedTask))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
@@ -300,6 +311,14 @@ export class TaskService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
+  notifyTaskUpdated(task: Task) {
+    this.updatedTaskSource.next(task);
+  }
+
+  notifyTaskRestored(task: Task) {
+    this.restoredTaskSource.next(task);
+  }
+
   private loadTaskCount(taskGroup: TaskGroup): Observable<number> {
     const path = TaskService.getPathForTaskGroup(taskGroup);
     let url = `${this.baseUrl}/${path}/count`;
@@ -330,9 +349,5 @@ export class TaskService {
       })
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
-  }
-
-  private notifyTaskRestored(task: Task) {
-    this.restoredTaskSource.next(task);
   }
 }
