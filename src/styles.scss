@@ -99,35 +99,41 @@ body {
     margin-right: 12px;
   }
 
-  mat-nav-list mat-list mat-accordion {
-    mat-expansion-panel {
-      form {
-        display: flex;
-        flex-direction: row;
+  mat-nav-list mat-list {
+    mat-list-item.cdk-drag-placeholder {
+      display: none !important;
+    }
 
-        mat-form-field {
-          width: 100%;
-        }
-
-        button {
-          margin-right: 8px !important;
-        }
-      }
-
-      .mat-expansion-panel-content > .mat-expansion-panel-body {
-        padding-right: 0 !important;
-      }
-
-      mat-list mat-list-item .list-row {
-        .name-column {
+    mat-accordion {
+      mat-expansion-panel {
+        form {
           display: flex;
-          align-items: center;
+          flex-direction: row;
 
-          span {
-            width: 230px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+          mat-form-field {
+            width: 100%;
+          }
+
+          button {
+            margin-right: 8px !important;
+          }
+        }
+
+        .mat-expansion-panel-content > .mat-expansion-panel-body {
+          padding-right: 0 !important;
+        }
+
+        mat-list mat-list-item .list-row {
+          .name-column {
+            display: flex;
+            align-items: center;
+
+            span {
+              width: 230px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
           }
         }
       }

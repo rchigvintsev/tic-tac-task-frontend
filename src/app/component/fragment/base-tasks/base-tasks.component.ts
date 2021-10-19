@@ -79,6 +79,11 @@ export class BaseTasksComponent {
   onTaskListScroll(event: any) {
   }
 
+  onTaskListItemDragStart(event: DragEvent, task: Task) {
+    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.setData('application/json', JSON.stringify(task.serialize()));
+  }
+
   onTaskCompleteCheckboxChange(task: Task) {
     // Let animation to complete
     setTimeout(() => this.completeTask(task), 300);

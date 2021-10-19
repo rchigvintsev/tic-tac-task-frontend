@@ -30,6 +30,7 @@ import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
+import {Dates} from '../../util/dates';
 
 const START_OF_DAY_TIME = '00:00';
 const END_OF_DAY_TIME = '23:59';
@@ -240,13 +241,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   onHotDeadlineButtonClick(deadline: string) {
     switch (deadline) {
       case 'today':
-        this.taskFormModel.deadline = moment().endOf('day').toDate();
+        this.taskFormModel.deadline = Dates.endOfToday();
         break;
       case 'tomorrow':
-        this.taskFormModel.deadline = moment().add(1, 'day').endOf('day').toDate();
+        this.taskFormModel.deadline = Dates.endOfTomorrow();
         break;
       case 'in_week':
-        this.taskFormModel.deadline = moment().add(1, 'week').endOf('day').toDate();
+        this.taskFormModel.deadline = Dates.endOfWeek();
         break;
       default:
         throw new Error('Unsupported deadline code: ' + deadline);

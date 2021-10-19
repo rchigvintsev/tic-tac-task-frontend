@@ -59,10 +59,10 @@
   </form>
 
   <mat-card-content>
-    <mat-list id="task_list" cdkDropList infiniteScroll [infiniteScrollDistance]="1"
-              (scrolled)="onTaskListScroll($event)">
-      <mat-list-item class="task-list-item" *ngFor="let task of tasks" [ngClass]="'task-' + task.id" cdkDrag>
-        <div class="drag-handle" cdkDragHandle>
+    <mat-list class="task-list" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll($event)">
+      <mat-list-item class="task-list-item" *ngFor="let task of tasks" [ngClass]="'task-' + task.id"
+                     draggable="true" (dragstart)="onTaskListItemDragStart($event, task)">
+        <div class="drag-handle">
           <mat-icon>drag_indicator</mat-icon>
         </div>
 

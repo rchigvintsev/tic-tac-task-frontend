@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 
 import {Observable, Subject} from 'rxjs';
@@ -7,10 +7,15 @@ import {takeUntil} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {I18nService} from '../../../service/i18n.service';
+import {Task} from '../../../model/task';
 import {TaskGroup} from '../../../model/task-group';
+import {TaskStatus} from '../../../model/task-status';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {TaskService} from '../../../service/task.service';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
+import {HttpRequestError} from '../../../error/http-request.error';
 import {PathMatcher} from '../../../util/path-matcher';
+import {Dates} from '../../../util/dates';
 
 @Component({
   selector: 'app-sidenav-menu',
@@ -30,6 +35,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   constructor(public i18nService: I18nService,
               private taskGroupService: TaskGroupService,
               private taskService: TaskService,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private router: Router) {
   }
 
@@ -73,6 +79,19 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
     }
   }
 
+  onListItemDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }
+
+  onListItemDrop(event: DragEvent, taskGroup: TaskGroup) {
+    event.preventDefault();
+    const taskJson = event.dataTransfer.getData('application/json');
+    if (taskJson) {
+      this.moveTaskToGroup(taskGroup, new Task().deserialize(JSON.parse(taskJson)));
+    }
+  }
+
   private onTaskGroupSelect(taskGroup: TaskGroup) {
     this.setSelectedTaskGroup(taskGroup, false);
   }
@@ -88,5 +107,36 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
         this.taskGroupService.notifyTaskGroupSelected(taskGroup);
       }
     }
+  }
+
+  private moveTaskToGroup(taskGroup: TaskGroup, task: Task) {
+    switch (taskGroup) {
+      case TaskGroup.INBOX:
+        task.deadline = null;
+        task.status = TaskStatus.UNPROCESSED;
+        break;
+      case TaskGroup.TODAY:
+        task.deadline = Dates.endOfToday();
+        task.status = TaskStatus.PROCESSED;
+        break;
+      case TaskGroup.TOMORROW:
+        task.deadline = Dates.endOfTomorrow();
+        task.status = TaskStatus.PROCESSED;
+        break;
+      case TaskGroup.WEEK:
+        task.deadline = Dates.endOfWeek();
+        task.status = TaskStatus.PROCESSED;
+        break;
+      case TaskGroup.SOME_DAY:
+        task.deadline = null;
+        task.status = TaskStatus.PROCESSED;
+        break;
+      default:
+        throw new Error('Unsupported task group: ' + taskGroup);
+    }
+
+    task.deadlineTimeExplicitlySet = false;
+    this.taskService.updateTask(task).subscribe(_ => this.taskService.updateTaskCounters(),
+      (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
   }
 }
