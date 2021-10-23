@@ -1,13 +1,13 @@
 <mat-nav-list>
   <mat-list>
-    <a mat-list-item
+    <a mat-list-item class="drop-receiver"
        [routerLink]="[i18nService.currentLanguage.code, 'task']"
        [fragment]="TaskGroup.INBOX.value"
        [class.selected]="isRouterLinkActive('task', TaskGroup.INBOX.value)"
        [appFocused]="isFocused('task', TaskGroup.INBOX.value)"
        (click)="onListItemClick(TaskGroup.INBOX)"
        (dragover)="onListItemDragOver($event)"
-       (drop)="onListItemDrop($event, TaskGroup.INBOX)">
+       (_drop)="onDrop($event, TaskGroup.INBOX)">
       <mat-icon mat-list-icon>inbox</mat-icon>
       <span matLine>{{ 'inbox' | translate }}</span>
       <span *ngIf="hasTasks(TaskGroup.INBOX) | async" [matBadge]="getTaskCount(TaskGroup.INBOX) | async | number"
@@ -19,14 +19,14 @@
     <ng-container>
       <h3 matSubheader>{{ 'scheduled_for' | translate }}</h3>
 
-      <a mat-list-item
+      <a mat-list-item class="drop-receiver"
          [routerLink]="[i18nService.currentLanguage.code, 'task']"
          [fragment]="TaskGroup.TODAY.value"
          [class.selected]="isRouterLinkActive('task', TaskGroup.TODAY.value)"
          [appFocused]="isFocused('task', TaskGroup.TODAY.value)"
          (click)="onListItemClick(TaskGroup.TODAY)"
          (dragover)="onListItemDragOver($event)"
-         (drop)="onListItemDrop($event, TaskGroup.TODAY)">
+         (_drop)="onDrop($event, TaskGroup.TODAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>{{ todayDate }}</span>
@@ -36,14 +36,14 @@
               matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
-      <a mat-list-item
+      <a mat-list-item class="drop-receiver"
          [routerLink]="[i18nService.currentLanguage.code, 'task']"
          [fragment]="TaskGroup.TOMORROW.value"
          [class.selected]="isRouterLinkActive('task', TaskGroup.TOMORROW.value)"
          [appFocused]="isFocused('task', TaskGroup.TOMORROW.value)"
          (click)="onListItemClick(TaskGroup.TOMORROW)"
          (dragover)="onListItemDragOver($event)"
-         (drop)="onListItemDrop($event, TaskGroup.TOMORROW)">
+         (_drop)="onDrop($event, TaskGroup.TOMORROW)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>{{ tomorrowDate }}</span>
@@ -53,14 +53,14 @@
               matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
-      <a mat-list-item
+      <a mat-list-item class="drop-receiver"
          [routerLink]="[i18nService.currentLanguage.code, 'task']"
          [fragment]="TaskGroup.WEEK.value"
          [class.selected]="isRouterLinkActive('task', TaskGroup.WEEK.value)"
          [appFocused]="isFocused('task', TaskGroup.WEEK.value)"
          (click)="onListItemClick(TaskGroup.WEEK)"
          (dragover)="onListItemDragOver($event)"
-         (drop)="onListItemDrop($event, TaskGroup.WEEK)">
+         (_drop)="onDrop($event, TaskGroup.WEEK)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>W</span>
@@ -70,14 +70,14 @@
               matBadgeOverlap="true" class="right-margin-12"></span>
       </a>
 
-      <a mat-list-item
+      <a mat-list-item class="drop-receiver"
          [routerLink]="[i18nService.currentLanguage.code, 'task']"
          [fragment]="TaskGroup.SOME_DAY.value"
          [class.selected]="isRouterLinkActive('task', TaskGroup.SOME_DAY.value)"
          [appFocused]="isFocused('task', TaskGroup.SOME_DAY.value)"
          (click)="onListItemClick(TaskGroup.SOME_DAY)"
          (dragover)="onListItemDragOver($event)"
-         (drop)="onListItemDrop($event, TaskGroup.SOME_DAY)">
+         (_drop)="onDrop($event, TaskGroup.SOME_DAY)">
         <mat-icon mat-list-icon class="mat-date-icon">
           calendar_today
           <span>?</span>

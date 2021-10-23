@@ -1,5 +1,6 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {CdkDragEnd} from '@angular/cdk/drag-drop';
 
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
@@ -79,9 +80,15 @@ export class BaseTasksComponent {
   onTaskListScroll(event: any) {
   }
 
-  onTaskListItemDragStart(event: DragEvent, task: Task) {
-    event.dataTransfer.dropEffect = 'move';
-    event.dataTransfer.setData('application/json', JSON.stringify(task.serialize()));
+  onTaskListItemDragEnded(event: CdkDragEnd, task: Task) {
+    const dropPointElement = document.elementFromPoint(event.dropPoint.x, event.dropPoint.y);
+    if (dropPointElement) {
+      const dropReceiver = dropPointElement.closest('.drop-receiver');
+      if (dropReceiver) {
+        const dropEvent = new CustomEvent('_drop', {detail: task});
+        dropReceiver.dispatchEvent(dropEvent);
+      }
+    }
   }
 
   onTaskCompleteCheckboxChange(task: Task) {

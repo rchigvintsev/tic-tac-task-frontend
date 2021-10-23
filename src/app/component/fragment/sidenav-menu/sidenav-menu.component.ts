@@ -84,11 +84,10 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
     event.dataTransfer.dropEffect = 'move';
   }
 
-  onListItemDrop(event: DragEvent, taskGroup: TaskGroup) {
+  onDrop(event: CustomEvent, taskGroup: TaskGroup) {
     event.preventDefault();
-    const taskJson = event.dataTransfer.getData('application/json');
-    if (taskJson) {
-      this.moveTaskToGroup(taskGroup, new Task().deserialize(JSON.parse(taskJson)));
+    if (event.detail instanceof Task) {
+      this.moveTaskToGroup(event.detail, taskGroup);
     }
   }
 
@@ -109,7 +108,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  private moveTaskToGroup(taskGroup: TaskGroup, task: Task) {
+  private moveTaskToGroup(task: Task, taskGroup: TaskGroup) {
     switch (taskGroup) {
       case TaskGroup.INBOX:
         task.deadline = null;
