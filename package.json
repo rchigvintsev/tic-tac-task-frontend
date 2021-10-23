@@ -1,5 +1,5 @@
 {
-  "name": "toledo",
+  "name": "tic-tac-task",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
