@@ -34,6 +34,29 @@ body {
 
   form {
     font-size: 16px;
+
+    .form-group {
+      border: 1px solid rgba(0,0,0,.2);
+      border-radius: 4px;
+      margin-bottom: 16px;
+
+      .form-group-header {
+        align-content: center;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 8px 8px 8px 16px;
+        color: $color-gray-light;
+
+        .form-group-title {
+          flex: 1 1 auto;
+        }
+      }
+
+      .form-group-content {
+        padding: 16px;
+      }
+    }
   }
 
   .mat-micro-fab {

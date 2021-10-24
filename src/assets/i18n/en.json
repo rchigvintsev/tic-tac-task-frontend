@@ -6,6 +6,7 @@
   "name": "Name",
   "description": "Description",
   "deadline": "Deadline",
+  "quick_deadlines": "Quick deadlines",
   "color": "Color",
   "leave_comment": "Leave comment",
   "edit": "Edit",

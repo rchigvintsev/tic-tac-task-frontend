@@ -1,3 +1,5 @@
+@import "../../../variables.scss";
+
 mat-card {
   .mat-card-header {
     a {
@@ -18,7 +20,7 @@ mat-card {
 
           .deadline-time-checkbox {
             padding: 1.1em 0;
-            color: rgba(0, 0, 0, 0.54);
+            color: $color-gray-light;
             margin-left: 16px;
           }
 
@@ -35,7 +37,7 @@ mat-card {
               bottom: -4px;
 
               mat-icon {
-                color: rgba(0, 0, 0, .54);
+                color: $color-gray-light;
                 margin-top: -2px;
                 height: 20px;
               }
@@ -57,8 +59,6 @@ mat-card {
       }
 
       .deadline-hot-button-container {
-        padding-bottom: 20px;
-
         button {
           margin-right: 8px;
         }
