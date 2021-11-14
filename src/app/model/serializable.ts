@@ -1,11 +1,11 @@
-export interface Serializable<T> {
+export interface Serializable {
   /**
    * Converts attributes of serialized entity to their client-side representation.
    *
    * @param input serialized entity
    * @return this
    */
-  deserialize(input: any): T;
+  deserialize(input: any): any;
 
   /**
    * Converts entity to form suitable for transmission over the wire. It may include converting of complex types to

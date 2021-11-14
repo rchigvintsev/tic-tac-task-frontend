@@ -30,8 +30,17 @@ import {BadRequestError} from '../../error/bad-request.error';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
+import {
+  AnnuallyTaskRecurrenceStrategy,
+  DailyTaskRecurrenceStrategy,
+  MonthlyTaskRecurrenceStrategy,
+  WeeklyTaskRecurrenceStrategy
+} from '../../model/task-recurrence-strategy';
+import {DayOfWeek} from '../../util/time/day-of-week';
+import {Month} from '../../util/time/month';
 
 const CURRENT_LANG = 'en';
+const TASK_DEADLINE = '2021-01-01T00:01'
 
 class MatDialogMock {
   open() {
@@ -81,7 +90,7 @@ describe('TaskDetailsComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
+      deadline: TASK_DEADLINE,
       deadlineTimeExplicitlySet: true
     });
 
@@ -381,6 +390,47 @@ describe('TaskDetailsComponent', () => {
     component.onDeadlineTimeSet('11:35');
     fixture.detectChanges();
     expect(taskService.updateTask).toHaveBeenCalled();
+  });
+
+  it('should save task on task recurrence option select', () => {
+    component.selectedTaskRecurrenceOption = DailyTaskRecurrenceStrategy.TYPE;
+    component.onTaskRecurrenceOptionSelect();
+    expect(taskService.updateTask).toHaveBeenCalled();
+  });
+
+  it('should take day of week from deadline when weekly task recurrence option is selected', () => {
+    component.selectedTaskRecurrenceOption = WeeklyTaskRecurrenceStrategy.TYPE;
+    component.onTaskRecurrenceOptionSelect();
+    const recurrenceStrategy = component.taskFormModel.recurrenceStrategy as WeeklyTaskRecurrenceStrategy;
+    expect(recurrenceStrategy.dayOfWeek).toBe(DayOfWeek.FRIDAY);
+  });
+
+  it('should take day of month from deadline when monthly task recurrence option is selected', () => {
+    component.selectedTaskRecurrenceOption = MonthlyTaskRecurrenceStrategy.TYPE;
+    component.onTaskRecurrenceOptionSelect();
+    const recurrenceStrategy = component.taskFormModel.recurrenceStrategy as MonthlyTaskRecurrenceStrategy;
+    expect(recurrenceStrategy.dayOfMonth).toBe(1);
+  });
+
+  it('should take month and day of month from deadline when annually task recurrence option is selected', () => {
+    component.selectedTaskRecurrenceOption = AnnuallyTaskRecurrenceStrategy.TYPE;
+    component.onTaskRecurrenceOptionSelect();
+    const recurrenceStrategy = component.taskFormModel.recurrenceStrategy as AnnuallyTaskRecurrenceStrategy;
+    expect(recurrenceStrategy.month).toBe(Month.JANUARY);
+    expect(recurrenceStrategy.dayOfMonth).toBe(1);
+  });
+
+  it('should clear task recurrence strategy when never task recurrence option is selected', () => {
+    component.taskFormModel.recurrenceStrategy = new DailyTaskRecurrenceStrategy();
+    component.selectedTaskRecurrenceOption = null;
+    component.onTaskRecurrenceOptionSelect();
+    expect(component.taskFormModel.recurrenceStrategy).toBeNull();
+  });
+
+  it('should throw error when unsupported task recurrence option is selected', () => {
+    component.selectedTaskRecurrenceOption = 'everyCentury';
+    expect(() => component.onTaskRecurrenceOptionSelect())
+      .toThrowError(`Unsupported task repeat option: ${component.selectedTaskRecurrenceOption}`);
   });
 
   it('should add "color-warn" class to "deadlineDate" input when task is overdue', async () => {

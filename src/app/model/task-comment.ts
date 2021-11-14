@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
-export class TaskComment extends AbstractEntity<TaskComment> {
+export class TaskComment extends AbstractEntity {
   id: number;
   taskId: number;
   commentText: string;

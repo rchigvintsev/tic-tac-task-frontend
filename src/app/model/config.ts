@@ -1,7 +1,7 @@
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
-export class Config extends AbstractEntity<Config> {
+export class Config extends AbstractEntity {
   apiBaseUrl: string;
   selfBaseUrl: string;
 

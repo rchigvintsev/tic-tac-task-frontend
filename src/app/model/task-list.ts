@@ -1,7 +1,7 @@
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
-export class TaskList extends AbstractEntity<TaskList> {
+export class TaskList extends AbstractEntity {
   id: number;
   name: string;
   completed: boolean;

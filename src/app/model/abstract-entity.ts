@@ -1,12 +1,12 @@
 import {Serializable} from './serializable';
 import {Cloneable} from './cloneable';
 
-export abstract class AbstractEntity<T> implements Serializable<T>, Cloneable<T> {
-  abstract clone(): T;
+export abstract class AbstractEntity implements Serializable, Cloneable {
+  abstract clone(): AbstractEntity;
 
-  abstract deserialize(input: any): T;
+  abstract deserialize(input: any): AbstractEntity;
 
-  abstract equals(other: T): boolean;
+  abstract equals(other: AbstractEntity): boolean;
 
   serialize(): any {
     return this.clone();

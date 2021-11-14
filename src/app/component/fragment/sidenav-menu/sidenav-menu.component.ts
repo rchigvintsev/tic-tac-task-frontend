@@ -15,7 +15,7 @@ import {TaskService} from '../../../service/task.service';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {PathMatcher} from '../../../util/path-matcher';
-import {Dates} from '../../../util/dates';
+import {Dates} from '../../../util/time/dates';
 
 @Component({
   selector: 'app-sidenav-menu',

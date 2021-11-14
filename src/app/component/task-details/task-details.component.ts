@@ -9,7 +9,7 @@ import {MatDialog} from '@angular/material/dialog';
 
 import * as moment from 'moment';
 
-import {flatMap, map, startWith, takeUntil} from 'rxjs/operators';
+import {map, mergeMap, startWith, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
@@ -30,7 +30,15 @@ import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
-import {Dates} from '../../util/dates';
+import {Dates} from '../../util/time/dates';
+import {
+  AnnuallyTaskRecurrenceStrategy,
+  DailyTaskRecurrenceStrategy,
+  MonthlyTaskRecurrenceStrategy,
+  WeeklyTaskRecurrenceStrategy
+} from '../../model/task-recurrence-strategy';
+import {DayOfWeek} from '../../util/time/day-of-week';
+import {Month} from '../../util/time/month';
 
 const START_OF_DAY_TIME = '00:00';
 const END_OF_DAY_TIME = '23:59';
@@ -59,6 +67,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   filteredTags: Observable<Tag[]>;
   taskLists: TaskList[] = [];
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
+
+  selectedTaskRecurrenceOption: string;
+  taskRecurrenceOptions = [
+    DailyTaskRecurrenceStrategy.TYPE,
+    WeeklyTaskRecurrenceStrategy.TYPE,
+    MonthlyTaskRecurrenceStrategy.TYPE,
+    AnnuallyTaskRecurrenceStrategy.TYPE
+  ];
 
   private task: Task;
   private componentDestroyed = new Subject<boolean>();
@@ -219,6 +235,41 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  onTaskRecurrenceOptionSelect() {
+    if (this.selectedTaskRecurrenceOption) {
+      switch (this.selectedTaskRecurrenceOption) {
+        case DailyTaskRecurrenceStrategy.TYPE: {
+          this.taskFormModel.recurrenceStrategy = new DailyTaskRecurrenceStrategy();
+          break;
+        }
+        case WeeklyTaskRecurrenceStrategy.TYPE: {
+          const recurrenceStrategy = new WeeklyTaskRecurrenceStrategy();
+          recurrenceStrategy.dayOfWeek = DayOfWeek.forCode(moment(this.taskFormModel.deadline).isoWeekday());
+          this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
+          break;
+        }
+        case MonthlyTaskRecurrenceStrategy.TYPE: {
+          const recurrenceStrategy = new MonthlyTaskRecurrenceStrategy();
+          recurrenceStrategy.dayOfMonth = moment(this.taskFormModel.deadline).date();
+          this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
+          break;
+        }
+        case AnnuallyTaskRecurrenceStrategy.TYPE: {
+          const recurrenceStrategy = new AnnuallyTaskRecurrenceStrategy();
+          recurrenceStrategy.month = Month.forCode(moment(this.taskFormModel.deadline).month() + 1);
+          recurrenceStrategy.dayOfMonth = moment(this.taskFormModel.deadline).date();
+          this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
+          break;
+        }
+        default:
+          throw new Error('Unsupported task repeat option: ' + this.selectedTaskRecurrenceOption);
+      }
+    } else {
+      this.taskFormModel.recurrenceStrategy = null;
+    }
+    this.saveTask();
+  }
+
   onCompleteTaskButtonClick() {
     this.completeTask();
   }
@@ -310,6 +361,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.deadlineTime = START_OF_DAY_TIME;
     }
+    this.selectedTaskRecurrenceOption = task.recurrenceStrategy ? task.recurrenceStrategy.getType() : null;
   }
 
   private initTags(tags: Tag[]) {
@@ -441,7 +493,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         if (tagIndex < 0) {
           const newTag = new Tag(trimmedName);
           this.tagService.createTag(newTag).pipe(
-            flatMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
+            mergeMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
           ).subscribe(
             tag => {
               this.tags.push(tag);

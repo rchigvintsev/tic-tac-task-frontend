@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
 
-export class User extends AbstractEntity<User> {
+export class User extends AbstractEntity {
   id: number;
   email: string;
   password: string;

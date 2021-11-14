@@ -121,6 +121,17 @@
               <button mat-raised-button class="ok-button">OK</button>
             </ng-template>
           </mat-form-field>
+
+          <mat-form-field class="repeat-form-field">
+            <mat-label>{{ 'repeat' | translate }}</mat-label>
+            <mat-select name="repeatTask" [(ngModel)]="selectedTaskRecurrenceOption"
+                        [disabled]="taskFormModel.deadline == null" (selectionChange)="onTaskRecurrenceOptionSelect()">
+              <mat-option>{{ 'never' | translate }}</mat-option>
+              <mat-option *ngFor="let recurrenceOption of taskRecurrenceOptions" [value]="recurrenceOption">
+                {{ recurrenceOption | translate }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <div class="deadline-error-container">

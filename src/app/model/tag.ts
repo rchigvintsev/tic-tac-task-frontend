@@ -3,7 +3,7 @@ import {Objects} from '../util/objects';
 
 const DEFAULT_TAG_COLOR = '#e0e0e0';
 
-export class Tag extends AbstractEntity<Tag> {
+export class Tag extends AbstractEntity {
   id: number;
   name: string;
   color = DEFAULT_TAG_COLOR;
