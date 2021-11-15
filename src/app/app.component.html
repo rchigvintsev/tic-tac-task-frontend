@@ -10,13 +10,13 @@
 
       <div class="right-margin-8">
         <button mat-button [matMenuTriggerFor]="languages">
-          {{ currentLanguage.name }}
+          {{ currentLanguage.code | uppercase }}
           <mat-icon>arrow_drop_down</mat-icon>
         </button>
 
         <mat-menu #languages="matMenu">
           <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageButtonClick(lang)">
-            {{ lang.name }}
+            {{ lang.name }}  ({{ lang.code | uppercase }})
           </button>
         </mat-menu>
       </div>
