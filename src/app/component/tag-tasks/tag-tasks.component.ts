@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
+import {MediaMatcher} from '@angular/cdk/layout';
 
-import {flatMap, map, tap} from 'rxjs/operators';
+import {map, mergeMap, tap} from 'rxjs/operators';
 
 import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
@@ -31,10 +32,11 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
+              media: MediaMatcher,
               private tagService: TagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [
@@ -105,7 +107,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
     this.pageRequest.page = 0;
     this.tagService.getTag(tagId).pipe(
       tap(tag => this.onTagLoad(tag)),
-      flatMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest, false))
+      mergeMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest, false))
     ).subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
   }
 

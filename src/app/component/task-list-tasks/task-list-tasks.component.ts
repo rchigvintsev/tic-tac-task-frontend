@@ -16,6 +16,7 @@ import {TaskGroup} from '../../model/task-group';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
+import {MediaMatcher} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-task-list-tasks',
@@ -29,10 +30,11 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
+              media: MediaMatcher,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [

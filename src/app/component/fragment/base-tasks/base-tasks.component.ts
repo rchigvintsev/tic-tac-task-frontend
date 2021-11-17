@@ -1,6 +1,7 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {CdkDragEnd} from '@angular/cdk/drag-drop';
+import {MediaMatcher} from '@angular/cdk/layout';
 
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
@@ -12,6 +13,7 @@ import {HttpRequestError} from '../../../error/http-request.error';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
+import {ViewportMediaQueries} from '../../../util/viewport-media-queries';
 
 export class MenuItem {
   constructor(public readonly name: string, public readonly handler: () => void) {
@@ -35,6 +37,7 @@ export class BaseTasksComponent {
   taskFormModel = new Task();
   tasks: Array<Task>;
   showInlineSpinner: boolean;
+  xsQuery: MediaQueryList;
 
   @ViewChild('titleInput')
   titleElement: ElementRef;
@@ -46,7 +49,9 @@ export class BaseTasksComponent {
   constructor(public i18nService: I18nService,
               protected taskService: TaskService,
               protected pageNavigationService: PageNavigationService,
-              @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler) {
+              @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler,
+              private media: MediaMatcher) {
+    this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
   }
 
   onTitleTextClick() {

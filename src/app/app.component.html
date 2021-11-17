@@ -21,7 +21,7 @@
         </mat-menu>
       </div>
 
-      <div *ngIf="authenticatedUser" class="profile-info-container" [class.right-margin-8]="mobileQuery.matches">
+      <div *ngIf="authenticatedUser" class="profile-info-container" [class.right-margin-8]="xsQuery.matches">
         <button mat-button fxShow="true" fxHide.lt-sm="true" [matMenuTriggerFor]="profileActions">
           <img *ngIf="authenticatedUser.profilePictureUrl; else identicon" [src]="authenticatedUser.profilePictureUrl"
                alt="avatar" class="avatar round"/>
@@ -67,14 +67,14 @@
   <mat-sidenav-container autosize>
     <mat-sidenav #sidenav
                  *ngIf="showSidenav"
-                 [mode]="mobileQuery.matches ? 'over' : 'side'"
-                 [opened]="!mobileQuery.matches">
+                 [mode]="xsQuery.matches ? 'over' : 'side'"
+                 [opened]="!xsQuery.matches">
       <app-sidenav-menu></app-sidenav-menu>
     </mat-sidenav>
 
     <mat-sidenav-content>
       <main fxLayout="row" class="zero">
-        <div fxFlex="80" fxFlexOffset="10">
+        <div fxFlex="90" fxFlexOffset="5">
           <router-outlet></router-outlet>
         </div>
 

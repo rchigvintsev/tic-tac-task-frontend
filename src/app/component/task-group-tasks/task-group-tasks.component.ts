@@ -16,6 +16,7 @@ import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
+import {MediaMatcher} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-task-group-tasks',
@@ -30,9 +31,10 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
               taskService: TaskService,
               pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
+              media: MediaMatcher,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler);
+    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
     this.taskFormEnabled = true;
     this.titleReadonly = true;
   }

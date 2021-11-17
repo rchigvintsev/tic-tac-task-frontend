@@ -36,7 +36,7 @@ body {
     font-size: 16px;
 
     .form-group {
-      border: 1px solid rgba(0,0,0,.2);
+      border: 1px solid rgba(0, 0, 0, .2);
       border-radius: 4px;
       margin-bottom: 16px;
 
@@ -223,50 +223,61 @@ body {
     background: rgba(0, 0, 0, 0.0);
   }
 
-  .task-list-item .mat-list-item-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 16px;
-    height: 100%;
-
-    .drag-handle {
-      margin-right: 8px;
-      cursor: move;
-    }
-
-    mat-checkbox {
-      margin-left: 16px;
-    }
-
-    .task-list-row {
+  mat-list-item.task-list-item {
+    .mat-list-item-content {
+      display: flex;
+      flex-direction: row;
       align-items: center;
-      height: 100%;
+      box-sizing: border-box;
+      padding: 8px 8px 0 8px !important;
+      height: inherit;
+      min-width: 0;
 
-      .list-column {
-        flex-grow: 1;
-        flex-basis: 0;
+      .drag-handle {
+        margin-right: 8px;
+        cursor: move;
       }
 
-      .title-column {
-        margin-right: 16px;
-        flex-grow: 7;
+      mat-checkbox {
+        margin-left: 8px;
       }
 
-      .deadline-column {
-        min-width: 120px;
-        text-align: right;
+      .task-list-row {
+        align-items: center;
+        height: 100%;
+        min-width: 0;
 
-        span {
-          text-decoration: underline dotted;
+        .list-column {
+          flex-grow: 1;
         }
-      }
 
-      @media (max-width: 600px) {
+        .title-column {
+          overflow: hidden;
+          margin-right: 8px;
+          flex-grow: 7;
+
+          span {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+
         .deadline-column {
-          min-width: 60px;
+          min-width: 120px;
+          text-align: right;
+
+          span {
+            text-decoration: underline dotted;
+          }
         }
+      }
+    }
+
+    @media (max-width: 599px) {
+      .mat-list-item-content {
+        padding: 8px 0 0 0 !important;
       }
     }
   }

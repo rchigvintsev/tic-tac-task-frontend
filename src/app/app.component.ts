@@ -14,6 +14,7 @@ import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';
 import {User} from './model/user';
+import {ViewportMediaQueries} from './util/viewport-media-queries';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
   sidenav: MatSidenav;
 
   title = 'TicTacTask';
-  mobileQuery: MediaQueryList;
+  xsQuery: MediaQueryList;
   showSidenav = false;
   availableLanguages: Language[];
   authenticatedUser: User;
@@ -36,8 +37,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(public i18nService: I18nService,
               private router: Router,
               private authenticationService: AuthenticationService,
-              media: MediaMatcher) {
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+              private media: MediaMatcher) {
+    this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
   }
 
   private static isErrorPage(url: string): boolean {
