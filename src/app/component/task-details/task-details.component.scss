@@ -15,22 +15,20 @@ mat-card {
         padding-bottom: 1.25em;
 
         .deadline-form-field-container {
-          display: flex;
-          flex-direction: row;
+          .deadline-date-form-field {
+            max-width: 160px;
+            margin-right: 16px;
+          }
 
           .deadline-time-checkbox {
             padding: 1.1em 0;
             color: $color-gray-light;
-            margin-left: 16px;
-          }
-
-          .deadline-date-form-field {
-            max-width: 160px;
+            margin-right: 8px;
           }
 
           .deadline-time-form-field {
             max-width: 80px;
-            margin-left: 8px;
+            margin-right: 16px;
 
             ngx-material-timepicker-toggle {
               position: relative;
@@ -46,10 +44,6 @@ mat-card {
             button {
               min-width: 82px;
             }
-          }
-
-          .repeat-form-field {
-            margin-left: 8px;
           }
         }
 

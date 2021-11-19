@@ -63,7 +63,7 @@
       </mat-form-field>
 
       <div class="deadline-container">
-        <div class="deadline-form-field-container">
+        <div fxFlex fxLayout="row" fxLayout.lt-md="column" class="deadline-form-field-container">
           <mat-form-field class="deadline-date-form-field">
             <label>
               <input matInput
@@ -88,39 +88,41 @@
             <mat-datepicker #deadlineDatepicker></mat-datepicker>
           </mat-form-field>
 
-          <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox"
-                        [checked]="deadlineTimeEnabled"
-                        [disabled]="taskFormModel.deadline == null"
-                        (change)="onDeadlineTimeEnabledCheckboxChange($event)">
-          </mat-checkbox>
+          <div>
+            <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox"
+                          [checked]="deadlineTimeEnabled"
+                          [disabled]="taskFormModel.deadline == null"
+                          (change)="onDeadlineTimeEnabledCheckboxChange($event)">
+            </mat-checkbox>
 
-          <mat-form-field class="deadline-time-form-field">
-            <label>
-              <input matInput
-                     name="deadlineTime"
-                     [ngxTimepicker]="deadlineTimepicker"
-                     [(ngModel)]="deadlineTime"
-                     [class.color-warn]="deadlineTimeEnabled && taskFormModel.isOverdue()"
-                     [format]="24"
-                     [disabled]="!deadlineTimeEnabled"
-                     [errorStateMatcher]="errorStateMatchers.get('deadline')"
-                     readonly>
-            </label>
-            <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">
-              <mat-icon ngxMaterialTimepickerToggleIcon>access_time</mat-icon>
-            </ngx-material-timepicker-toggle>
-            <ngx-material-timepicker #deadlineTimepicker
-                                     [cancelBtnTmpl]="deadlineTimeCancelBtn"
-                                     [confirmBtnTmpl]="deadlineTimeConfirmBtn"
-                                     (timeSet)="onDeadlineTimeSet($event)">
-            </ngx-material-timepicker>
-            <ng-template #deadlineTimeCancelBtn>
-              <button mat-raised-button color="primary" class="right-margin-8">{{ 'cancel' | translate }}</button>
-            </ng-template>
-            <ng-template #deadlineTimeConfirmBtn>
-              <button mat-raised-button class="ok-button">OK</button>
-            </ng-template>
-          </mat-form-field>
+            <mat-form-field class="deadline-time-form-field">
+              <label>
+                <input matInput
+                       name="deadlineTime"
+                       [ngxTimepicker]="deadlineTimepicker"
+                       [(ngModel)]="deadlineTime"
+                       [class.color-warn]="deadlineTimeEnabled && taskFormModel.isOverdue()"
+                       [format]="24"
+                       [disabled]="!deadlineTimeEnabled"
+                       [errorStateMatcher]="errorStateMatchers.get('deadline')"
+                       readonly>
+              </label>
+              <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">
+                <mat-icon ngxMaterialTimepickerToggleIcon>access_time</mat-icon>
+              </ngx-material-timepicker-toggle>
+              <ngx-material-timepicker #deadlineTimepicker
+                                       [cancelBtnTmpl]="deadlineTimeCancelBtn"
+                                       [confirmBtnTmpl]="deadlineTimeConfirmBtn"
+                                       (timeSet)="onDeadlineTimeSet($event)">
+              </ngx-material-timepicker>
+              <ng-template #deadlineTimeCancelBtn>
+                <button mat-raised-button color="primary" class="right-margin-8">{{ 'cancel' | translate }}</button>
+              </ng-template>
+              <ng-template #deadlineTimeConfirmBtn>
+                <button mat-raised-button class="ok-button">OK</button>
+              </ng-template>
+            </mat-form-field>
+          </div>
 
           <mat-form-field class="repeat-form-field">
             <mat-label>{{ 'repeat' | translate }}</mat-label>

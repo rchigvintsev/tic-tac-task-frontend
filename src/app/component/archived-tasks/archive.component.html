@@ -7,7 +7,7 @@
 
   <mat-card-content>
     <mat-list id="tasks" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onTaskListScroll()">
-      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id">
+      <mat-list-item *ngFor="let task of tasks" [ngClass]="'task-' + task.id" class="task-list-item">
         <div class="list-row task-list-row">
           <div class="list-column title-column">
             <span>{{ task.title }}</span>
