@@ -2,22 +2,26 @@
   width: 100%;
   max-width: 960px;
 
-  .profile-picture {
-    max-width: 220px;
-    max-height: 220px;
-    padding: 16px;
-  }
+  .profile-picture-container {
+    margin-bottom: 16px;
 
-  .profile-picture-form {
-    align-items: center;
-
-    div:first-child {
-      margin-bottom: 16px;
+    .profile-picture {
+      max-width: 220px;
+      max-height: 220px;
+      padding: 16px;
     }
 
-    mat-error {
-      font-size: 13px;
-      margin-top: 8px;
+    .profile-picture-form {
+      align-items: center;
+
+      div:first-child {
+        margin-bottom: 16px;
+      }
+
+      mat-error {
+        font-size: 13px;
+        margin-top: 8px;
+      }
     }
   }
 }
