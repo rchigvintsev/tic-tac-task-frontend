@@ -30,6 +30,7 @@
   "sign_in_prompt": "Please sign in",
   "sign_up_prompt": "Please sign up",
   "password_reset": "Password reset",
+  "password_change": "Password change",
   "sign_in": "Sign in",
   "sign_up": "Sign up",
   "submit": "Submit",

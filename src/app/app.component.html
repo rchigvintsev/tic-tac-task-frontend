@@ -48,9 +48,9 @@
         </button>
 
         <mat-menu #profileActions="matMenu">
-          <a mat-menu-item id="settings_menu_item" [routerLink]="['/', i18nService.currentLanguage.code, 'account']">
+          <button mat-menu-item id="settings_menu_item" (click)="onAccountSettingsButtonClick()">
             {{ 'settings' | translate }}
-          </a>
+          </button>
           <a *ngIf="authenticatedUser.admin"
              mat-menu-item id="admin_area_menu_item"
              [routerLink]="['/', i18nService.currentLanguage.code, 'admin']">

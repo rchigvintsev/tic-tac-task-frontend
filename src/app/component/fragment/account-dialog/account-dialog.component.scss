@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-dialog-title {
+  span {
+    flex-grow: 1;
+  }
+}
+
+.profile-picture-container {
+  margin: 0 8px 8px 8px;
+
+  .profile-picture {
+    max-width: 220px;
+    max-height: 220px;
+    padding: 0 16px 16px 16px;
+  }
+
+  .profile-picture-form {
+    div:first-child {
+      margin-bottom: 16px;
+    }
+
+    mat-error {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+  }
+}
+
+.change-password-container {
+  margin-bottom: 8px;
+
+  .change-password-title {
+    font-size: 18px;
+  }
+}
+
+.mat-dialog-actions {
+  button {
+    width: 83px;
+  }
+}

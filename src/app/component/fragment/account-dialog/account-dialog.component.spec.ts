@@ -3,18 +3,25 @@ import {By} from '@angular/platform-browser';
 
 import {of} from 'rxjs';
 
-import {AccountComponent} from './account.component';
-import {TestSupport} from '../../test/test-support';
-import {AuthenticationService} from '../../service/authentication.service';
-import {ConfigService} from '../../service/config.service';
-import {User} from '../../model/user';
-import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
-import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
-import {UserService} from '../../service/user.service';
+import {AccountDialogComponent} from './account-dialog.component';
+import {TestSupport} from '../../../test/test-support';
+import {AuthenticationService} from '../../../service/authentication.service';
+import {ConfigService} from '../../../service/config.service';
+import {User} from '../../../model/user';
+import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
+import {UserService} from '../../../service/user.service';
+import {MatDialogRef} from '@angular/material/dialog';
 
-describe('AccountComponent', () => {
-  let component: AccountComponent;
-  let fixture: ComponentFixture<AccountComponent>;
+class MatDialogRefMock {
+  // noinspection JSUnusedGlobalSymbols
+  close() {
+  }
+}
+
+describe('AccountDialogComponent', () => {
+  let component: AccountDialogComponent;
+  let fixture: ComponentFixture<AccountDialogComponent>;
   let authenticationService: AuthenticationService;
   let userService: UserService;
 
@@ -24,7 +31,8 @@ describe('AccountComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
-        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
+        {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
+        {provide: MatDialogRef, useClass: MatDialogRefMock}
       ]
     }).compileComponents();
   });
@@ -46,7 +54,7 @@ describe('AccountComponent', () => {
     userService = injector.inject(UserService);
     spyOn(userService, 'updateUser').and.callFake(u => of(u));
 
-    fixture = TestBed.createComponent(AccountComponent);
+    fixture = TestBed.createComponent(AccountDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

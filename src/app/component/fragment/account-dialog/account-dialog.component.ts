@@ -2,26 +2,27 @@ import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 
 import {tap} from 'rxjs/operators';
 
-import {I18nService} from '../../service/i18n.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {UserService} from '../../service/user.service';
-import {User} from '../../model/user';
-import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
-import {ChangePasswordComponent, PasswordChangeEvent} from '../fragment/change-password/change-password.component';
-import {BadRequestError} from '../../error/bad-request.error';
-import {Strings} from '../../util/strings';
+import {I18nService} from '../../../service/i18n.service';
+import {AuthenticationService} from '../../../service/authentication.service';
+import {UserService} from '../../../service/user.service';
+import {User} from '../../../model/user';
+import {HttpRequestError} from '../../../error/http-request.error';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
+import {ChangePasswordComponent, PasswordChangeEvent} from '../change-password/change-password.component';
+import {BadRequestError} from '../../../error/bad-request.error';
+import {Strings} from '../../../util/strings';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-account',
-  templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  selector: 'app-account-dialog',
+  templateUrl: './account-dialog.component.html',
+  styleUrls: ['./account-dialog.component.scss']
 })
-export class AccountComponent implements OnInit {
+export class AccountDialogComponent implements OnInit {
   private static DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE = 1024 * 1024 * 3; // 3 Mb
 
   @Input()
-  profilePictureFileMaxSize = AccountComponent.DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE
+  profilePictureFileMaxSize = AccountDialogComponent.DEFAULT_PROFILE_PICTURE_FILE_MAX_SIZE
 
   userFormModel = new User();
   profilePictureFile: File;
@@ -32,12 +33,17 @@ export class AccountComponent implements OnInit {
   constructor(public i18nService: I18nService,
               private authenticationService: AuthenticationService,
               private userService: UserService,
-              @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler) {
+              @Inject(HTTP_RESPONSE_HANDLER) protected httpResponseHandler: HttpResponseHandler,
+              private dialogRef: MatDialogRef<any>) {
     const user = authenticationService.getAuthenticatedUser();
     this.userFormModel = user.clone();
   }
 
   ngOnInit(): void {
+  }
+
+  onCloseButtonClick() {
+    this.closeDialog();
   }
 
   onFullNameInputBlur() {
@@ -131,5 +137,9 @@ export class AccountComponent implements OnInit {
         this.changePasswordComponent.currentPasswordValid = false;
       }
     }
+  }
+
+  private closeDialog() {
+    this.dialogRef.close();
   }
 }

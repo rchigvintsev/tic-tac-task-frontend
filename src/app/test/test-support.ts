@@ -56,7 +56,7 @@ import {SidenavMenuComponent} from '../component/fragment/sidenav-menu/sidenav-m
 import {ConfirmationDialogComponent} from '../component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {LoadingIndicatorComponent} from '../component/fragment/loading-indicator/loading-indicator.component';
-import {AccountComponent} from '../component/account/account.component';
+import {AccountDialogComponent} from '../component/fragment/account-dialog/account-dialog.component';
 import {AdminAreaComponent} from '../component/admin-area/admin-area.component';
 import {ErrorNotFoundComponent} from '../component/error-not-found/error-not-found.component';
 import {DummyComponent} from '../component/dummy/dummy.component';
@@ -130,8 +130,8 @@ export class TestSupport {
     SidenavMenuComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
+    AccountDialogComponent,
     LoadingIndicatorComponent,
-    AccountComponent,
     AdminAreaComponent,
     ChangePasswordComponent,
     ErrorNotFoundComponent,

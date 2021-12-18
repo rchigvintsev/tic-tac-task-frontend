@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, PRIMARY_OUTLET, Router, RouterEvent, UrlSegment} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav} from '@angular/material/sidenav';
+import {MatDialog} from '@angular/material/dialog';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -15,6 +16,7 @@ import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';
 import {User} from './model/user';
 import {ViewportMediaQueries} from './util/viewport-media-queries';
+import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -37,16 +39,13 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(public i18nService: I18nService,
               private router: Router,
               private authenticationService: AuthenticationService,
-              private media: MediaMatcher) {
+              private media: MediaMatcher,
+              private dialog: MatDialog) {
     this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
   }
 
   private static isErrorPage(url: string): boolean {
     return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
-  }
-
-  private static isAccountPage(url: string): boolean {
-    return /^(\/[a-z]{2})?\/account$/.test(url);
   }
 
   private static isAdminAreaPage(url: string): boolean {
@@ -76,6 +75,11 @@ export class AppComponent implements OnInit, OnDestroy {
     return this.i18nService.currentLanguage;
   }
 
+  onAccountSettingsButtonClick() {
+    const width = this.xsQuery.matches ? '320px' : '700px';
+    this.dialog.open(AccountDialogComponent, {minWidth: width});
+  }
+
   onSignOutButtonClick() {
     this.authenticationService.signOut()
       .pipe(takeUntil(this.componentDestroyed))
@@ -92,11 +96,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.authenticatedUser && !(
-        AppComponent.isErrorPage(event.url)
-        || AppComponent.isAccountPage(event.url)
-        || AppComponent.isAdminAreaPage(event.url)
-      );
+      this.showSidenav = this.authenticatedUser && !(AppComponent.isErrorPage(event.url) || AppComponent.isAdminAreaPage(event.url));
     }
   }
 

@@ -63,7 +63,7 @@ import {AlertComponent} from './component/fragment/alert/alert.component';
 import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
-import {AccountComponent} from './component/account/account.component';
+import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
 import {AdminAreaComponent} from './component/admin-area/admin-area.component';
 import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
 import {FocusedDirective} from './component/focused.directive';
@@ -112,6 +112,7 @@ registerLocaleData(localeRu, 'ru');
     TaskCommentsComponent,
     ConfirmationDialogComponent,
     ColorPickerDialogComponent,
+    AccountDialogComponent,
     LoadingIndicatorComponent,
     NotBlankValidatorDirective,
     PasswordsMatchValidatorDirective,
@@ -125,7 +126,6 @@ registerLocaleData(localeRu, 'ru');
     AlertComponent,
     TagsComponent,
     TaskListsComponent,
-    AccountComponent,
     AdminAreaComponent,
     ChangePasswordComponent,
     LocalizedDatePipe,

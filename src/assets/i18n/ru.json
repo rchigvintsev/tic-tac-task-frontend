@@ -30,6 +30,7 @@
   "sign_in_prompt": "Вход",
   "sign_up_prompt": "Регистрация",
   "password_reset": "Восстановление пароля",
+  "password_change": "Смена пароля",
   "sign_in": "Войти",
   "sign_up": "Зарегистрироваться",
   "submit": "Отправить",
