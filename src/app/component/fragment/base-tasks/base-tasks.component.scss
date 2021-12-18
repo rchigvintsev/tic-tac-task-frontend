@@ -7,6 +7,15 @@ form {
   }
 }
 
+.task-list-icon-container {
+  .task-list-icon {
+    height: 100%;
+    line-height: 40px;
+    width: 40px;
+    text-align: center;
+  }
+}
+
 .task-list {
   mat-list-item {
     &:hover {

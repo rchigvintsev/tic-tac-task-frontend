@@ -1,5 +1,9 @@
 <mat-card *ngIf="title">
   <div fxLayout="row" class="mat-card-header">
+    <div *ngIf="listIcon" class="task-list-icon-container">
+      <mat-icon mat-list-icon class="task-list-icon">{{ listIcon }}</mat-icon>
+    </div>
+
     <div class="mat-card-title">
       <form *ngIf="titleEditing">
         <mat-form-field>

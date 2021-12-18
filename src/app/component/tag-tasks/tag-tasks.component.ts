@@ -37,6 +37,7 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
               private route: ActivatedRoute,
               private dialog: MatDialog) {
     super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
+    this.listIcon = 'label'
     this.titlePlaceholder = 'tag_name';
     this.titleMaxLength = 50;
     this.taskListMenuItems = [

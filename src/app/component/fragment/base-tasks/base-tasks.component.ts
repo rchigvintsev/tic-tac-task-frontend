@@ -26,6 +26,7 @@ export class MenuItem {
   styleUrls: ['./base-tasks.component.scss']
 })
 export class BaseTasksComponent {
+  listIcon = '';
   title = '';
   titleReadonly = false;
   titleMaxLength = 255;

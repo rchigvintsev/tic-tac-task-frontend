@@ -35,6 +35,7 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
               private route: ActivatedRoute,
               private dialog: MatDialog) {
     super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
+    this.listIcon = 'list';
     this.titlePlaceholder = 'task_list_name';
     this.taskFormEnabled = true;
     this.taskListMenuItems = [
