@@ -4,7 +4,7 @@
   <p>{{ data.content }}</p>
 </div>
 
-<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around center" class="dialog-buttons">
+<div mat-dialog-actions fxLayout="row" fxFlexAlign="end" class="dialog-buttons">
   <button mat-raised-button id="no_button" (click)="onNoButtonClick()">{{ 'no' | translate }}</button>
   <button mat-raised-button id="yes_button" color="warn" (click)="onYesButtonClick()" cdkFocusInitial>
     {{ 'yes' | translate }}
