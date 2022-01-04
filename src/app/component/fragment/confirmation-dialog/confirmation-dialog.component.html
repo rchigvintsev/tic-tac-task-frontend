@@ -1,12 +1,14 @@
-<h1 mat-dialog-title>{{ data.title }}</h1>
+<div fxFlex fxLayout="column">
+  <h1 mat-dialog-title>{{ data.title }}</h1>
 
-<div mat-dialog-content>
-  <p>{{ data.content }}</p>
-</div>
+  <div mat-dialog-content>
+    <p>{{ data.content }}</p>
+  </div>
 
-<div mat-dialog-actions fxLayout="row" fxFlexAlign="end" class="dialog-buttons">
-  <button mat-raised-button id="no_button" (click)="onNoButtonClick()">{{ 'no' | translate }}</button>
-  <button mat-raised-button id="yes_button" color="warn" (click)="onYesButtonClick()" cdkFocusInitial>
-    {{ 'yes' | translate }}
-  </button>
+  <div mat-dialog-actions fxFlex fxLayout="row" fxFlexAlign="end" class="dialog-buttons">
+    <button mat-raised-button id="no_button" (click)="onNoButtonClick()">{{ 'no' | translate }}</button>
+    <button mat-raised-button id="yes_button" color="warn" (click)="onYesButtonClick()" cdkFocusInitial>
+      {{ 'yes' | translate }}
+    </button>
+  </div>
 </div>
