@@ -24,13 +24,9 @@ describe('ConfigService', () => {
   });
 
   it('should load config', done => {
-    const config = {
-      apiBaseUrl: 'https://backend.com',
-      selfBaseUrl: 'https://frontend.com'
-    };
+    const config = {apiBaseUrl: 'https://backend.com'};
     configService.loadConfig().then(() => {
       expect(configService.apiBaseUrl).toBe(config.apiBaseUrl);
-      expect(configService.selfBaseUrl).toBe(config.selfBaseUrl);
       done();
     });
     const request = httpMock.expectOne('/assets/config.json');

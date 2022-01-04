@@ -5,6 +5,10 @@ import {Config} from '../model/config';
 
 @Injectable({providedIn: 'root'})
 export class ConfigService {
+  private static readonly DEFAULT_SCHEME = 'http';
+  private static readonly DEFAULT_HOST = 'localhost';
+  private static readonly DEFAULT_PORT = 4200;
+
   private config: Config;
 
   constructor(private http: HttpClient) {
@@ -21,6 +25,11 @@ export class ConfigService {
     this.config = config.clone();
   }
 
+  get domain(): string {
+    this.assertInitialized();
+    return this.config.domain;
+  }
+
   get apiBaseUrl() {
     this.assertInitialized();
     return this.config.apiBaseUrl;
@@ -28,7 +37,10 @@ export class ConfigService {
 
   get selfBaseUrl() {
     this.assertInitialized();
-    return this.config.selfBaseUrl;
+    if (this.domain) {
+      return `https://${this.domain}`
+    }
+    return `${ConfigService.DEFAULT_SCHEME}://${ConfigService.DEFAULT_HOST}:${ConfigService.DEFAULT_PORT}`
   }
 
   private assertNotInitialized() {

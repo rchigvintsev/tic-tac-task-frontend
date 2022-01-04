@@ -1,0 +1,7 @@
+<div fxFlex fxLayout="column">
+  <p [innerHTML]="'cookie-notice' | translate"></p>
+
+  <div fxFlex fxFlexAlign="center">
+    <button mat-raised-button (click)="onOkButtonClick()">{{ 'accept' | translate }}</button>
+  </div>
+</div>

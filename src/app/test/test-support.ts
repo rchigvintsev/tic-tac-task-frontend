@@ -67,6 +67,8 @@ import {LocalizedRelativeDatePipe} from '../pipe/localized-relative-date.pipe';
 import {MessageFormatPipe} from '../pipe/message-format.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
+import {CookieConsentComponent} from '../component/fragment/cookie-consent/cookie-consent.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 export class TestSupport {
   public static readonly IMPORTS = [
@@ -95,6 +97,7 @@ export class TestSupport {
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSnackBarModule,
     BrowserAnimationsModule,
     InfiniteScrollModule,
     ColorBlockModule,
@@ -135,6 +138,7 @@ export class TestSupport {
     AdminAreaComponent,
     ChangePasswordComponent,
     ErrorNotFoundComponent,
+    CookieConsentComponent,
     DummyComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,

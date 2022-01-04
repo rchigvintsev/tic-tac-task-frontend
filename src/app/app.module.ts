@@ -25,6 +25,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -66,6 +67,7 @@ import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/
 import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
 import {AdminAreaComponent} from './component/admin-area/admin-area.component';
 import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
+import {CookieConsentComponent} from './component/fragment/cookie-consent/cookie-consent.component';
 import {FocusedDirective} from './component/focused.directive';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
@@ -128,6 +130,7 @@ registerLocaleData(localeRu, 'ru');
     TaskListsComponent,
     AdminAreaComponent,
     ChangePasswordComponent,
+    CookieConsentComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,
     MessageFormatPipe,
@@ -161,6 +164,7 @@ registerLocaleData(localeRu, 'ru');
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSnackBarModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     DragDropModule,
