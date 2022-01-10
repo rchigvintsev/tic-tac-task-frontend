@@ -27,7 +27,7 @@ export class LoadingIndicatorService {
           this.dialogRefSubject.next(dialogRef);
         }
         this.dialogRefSubject.complete();
-      }, 200);
+      }, 500);
     }
 
     return observable.pipe(finalize(() => {
