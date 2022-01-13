@@ -1,3 +1,5 @@
+@import "../spacing.scss";
+
 .page {
   min-height: 100vh;
   display: flex;
@@ -11,6 +13,10 @@
     mat-toolbar {
       .application-title {
         font-size: inherit;
+
+        .admin-note {
+          margin-left: 8px;
+        }
       }
 
       button {

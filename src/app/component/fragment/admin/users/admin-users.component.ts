@@ -1,22 +1,22 @@
 import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 
-import {flatMap} from 'rxjs/operators';
+import {mergeMap} from 'rxjs/operators';
 
-import {I18nService} from '../../service/i18n.service';
-import {UserService} from '../../service/user.service';
-import {AuthenticationService} from '../../service/authentication.service';
-import {User} from '../../model/user';
-import {PageRequest} from '../../service/page-request';
-import {HttpRequestError} from '../../error/http-request.error';
-import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
+import {I18nService} from '../../../../service/i18n.service';
+import {UserService} from '../../../../service/user.service';
+import {AuthenticationService} from '../../../../service/authentication.service';
+import {User} from '../../../../model/user';
+import {PageRequest} from '../../../../service/page-request';
+import {HttpRequestError} from '../../../../error/http-request.error';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
 
 @Component({
-  selector: 'app-admin-area',
-  templateUrl: './admin-area.component.html',
-  styleUrls: ['./admin-area.component.scss']
+  selector: 'app-admin-users',
+  templateUrl: './admin-users.component.html',
+  styleUrls: ['./admin-users.component.scss']
 })
-export class AdminAreaComponent implements OnInit, AfterViewInit {
+export class AdminUsersComponent implements OnInit, AfterViewInit {
   authenticatedUser: User;
   userColumns: string[] = ['id', 'email', 'name', 'registrationTime', 'profilePicture', 'admin', 'blocked', 'actions'];
   userDataSource: User[] = [];
@@ -39,7 +39,7 @@ export class AdminAreaComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.userService.getUserCount().pipe(
-      flatMap(totalNumberOfUser => {
+      mergeMap(totalNumberOfUser => {
         this.totalNumberOfUsers = totalNumberOfUser;
         return this.userService.getUsers(new PageRequest(0, this.userPaginator.pageSize));
       })

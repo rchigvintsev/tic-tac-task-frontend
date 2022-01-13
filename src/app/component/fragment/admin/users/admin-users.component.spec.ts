@@ -2,18 +2,18 @@ import {ComponentFixture, getTestBed, TestBed} from '@angular/core/testing';
 
 import {of} from 'rxjs';
 
-import {TestSupport} from '../../test/test-support';
-import {AdminAreaComponent} from './admin-area.component';
-import {User} from '../../model/user';
-import {UserService} from '../../service/user.service';
-import {ConfigService} from '../../service/config.service';
-import {HTTP_RESPONSE_HANDLER} from '../../handler/http-response.handler';
-import {DefaultHttpResponseHandler} from '../../handler/default-http-response.handler';
+import {TestSupport} from '../../../../test/test-support';
+import {AdminUsersComponent} from './admin-users.component';
+import {User} from '../../../../model/user';
+import {UserService} from '../../../../service/user.service';
+import {ConfigService} from '../../../../service/config.service';
+import {HTTP_RESPONSE_HANDLER} from '../../../../handler/http-response.handler';
+import {DefaultHttpResponseHandler} from '../../../../handler/default-http-response.handler';
 
 describe('AdminAreaComponent', () => {
   let users: User[];
-  let component: AdminAreaComponent;
-  let fixture: ComponentFixture<AdminAreaComponent>;
+  let component: AdminUsersComponent;
+  let fixture: ComponentFixture<AdminUsersComponent>;
   let userService: UserService;
 
   beforeEach(async () => {
@@ -39,7 +39,7 @@ describe('AdminAreaComponent', () => {
     spyOn(userService, 'getUsers').and.returnValue(of(users))
     spyOn(userService, 'updateUser').and.callFake(u => of(u));
 
-    fixture = TestBed.createComponent(AdminAreaComponent);
+    fixture = TestBed.createComponent(AdminUsersComponent);
     component = fixture.componentInstance;
   });
 

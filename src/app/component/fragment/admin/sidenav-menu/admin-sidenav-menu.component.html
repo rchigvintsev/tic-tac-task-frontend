@@ -1,0 +1,11 @@
+<mat-nav-list>
+  <mat-list>
+    <a mat-list-item
+       [routerLink]="[i18nService.currentLanguage.code, 'admin', 'users']"
+       [class.selected]="isRouterLinkActive('admin/users')"
+       [appFocused]="isFocused('admin/users')">
+      <mat-icon mat-list-icon>people</mat-icon>
+      <span matLine>{{ 'users' | translate }}</span>
+    </a>
+  </mat-list>
+</mat-nav-list>

@@ -29,7 +29,7 @@ describe('LoadingIndicatorService', () => {
     spyOn(dialog, 'open').and.returnValue({close: () => {}} as MatDialogRef<any>);
 
     service.showUntilExecuted(of(true));
-    tick(400);
+    tick(1000);
     expect(dialog.open).toHaveBeenCalled();
   }));
 
@@ -38,9 +38,9 @@ describe('LoadingIndicatorService', () => {
     spyOn(dialog, 'open').and.returnValue({close: () => {}}  as MatDialogRef<any>);
 
     service.showUntilExecuted(of(true));
-    tick(400);
+    tick(1000);
     service.showUntilExecuted(of(false));
-    tick(400);
+    tick(1000);
     expect(dialog.open).toHaveBeenCalledTimes(1);
   }));
 
@@ -51,8 +51,8 @@ describe('LoadingIndicatorService', () => {
     const dialog = injector.inject(MatDialog);
     spyOn(dialog, 'open').and.returnValue(dialogRef);
 
-    service.showUntilExecuted(of(true).pipe(delay(300))).subscribe();
-    tick(400);
+    service.showUntilExecuted(of(true).pipe(delay(500))).subscribe();
+    tick(1000);
     expect(dialogRef.close).toHaveBeenCalled();
   }));
 
@@ -65,11 +65,11 @@ describe('LoadingIndicatorService', () => {
 
     const subject1 = new Subject();
     service.showUntilExecuted(subject1).subscribe();
-    tick(400);
+    tick(1000);
 
     const subject2 = new Subject();
     service.showUntilExecuted(subject2).subscribe();
-    tick(400);
+    tick(1000);
 
     subject1.complete();
     expect(dialogRef.close).not.toHaveBeenCalled();

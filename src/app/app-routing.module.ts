@@ -12,7 +12,7 @@ import {PasswordResetComponent} from './component/password-reset/password-reset.
 import {PasswordResetConfirmationComponent} from './component/password-reset-confirmation/password-reset-confirmation.component';
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
-import {AdminAreaComponent} from './component/admin-area/admin-area.component';
+import {AdminUsersComponent} from './component/fragment/admin/users/admin-users.component';
 import {CustomLocalizeRouterModule} from './i18n/custom-localize-router.module';
 import {
   AdminOnlyRouteGuard,
@@ -45,7 +45,7 @@ export const routes: Routes = [
     canActivate: [UnauthenticatedOnlyRouteGuard, PasswordResetConfirmationCallbackRouteGuard]
   },
   {path: 'account/email/confirmation', component: DummyComponent, canActivate: [EmailConfirmationCallbackRouteGuard]},
-  {path: 'admin', component: AdminAreaComponent, canActivate: [AdminOnlyRouteGuard]},
+  {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminOnlyRouteGuard]},
   {path: 'error/404', component: ErrorNotFoundComponent},
   {path: '**', component: DummyComponent, canActivate: [LocalizedRouteGuard]}
 ];

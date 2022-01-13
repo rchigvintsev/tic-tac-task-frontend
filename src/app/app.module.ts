@@ -65,7 +65,8 @@ import {TagsComponent} from './component/fragment/tags/tags.component';
 import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
 import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
-import {AdminAreaComponent} from './component/admin-area/admin-area.component';
+import {AdminSidenavMenuComponent} from './component/fragment/admin/sidenav-menu/admin-sidenav-menu.component';
+import {AdminUsersComponent} from './component/fragment/admin/users/admin-users.component';
 import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
 import {CookieConsentComponent} from './component/fragment/cookie-consent/cookie-consent.component';
 import {FocusedDirective} from './component/focused.directive';
@@ -128,7 +129,8 @@ registerLocaleData(localeRu, 'ru');
     AlertComponent,
     TagsComponent,
     TaskListsComponent,
-    AdminAreaComponent,
+    AdminSidenavMenuComponent,
+    AdminUsersComponent,
     ChangePasswordComponent,
     CookieConsentComponent,
     LocalizedDatePipe,

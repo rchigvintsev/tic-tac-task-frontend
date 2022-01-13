@@ -11,12 +11,13 @@ import {LangChangeEvent} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
+import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
 import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';
 import {User} from './model/user';
 import {ViewportMediaQueries} from './util/viewport-media-queries';
-import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
+import {Routes} from './util/routes';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'TicTacTask';
   xsQuery: MediaQueryList;
   showSidenav = false;
+  adminArea = false;
   availableLanguages: Language[];
   authenticatedUser: User;
 
@@ -42,14 +44,6 @@ export class AppComponent implements OnInit, OnDestroy {
               private media: MediaMatcher,
               private dialog: MatDialog) {
     this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
-  }
-
-  private static isErrorPage(url: string): boolean {
-    return /^(\/[a-z]{2})?\/error(\/.*)?$/.test(url);
-  }
-
-  private static isAdminAreaPage(url: string): boolean {
-    return /^(\/[a-z]{2})?\/admin$/.test(url);
   }
 
   ngOnInit() {
@@ -96,7 +90,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onRouterEvent(event: RouterEvent) {
     if (event instanceof NavigationEnd && event.url) {
-      this.showSidenav = this.authenticatedUser && !(AppComponent.isErrorPage(event.url) || AppComponent.isAdminAreaPage(event.url));
+      this.showSidenav = this.authenticatedUser && !Routes.isError(event.url);
+      this.adminArea = this.authenticatedUser && Routes.isAdminArea(event.url);
     }
   }
 

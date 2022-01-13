@@ -5,7 +5,12 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <a mat-button [routerLink]="['/', i18nService.currentLanguage.code]" class="application-title">{{ title }}</a>
+      <a mat-button
+         [routerLink]="adminArea ? ['/', currentLanguage.code, 'admin', 'users'] : ['/', currentLanguage.code]"
+         class="application-title">
+        <span>{{ title }}</span>
+        <span *ngIf="adminArea" class="ml-1 color-warn">{{ 'Admin' }}</span>
+      </a>
       <span class="space-filler"></span>
 
       <div class="right-margin-8">
@@ -53,7 +58,8 @@
           </button>
           <a *ngIf="authenticatedUser.admin"
              mat-menu-item id="admin_area_menu_item"
-             [routerLink]="['/', i18nService.currentLanguage.code, 'admin']">
+             [routerLink]="['/', currentLanguage.code, 'admin', 'users']"
+             target="_blank">
             {{ 'admin_area' | translate }}
           </a>
           <button mat-menu-item id="sign_out_menu_item" (click)="onSignOutButtonClick()">
@@ -69,7 +75,11 @@
                  *ngIf="showSidenav"
                  [mode]="xsQuery.matches ? 'over' : 'side'"
                  [opened]="!xsQuery.matches">
-      <app-sidenav-menu></app-sidenav-menu>
+      <app-admin-sidenav-menu *ngIf="adminArea; else user_sidenav_menu"></app-admin-sidenav-menu>
+
+      <ng-template #user_sidenav_menu>
+        <app-sidenav-menu></app-sidenav-menu>
+      </ng-template>
     </mat-sidenav>
 
     <mat-sidenav-content>
