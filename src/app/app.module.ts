@@ -11,7 +11,7 @@ import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatNativeDateModule} from '@angular/material/core';
+import {DateAdapter, MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -70,6 +70,7 @@ import {AdminUsersComponent} from './component/fragment/admin/users/admin-users.
 import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
 import {CookieConsentComponent} from './component/fragment/cookie-consent/cookie-consent.component';
 import {FocusedDirective} from './component/focused.directive';
+import {LocalizedDateAdapter} from './component/localized-date-adapter';
 import {ConfigService} from './service/config.service';
 import {AcceptLanguageInterceptor} from './interceptor/accept-language.interceptor';
 import {HttpErrorTranslationInterceptor} from './interceptor/http-error-translation.interceptor';
@@ -190,6 +191,7 @@ registerLocaleData(localeRu, 'ru');
     {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedRequestInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorTranslationInterceptor, multi: true},
     {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
+    {provide: DateAdapter, useClass: LocalizedDateAdapter},
     CookieService
   ],
   bootstrap: [AppComponent],
