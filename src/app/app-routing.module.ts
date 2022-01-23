@@ -1,5 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {Location} from '@angular/common';
+
+import {TranslateService} from '@ngx-translate/core';
+import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from '@gilsdav/ngx-translate-router';
 
 import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
@@ -13,7 +17,6 @@ import {PasswordResetConfirmationComponent} from './component/password-reset-con
 import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AdminUsersComponent} from './component/fragment/admin/users/admin-users.component';
-import {CustomLocalizeRouterModule} from './i18n/custom-localize-router.module';
 import {
   AdminOnlyRouteGuard,
   AuthenticatedOnlyRouteGuard,
@@ -23,6 +26,7 @@ import {
   PasswordResetConfirmationCallbackRouteGuard,
   UnauthenticatedOnlyRouteGuard
 } from './route.guard';
+import {AVAILABLE_LANGUAGES} from './service/i18n.service';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'task', pathMatch: 'full'},
@@ -52,8 +56,17 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [
-    CustomLocalizeRouterModule.forRoot(routes),
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    LocalizeRouterModule.forRoot(routes, {
+      parser: {
+        provide: LocalizeParser,
+        useFactory: (translate, location, settings) => {
+          const locales = Array.from(AVAILABLE_LANGUAGES.keys());
+          return new ManualParserLoader(translate, location, settings, locales)
+        },
+        deps: [TranslateService, Location, LocalizeRouterSettings]
+      }
+    })
   ],
   exports: [RouterModule]
 })

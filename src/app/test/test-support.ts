@@ -1,3 +1,4 @@
+import {ComponentFixture} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -24,9 +25,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
-import {ComponentFixture} from '@angular/core/testing';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
@@ -69,7 +70,6 @@ import {MessageFormatPipe} from '../pipe/message-format.pipe';
 import {NotBlankValidatorDirective} from '../validator/not-blank.directive';
 import {PasswordsMatchValidatorDirective} from '../validator/passwords-match.directive';
 import {CookieConsentComponent} from '../component/fragment/cookie-consent/cookie-consent.component';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 export class TestSupport {
   public static readonly IMPORTS = [

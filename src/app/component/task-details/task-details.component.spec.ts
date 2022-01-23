@@ -73,7 +73,8 @@ describe('TaskDetailsComponent', () => {
         {provide: TaskGroupService, useValue: new TaskGroupService(TaskGroup.TODAY)},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler},
         MatDatepickerModule
-      ]
+      ],
+      teardown: {destroyAfterEach: false}
     }).compileComponents();
   }));
 

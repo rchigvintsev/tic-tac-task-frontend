@@ -140,6 +140,8 @@ registerLocaleData(localeRu, 'ru');
     FocusedDirective
   ],
   imports: [
+    TranslateModule.forRoot({loader: {provide: TranslateLoader, useFactory: TranslateHttpLoaderFactory, deps: [HttpClient]}}),
+    ToastrModule.forRoot({timeOut: 5000, progressBar: true, positionClass: 'toast-bottom-right', newestOnTop: false}),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -173,15 +175,7 @@ registerLocaleData(localeRu, 'ru');
     DragDropModule,
     InfiniteScrollModule,
     NgxMaterialTimepickerModule,
-    ColorCircleModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: TranslateHttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    ToastrModule.forRoot({timeOut: 5000, progressBar: true, positionClass: 'toast-bottom-right', newestOnTop: false})
+    ColorCircleModule
   ],
   exports: [TranslateModule],
   providers: [
