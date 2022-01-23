@@ -92,6 +92,14 @@ export class AppComponent implements OnInit, OnDestroy {
     if (event instanceof NavigationEnd && event.url) {
       this.showSidenav = this.authenticatedUser && !Routes.isError(event.url);
       this.adminArea = this.authenticatedUser && Routes.isAdminArea(event.url);
+
+      this.closeSidenavIfExtraSmallScreen();
+    }
+  }
+
+  private closeSidenavIfExtraSmallScreen() {
+    if (this.showSidenav && this.sidenav && this.xsQuery.matches) {
+      this.sidenav.close().then();
     }
   }
 
