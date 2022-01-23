@@ -18,6 +18,7 @@ import {TaskGroupService} from './service/task-group.service';
 import {User} from './model/user';
 import {ViewportMediaQueries} from './util/viewport-media-queries';
 import {Routes} from './util/routes';
+import packageJson from '../../package.json';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   sidenav: MatSidenav;
 
   title = 'TicTacTask';
+  version = packageJson.version;
   xsQuery: MediaQueryList;
   showSidenav = false;
   adminArea = false;

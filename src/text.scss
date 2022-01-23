@@ -1,0 +1,37 @@
+@import "colors.scss";
+
+.text-primary {
+  color: $color-primary !important;
+}
+
+.text-accent {
+  color: $color-accent !important;
+}
+
+.text-warn {
+  color: $color-warn !important;
+}
+
+.text-muted {
+  color: #00000042 !important;
+}
+
+.text-white {
+  color: #fff !important;
+}
+
+.text-left {
+  text-align: left! important;
+}
+
+.text-right {
+  text-align: right! important;
+}
+
+.text-center {
+  text-align: center! important;
+}
+
+.text-justify {
+  text-align: justify! important;
+}

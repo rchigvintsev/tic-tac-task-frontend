@@ -17,6 +17,8 @@
     "lib": [
       "ES2020",
       "dom"
-    ]
+    ],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   }
 }

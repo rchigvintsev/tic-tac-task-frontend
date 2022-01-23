@@ -84,12 +84,19 @@
 
     <mat-sidenav-content>
       <main fxLayout="row" class="zero">
-        <div fxFlex="90" fxFlexOffset="5" style="margin-bottom: 5%">
+        <div fxFlex="90" fxFlexOffset="5">
           <router-outlet></router-outlet>
         </div>
 
         <div fxFlex></div>
       </main>
+
+      <div class="text-muted text-right p-2">
+        <small>
+          <span class="mr-1">{{ "current_version" | translate }}</span>
+          <span>{{ version }}</span>
+        </small>
+      </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
