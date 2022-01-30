@@ -94,7 +94,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
 
   onTaskListScroll() {
     this.beforeTasksLoad();
-    this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest, false).subscribe(
+    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe(
       tasks => this.afterTasksLoad(tasks),
       (error: HttpRequestError) => this.onHttpRequestError(error)
     );
@@ -111,7 +111,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
       this.tasks = [];
       this.pageRequest.page = 0;
-      this.taskService.getTasksByGroup(taskGroup, this.pageRequest).subscribe(
+      this.taskService.getTasks(taskGroup, this.pageRequest).subscribe(
         tasks => this.tasks = tasks,
         (error: HttpRequestError) => this.onHttpRequestError(error)
       );
@@ -122,7 +122,7 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     if (this.taskGroup !== TaskGroup.ALL) {
       const index = this.tasks.findIndex(task => task.id === updatedTask.id);
       if (index >= 0) {
-        this.taskService.getTasksByGroup(this.taskGroup, this.pageRequest).subscribe(
+        this.taskService.getTasks(this.taskGroup, this.pageRequest).subscribe(
           tasks => this.tasks = tasks,
           (error: HttpRequestError) => this.onHttpRequestError(error)
         );

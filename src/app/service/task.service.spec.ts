@@ -51,13 +51,13 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.INBOX).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.INBOX).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed?page=0&size=20`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}?statuses=UNPROCESSED&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
   });
@@ -67,7 +67,7 @@ describe('TaskService', () => {
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/unprocessed/count`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=UNPROCESSED`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
   });
@@ -77,7 +77,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.TODAY).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.TODAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -85,8 +85,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
   });
@@ -98,8 +98,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -109,7 +109,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.TOMORROW).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.TOMORROW).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -117,8 +117,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED`)
+        && /deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
   });
@@ -130,8 +130,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
+        && /deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -141,7 +141,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.WEEK).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.WEEK).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -149,8 +149,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed`)
-        && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
   });
@@ -162,8 +162,8 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}/processed/count`)
-        && /\?deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -173,13 +173,13 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.SOME_DAY).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.SOME_DAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/processed?deadlineFrom=&deadlineTo=&page=0&size=20`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}?statuses=PROCESSED&deadlineFrom=&deadlineTo=&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
   });
@@ -189,7 +189,7 @@ describe('TaskService', () => {
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/processed/count?deadlineFrom=&deadlineTo=`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=PROCESSED&deadlineFrom=&deadlineTo=`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
   });
@@ -199,13 +199,13 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    taskService.getTasksByGroup(TaskGroup.ALL).subscribe(tasks => {
+    taskService.getTasks(TaskGroup.ALL).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted?page=0&size=20`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}?statuses=UNPROCESSED,PROCESSED&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
   });
@@ -215,7 +215,7 @@ describe('TaskService', () => {
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=UNPROCESSED,PROCESSED`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
   });
@@ -231,18 +231,18 @@ describe('TaskService', () => {
           done();
         });
 
-        const request2 = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+        const request2 = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=UNPROCESSED,PROCESSED`);
         expect(request2.request.method).toBe('GET');
         request2.flush(2);
       });
 
-    const request1 = httpMock.expectOne(`${taskService.baseUrl}/uncompleted/count`);
+    const request1 = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=UNPROCESSED,PROCESSED`);
     expect(request1.request.method).toBe('GET');
     request1.flush(2);
   });
 
   it('should throw error on get tasks by group when task group is null', () => {
-    expect(() => taskService.getTasksByGroup(null)).toThrowError('Task group must not be null or undefined');
+    expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
   });
 
   it('should throw error on get task count when task group is null', () => {
@@ -260,7 +260,7 @@ describe('TaskService', () => {
       done();
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/completed?page=0&size=20`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}?statuses=COMPLETED&page=0&size=20`);
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
   });

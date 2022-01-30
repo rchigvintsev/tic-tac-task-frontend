@@ -64,7 +64,7 @@ describe('TaskGroupTasksComponent', () => {
         new Task().deserialize({id: 1, title: 'Task 1'}),
         new Task().deserialize({id: 2, title: 'Task 2'})
       ]
-      spyOn(taskService, 'getTasksByGroup').and.returnValue(of(tasks));
+      spyOn(taskService, 'getTasks').and.returnValue(of(tasks));
       spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
 
       taskGroupService = injector.inject(TaskGroupService);
@@ -173,33 +173,33 @@ describe('TaskGroupTasksComponent', () => {
     it('should load next task page on task list scroll', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
-      expect(taskService.getTasksByGroup).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
+      expect(taskService.getTasks).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
     });
 
     it('should start loading of tasks from first page when task group changed', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
-      expect(taskService.getTasksByGroup).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
+      expect(taskService.getTasks).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
     });
 
     it('should not reload tasks on task group select when task group is not changed', async () => {
       await fixture.whenStable();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
-      expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(1);
+      expect(taskService.getTasks).toHaveBeenCalledTimes(1);
     });
 
     it('should reload tasks on task update', async () => {
       await fixture.whenStable();
       taskService.notifyTaskUpdated(tasks[0]);
-      expect(taskService.getTasksByGroup).toHaveBeenCalledTimes(2);
+      expect(taskService.getTasks).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('when server responds with error', () => {
     const response = {status: 500, url: 'https://backend.com/service', error: {message: 'Something went wrong...'}};
     beforeEach(() => {
-      spyOn(taskService, 'getTasksByGroup').and.callFake(() => throwError(HttpRequestError.fromResponse(response)));
+      spyOn(taskService, 'getTasks').and.callFake(() => throwError(() => HttpRequestError.fromResponse(response)));
       spyOn(window.console, 'error');
       fixture.detectChanges();
     });
