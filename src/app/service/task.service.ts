@@ -47,56 +47,6 @@ export class TaskService {
     this.restoredTask = this.restoredTaskSource.asObservable();
   }
 
-  private static getTaskStatusesForTaskGroup(taskGroup: TaskGroup): TaskStatus[] {
-    if (taskGroup === TaskGroup.INBOX) {
-      return [TaskStatus.UNPROCESSED];
-    }
-    if (taskGroup === TaskGroup.ALL) {
-      return [TaskStatus.UNPROCESSED, TaskStatus.PROCESSED];
-    }
-    return [TaskStatus.PROCESSED];
-  }
-
-  private static getQueryString(taskGroup: TaskGroup, pageRequest: PageRequest = null): string {
-    let queryString = '?statuses=';
-
-    const statuses = TaskService.getTaskStatusesForTaskGroup(taskGroup);
-    for (let i = 0; i < statuses.length; i++) {
-      if (i > 0) {
-        queryString += ',';
-      }
-      queryString += statuses[i];
-    }
-
-    switch (taskGroup) {
-      case TaskGroup.TODAY: {
-        const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        queryString += `&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.TOMORROW: {
-        const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        queryString += `&deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.WEEK: {
-        const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        queryString += `&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.SOME_DAY: {
-        queryString += '&deadlineFrom=&deadlineTo=';
-        break;
-      }
-    }
-
-    if (pageRequest) {
-      queryString += `&${pageRequest.toQueryParameters()}`;
-    }
-    return queryString;
-  }
-
   hasTasks(taskGroup: TaskGroup): Observable<boolean> {
     return this.getTaskCount(taskGroup).pipe(map(count => count > 0));
   }
@@ -136,12 +86,46 @@ export class TaskService {
 
   getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
-    const url = this.baseUrl + TaskService.getQueryString(taskGroup, pageRequest);
+    let url = `${this.baseUrl}?statuses=`
+    switch (taskGroup) {
+      case TaskGroup.INBOX: {
+        url += TaskStatus.UNPROCESSED;
+        break;
+      }
+      case TaskGroup.TODAY: {
+        const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        const completedAtFrom = moment().startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED},${TaskStatus.COMPLETED}&deadlineTo=${deadlineTo}&completedAtFrom=${completedAtFrom}`;
+        break;
+      }
+      case TaskGroup.TOMORROW: {
+        const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED}&deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+        break;
+      }
+      case TaskGroup.WEEK: {
+        const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        const completedAtFrom = moment().startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED},${TaskStatus.COMPLETED}&deadlineTo=${deadlineTo}&completedAtFrom=${completedAtFrom}`;
+        break;
+      }
+      case TaskGroup.SOME_DAY: {
+        url += `${TaskStatus.PROCESSED}&deadlineFrom=&deadlineTo=`;
+        break;
+      }
+      case TaskGroup.ALL: {
+        url += `${TaskStatus.UNPROCESSED},${TaskStatus.PROCESSED}`;
+        break;
+      }
+    }
+    url += `&${pageRequest.toQueryParameters()}`
     return this.loadTasks(url, showLoadingIndicator);
   }
 
   getArchivedTasks(pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<Task[]> {
-    const url = `${this.baseUrl}?statuses=COMPLETED&${pageRequest.toQueryParameters()}`;
+    const completedAtTo = moment().subtract(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+    const url = `${this.baseUrl}?statuses=COMPLETED&completedAtTo=${completedAtTo}&${pageRequest.toQueryParameters()}`;
     return this.loadTasks(url, showLoadingIndicator);
   }
 
@@ -329,7 +313,37 @@ export class TaskService {
   }
 
   private loadTaskCount(taskGroup: TaskGroup): Observable<number> {
-    const url = `${this.baseUrl}/count${TaskService.getQueryString(taskGroup)}`;
+    let url = `${this.baseUrl}/count?statuses=`
+    switch (taskGroup) {
+      case TaskGroup.INBOX: {
+        url += TaskStatus.UNPROCESSED;
+        break;
+      }
+      case TaskGroup.TODAY: {
+        const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED}&deadlineTo=${deadlineTo}`;
+        break;
+      }
+      case TaskGroup.TOMORROW: {
+        const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED}&deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+        break;
+      }
+      case TaskGroup.WEEK: {
+        const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+        url += `${TaskStatus.PROCESSED}&deadlineTo=${deadlineTo}`;
+        break;
+      }
+      case TaskGroup.SOME_DAY: {
+        url += `${TaskStatus.PROCESSED}&deadlineFrom=&deadlineTo=`;
+        break;
+      }
+      case TaskGroup.ALL: {
+        url += `${TaskStatus.UNPROCESSED},${TaskStatus.PROCESSED}`;
+        break;
+      }
+    }
     return this.http.get<number>(url, {withCredentials: true});
   }
 

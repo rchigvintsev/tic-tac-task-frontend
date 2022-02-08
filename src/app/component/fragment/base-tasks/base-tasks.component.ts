@@ -98,8 +98,11 @@ export class BaseTasksComponent {
   }
 
   onTaskCompleteCheckboxChange(task: Task) {
-    // Let animation to complete
-    setTimeout(() => this.completeTask(task), 300);
+    if (task.isCompleted()) {
+      this.restoreCompletedTask(task);
+    } else {
+      this.completeTask(task);
+    }
   }
 
   protected onTitleEditingBegin() {
@@ -159,10 +162,24 @@ export class BaseTasksComponent {
   }
 
   private completeTask(task: Task) {
-    this.taskService.completeTask(task).subscribe(_ => {
-      this.tasks = this.tasks.filter(e => e.id !== task.id);
-      this.taskService.updateTaskCounters();
-      this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
-    }, (error: HttpRequestError) => this.onHttpRequestError(error));
+    this.taskService.completeTask(task).subscribe({
+      complete: () => {
+        task.status = TaskStatus.COMPLETED;
+        this.taskService.updateTaskCounters();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private restoreCompletedTask(task: Task) {
+    this.taskService.restoreTask(task).subscribe({
+      complete: () => {
+        task.status = TaskStatus.PROCESSED;
+        this.taskService.updateTaskCounters();
+        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_restored'));
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    })
   }
 }

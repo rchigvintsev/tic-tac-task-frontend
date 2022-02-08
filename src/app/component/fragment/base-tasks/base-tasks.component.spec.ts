@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, fakeAsync, getTestBed, TestBed, tick, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, getTestBed, TestBed, waitForAsync} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {By} from '@angular/platform-browser';
 
@@ -52,6 +52,7 @@ describe('BaseTasksComponent', () => {
     taskService = fixture.debugElement.injector.get(TaskService);
     spyOn(taskService, 'createTask').and.callFake(task => of(new Task().deserialize(task)));
     spyOn(taskService, 'completeTask').and.callFake(_ => of(true));
+    spyOn(taskService, 'restoreTask').and.callFake(task => of(new Task().deserialize(task)));
     spyOn(taskService, 'updateTaskCounters').and.stub();
 
     const tasks = [];
@@ -67,8 +68,13 @@ describe('BaseTasksComponent', () => {
       id: 3,
       title: 'Task 3',
       status: 'PROCESSED',
-      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
-      deadlineTimeExplicitlySet: false
+      deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL)
+    }));
+    tasks.push(new Task().deserialize({
+      id: 4,
+      title: 'Task 4',
+      status: 'COMPLETED',
+      deadline: moment().utc().subtract(1, 'hour').format(moment.HTML5_FMT.DATETIME_LOCAL)
     }));
 
     component = fixture.componentInstance;
@@ -178,27 +184,33 @@ describe('BaseTasksComponent', () => {
     expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
-  it('should complete task', fakeAsync(async () => {
-    const task1 = component.tasks[0];
-    const task2 = component.tasks[1];
-
-    component.onTaskCompleteCheckboxChange(task1);
-    tick(1000);
-
+  it('should complete task', async () => {
+    component.onTaskCompleteCheckboxChange(component.tasks[0]);
     await fixture.whenStable();
     fixture.detectChanges();
-    expect(taskService.completeTask).toHaveBeenCalledWith(task1);
-    expect(component.tasks.length).toEqual(2);
-    expect(component.tasks[0].id).toEqual(task2.id);
-  }));
+    expect(taskService.completeTask).toHaveBeenCalledWith(component.tasks[0]);
+  });
 
-  it('should update task counters on task complete', fakeAsync(async () => {
+  it('should update task counters on task complete', async () => {
     component.onTaskCompleteCheckboxChange(component.tasks[0]);
-    tick(1000);
     await fixture.whenStable();
     fixture.detectChanges();
     expect(taskService.updateTaskCounters).toHaveBeenCalled();
-  }));
+  });
+
+  it('should restore complete task', async () => {
+    component.onTaskCompleteCheckboxChange(component.tasks[3]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(taskService.restoreTask).toHaveBeenCalledWith(component.tasks[3]);
+  });
+
+  it('should update task counters on task restore', async () => {
+    component.onTaskCompleteCheckboxChange(component.tasks[3]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(taskService.updateTaskCounters).toHaveBeenCalled();
+  });
 
   it('should render task deadline', async () => {
     const compiled = fixture.debugElement.nativeElement;

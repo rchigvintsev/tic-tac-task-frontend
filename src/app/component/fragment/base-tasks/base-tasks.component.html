@@ -92,7 +92,7 @@
           </ng-container>
         </div>
 
-        <mat-checkbox (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
+        <mat-checkbox [checked]="task.isCompleted()" (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
       </mat-list-item>
 
       <div *ngIf=showInlineSpinner class="spinner-container">

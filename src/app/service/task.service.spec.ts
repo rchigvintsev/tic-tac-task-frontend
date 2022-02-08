@@ -76,17 +76,19 @@ describe('TaskService', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 3, title: 'Task 3', status: 'COMPLETED'}));
 
     taskService.getTasks(TaskGroup.TODAY).subscribe(tasks => {
-      expect(tasks.length).toBe(2);
+      expect(tasks.length).toBe(3);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
+        && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
   });
@@ -140,17 +142,19 @@ describe('TaskService', () => {
     const testTasks = [];
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
+    testTasks.push(new Task().deserialize({id: 3, title: 'Task 3', status: 'COMPLETED'}));
 
     taskService.getTasks(TaskGroup.WEEK).subscribe(tasks => {
-      expect(tasks.length).toBe(2);
+      expect(tasks.length).toBe(3);
       expect(tasks).toEqual(testTasks);
       done();
     });
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
+        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
+        && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(testTasks);
   });
@@ -260,7 +264,12 @@ describe('TaskService', () => {
       done();
     });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}?statuses=COMPLETED&page=0&size=20`);
+    const request = httpMock.expectOne((httpReq) => {
+      return httpReq.method === 'GET'
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=COMPLETED`)
+        && /completedAtTo=[\d-]+T[\d:]+/.test(httpReq.url);
+    });
+
     expect(request.request.method).toBe('GET');
     request.flush(testTasks);
   });

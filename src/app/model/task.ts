@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import {AbstractEntity} from './abstract-entity';
 import {TaskRecurrenceStrategy} from './task-recurrence-strategy';
 import {Objects} from '../util/objects';
+import {TaskStatus} from './task-status';
 
 export class Task extends AbstractEntity {
   id: number;
@@ -11,7 +12,6 @@ export class Task extends AbstractEntity {
   description: string;
   status: string;
   deadline: Date;
-  scheduledAt: Date;
   deadlineTimeExplicitlySet = false;
   recurrenceStrategy: TaskRecurrenceStrategy;
 
@@ -73,5 +73,9 @@ export class Task extends AbstractEntity {
       return false;
     }
     return moment().isAfter(this.deadline, 'minutes');
+  }
+
+  isCompleted(): boolean {
+    return this.status === TaskStatus.COMPLETED
   }
 }
