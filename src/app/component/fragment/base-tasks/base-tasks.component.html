@@ -73,7 +73,7 @@
 
         <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]" class="list-row task-list-row">
           <div class="list-column title-column">
-            <span>{{ task.title }}</span>
+            <span [class.text-decoration-line-through]="task.isCompleted()">{{ task.title }}</span>
           </div>
 
           <ng-container *ngIf="task.deadline">
@@ -92,7 +92,9 @@
           </ng-container>
         </div>
 
-        <mat-checkbox [checked]="task.isCompleted()" (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
+        <mat-checkbox class="ml-2 mr-2"
+                      [checked]="task.isCompleted()"
+                      (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
       </mat-list-item>
 
       <div *ngIf=showInlineSpinner class="spinner-container">
