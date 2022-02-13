@@ -71,22 +71,22 @@
           <mat-icon>drag_indicator</mat-icon>
         </div>
 
-        <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]" class="list-row task-list-row">
+        <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]"
+             class="list-row task-list-row" [class.color-warn]="task.isOverdue()">
           <div class="list-column title-column">
             <span [class.text-decoration-line-through]="task.isCompleted()">{{ task.title }}</span>
           </div>
 
           <ng-container *ngIf="task.deadline">
             <div *ngIf="!xsQuery.matches else deadlineIcon" class="list-column deadline-column">
-              <span [matTooltip]="task.deadline | localizedDate"
-                    [class]="task.isOverdue() ? 'color-warn' : 'color-primary'" matTooltipPosition="above">
+              <span [matTooltip]="task.deadline | localizedDate" matTooltipPosition="above">
                 {{ task.deadline | localizedRelativeDate }}
               </span>
             </div>
 
             <ng-template #deadlineIcon>
               <div class="list-column deadline-column">
-                <mat-icon [class]="task.isOverdue() ? 'color-warn' : ''">schedule</mat-icon>
+                <mat-icon>schedule</mat-icon>
               </div>
             </ng-template>
           </ng-container>

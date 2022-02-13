@@ -220,9 +220,9 @@ describe('BaseTasksComponent', () => {
     expect(spanContent.trim()).toBe('in a month');
   });
 
-  it('should add "color-warn" class to deadline label when task is overdue', async () => {
+  it('should add "color-warn" class to task list row when task is overdue', async () => {
     const compiled = fixture.debugElement.nativeElement;
     await fixture.whenStable();
-    expect(compiled.querySelector('.task-3 .deadline-column span.color-warn')).not.toBeNull();
+    expect(compiled.querySelector('.task-3 .task-list-row')).not.toBeNull();
   });
 });
