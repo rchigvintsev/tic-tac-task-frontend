@@ -78,17 +78,11 @@
           </div>
 
           <ng-container *ngIf="task.deadline">
-            <div *ngIf="!xsQuery.matches else deadlineIcon" class="list-column deadline-column">
+            <div *ngIf="!xsQuery.matches" class="list-column deadline-column">
               <span [matTooltip]="task.deadline | localizedDate" matTooltipPosition="above">
                 {{ task.deadline | localizedRelativeDate }}
               </span>
             </div>
-
-            <ng-template #deadlineIcon>
-              <div class="list-column deadline-column">
-                <mat-icon>schedule</mat-icon>
-              </div>
-            </ng-template>
           </ng-container>
         </div>
 
