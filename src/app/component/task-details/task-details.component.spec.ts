@@ -92,7 +92,7 @@ describe('TaskDetailsComponent', () => {
       description: 'Test description',
       status: 'PROCESSED',
       deadline: TASK_DEADLINE,
-      deadlineTimeExplicitlySet: true
+      deadlineTimeSpecified: true
     });
 
     router = injector.inject(Router);

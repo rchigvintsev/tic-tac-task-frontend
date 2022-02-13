@@ -134,7 +134,7 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
         throw new Error('Unsupported task group: ' + taskGroup);
     }
 
-    task.deadlineTimeExplicitlySet = false;
+    task.deadlineTimeSpecified = false;
     this.taskService.updateTask(task).subscribe(_ => this.taskService.updateTaskCounters(),
       (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
   }

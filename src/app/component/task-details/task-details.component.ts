@@ -183,13 +183,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   onClearDeadlineDateButtonClick() {
     this.errorStateMatchers.get('deadline').errorState = false;
     this.taskFormModel.deadline = null;
-    this.taskFormModel.deadlineTimeExplicitlySet = false;
+    this.taskFormModel.deadlineTimeSpecified = false;
     this.saveTask();
   }
 
   onDeadlineTimeEnabledCheckboxChange(event: MatCheckboxChange) {
     this.errorStateMatchers.get('deadline').errorState = false;
-    this.deadlineTimeEnabled = this.taskFormModel.deadlineTimeExplicitlySet = event.checked;
+    this.deadlineTimeEnabled = this.taskFormModel.deadlineTimeSpecified = event.checked;
     this.updateDeadlineTime(this.deadlineTimeEnabled ? this.deadlineTime : END_OF_DAY_TIME);
     this.saveTask();
   }
@@ -355,7 +355,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskFormModel = task;
     this.task = task.clone();
 
-    this.deadlineTimeEnabled = task.deadlineTimeExplicitlySet;
+    this.deadlineTimeEnabled = task.deadlineTimeSpecified;
     if (this.deadlineTimeEnabled && task.deadline) {
       this.deadlineTime = moment(task.deadline).format(moment.HTML5_FMT.TIME);
     } else {

@@ -12,7 +12,7 @@ export class Task extends AbstractEntity {
   description: string;
   status: string;
   deadline: Date;
-  deadlineTimeExplicitlySet = false;
+  deadlineTimeSpecified = false;
   recurrenceStrategy: TaskRecurrenceStrategy;
 
   deserialize(input: any): Task {
@@ -24,7 +24,7 @@ export class Task extends AbstractEntity {
     if (input.deadline) {
       this.deadline = moment.utc(input.deadline, moment.HTML5_FMT.DATETIME_LOCAL).local().toDate();
     }
-    this.deadlineTimeExplicitlySet = input.deadlineTimeExplicitlySet;
+    this.deadlineTimeSpecified = input.deadlineTimeSpecified;
     if (input.recurrenceStrategy) {
       this.recurrenceStrategy = TaskRecurrenceStrategy.create(input.recurrenceStrategy);
     }
@@ -39,7 +39,7 @@ export class Task extends AbstractEntity {
       description: this.description,
       status: this.status,
       deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL) : null,
-      deadlineTimeExplicitlySet: this.deadlineTimeExplicitlySet,
+      deadlineTimeSpecified: this.deadlineTimeSpecified,
       recurrenceStrategy: this.recurrenceStrategy ? this.recurrenceStrategy.serialize() : null
     };
   }
@@ -52,7 +52,7 @@ export class Task extends AbstractEntity {
     clone.description = this.description;
     clone.status = this.status;
     clone.deadline = this.deadline != null ? new Date(this.deadline.getTime()) : null;
-    clone.deadlineTimeExplicitlySet = this.deadlineTimeExplicitlySet;
+    clone.deadlineTimeSpecified = this.deadlineTimeSpecified;
     clone.recurrenceStrategy = this.recurrenceStrategy;
     return clone;
   }
@@ -64,7 +64,7 @@ export class Task extends AbstractEntity {
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)
       && Objects.equals(this.deadline, other.deadline)
-      && Objects.equals(this.deadlineTimeExplicitlySet, other.deadlineTimeExplicitlySet)
+      && Objects.equals(this.deadlineTimeSpecified, other.deadlineTimeSpecified)
       && Objects.equals(this.recurrenceStrategy, other.recurrenceStrategy);
   }
 

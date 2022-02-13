@@ -62,7 +62,7 @@ describe('BaseTasksComponent', () => {
       title: 'Task 2',
       status: 'PROCESSED',
       deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
-      deadlineTimeExplicitlySet: true
+      deadlineTimeSpecified: true
     }));
     tasks.push(new Task().deserialize({
       id: 3,
