@@ -8,8 +8,6 @@ $color-primary: mat-color($palette-primary);
 $color-accent: mat-color($palette-accent);
 $color-warn: mat-color($palette-warn);
 
-$color-gray-light: rgba(0, 0, 0, .54);
-
 .color-primary {
   color: $color-primary;
 }
@@ -32,4 +30,16 @@ $color-gray-light: rgba(0, 0, 0, .54);
 
 .color-warn:disabled {
   color: rgba($color-warn, .38) !important;
+}
+
+$color-black-54: #0000008a;
+
+.color-black-54 {
+  color: $color-black-54;
+}
+
+$color-black-04: #0000000a;
+
+.color-black-04 {
+  color: $color-black-04;
 }
