@@ -1,0 +1,31 @@
+@import "../../../../colors.scss";
+@import "../../../../spacing.scss";
+@import "../../../../text.scss";
+@import "../../../../borders.scss";
+
+.task-list {
+  .task-list-item {
+    &:hover {
+      background: $color-black-04;
+    }
+
+    mat-checkbox {
+      ::ng-deep .mat-checkbox-ripple {
+        display: none;
+      }
+    }
+
+    .task-list-row {
+      cursor: pointer;
+    }
+  }
+
+  .cdk-drop-list-dragging mat-list-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+  }
+}

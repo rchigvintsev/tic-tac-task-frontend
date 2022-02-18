@@ -1,0 +1,37 @@
+<mat-list class="task-list"
+          infiniteScroll
+          [infiniteScrollDistance]="1"
+          (scrolled)="onTaskListScroll($event)"
+          cdkDropList>
+  <mat-list-item class="task-list-item rounded"
+                 *ngFor="let task of tasks" [ngClass]="'task-' + task.id"
+                 (cdkDragEnded)="onTaskListItemDragEnded($event, task)"
+                 cdkDrag>
+    <div class="drag-handle" cdkDragHandle>
+      <mat-icon>drag_indicator</mat-icon>
+    </div>
+
+    <div [routerLink]="['/', i18nService.currentLanguage.code, 'task', task.id]"
+         class="list-row task-list-row"
+         [class.color-warn]="task.isOverdue()">
+      <div class="list-column title-column">
+        <span [class.text-decoration-line-through]="task.isCompleted()">{{ task.title }}</span>
+      </div>
+
+      <div *ngIf="task.deadline && !xsQuery.matches"
+           class="list-column deadline-column text-decoration-underline-dotted">
+            <span [matTooltip]="task.deadline | localizedDate" matTooltipPosition="above">
+              {{ task.deadline | localizedRelativeDate }}
+            </span>
+      </div>
+    </div>
+
+    <mat-checkbox class="ml-2 mr-2"
+                  [checked]="task.isCompleted()"
+                  (change)="onTaskCompleteCheckboxChange(task)"></mat-checkbox>
+  </mat-list-item>
+
+  <div *ngIf=loading class="spinner-container">
+    <mat-spinner [diameter]="30"></mat-spinner>
+  </div>
+</mat-list>
