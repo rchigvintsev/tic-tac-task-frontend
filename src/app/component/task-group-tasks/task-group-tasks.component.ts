@@ -1,42 +1,48 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
+import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
 import * as moment from 'moment';
 
-import {BaseTasksComponent} from '../fragment/base-tasks/base-tasks.component';
-import {I18nService} from '../../service/i18n.service';
 import {TaskService} from '../../service/task.service';
 import {TaskGroupService} from '../../service/task-group.service';
 import {PageNavigationService} from '../../service/page-navigation.service';
+import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
 import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
-import {MediaMatcher} from '@angular/cdk/layout';
+import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-task-group-tasks',
-  templateUrl: '../fragment/base-tasks/base-tasks.component.html',
-  styleUrls: ['../fragment/base-tasks/base-tasks.component.scss']
+  templateUrl: './task-group-tasks.component.html',
+  styleUrls: ['./task-group-tasks.component.scss']
 })
-export class TaskGroupTasksComponent extends BaseTasksComponent implements OnInit, OnDestroy {
+export class TaskGroupTasksComponent implements OnInit, OnDestroy {
+  title: string;
+  tasks: Array<Task>;
+  loading: boolean;
+
+  @ViewChild('taskForm')
+  taskForm: NgForm;
+  taskFormModel = new Task();
+  taskFormSubmitEnabled = false;
+
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
+  private pageRequest = new PageRequest();
 
-  constructor(i18nService: I18nService,
-              taskService: TaskService,
-              pageNavigationService: PageNavigationService,
-              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
-              media: MediaMatcher,
+  constructor(private taskService: TaskService,
+              private pageNavigationService: PageNavigationService,
               private taskGroupService: TaskGroupService,
-              private route: ActivatedRoute) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
-    this.taskFormEnabled = true;
-    this.titleReadonly = true;
+              private route: ActivatedRoute,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
   }
 
   private static getTitle(taskGroup: TaskGroup): string {
@@ -78,9 +84,11 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
   }
 
   ngOnInit() {
+    this.title = '';
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(taskGroup => this.onTaskGroupSelect(taskGroup));
+    // Subscribe to task update events in order to refresh task list after task is dragged and dropped to another group
     this.taskService.getUpdatedTask()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(task => this.onTaskUpdate(task))
@@ -92,17 +100,58 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
     this.componentDestroyed.complete();
   }
 
-  onTaskListScroll() {
-    this.beforeTasksLoad();
-    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe(
-      tasks => this.afterTasksLoad(tasks),
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+  onTaskFormModelChange() {
+    this.taskFormSubmitEnabled = !Strings.isBlank(this.taskFormModel.title);
   }
 
-  protected beforeTaskCreate(task: Task) {
-    task.deadline = TaskGroupTasksComponent.getDeadlineDate(this.taskGroup);
-    task.status = TaskGroupTasksComponent.getTaskStatus(this.taskGroup);
+  onTaskFormSubmit() {
+    this.createTask();
+  }
+
+  onTaskListScroll(_?: IInfiniteScrollEvent) {
+    this.loadNextPage();
+  }
+
+  private createTask() {
+    if (!Strings.isBlank(this.taskFormModel.title)) {
+      this.taskFormModel.deadline = TaskGroupTasksComponent.getDeadlineDate(this.taskGroup);
+      this.taskFormModel.status = TaskGroupTasksComponent.getTaskStatus(this.taskGroup);
+      this.taskService.createTask(this.taskFormModel).subscribe({
+        next: task => this.onTaskCreate(task),
+        error: (error: HttpRequestError) => this.onHttpRequestError(error)
+      });
+    }
+  }
+
+  private reloadTasks() {
+    this.loading = true;
+
+    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe({
+      next: tasks => {
+        this.tasks = tasks;
+        this.loading = false;
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private loadNextPage() {
+    this.loading = true;
+    this.pageRequest.page++;
+
+    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe({
+      next: tasks => {
+        this.tasks = this.tasks.concat(tasks);
+        this.loading = false;
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private onTaskCreate(task: Task) {
+    this.tasks.push(task);
+    this.taskForm.resetForm();
+    this.taskService.updateTaskCounters();
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
@@ -111,22 +160,14 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
       this.tasks = [];
       this.pageRequest.page = 0;
-      this.taskService.getTasks(taskGroup, this.pageRequest).subscribe(
-        tasks => this.tasks = tasks,
-        (error: HttpRequestError) => this.onHttpRequestError(error)
-      );
+      this.reloadTasks();
     }
   }
 
   private onTaskUpdate(updatedTask: Task) {
-    if (this.taskGroup !== TaskGroup.ALL) {
-      const index = this.tasks.findIndex(task => task.id === updatedTask.id);
-      if (index >= 0) {
-        this.taskService.getTasks(this.taskGroup, this.pageRequest).subscribe(
-          tasks => this.tasks = tasks,
-          (error: HttpRequestError) => this.onHttpRequestError(error)
-        );
-      }
+    const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+    if (index >= 0) {
+      this.reloadTasks();
     }
   }
 
@@ -137,5 +178,10 @@ export class TaskGroupTasksComponent extends BaseTasksComponent implements OnIni
       this.pageNavigationService.navigateToTaskGroupPage(taskGroup).then();
     }
     this.taskGroupService.notifyTaskGroupSelected(taskGroup);
+  }
+
+  private onHttpRequestError(error: HttpRequestError) {
+    this.loading = false;
+    this.httpResponseHandler.handleError(error);
   }
 }

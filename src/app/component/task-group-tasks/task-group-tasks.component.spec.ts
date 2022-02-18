@@ -173,14 +173,14 @@ describe('TaskGroupTasksComponent', () => {
     it('should load next task page on task list scroll', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
-      expect(taskService.getTasks).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1));
+      expect(taskService.getTasks).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1), false);
     });
 
     it('should start loading of tasks from first page when task group changed', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
-      expect(taskService.getTasks).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest());
+      expect(taskService.getTasks).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest(), false);
     });
 
     it('should not reload tasks on task group select when task group is not changed', async () => {
