@@ -1,0 +1,17 @@
+<form #newTaskForm="ngForm" (ngSubmit)="onFormSubmit()">
+  <mat-form-field>
+    <label>
+      <input matInput
+             type="text"
+             name="title"
+             [(ngModel)]="formModel.title"
+             (ngModelChange)="onFormModelChange()"
+             placeholder="{{ 'new_task' | translate }}"
+             maxlength="255">
+    </label>
+  </mat-form-field>
+
+  <button mat-mini-fab color="primary" type="submit" [disabled]="!formSubmitEnabled">
+    <mat-icon>done</mat-icon>
+  </button>
+</form>

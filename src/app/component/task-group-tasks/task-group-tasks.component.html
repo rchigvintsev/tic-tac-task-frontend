@@ -1,30 +1,16 @@
-<mat-card *ngIf="title">
+<mat-card>
   <div fxLayout="row" class="mat-card-header">
     <div class="mat-card-title">
-      <span [style.cursor]="'default'" class="title-text">
+      <span class="cursor-default">
         {{ title | translate }}
       </span>
     </div>
   </div>
 
-  <form #taskForm="ngForm" (ngSubmit)="onTaskFormSubmit()">
-    <mat-form-field>
-      <label>
-        <input matInput
-               type="text"
-               name="title"
-               [(ngModel)]="taskFormModel.title"
-               (ngModelChange)="onTaskFormModelChange()"
-               placeholder="{{ 'new_task' | translate }}"
-               maxlength="255"
-               notBlank>
-      </label>
-    </mat-form-field>
-
-    <button mat-mini-fab color="primary" type="submit" [disabled]="!taskFormSubmitEnabled">
-      <mat-icon>done</mat-icon>
-    </button>
-  </form>
+  <app-new-task-form *ngIf="loaded"
+                     [taskDeadline]="taskDeadline"
+                     [taskStatus]="taskStatus"
+                     (taskCreate)="onTaskCreate($event)"></app-new-task-form>
 
   <mat-card-content>
     <app-task-list [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)"></app-task-list>

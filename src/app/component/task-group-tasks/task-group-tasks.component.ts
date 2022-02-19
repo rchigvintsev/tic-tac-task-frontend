@@ -1,6 +1,5 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NgForm} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -17,7 +16,6 @@ import {TaskGroup} from '../../model/task-group';
 import {TaskStatus} from '../../model/task-status';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
-import {Strings} from '../../util/strings';
 
 @Component({
   selector: 'app-task-group-tasks',
@@ -28,11 +26,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
   title: string;
   tasks: Array<Task>;
   loading: boolean;
-
-  @ViewChild('taskForm')
-  taskForm: NgForm;
-  taskFormModel = new Task();
-  taskFormSubmitEnabled = false;
+  loaded: boolean;
 
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
@@ -63,27 +57,8 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  private static getDeadlineDate(taskGroup: TaskGroup): Date {
-    if (taskGroup === TaskGroup.TODAY || taskGroup === TaskGroup.WEEK) {
-      const today = new Date();
-      today.setHours(23, 59, 59, 999);
-      return today;
-    }
-
-    if (taskGroup === TaskGroup.TOMORROW) {
-      const tomorrow = moment().add(1, 'day').toDate();
-      tomorrow.setHours(23, 59, 59, 999);
-      return tomorrow;
-    }
-
-    return null;
-  }
-
-  private static getTaskStatus(taskGroup: TaskGroup): string {
-    return taskGroup === TaskGroup.INBOX ? TaskStatus.UNPROCESSED : TaskStatus.PROCESSED;
-  }
-
   ngOnInit() {
+    this.loaded = false;
     this.title = '';
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
@@ -100,27 +75,32 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
     this.componentDestroyed.complete();
   }
 
-  onTaskFormModelChange() {
-    this.taskFormSubmitEnabled = !Strings.isBlank(this.taskFormModel.title);
+  get taskDeadline(): Date {
+    if (this.taskGroup === TaskGroup.TODAY || this.taskGroup === TaskGroup.WEEK) {
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      return today;
+    }
+
+    if (this.taskGroup === TaskGroup.TOMORROW) {
+      const tomorrow = moment().add(1, 'day').toDate();
+      tomorrow.setHours(23, 59, 59, 999);
+      return tomorrow;
+    }
+
+    return null;
   }
 
-  onTaskFormSubmit() {
-    this.createTask();
+  get taskStatus(): string {
+    return this.taskGroup ? (this.taskGroup === TaskGroup.INBOX ? TaskStatus.UNPROCESSED : TaskStatus.PROCESSED) : null;
+  }
+
+  onTaskCreate(task: Task) {
+    this.tasks.push(task);
   }
 
   onTaskListScroll(_?: IInfiniteScrollEvent) {
     this.loadNextPage();
-  }
-
-  private createTask() {
-    if (!Strings.isBlank(this.taskFormModel.title)) {
-      this.taskFormModel.deadline = TaskGroupTasksComponent.getDeadlineDate(this.taskGroup);
-      this.taskFormModel.status = TaskGroupTasksComponent.getTaskStatus(this.taskGroup);
-      this.taskService.createTask(this.taskFormModel).subscribe({
-        next: task => this.onTaskCreate(task),
-        error: (error: HttpRequestError) => this.onHttpRequestError(error)
-      });
-    }
   }
 
   private reloadTasks() {
@@ -130,6 +110,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
       next: tasks => {
         this.tasks = tasks;
         this.loading = false;
+        this.loaded = true;
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
@@ -146,12 +127,6 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
-  }
-
-  private onTaskCreate(task: Task) {
-    this.tasks.push(task);
-    this.taskForm.resetForm();
-    this.taskService.updateTaskCounters();
   }
 
   private onTaskGroupSelect(taskGroup: TaskGroup) {
