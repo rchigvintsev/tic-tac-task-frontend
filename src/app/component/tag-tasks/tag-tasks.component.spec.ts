@@ -42,7 +42,7 @@ describe('TagTasksComponent', () => {
       declarations: TestSupport.DECLARATIONS,
       providers: [
         {provide: MatDialog, useClass: MatDialogMock},
-        {provide: ConfigService, useValue: {apiBaseUrl: 'http://backend.com'}},
+        {provide: ConfigService, useValue: {apiBaseUrl: 'https://backend.com'}},
         {provide: ActivatedRoute, useValue: {params: of([{id: 1}])}},
         {provide: HTTP_RESPONSE_HANDLER, useClass: DefaultHttpResponseHandler}
       ]
@@ -82,15 +82,16 @@ describe('TagTasksComponent', () => {
 
   it('should undo changes in title on title input escape keydown', async () => {
     await fixture.whenStable();
-    component.title = 'New name';
+    const previousName = component.tagFormModel.name
+    component.tagFormModel.name = 'New name';
     component.onTitleInputEscapeKeydown();
     fixture.detectChanges();
-    expect(component.title).toEqual(tag.name);
+    expect(component.tagFormModel.name).toEqual(previousName);
   });
 
   it('should save tag on title input blur', async () => {
     await fixture.whenStable();
-    component.title = 'New name';
+    component.tagFormModel.name = 'New name';
     component.onTitleInputBlur();
     fixture.detectChanges();
     expect(tagService.updateTag).toHaveBeenCalled();
@@ -105,7 +106,7 @@ describe('TagTasksComponent', () => {
 
   it('should not save tag with blank name', async () => {
     await fixture.whenStable();
-    component.title = ' ';
+    component.tagFormModel.name = ' ';
     component.onTitleInputBlur();
     fixture.detectChanges();
     expect(tagService.updateTag).not.toHaveBeenCalled();
@@ -133,7 +134,7 @@ describe('TagTasksComponent', () => {
 
   it('should navigate to "not-found" error page when tag is not found', async () => {
     tagService.getTag = jasmine.createSpy('getTag').and.callFake(() => {
-      return throwError(ResourceNotFoundError.fromResponse({url: `/tag/${tag.id}`}));
+      return throwError(() => ResourceNotFoundError.fromResponse({url: `/tag/${tag.id}`}));
     });
     component.ngOnInit();
     await fixture.whenStable();

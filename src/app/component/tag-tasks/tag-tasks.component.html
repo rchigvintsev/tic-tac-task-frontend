@@ -1,0 +1,50 @@
+<mat-card>
+  <div fxLayout="row" class="mat-card-header">
+    <mat-icon mat-list-icon class="task-list-icon">label</mat-icon>
+
+    <div *ngIf="loaded" class="mat-card-title">
+      <form *ngIf="titleEditing" class="d-flex flex-row">
+        <mat-form-field>
+          <label>
+            <input matInput
+                   #titleInput
+                   name="title"
+                   type="text"
+                   [(ngModel)]="tagFormModel.name"
+                   (blur)="onTitleInputBlur()"
+                   (keydown.enter)="onTitleInputEnterKeydown()"
+                   (keydown.escape)="onTitleInputEscapeKeydown()"
+                   placeholder="{{ 'tag_name' | translate }}"
+                   maxlength="50"
+                   required
+                   notBlank/>
+          </label>
+        </mat-form-field>
+      </form>
+
+      <span *ngIf="!titleEditing" (click)="onTitleTextClick()">
+        {{ tagFormModel.name }}
+      </span>
+    </div>
+
+    <div *ngIf="loaded">
+      <button mat-icon-button aria-label="Task list menu" [matMenuTriggerFor]="taskListMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #taskListMenu="matMenu">
+        <button mat-menu-item (click)="onChangeColorButtonClick()">
+          {{ 'change_color' | translate }}
+        </button>
+
+        <button mat-menu-item (click)="onDeleteTagButtonClick()">
+          {{ 'delete' | translate }}
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <app-task-list [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)"></app-task-list>
+  </mat-card-content>
+</mat-card>

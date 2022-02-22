@@ -1,11 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {MediaMatcher} from '@angular/cdk/layout';
 
-import {map, mergeMap, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
 
-import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../fragment/color-picker-dialog/color-picker-dialog.component';
 import {I18nService} from '../../service/i18n.service';
@@ -17,54 +16,64 @@ import {Tag} from '../../model/tag';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
+import {Task} from '../../model/task';
+import {PageRequest} from '../../service/page-request';
+import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 
 @Component({
   selector: 'app-tag-tasks',
-  templateUrl: '../fragment/base-tasks/base-tasks.component.html',
-  styleUrls: ['../fragment/base-tasks/base-tasks.component.scss']
+  templateUrl: './tag-tasks.component.html',
+  styleUrls: ['./tag-tasks.component.scss']
 })
-export class TagTasksComponent extends BaseTasksComponent implements OnInit {
+export class TagTasksComponent implements OnInit {
+  tasks: Array<Task>;
+  loading: boolean;
+  loaded: boolean;
+
   tagFormModel = new Tag();
 
-  private tag: Tag;
+  @ViewChild('titleInput')
+  titleElement: ElementRef;
+  titleEditing = false;
 
-  constructor(i18nService: I18nService,
-              taskService: TaskService,
-              pageNavigationService: PageNavigationService,
-              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
-              media: MediaMatcher,
+  private tag: Tag;
+  private pageRequest = new PageRequest();
+
+  constructor(private i18nService: I18nService,
+              private taskService: TaskService,
+              private pageNavigationService: PageNavigationService,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private tagService: TagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
-    this.listIcon = 'label'
-    this.titlePlaceholder = 'tag_name';
-    this.titleMaxLength = 50;
-    this.taskListMenuItems = [
-      new MenuItem('change_color', this.onChangeColorButtonClick.bind(this)),
-      new MenuItem('delete', this.onDeleteTagButtonClick.bind(this))
-    ];
   }
 
   ngOnInit() {
+    this.loaded = false;
     this.route.params.pipe(map(params => +params.id)).subscribe(tagId => this.onTagIdChange(tagId));
   }
 
-  onTitleInputEscapeKeydown() {
-    if (this.tag) {
-      this.title = this.tag.name;
-    }
-    super.onTitleInputEscapeKeydown();
+  onTitleTextClick() {
+    this.beginTitleEditing();
   }
 
-  onTaskListScroll() {
-    if (this.tag) {
-      this.beforeTasksLoad();
-      this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest, false).subscribe(
-        tasks => this.afterTasksLoad(tasks),
-        (error: HttpRequestError) => this.onHttpRequestError(error)
-      );
+  onTitleInputBlur() {
+    this.endTitleEditing();
+  }
+
+  onTitleInputEnterKeydown() {
+    if (!Strings.isBlank(this.tagFormModel.name)) {
+      this.endTitleEditing();
     }
+  }
+
+  onTitleInputEscapeKeydown() {
+    this.tagFormModel.name = this.tag.name;
+    this.endTitleEditing();
+  }
+
+  onTaskListScroll(_?: IInfiniteScrollEvent) {
+    this.loadNextPage();
   }
 
   onChangeColorButtonClick() {
@@ -97,46 +106,86 @@ export class TagTasksComponent extends BaseTasksComponent implements OnInit {
     });
   }
 
-  protected onTitleEditingEnd() {
-    if (!Strings.isBlank(this.title) && this.tagFormModel.name !== this.title) {
-      this.tagFormModel.name = this.title;
+  private beginTitleEditing() {
+    this.titleEditing = true;
+    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  }
+
+  private endTitleEditing() {
+    this.titleEditing = false;
+    if (!Strings.isBlank(this.tagFormModel.name)) {
       this.saveTag();
     }
   }
 
   private onTagIdChange(tagId: number) {
-    this.pageRequest.page = 0;
-    this.tagService.getTag(tagId).pipe(
-      tap(tag => this.onTagLoad(tag)),
-      mergeMap(tag => this.tagService.getUncompletedTasks(tag.id, this.pageRequest, false))
-    ).subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
+    this.loading = true;
+    this.tagService.getTag(tagId, false).subscribe({
+      next: tag => this.onTagLoad(tag),
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   private onTagLoad(tag: Tag) {
     this.tag = tag;
     this.tagFormModel = tag.clone();
-    this.title = tag.name;
+    this.reloadTasks();
   }
 
   private saveTag() {
     if (!this.tagFormModel.equals(this.tag)) {
-      this.tagService.updateTag(this.tagFormModel).subscribe(
-        savedTag => {
-          this.onTagLoad(savedTag);
+      this.tagService.updateTag(this.tagFormModel).subscribe({
+        next: tag => {
+          this.tag = tag;
+          this.tagFormModel = tag.clone();
           this.httpResponseHandler.handleSuccess(this.i18nService.translate('tag_saved'));
         },
-        (error: HttpRequestError) => this.onHttpRequestError(error)
-      );
+        error: (error: HttpRequestError) => this.onHttpRequestError(error)
+      });
     }
   }
 
   private deleteTag() {
-    this.tagService.deleteTag(this.tagFormModel).subscribe(
-      _ => {
+    this.tagService.deleteTag(this.tagFormModel).subscribe({
+      next: _ => {
         this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('tag_deleted'));
       },
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private reloadTasks() {
+    this.pageRequest.page = 0;
+    this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest, false).subscribe({
+      next: tasks => {
+        this.tasks = tasks;
+        this.loading = false;
+        this.loaded = true;
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private loadNextPage() {
+    this.loading = true;
+    this.pageRequest.page++;
+
+    this.tagService.getUncompletedTasks(this.tag.id, this.pageRequest, false).subscribe({
+      next: tasks => {
+        this.tasks = this.tasks.concat(tasks);
+        this.loading = false;
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private onHttpRequestError(error: HttpRequestError) {
+    this.loading = false;
+    if (error instanceof ResourceNotFoundError) {
+      this.pageNavigationService.navigateToNotFoundErrorPage().then();
+    } else {
+      this.httpResponseHandler.handleError(error);
+    }
   }
 }
