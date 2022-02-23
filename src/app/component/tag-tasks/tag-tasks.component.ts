@@ -72,10 +72,6 @@ export class TagTasksComponent implements OnInit {
     this.endTitleEditing();
   }
 
-  onTaskListScroll(_?: IInfiniteScrollEvent) {
-    this.loadNextPage();
-  }
-
   onChangeColorButtonClick() {
     const title = this.i18nService.translate('tag_color');
     const dialogRef = this.dialog.open(ColorPickerDialogComponent, {
@@ -106,16 +102,8 @@ export class TagTasksComponent implements OnInit {
     });
   }
 
-  private beginTitleEditing() {
-    this.titleEditing = true;
-    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
-  }
-
-  private endTitleEditing() {
-    this.titleEditing = false;
-    if (!Strings.isBlank(this.tagFormModel.name)) {
-      this.saveTag();
-    }
+  onTaskListScroll(_?: IInfiniteScrollEvent) {
+    this.loadNextPage();
   }
 
   private onTagIdChange(tagId: number) {
@@ -130,6 +118,29 @@ export class TagTasksComponent implements OnInit {
     this.tag = tag;
     this.tagFormModel = tag.clone();
     this.reloadTasks();
+  }
+
+  private onHttpRequestError(error: HttpRequestError) {
+    this.loading = false;
+    if (error instanceof ResourceNotFoundError) {
+      this.pageNavigationService.navigateToNotFoundErrorPage().then();
+    } else {
+      this.httpResponseHandler.handleError(error);
+    }
+  }
+
+  private beginTitleEditing() {
+    this.titleEditing = true;
+    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  }
+
+  private endTitleEditing() {
+    this.titleEditing = false;
+    if (Strings.isBlank(this.tagFormModel.name)) {
+      this.tagFormModel.name = this.tag.name;
+    } else {
+      this.saveTag();
+    }
   }
 
   private saveTag() {
@@ -178,14 +189,5 @@ export class TagTasksComponent implements OnInit {
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
-  }
-
-  private onHttpRequestError(error: HttpRequestError) {
-    this.loading = false;
-    if (error instanceof ResourceNotFoundError) {
-      this.pageNavigationService.navigateToNotFoundErrorPage().then();
-    } else {
-      this.httpResponseHandler.handleError(error);
-    }
   }
 }

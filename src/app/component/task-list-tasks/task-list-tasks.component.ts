@@ -1,10 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
-import {flatMap, map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+import {IInfiniteScrollEvent} from 'ngx-infinite-scroll/models';
 
-import {BaseTasksComponent, MenuItem} from '../fragment/base-tasks/base-tasks.component';
 import {ConfirmationDialogComponent} from '../fragment/confirmation-dialog/confirmation-dialog.component';
 import {I18nService} from '../../service/i18n.service';
 import {TaskService} from '../../service/task.service';
@@ -16,53 +16,58 @@ import {TaskGroup} from '../../model/task-group';
 import {HttpRequestError} from '../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
-import {MediaMatcher} from '@angular/cdk/layout';
+import {PageRequest} from '../../service/page-request';
+import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 
 @Component({
   selector: 'app-task-list-tasks',
-  templateUrl: '../fragment/base-tasks/base-tasks.component.html',
-  styleUrls: ['../fragment/base-tasks/base-tasks.component.scss']
+  templateUrl: './task-list-tasks.component.html',
+  styleUrls: ['./task-list-tasks.component.scss']
 })
-export class TaskListTasksComponent extends BaseTasksComponent implements OnInit {
-  private taskList: TaskList;
+export class TaskListTasksComponent implements OnInit {
+  tasks: Array<Task>;
+  loading: boolean;
+  loaded: boolean;
 
-  constructor(i18nService: I18nService,
-              taskService: TaskService,
-              pageNavigationService: PageNavigationService,
-              @Inject(HTTP_RESPONSE_HANDLER) httpResponseHandler: HttpResponseHandler,
-              media: MediaMatcher,
+  taskListFormModel = new TaskList();
+
+  @ViewChild('titleInput')
+  titleElement: ElementRef;
+  titleEditing = false;
+
+  private taskList: TaskList;
+  private pageRequest = new PageRequest();
+
+  constructor(private i18nService: I18nService,
+              private taskService: TaskService,
+              private pageNavigationService: PageNavigationService,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
-    super(i18nService, taskService, pageNavigationService, httpResponseHandler, media);
-    this.listIcon = 'list';
-    this.titlePlaceholder = 'task_list_name';
-    this.taskFormEnabled = true;
-    this.taskListMenuItems = [
-      new MenuItem('complete', this.onCompleteTaskListButtonClick.bind(this)),
-      new MenuItem('delete', this.onDeleteTaskListButtonClick.bind(this))
-    ];
   }
 
   ngOnInit() {
     this.route.params.pipe(map(params => +params.id)).subscribe(taskListId => this.onTaskListIdChange(taskListId));
   }
 
-  onTitleInputEscapeKeydown() {
-    if (this.taskList) {
-      this.title = this.taskList.name;
-    }
-    super.onTitleInputEscapeKeydown();
+  onTitleTextClick() {
+    this.beginTitleEditing();
   }
 
-  onTaskListScroll() {
-    if (this.taskList) {
-      this.beforeTasksLoad();
-      this.taskListService.getTasks(this.taskList.id, this.pageRequest, false).subscribe(
-        tasks => this.afterTasksLoad(tasks),
-        (error: HttpRequestError) => this.onHttpRequestError(error)
-      );
+  onTitleInputBlur() {
+    this.endTitleEditing();
+  }
+
+  onTitleInputEnterKeydown() {
+    if (!Strings.isBlank(this.taskListFormModel.name)) {
+      this.endTitleEditing();
     }
+  }
+
+  onTitleInputEscapeKeydown() {
+    this.taskListFormModel.name = this.taskList.name;
+    this.endTitleEditing();
   }
 
   onCompleteTaskListButtonClick() {
@@ -95,61 +100,110 @@ export class TaskListTasksComponent extends BaseTasksComponent implements OnInit
     });
   }
 
-  protected afterTaskCreate(task: Task) {
-    this.taskListService.addTask(this.taskList.id, task.id).subscribe(_ => {
-      task.taskListId = this.taskList.id;
-      super.afterTaskCreate(task);
-    }, (error: HttpRequestError) => this.onHttpRequestError(error));
+  onTaskCreate(task: Task) {
+    this.taskListService.addTask(this.taskList.id, task.id).subscribe({
+      next: _ => {
+        task.taskListId = this.taskList.id;
+        this.tasks.push(task);
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
-  protected onTitleEditingEnd() {
-    if (!Strings.isBlank(this.title) && this.title !== this.taskList.name) {
-      this.taskList.name = this.title;
-      this.saveTaskList();
-    }
+  onTaskListScroll(_?: IInfiniteScrollEvent) {
+    this.loadNextPage();
   }
 
   private onTaskListIdChange(taskListId: number) {
-    this.pageRequest.page = 0;
-    this.taskListService.getTaskList(taskListId).pipe(
-      tap(taskList => this.onTaskListLoad(taskList)),
-      flatMap(taskList => this.taskListService.getTasks(taskList.id, this.pageRequest))
-    ).subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
+    this.loading = true;
+    this.taskListService.getTaskList(taskListId, false).subscribe({
+      next: taskList => this.onTaskListLoad(taskList),
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   private onTaskListLoad(taskList: TaskList) {
     this.taskList = taskList;
-    this.title = taskList.name;
+    this.taskListFormModel = taskList.clone();
+    this.reloadTasks();
+  }
+
+  private onHttpRequestError(error: HttpRequestError) {
+    this.loading = false;
+    if (error instanceof ResourceNotFoundError) {
+      this.pageNavigationService.navigateToNotFoundErrorPage().then();
+    } else {
+      this.httpResponseHandler.handleError(error);
+    }
+  }
+
+  private beginTitleEditing() {
+    this.titleEditing = true;
+    setTimeout(() => this.titleElement.nativeElement.focus(), 0);
+  }
+
+  private endTitleEditing() {
+    this.titleEditing = false;
+    if (Strings.isBlank(this.taskListFormModel.name)) {
+      this.taskListFormModel.name = this.taskList.name;
+    } else {
+      this.saveTaskList();
+    }
   }
 
   private saveTaskList() {
-    this.taskListService.updateTaskList(this.taskList).subscribe(
-      updatedTaskList => {
-        this.onTaskListLoad(updatedTaskList);
-        this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_saved'));
-      },
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+    if (!this.taskListFormModel.equals(this.taskList)) {
+      this.taskListService.updateTaskList(this.taskListFormModel).subscribe({
+        next: taskList => {
+          this.taskList = taskList;
+          this.taskListFormModel = taskList.clone();
+          this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_saved'));
+        },
+        error: (error: HttpRequestError) => this.onHttpRequestError(error)
+      });
+    }
   }
 
   private completeTaskList() {
-    this.taskListService.completeTaskList(this.taskList).subscribe(
-      _ => {
+    this.taskListService.completeTaskList(this.taskList).subscribe({
+      next: _ => {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_completed'));
       },
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   private deleteTaskList() {
-    this.taskListService.deleteTaskList(this.taskList).subscribe(
-      _ => {
+    this.taskListService.deleteTaskList(this.taskListFormModel).subscribe({
+      next: _ => {
         this.pageNavigationService.navigateToTaskGroupPage(TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_list_deleted'));
       },
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private reloadTasks() {
+    this.pageRequest.page = 0;
+    this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe({
+      next: tasks => {
+        this.tasks = tasks;
+        this.loading = false;
+        this.loaded = true;
+      },
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
+  }
+
+  private loadNextPage() {
+    if (this.taskList) {
+      this.pageRequest.page++;
+      this.taskListService.getTasks(this.taskList.id, this.pageRequest, false).subscribe(
+        tasks => this.tasks = this.tasks.concat(tasks),
+        (error: HttpRequestError) => this.onHttpRequestError(error)
+      );
+    }
   }
 }

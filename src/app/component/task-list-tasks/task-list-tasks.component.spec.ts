@@ -13,6 +13,7 @@ import {TaskService} from '../../service/task.service';
 import {TaskListService} from '../../service/task-list.service';
 import {PageRequest} from '../../service/page-request';
 import {Task} from '../../model/task';
+import {TaskStatus} from '../../model/task-status';
 import {TaskGroup} from '../../model/task-group';
 import {TaskList} from '../../model/task-list';
 import {ResourceNotFoundError} from '../../error/resource-not-found.error';
@@ -78,7 +79,6 @@ describe('TaskListTasksComponent', () => {
     spyOn(taskListService, 'addTask').and.returnValue(of(true));
 
     taskService = injector.inject(TaskService);
-    spyOn(taskService, 'createTask').and.callFake(task => of(task.clone()));
     spyOn(taskService, 'updateTaskCounters').and.stub();
 
     const translate = injector.inject(TranslateService);
@@ -98,16 +98,17 @@ describe('TaskListTasksComponent', () => {
   });
 
   it('should undo changes in title on title input escape keydown', async () => {
+    const previousTitle = component.taskListFormModel.name;
     await fixture.whenStable();
-    component.title = 'New name';
+    component.taskListFormModel.name = 'New name';
     component.onTitleInputEscapeKeydown();
     fixture.detectChanges();
-    expect(component.title).toEqual(taskList.name);
+    expect(component.taskListFormModel.name).toEqual(previousTitle);
   });
 
   it('should save task list on title input blur', async () => {
     await fixture.whenStable();
-    component.title = 'New name';
+    component.taskListFormModel.name = 'New name';
     component.onTitleInputBlur();
     fixture.detectChanges();
     expect(taskListService.updateTaskList).toHaveBeenCalled();
@@ -115,7 +116,7 @@ describe('TaskListTasksComponent', () => {
 
   it('should not save task list with blank name', async () => {
     await fixture.whenStable();
-    component.title = ' ';
+    component.taskListFormModel.name = ' ';
     component.onTitleInputBlur();
     fixture.detectChanges();
     expect(taskListService.updateTaskList).not.toHaveBeenCalled();
@@ -155,7 +156,7 @@ describe('TaskListTasksComponent', () => {
 
   it('should navigate to "not-found" error page when task list is not found', async () => {
     taskListService.getTaskList = jasmine.createSpy('getTaskList').and.callFake(() => {
-      return throwError(ResourceNotFoundError.fromResponse({url: `/task-list/${taskList.id}`}));
+      return throwError(() => ResourceNotFoundError.fromResponse({url: `/task-list/${taskList.id}`}));
     });
     component.ngOnInit();
     await fixture.whenStable();
@@ -163,13 +164,13 @@ describe('TaskListTasksComponent', () => {
   });
 
   it('should include new task in current task list', async () => {
-    const taskTitle = 'New task';
     await fixture.whenStable();
-    component.taskFormModel.title = taskTitle;
-    component.onTaskFormSubmit();
-    fixture.detectChanges();
+
+    const newTask = new Task().deserialize({title: 'New task', status: TaskStatus.PROCESSED});
+    component.onTaskCreate(newTask)
+
     expect(component.tasks.length).toBe(3);
-    expect(component.tasks[2].title).toBe(taskTitle);
+    expect(component.tasks[2].title).toBe(newTask.title);
     expect(component.tasks[2].taskListId).toBe(taskList.id);
   });
 });
