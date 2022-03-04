@@ -42,8 +42,9 @@ import {ToastrModule} from 'ngx-toastr';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SidenavMenuComponent} from './component/fragment/sidenav-menu/sidenav-menu.component';
-import {TaskListComponent} from './component/fragment/task-list/task-list.component';
-import {BaseTasksComponent} from './component/fragment/base-tasks/base-tasks.component';
+import {TasksComponent} from './component/fragment/tasks/tasks.component';
+import {TasksForWeekComponent} from './component/fragment/tasks-for-week/tasks-for-week.component';
+import {TaskComponent} from './component/fragment/task/task.component';
 import {NewTaskFormComponent} from './component/fragment/new-task/new-task-form.component';
 import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
@@ -109,8 +110,9 @@ registerLocaleData(localeRu, 'ru');
   declarations: [
     AppComponent,
     SidenavMenuComponent,
-    TaskListComponent,
-    BaseTasksComponent,
+    TaskComponent,
+    TasksComponent,
+    TasksForWeekComponent,
     NewTaskFormComponent,
     TaskGroupTasksComponent,
     TagTasksComponent,

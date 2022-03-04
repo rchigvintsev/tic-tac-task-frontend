@@ -15,7 +15,7 @@ import {TaskService} from '../../../service/task.service';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {PathMatcher} from '../../../util/path-matcher';
-import {Dates} from '../../../util/time/dates';
+import {DateTimeUtils} from '../../../util/time/date-time-utils';
 
 @Component({
   selector: 'app-sidenav-menu',
@@ -115,15 +115,15 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
         task.status = TaskStatus.UNPROCESSED;
         break;
       case TaskGroup.TODAY:
-        task.deadline = Dates.endOfToday();
+        task.deadline = DateTimeUtils.endOfToday();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.TOMORROW:
-        task.deadline = Dates.endOfTomorrow();
+        task.deadline = DateTimeUtils.endOfTomorrow();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.WEEK:
-        task.deadline = Dates.endOfWeek();
+        task.deadline = DateTimeUtils.endOfWeek();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.SOME_DAY:

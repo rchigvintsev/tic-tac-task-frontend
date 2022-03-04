@@ -32,14 +32,20 @@ $color-warn: mat-color($palette-warn);
   color: rgba($color-warn, .38) !important;
 }
 
-$color-black-54: #0000008a;
-
-.color-black-54 {
-  color: $color-black-54;
-}
-
 $color-black-04: #0000000a;
 
 .color-black-04 {
   color: $color-black-04;
+}
+
+$color-black-42: #0000006b;
+
+.color-black-42 {
+  color: $color-black-42;
+}
+
+$color-black-54: #0000008a;
+
+.color-black-54 {
+  color: $color-black-54;
 }

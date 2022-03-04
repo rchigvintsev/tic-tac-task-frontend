@@ -44,12 +44,13 @@ import {SigninComponent} from '../component/signin/signin.component';
 import {SignupComponent} from '../component/signup/signup.component';
 import {PasswordResetComponent} from '../component/password-reset/password-reset.component';
 import {PasswordResetConfirmationComponent} from '../component/password-reset-confirmation/password-reset-confirmation.component';
+import {TaskComponent} from '../component/fragment/task/task.component';
+import {TasksComponent} from '../component/fragment/tasks/tasks.component';
+import {TasksForWeekComponent} from '../component/fragment/tasks-for-week/tasks-for-week.component';
 import {TaskCommentsComponent} from '../component/fragment/task-comments/task-comments.component';
+import {NewTaskFormComponent} from '../component/fragment/new-task/new-task-form.component';
 import {TagsComponent} from '../component/fragment/tags/tags.component';
 import {TaskListsComponent} from '../component/fragment/task-lists/task-lists.component';
-import {TaskListComponent} from '../component/fragment/task-list/task-list.component';
-import {BaseTasksComponent} from '../component/fragment/base-tasks/base-tasks.component';
-import {NewTaskFormComponent} from '../component/fragment/new-task/new-task-form.component';
 import {TaskGroupTasksComponent} from '../component/task-group-tasks/task-group-tasks.component';
 import {TagTasksComponent} from '../component/tag-tasks/tag-tasks.component';
 import {TaskListTasksComponent} from '../component/task-list-tasks/task-list-tasks.component';
@@ -127,8 +128,9 @@ export class TestSupport {
     TaskCommentsComponent,
     TagsComponent,
     TaskListsComponent,
-    TaskListComponent,
-    BaseTasksComponent,
+    TaskComponent,
+    TasksComponent,
+    TasksForWeekComponent,
     NewTaskFormComponent,
     TaskGroupTasksComponent,
     TagTasksComponent,

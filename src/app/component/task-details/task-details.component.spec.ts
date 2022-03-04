@@ -36,7 +36,7 @@ import {
   MonthlyTaskRecurrenceStrategy,
   WeeklyTaskRecurrenceStrategy
 } from '../../model/task-recurrence-strategy';
-import {DayOfWeek} from '../../util/time/day-of-week';
+import {WeekDay} from '../../util/time/week-day';
 import {Month} from '../../util/time/month';
 
 const CURRENT_LANG = 'en';
@@ -403,7 +403,7 @@ describe('TaskDetailsComponent', () => {
     component.selectedTaskRecurrenceOption = WeeklyTaskRecurrenceStrategy.TYPE;
     component.onTaskRecurrenceOptionSelect();
     const recurrenceStrategy = component.taskFormModel.recurrenceStrategy as WeeklyTaskRecurrenceStrategy;
-    expect(recurrenceStrategy.dayOfWeek).toBe(DayOfWeek.FRIDAY);
+    expect(recurrenceStrategy.dayOfWeek).toBe(WeekDay.FRIDAY);
   });
 
   it('should take day of month from deadline when monthly task recurrence option is selected', () => {

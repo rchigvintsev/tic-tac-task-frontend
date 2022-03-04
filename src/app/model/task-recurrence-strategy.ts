@@ -1,6 +1,6 @@
 import {Serializable} from './serializable';
 import {Month} from '../util/time/month';
-import {DayOfWeek} from '../util/time/day-of-week';
+import {WeekDay} from '../util/time/week-day';
 
 export abstract class TaskRecurrenceStrategy implements Serializable {
   static create(input: any): TaskRecurrenceStrategy {
@@ -44,14 +44,14 @@ export class DailyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
 export class WeeklyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
   static readonly TYPE = 'weekly';
 
-  dayOfWeek: DayOfWeek;
+  dayOfWeek: WeekDay;
 
   getType(): string {
     return WeeklyTaskRecurrenceStrategy.TYPE;
   }
 
   deserialize(input: any): WeeklyTaskRecurrenceStrategy {
-    this.dayOfWeek = DayOfWeek.forName(input.dayOfWeek);
+    this.dayOfWeek = WeekDay.forName(input.dayOfWeek);
     return this;
   }
 

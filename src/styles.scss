@@ -269,6 +269,10 @@ body {
     opacity: 0;
   }
 
+  .cdk-drop-list-dragging mat-list-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
   .ngx-toastr {
     padding: 20px 20px 20px 50px !important;
   }

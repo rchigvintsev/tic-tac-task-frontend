@@ -13,6 +13,9 @@
                      (taskCreate)="onTaskCreate($event)"></app-new-task-form>
 
   <mat-card-content>
-    <app-task-list [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)"></app-task-list>
+    <app-tasks-for-week *ngIf="tasksForWeek" [loading]="loading">
+    </app-tasks-for-week>
+    <app-tasks *ngIf="!tasksForWeek" [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)">
+    </app-tasks>
   </mat-card-content>
 </mat-card>

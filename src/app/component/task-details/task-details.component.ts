@@ -30,14 +30,14 @@ import {ResourceNotFoundError} from '../../error/resource-not-found.error';
 import {ServerErrorStateMatcher} from '../../error/server-error-state-matcher';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-response.handler';
 import {Strings} from '../../util/strings';
-import {Dates} from '../../util/time/dates';
+import {DateTimeUtils} from '../../util/time/date-time-utils';
 import {
   AnnuallyTaskRecurrenceStrategy,
   DailyTaskRecurrenceStrategy,
   MonthlyTaskRecurrenceStrategy,
   WeeklyTaskRecurrenceStrategy
 } from '../../model/task-recurrence-strategy';
-import {DayOfWeek} from '../../util/time/day-of-week';
+import {WeekDay} from '../../util/time/week-day';
 import {Month} from '../../util/time/month';
 
 const START_OF_DAY_TIME = '00:00';
@@ -244,7 +244,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         }
         case WeeklyTaskRecurrenceStrategy.TYPE: {
           const recurrenceStrategy = new WeeklyTaskRecurrenceStrategy();
-          recurrenceStrategy.dayOfWeek = DayOfWeek.forCode(moment(this.taskFormModel.deadline).isoWeekday());
+          recurrenceStrategy.dayOfWeek = WeekDay.forNumber(moment(this.taskFormModel.deadline).isoWeekday());
           this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
           break;
         }
@@ -292,13 +292,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   onHotDeadlineButtonClick(deadline: string) {
     switch (deadline) {
       case 'today':
-        this.taskFormModel.deadline = Dates.endOfToday();
+        this.taskFormModel.deadline = DateTimeUtils.endOfToday();
         break;
       case 'tomorrow':
-        this.taskFormModel.deadline = Dates.endOfTomorrow();
+        this.taskFormModel.deadline = DateTimeUtils.endOfTomorrow();
         break;
       case 'in_week':
-        this.taskFormModel.deadline = Dates.endOfWeek();
+        this.taskFormModel.deadline = DateTimeUtils.endOfWeek();
         break;
       default:
         throw new Error('Unsupported deadline code: ' + deadline);

@@ -25,6 +25,7 @@ import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../handler/http-res
 export class TaskGroupTasksComponent implements OnInit, OnDestroy {
   title: string;
   tasks: Array<Task>;
+  tasksForWeek: boolean;
   loading: boolean;
   loaded: boolean;
 
@@ -66,7 +67,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
     // Subscribe to task update events in order to refresh task list after task is dragged and dropped to another group
     this.taskService.getUpdatedTask()
       .pipe(takeUntil(this.componentDestroyed))
-      .subscribe(task => this.onTaskUpdate(task))
+      .subscribe(task => this.onTaskUpdate(task));
     this.route.fragment.subscribe(fragment => this.onUrlFragmentChange(fragment));
   }
 
@@ -106,7 +107,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
   private reloadTasks() {
     this.loading = true;
 
-    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe({
+    this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
         this.tasks = tasks;
         this.loading = false;
@@ -120,7 +121,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.pageRequest.page++;
 
-    this.taskService.getTasks(this.taskGroup, this.pageRequest, false).subscribe({
+    this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
         this.tasks = this.tasks.concat(tasks);
         this.loading = false;
@@ -135,6 +136,7 @@ export class TaskGroupTasksComponent implements OnInit, OnDestroy {
       this.title = TaskGroupTasksComponent.getTitle(taskGroup);
       this.tasks = [];
       this.pageRequest.page = 0;
+      this.tasksForWeek = taskGroup === TaskGroup.WEEK;
       this.reloadTasks();
     }
   }

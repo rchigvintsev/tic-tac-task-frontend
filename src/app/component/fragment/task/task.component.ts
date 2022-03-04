@@ -1,8 +1,6 @@
-import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import {CdkDragEnd} from '@angular/cdk/drag-drop';
 import {MediaMatcher} from '@angular/cdk/layout';
-
-import {IInfiniteScrollEvent} from 'ngx-infinite-scroll/models';
 
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
@@ -13,18 +11,15 @@ import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-
 import {ViewportMediaQueries} from '../../../util/viewport-media-queries';
 
 @Component({
-  selector: 'app-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+  selector: 'app-task',
+  templateUrl: './task.component.html',
+  styleUrls: ['./task.component.scss']
 })
-export class TaskListComponent {
+export class TaskComponent {
   @Input()
-  tasks: Array<Task>;
+  task: Task;
   @Input()
-  loading: boolean;
-
-  @Output()
-  scrolled = new EventEmitter<IInfiniteScrollEvent>();
+  showOnlyExpiredDeadline = false;
 
   xsQuery: MediaQueryList;
 
@@ -35,33 +30,29 @@ export class TaskListComponent {
     this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
   }
 
-  onTaskListScroll(event: IInfiniteScrollEvent) {
-    this.scrolled.next(event);
-  }
-
-  onTaskListItemDragEnded(event: CdkDragEnd, task: Task) {
+  onTaskListItemDragEnded(event: CdkDragEnd) {
     const dropPointElement = document.elementFromPoint(event.dropPoint.x, event.dropPoint.y);
     if (dropPointElement) {
       const dropReceiver = dropPointElement.closest('.drop-receiver');
       if (dropReceiver) {
-        const dropEvent = new CustomEvent('_drop', {detail: task});
+        const dropEvent = new CustomEvent('_drop', {detail: this.task});
         dropReceiver.dispatchEvent(dropEvent);
       }
     }
   }
 
-  onTaskCompleteCheckboxChange(task: Task) {
-    if (task.isCompleted()) {
-      this.restoreCompletedTask(task);
+  onTaskCompleteCheckboxChange() {
+    if (this.task.isCompleted()) {
+      this.restoreCompletedTask();
     } else {
-      this.completeTask(task);
+      this.completeTask();
     }
   }
 
-  private completeTask(task: Task) {
-    this.taskService.completeTask(task).subscribe({
+  private completeTask() {
+    this.taskService.completeTask(this.task).subscribe({
       complete: () => {
-        task.status = TaskStatus.COMPLETED;
+        this.task.status = TaskStatus.COMPLETED;
         this.taskService.updateTaskCounters();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
       },
@@ -69,10 +60,10 @@ export class TaskListComponent {
     });
   }
 
-  private restoreCompletedTask(task: Task) {
-    this.taskService.restoreTask(task).subscribe({
+  private restoreCompletedTask() {
+    this.taskService.restoreTask(this.task).subscribe({
       complete: () => {
-        task.status = TaskStatus.PROCESSED;
+        this.task.status = TaskStatus.PROCESSED;
         this.taskService.updateTaskCounters();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_restored'));
       },
@@ -81,7 +72,6 @@ export class TaskListComponent {
   }
 
   private onHttpRequestError(error: HttpRequestError) {
-    this.loading = false;
     this.httpResponseHandler.handleError(error);
   }
 }

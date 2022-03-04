@@ -148,26 +148,26 @@ describe('TaskGroupTasksComponent', () => {
     it('should load next task page on task list scroll', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
-      expect(taskService.getTasks).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1), false);
+      expect(taskService.getTasksForTaskGroup).toHaveBeenCalledWith(any(TaskGroup), new PageRequest(1), false);
     });
 
     it('should start loading of tasks from first page when task group changed', async () => {
       await fixture.whenStable();
       component.onTaskListScroll();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.ALL);
-      expect(taskService.getTasks).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest(), false);
+      expect(taskService.getTasksForTaskGroup).toHaveBeenCalledWith(TaskGroup.ALL, new PageRequest(), false);
     });
 
     it('should not reload tasks on task group select when task group is not changed', async () => {
       await fixture.whenStable();
       taskGroupService.notifyTaskGroupSelected(TaskGroup.TODAY);
-      expect(taskService.getTasks).toHaveBeenCalledTimes(1);
+      expect(taskService.getTasksForTaskGroup).toHaveBeenCalledTimes(1);
     });
 
     it('should reload tasks on task update', async () => {
       await fixture.whenStable();
       taskService.notifyTaskUpdated(tasks[0]);
-      expect(taskService.getTasks).toHaveBeenCalledTimes(2);
+      expect(taskService.getTasksForTaskGroup).toHaveBeenCalledTimes(2);
     });
   });
 

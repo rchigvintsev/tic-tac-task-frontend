@@ -51,7 +51,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'UNPROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    taskService.getTasks(TaskGroup.INBOX).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.INBOX).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -78,7 +78,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 3, title: 'Task 3', status: 'COMPLETED'}));
 
-    taskService.getTasks(TaskGroup.TODAY).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.TODAY).subscribe(tasks => {
       expect(tasks.length).toBe(3);
       expect(tasks).toEqual(testTasks);
       done();
@@ -111,7 +111,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasks(TaskGroup.TOMORROW).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.TOMORROW).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -144,7 +144,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 3, title: 'Task 3', status: 'COMPLETED'}));
 
-    taskService.getTasks(TaskGroup.WEEK).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.WEEK).subscribe(tasks => {
       expect(tasks.length).toBe(3);
       expect(tasks).toEqual(testTasks);
       done();
@@ -177,7 +177,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'PROCESSED'}));
 
-    taskService.getTasks(TaskGroup.SOME_DAY).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.SOME_DAY).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -203,7 +203,7 @@ describe('TaskService', () => {
     testTasks.push(new Task().deserialize({id: 1, title: 'Task 1', status: 'PROCESSED'}));
     testTasks.push(new Task().deserialize({id: 2, title: 'Task 2', status: 'UNPROCESSED'}));
 
-    taskService.getTasks(TaskGroup.ALL).subscribe(tasks => {
+    taskService.getTasksForTaskGroup(TaskGroup.ALL).subscribe(tasks => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(testTasks);
       done();
@@ -246,7 +246,7 @@ describe('TaskService', () => {
   });
 
   it('should throw error on get tasks by group when task group is null', () => {
-    expect(() => taskService.getTasks(null)).toThrowError('Task group must not be null or undefined');
+    expect(() => taskService.getTasksForTaskGroup(null)).toThrowError('Task group must not be null or undefined');
   });
 
   it('should throw error on get task count when task group is null', () => {

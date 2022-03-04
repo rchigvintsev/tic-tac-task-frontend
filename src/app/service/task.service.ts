@@ -18,6 +18,7 @@ import {HttpRequestError} from '../error/http-request.error';
 import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 import {TaskStatus} from '../model/task-status';
+import {DateTimeUtils} from '../util/time/date-time-utils';
 
 @Injectable({providedIn: 'root'})
 export class TaskService {
@@ -84,42 +85,53 @@ export class TaskService {
     return this.restoredTask;
   }
 
-  getTasks(taskGroup: TaskGroup, pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<Task[]> {
+  getTasksForTaskGroup(taskGroup: TaskGroup,
+                       pageRequest: PageRequest = new PageRequest(),
+                       showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
-    let url = `${this.baseUrl}?statuses=`
+    const taskRequest = new GetTasksRequest();
     switch (taskGroup) {
       case TaskGroup.INBOX: {
-        url += TaskStatus.UNPROCESSED;
+        taskRequest.statuses = [TaskStatus.UNPROCESSED];
         break;
       }
       case TaskGroup.TODAY: {
-        const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        const completedAtFrom = moment().startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED},${TaskStatus.COMPLETED}&deadlineTo=${deadlineTo}&completedAtFrom=${completedAtFrom}`;
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.deadlineTo = DateTimeUtils.endOfToday();
+        taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
         break;
       }
       case TaskGroup.TOMORROW: {
-        const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED}&deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
+        taskRequest.statuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineFrom = DateTimeUtils.startOfTomorrow();
+        taskRequest.deadlineTo = DateTimeUtils.endOfTomorrow();
         break;
       }
       case TaskGroup.WEEK: {
-        const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        const completedAtFrom = moment().startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED},${TaskStatus.COMPLETED}&deadlineTo=${deadlineTo}&completedAtFrom=${completedAtFrom}`;
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
+        taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
         break;
       }
       case TaskGroup.SOME_DAY: {
-        url += `${TaskStatus.PROCESSED}&deadlineFrom=&deadlineTo=`;
+        taskRequest.statuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineFrom = null;
+        taskRequest.deadlineTo = null;
         break;
       }
       case TaskGroup.ALL: {
-        url += `${TaskStatus.UNPROCESSED},${TaskStatus.PROCESSED}`;
+        taskRequest.statuses = [TaskStatus.UNPROCESSED, TaskStatus.PROCESSED];
         break;
       }
     }
-    url += `&${pageRequest.toQueryParameters()}`
+    return this.getTasks(taskRequest, pageRequest, showLoadingIndicator);
+  }
+
+  getTasks(taskRequest: GetTasksRequest,
+           pageRequest: PageRequest = new PageRequest(),
+           showLoadingIndicator = true): Observable<Task[]> {
+    Assert.notNullOrUndefined(taskRequest, 'Task request must not be null or undefined');
+    const url = `${this.baseUrl}?${taskRequest.toQueryParameters()}&${pageRequest.toQueryParameters()}`;
     return this.loadTasks(url, showLoadingIndicator);
   }
 
@@ -365,5 +377,84 @@ export class TaskService {
       })
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+}
+
+export class GetTasksRequest {
+  statuses: TaskStatus[];
+  completedAtFrom: Date;
+  completedAtTo: Date;
+
+  private _deadlineFrom: Date;
+  private _deadlineFromDirty: boolean;
+  private _deadlineTo: Date;
+  private _deadlineToDirty: boolean;
+
+  private static formatDate(date: Date): string {
+    return moment(date).utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
+  }
+
+  get deadlineFrom(): Date {
+    return this._deadlineFrom;
+  }
+
+  set deadlineFrom(value: Date) {
+    this._deadlineFrom = value;
+    this._deadlineFromDirty = true;
+  }
+
+  get deadlineTo(): Date {
+    return this._deadlineTo;
+  }
+
+  set deadlineTo(value: Date) {
+    this._deadlineTo = value;
+    this._deadlineToDirty = true;
+  }
+
+  toQueryParameters(): string {
+    let params = '';
+
+    if (this.statuses) {
+      params += 'statuses=' + this.statuses.join(',');
+    }
+
+    if (this._deadlineFromDirty) {
+      if (params.length > 0) {
+        params += '&';
+      }
+      params += 'deadlineFrom=';
+
+      if (this.deadlineFrom) {
+        params += GetTasksRequest.formatDate(this.deadlineFrom);
+      }
+    }
+
+    if (this._deadlineToDirty) {
+      if (params.length > 0) {
+        params += '&';
+      }
+      params += 'deadlineTo=';
+
+      if (this.deadlineTo) {
+        params += GetTasksRequest.formatDate(this.deadlineTo);
+      }
+    }
+
+    if (this.completedAtFrom) {
+      if (params.length > 0) {
+        params += '&';
+      }
+      params += `completedAtFrom=${GetTasksRequest.formatDate(this.completedAtFrom)}`;
+    }
+
+    if (this.completedAtTo) {
+      if (params.length > 0) {
+        params += '&';
+      }
+      params += `completedAtTo=${GetTasksRequest.formatDate(this.completedAtTo)}`;
+    }
+
+    return params;
   }
 }
