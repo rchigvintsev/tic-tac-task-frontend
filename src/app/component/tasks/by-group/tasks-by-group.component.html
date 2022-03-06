@@ -1,0 +1,20 @@
+<mat-card>
+  <div fxLayout="row" class="mat-card-header">
+    <div class="mat-card-title">
+      <span class="cursor-default">
+        {{ title | translate }}
+      </span>
+    </div>
+  </div>
+
+  <app-new-task-form *ngIf="loaded"
+                     [taskDeadline]="taskDeadline"
+                     [taskStatus]="taskStatus"
+                     (taskCreate)="onTaskCreate($event)"></app-new-task-form>
+
+  <mat-card-content>
+    <app-task-list-for-week *ngIf="tasksForWeek" [loading]="loading"></app-task-list-for-week>
+    <app-task-list *ngIf="!tasksForWeek" [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)">
+    </app-task-list>
+  </mat-card-content>
+</mat-card>

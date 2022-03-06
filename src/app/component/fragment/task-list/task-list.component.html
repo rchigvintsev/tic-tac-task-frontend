@@ -1,0 +1,13 @@
+<mat-list class="task-list"
+          infiniteScroll
+          [infiniteScrollDistance]="1"
+          (scrolled)="onTaskListScroll($event)"
+          cdkDropList>
+  <ng-container *ngFor="let task of tasks">
+    <app-task-list-item [task]="task"></app-task-list-item>
+  </ng-container>
+
+  <div *ngIf="loading" class="d-flex justify-content-center">
+    <mat-spinner [diameter]="30"></mat-spinner>
+  </div>
+</mat-list>

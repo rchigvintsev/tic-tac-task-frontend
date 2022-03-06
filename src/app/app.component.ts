@@ -11,7 +11,7 @@ import {LangChangeEvent} from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
+import {AccountDialogComponent} from './component/fragment/account/dialog/account-dialog.component';
 import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';

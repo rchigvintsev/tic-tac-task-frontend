@@ -71,7 +71,7 @@ export class UserService {
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
-            error.localizedMessage = this.i18nService.translate('failed_to_confirm_password_reset');
+            error.localizedMessage = this.i18nService.translate('failed_to_confirm_account_password_reset');
           }
         }
       })
@@ -89,7 +89,7 @@ export class UserService {
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
-            error.localizedMessage = this.i18nService.translate('failed_to_confirm_password_reset');
+            error.localizedMessage = this.i18nService.translate('failed_to_confirm_account_password_reset');
           }
         }
       })

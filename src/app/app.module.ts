@@ -41,17 +41,17 @@ import {ToastrModule} from 'ngx-toastr';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {SidenavMenuComponent} from './component/fragment/sidenav-menu/sidenav-menu.component';
-import {TasksComponent} from './component/fragment/tasks/tasks.component';
-import {TasksForWeekComponent} from './component/fragment/tasks-for-week/tasks-for-week.component';
-import {TaskComponent} from './component/fragment/task/task.component';
-import {NewTaskFormComponent} from './component/fragment/new-task/new-task-form.component';
-import {TaskGroupTasksComponent} from './component/task-group-tasks/task-group-tasks.component';
-import {TagTasksComponent} from './component/tag-tasks/tag-tasks.component';
-import {TaskListTasksComponent} from './component/task-list-tasks/task-list-tasks.component';
-import {ArchiveComponent} from './component/archived-tasks/archive.component';
-import {TaskDetailsComponent} from './component/task-details/task-details.component';
-import {TaskCommentsComponent} from './component/fragment/task-comments/task-comments.component';
+import {SidenavMenuComponent} from './component/fragment/sidenav/menu/sidenav-menu.component';
+import {TaskListComponent} from './component/fragment/task-list/task-list.component';
+import {TaskListForWeekComponent} from './component/fragment/task-list/for-week/task-list-for-week.component';
+import {TaskListItemComponent} from './component/fragment/task-list/item/task-list-item.component';
+import {NewTaskFormComponent} from './component/fragment/new-task/form/new-task-form.component';
+import {TasksByGroupComponent} from './component/tasks/by-group/tasks-by-group.component';
+import {TasksByTagComponent} from './component/tasks/by-tag/tasks-by-tag.component';
+import {TasksFromListComponent} from './component/tasks/from-list/tasks-from-list.component';
+import {TaskArchiveComponent} from './component/tasks/archive/task-archive.component';
+import {TaskDetailsComponent} from './component/task/details/task-details.component';
+import {TaskCommentsComponent} from './component/fragment/task/comments/task-comments.component';
 import {ConfirmationDialogComponent} from './component/fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from './component/fragment/color-picker-dialog/color-picker-dialog.component';
 import {NotBlankValidatorDirective} from './validator/not-blank.directive';
@@ -59,18 +59,20 @@ import {PasswordsMatchValidatorDirective} from './validator/passwords-match.dire
 import {BaseSignComponent} from './component/fragment/base-sign/base-sign.component';
 import {SigninComponent} from './component/signin/signin.component';
 import {SignupComponent} from './component/signup/signup.component';
-import {PasswordResetComponent} from './component/password-reset/password-reset.component';
-import {PasswordResetConfirmationComponent} from './component/password-reset-confirmation/password-reset-confirmation.component';
-import {ErrorNotFoundComponent} from './component/error-not-found/error-not-found.component';
+import {AccountPasswordResetComponent} from './component/account/password/reset/account-password-reset.component';
+import {
+  AccountPasswordResetConfirmationComponent
+} from './component/account/password/reset/confirmation/account-password-reset-confirmation.component';
+import {ErrorNotFoundComponent} from './component/error/not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
-import {TagsComponent} from './component/fragment/tags/tags.component';
-import {TaskListsComponent} from './component/fragment/task-lists/task-lists.component';
+import {SidenavTagsComponent} from './component/fragment/sidenav/tags/sidenav-tags.component';
+import {SidenavTaskListsComponent} from './component/fragment/sidenav/task-lists/sidenav-task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
-import {AccountDialogComponent} from './component/fragment/account-dialog/account-dialog.component';
-import {AdminSidenavMenuComponent} from './component/fragment/admin/sidenav-menu/admin-sidenav-menu.component';
-import {AdminUsersComponent} from './component/fragment/admin/users/admin-users.component';
-import {ChangePasswordComponent} from './component/fragment/change-password/change-password.component';
+import {AccountDialogComponent} from './component/fragment/account/dialog/account-dialog.component';
+import {AdminSidenavMenuComponent} from './component/fragment/admin/sidenav/menu/admin-sidenav-menu.component';
+import {AdminUsersComponent} from './component/admin/users/admin-users.component';
+import {AccountPasswordChangeComponent} from './component/fragment/account/password/change/account-password-change.component';
 import {CookieConsentComponent} from './component/fragment/cookie-consent/cookie-consent.component';
 import {FocusedDirective} from './component/focused.directive';
 import {LocalizedDateAdapter} from './component/localized-date-adapter';
@@ -110,14 +112,14 @@ registerLocaleData(localeRu, 'ru');
   declarations: [
     AppComponent,
     SidenavMenuComponent,
-    TaskComponent,
-    TasksComponent,
-    TasksForWeekComponent,
+    TaskListItemComponent,
+    TasksByGroupComponent,
+    TaskListForWeekComponent,
     NewTaskFormComponent,
-    TaskGroupTasksComponent,
-    TagTasksComponent,
-    TaskListTasksComponent,
-    ArchiveComponent,
+    TaskListComponent,
+    TasksByTagComponent,
+    TasksFromListComponent,
+    TaskArchiveComponent,
     TaskDetailsComponent,
     TaskCommentsComponent,
     ConfirmationDialogComponent,
@@ -129,16 +131,16 @@ registerLocaleData(localeRu, 'ru');
     BaseSignComponent,
     SigninComponent,
     SignupComponent,
-    PasswordResetComponent,
-    PasswordResetConfirmationComponent,
+    AccountPasswordResetComponent,
+    AccountPasswordResetConfirmationComponent,
     ErrorNotFoundComponent,
     DummyComponent,
     AlertComponent,
-    TagsComponent,
-    TaskListsComponent,
+    SidenavTagsComponent,
+    SidenavTaskListsComponent,
     AdminSidenavMenuComponent,
     AdminUsersComponent,
-    ChangePasswordComponent,
+    AccountPasswordChangeComponent,
     CookieConsentComponent,
     LocalizedDatePipe,
     LocalizedRelativeDatePipe,

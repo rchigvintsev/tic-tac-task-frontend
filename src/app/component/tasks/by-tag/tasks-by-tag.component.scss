@@ -1,0 +1,6 @@
+@import "src/display";
+@import "src/flex";
+
+form mat-form-field {
+  flex-grow: 1;
+}
