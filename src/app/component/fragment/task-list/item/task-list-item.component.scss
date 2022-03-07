@@ -1,7 +1,7 @@
-@import "src/colors";
-@import "src/spacing";
-@import "src/text";
-@import "src/borders";
+@import "src/styles/colors";
+@import "src/styles/spacing";
+@import "src/styles/text";
+@import "src/styles/borders";
 
 .task-list-item {
   &:hover {

@@ -1,7 +1,7 @@
-@import "src/colors";
-@import "src/spacing";
-@import "src/display";
-@import "src/flex";
+@import "src/styles/colors";
+@import "src/styles/spacing";
+@import "src/styles/display";
+@import "src/styles/flex";
 
 .task-groups {
   .separator::after {
