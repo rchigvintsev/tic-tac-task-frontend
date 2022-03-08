@@ -88,6 +88,7 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
 
 class TaskGroup {
   tasks: Task[] = [];
+  size: number;
   pageRequest = new PageRequest();
 
   constructor(public name: string, private taskRequest: GetTasksRequest, private taskService: TaskService) {
@@ -95,6 +96,14 @@ class TaskGroup {
   }
 
   reloadTasks() {
-    this.taskService.getTasks(this.taskRequest, this.pageRequest, false).subscribe(tasks => this.tasks = tasks);
+    this.taskService.getTaskCount(this.taskRequest).subscribe({
+      next: taskCount => {
+        this.size = taskCount;
+        if (taskCount > 0) {
+          this.taskService.getTasks(this.taskRequest, this.pageRequest, false)
+            .subscribe(tasks => this.tasks = tasks);
+        }
+      }
+    })
   }
 }

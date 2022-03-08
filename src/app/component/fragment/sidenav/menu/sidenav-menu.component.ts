@@ -66,11 +66,11 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   }
 
   hasTasks(taskGroup: TaskGroup): Observable<boolean> {
-    return this.taskService.hasTasks(taskGroup);
+    return this.taskService.hasTasksForTaskGroup(taskGroup);
   }
 
   getTaskCount(taskGroup: TaskGroup): Observable<number> {
-    return this.taskService.getTaskCount(taskGroup);
+    return this.taskService.getTaskCountForTaskGroup(taskGroup);
   }
 
   onListItemClick(taskGroup: TaskGroup = null) {

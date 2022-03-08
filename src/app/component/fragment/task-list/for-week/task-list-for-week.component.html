@@ -1,7 +1,9 @@
 <mat-list class="task-groups" cdkDropList>
   <div *ngFor="let taskGroup of taskGroups">
     <div class="separator mr-3 d-flex align-items-center">
-      <span matSubheader class="task-group-name m-0">{{ taskGroup.name | translate }}</span>
+      <span matSubheader class="task-group-name m-0">
+        {{ taskGroup.name | translate }} {{ '(' + taskGroup.size + ')' }}
+      </span>
     </div>
 
     <ng-container *ngFor="let task of taskGroup.tasks">

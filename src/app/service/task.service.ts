@@ -48,47 +48,7 @@ export class TaskService {
     this.restoredTask = this.restoredTaskSource.asObservable();
   }
 
-  hasTasks(taskGroup: TaskGroup): Observable<boolean> {
-    return this.getTaskCount(taskGroup).pipe(map(count => count > 0));
-  }
-
-  getTaskCount(taskGroup: TaskGroup, forceLoad = false): Observable<number> {
-    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
-
-    const counter = this.taskCounters.get(taskGroup);
-    const value = counter.getValue();
-    if (value == null || forceLoad) {
-      if (value == null) {
-        counter.next(0);
-      }
-
-      this.loadTaskCount(taskGroup).subscribe(count => counter.next(count));
-    }
-    return counter;
-  }
-
-  updateTaskCounters() {
-    this.taskCounters.forEach((counter, taskGroup) => {
-      this.loadTaskCount(taskGroup).subscribe(count => counter.next(count));
-    });
-  }
-
-  resetTaskCounters() {
-    this.taskCounters.forEach(counter => counter.next(null));
-  }
-
-  getUpdatedTask(): Observable<Task> {
-    return this.updatedTask;
-  }
-
-  getRestoredTask(): Observable<Task> {
-    return this.restoredTask;
-  }
-
-  getTasksForTaskGroup(taskGroup: TaskGroup,
-                       pageRequest: PageRequest = new PageRequest(),
-                       showLoadingIndicator = true): Observable<Task[]> {
-    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
+  private static newGetTasksRequestForTaskGroup(taskGroup: TaskGroup): GetTasksRequest {
     const taskRequest = new GetTasksRequest();
     switch (taskGroup) {
       case TaskGroup.INBOX: {
@@ -124,6 +84,58 @@ export class TaskService {
         break;
       }
     }
+    return taskRequest;
+  }
+
+  hasTasksForTaskGroup(taskGroup: TaskGroup): Observable<boolean> {
+    return this.getTaskCountForTaskGroup(taskGroup).pipe(map(count => count > 0));
+  }
+
+  getTaskCountForTaskGroup(taskGroup: TaskGroup, forceLoad = false): Observable<number> {
+    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
+
+    const counter = this.taskCounters.get(taskGroup);
+    const value = counter.getValue();
+    if (value == null || forceLoad) {
+      if (value == null) {
+        counter.next(0);
+      }
+
+      const taskRequest = TaskService.newGetTasksRequestForTaskGroup(taskGroup);
+      this.getTaskCount(taskRequest).subscribe(count => counter.next(count));
+    }
+    return counter;
+  }
+
+  getTaskCount(taskRequest: GetTasksRequest): Observable<number> {
+    Assert.notNullOrUndefined(taskRequest, 'Task request must not be null or undefined');
+    const url = `${this.baseUrl}/count?${taskRequest.toQueryParameters()}`;
+    return this.loadTaskCount(url);
+  }
+
+  updateTaskCounters() {
+    this.taskCounters.forEach((counter, taskGroup) => {
+      this.getTaskCountForTaskGroup(taskGroup, true);
+    });
+  }
+
+  resetTaskCounters() {
+    this.taskCounters.forEach(counter => counter.next(null));
+  }
+
+  getUpdatedTask(): Observable<Task> {
+    return this.updatedTask;
+  }
+
+  getRestoredTask(): Observable<Task> {
+    return this.restoredTask;
+  }
+
+  getTasksForTaskGroup(taskGroup: TaskGroup,
+                       pageRequest: PageRequest = new PageRequest(),
+                       showLoadingIndicator = true): Observable<Task[]> {
+    Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
+    const taskRequest = TaskService.newGetTasksRequestForTaskGroup(taskGroup);
     return this.getTasks(taskRequest, pageRequest, showLoadingIndicator);
   }
 
@@ -324,38 +336,7 @@ export class TaskService {
     this.restoredTaskSource.next(task);
   }
 
-  private loadTaskCount(taskGroup: TaskGroup): Observable<number> {
-    let url = `${this.baseUrl}/count?statuses=`
-    switch (taskGroup) {
-      case TaskGroup.INBOX: {
-        url += TaskStatus.UNPROCESSED;
-        break;
-      }
-      case TaskGroup.TODAY: {
-        const deadlineTo = moment().endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED}&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.TOMORROW: {
-        const deadlineFrom = moment().add(1, 'day').startOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        const deadlineTo = moment().add(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED}&deadlineFrom=${deadlineFrom}&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.WEEK: {
-        const deadlineTo = moment().add(1, 'week').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        url += `${TaskStatus.PROCESSED}&deadlineTo=${deadlineTo}`;
-        break;
-      }
-      case TaskGroup.SOME_DAY: {
-        url += `${TaskStatus.PROCESSED}&deadlineFrom=&deadlineTo=`;
-        break;
-      }
-      case TaskGroup.ALL: {
-        url += `${TaskStatus.UNPROCESSED},${TaskStatus.PROCESSED}`;
-        break;
-      }
-    }
+  private loadTaskCount(url: string): Observable<number> {
     return this.http.get<number>(url, {withCredentials: true});
   }
 

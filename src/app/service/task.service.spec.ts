@@ -63,7 +63,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "INBOX" group', done => {
-    taskService.getTaskCount(TaskGroup.INBOX)
+    taskService.getTaskCountForTaskGroup(TaskGroup.INBOX)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -94,7 +94,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "TODAY" group', done => {
-    taskService.getTaskCount(TaskGroup.TODAY)
+    taskService.getTaskCountForTaskGroup(TaskGroup.TODAY)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -126,7 +126,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "TOMORROW" group', done => {
-    taskService.getTaskCount(TaskGroup.TOMORROW)
+    taskService.getTaskCountForTaskGroup(TaskGroup.TOMORROW)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -160,7 +160,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "WEEK" group', done => {
-    taskService.getTaskCount(TaskGroup.WEEK)
+    taskService.getTaskCountForTaskGroup(TaskGroup.WEEK)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -189,7 +189,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "SOME_DAY" group', done => {
-    taskService.getTaskCount(TaskGroup.SOME_DAY)
+    taskService.getTaskCountForTaskGroup(TaskGroup.SOME_DAY)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -215,7 +215,7 @@ describe('TaskService', () => {
   });
 
   it('should return number of tasks for "ALL" group', done => {
-    taskService.getTaskCount(TaskGroup.ALL)
+    taskService.getTaskCountForTaskGroup(TaskGroup.ALL)
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
@@ -225,12 +225,12 @@ describe('TaskService', () => {
   });
 
   it('should reset task counters', done => {
-    const subscription = taskService.getTaskCount(TaskGroup.ALL)
+    const subscription = taskService.getTaskCountForTaskGroup(TaskGroup.ALL)
       .pipe(skip(1))
       .subscribe(_ => {
         subscription.unsubscribe();
         taskService.resetTaskCounters();
-        taskService.getTaskCount(TaskGroup.ALL).pipe(first()).subscribe(count => {
+        taskService.getTaskCountForTaskGroup(TaskGroup.ALL).pipe(first()).subscribe(count => {
           expect(count).toBe(0);
           done();
         });
@@ -250,7 +250,7 @@ describe('TaskService', () => {
   });
 
   it('should throw error on get task count when task group is null', () => {
-    expect(() => taskService.getTaskCount(null)).toThrowError('Task group must not be null or undefined');
+    expect(() => taskService.getTaskCountForTaskGroup(null)).toThrowError('Task group must not be null or undefined');
   });
 
   it('should return archived tasks', done => {
