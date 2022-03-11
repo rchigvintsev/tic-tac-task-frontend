@@ -92,31 +92,26 @@ export class TaskService {
     switch (taskGroup) {
       case TaskGroup.INBOX: {
         taskRequest.statuses = [TaskStatus.UNPROCESSED, TaskStatus.COMPLETED];
-        taskRequest.previousStatuses = [TaskStatus.UNPROCESSED];
         break;
       }
       case TaskGroup.TODAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineTo = DateTimeUtils.endOfToday();
         break;
       }
       case TaskGroup.TOMORROW: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineFrom = DateTimeUtils.startOfTomorrow();
         taskRequest.deadlineTo = DateTimeUtils.endOfTomorrow();
         break;
       }
       case TaskGroup.WEEK: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
         break;
       }
       case TaskGroup.SOME_DAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineFrom = null;
         taskRequest.deadlineTo = null;
         break;
@@ -405,7 +400,6 @@ export class TaskService {
 
 export class GetTasksRequest {
   statuses: TaskStatus[];
-  previousStatuses: TaskStatus[];
   completedAtFrom: Date;
   completedAtTo: Date;
 
@@ -441,13 +435,6 @@ export class GetTasksRequest {
 
     if (this.statuses) {
       params += 'statuses=' + this.statuses.join(',');
-    }
-
-    if (this.previousStatuses) {
-      if (params.length > 0) {
-        params += '&';
-      }
-      params += 'previousStatuses=' + this.previousStatuses.join(',');
     }
 
     if (this._deadlineFromDirty) {

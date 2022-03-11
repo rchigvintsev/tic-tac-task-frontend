@@ -42,7 +42,7 @@ describe('TaskService', () => {
   afterEach(() => httpMock.verify());
 
   it('should be created', () => {
-    const service: TaskService = TestBed.get(TaskService);
+    const service: TaskService = TestBed.inject(TaskService);
     expect(service).toBeTruthy();
   });
 
@@ -59,7 +59,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=UNPROCESSED,COMPLETED&previousStatuses=UNPROCESSED`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=UNPROCESSED,COMPLETED`)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
@@ -90,7 +90,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&previousStatuses=PROCESSED`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
         && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
@@ -124,7 +124,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&previousStatuses=PROCESSED`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
         && /deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
@@ -159,7 +159,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&previousStatuses=PROCESSED`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
         && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
@@ -193,7 +193,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&previousStatuses=PROCESSED&deadlineFrom=&deadlineTo=`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&deadlineFrom=&deadlineTo=`)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
