@@ -42,24 +42,19 @@ describe('TaskListForWeekComponent', () => {
     tasks.push(new Task().deserialize({
       id: 1,
       title: 'Task 1',
-      status: 'UNPROCESSED'
-    }));
-    tasks.push(new Task().deserialize({
-      id: 2,
-      title: 'Task 2',
       status: 'PROCESSED',
       deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
       deadlineTimeSpecified: true
     }));
     tasks.push(new Task().deserialize({
-      id: 3,
-      title: 'Task 3',
+      id: 2,
+      title: 'Task 2',
       status: 'PROCESSED',
       deadline: moment().utc().subtract(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL)
     }));
     tasks.push(new Task().deserialize({
-      id: 4,
-      title: 'Task 4',
+      id: 3,
+      title: 'Task 3',
       status: 'COMPLETED',
       deadline: moment().utc().subtract(1, 'hour').format(moment.HTML5_FMT.DATETIME_LOCAL)
     }));

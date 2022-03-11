@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
-import {Subject} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
@@ -26,9 +26,12 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   title: string;
   tasks: Array<Task>;
   tasksForWeek: boolean;
-  loading: boolean;
-  loaded: boolean;
 
+  loading: boolean;
+  initialized: boolean;
+  createdAt: number;
+
+  private loadingSubscription: Subscription;
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
   private pageRequest = new PageRequest();
@@ -59,7 +62,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loaded = false;
+    this.initialized = false;
     this.title = '';
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
@@ -74,6 +77,13 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
+
+    if (this.loading) {
+      this.loadingSubscription.unsubscribe();
+      this.loadingSubscription = null;
+      this.loading = false;
+    }
+    this.initialized = false;
   }
 
   get taskDeadline(): Date {
@@ -105,23 +115,30 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   }
 
   private reloadTasks() {
-    this.loading = true;
+    if (this.loading) {
+      return;
+    }
 
-    this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
+    this.loading = true;
+    this.loadingSubscription = this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
         this.tasks = tasks;
         this.loading = false;
-        this.loaded = true;
+        this.initialized = true;
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
   }
 
   private loadNextPage() {
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     this.pageRequest.page++;
 
-    this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
+    this.loadingSubscription = this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
         this.tasks = this.tasks.concat(tasks);
         this.loading = false;
@@ -137,7 +154,9 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
       this.tasks = [];
       this.pageRequest.page = 0;
       this.tasksForWeek = taskGroup === TaskGroup.WEEK;
-      this.reloadTasks();
+      if (!this.tasksForWeek) {
+        this.reloadTasks();
+      }
     }
   }
 

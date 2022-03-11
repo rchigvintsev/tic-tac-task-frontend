@@ -1,9 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 
 import * as moment from 'moment';
 
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 
 import {GetTasksRequest, TaskService} from '../../../../service/task.service';
 import {PageRequest} from '../../../../service/page-request';
@@ -11,6 +11,8 @@ import {Task} from '../../../../model/task';
 import {TaskStatus} from '../../../../model/task-status';
 import {DateTimeUtils} from '../../../../util/time/date-time-utils';
 import {WeekDay} from '../../../../util/time/week-day';
+import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
+import {HttpRequestError} from '../../../../error/http-request.error';
 
 @Component({
   selector: 'app-task-list-for-week',
@@ -18,14 +20,11 @@ import {WeekDay} from '../../../../util/time/week-day';
   styleUrls: ['./task-list-for-week.component.scss']
 })
 export class TaskListForWeekComponent implements OnInit, OnDestroy {
-  @Input()
-  loading: boolean;
-
   taskGroups: TaskGroup[];
 
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(private taskService: TaskService) {
+  constructor(private taskService: TaskService, @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
   }
 
   private static getTaskGroupName(i: number, dayNumber: number): string {
@@ -43,6 +42,13 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
+
+    this.taskGroups.forEach(taskGroup => taskGroup.onDestroy());
+    this.taskGroups = [];
+  }
+
+  onLoadMoreButtonClick(taskGroup: TaskGroup) {
+    taskGroup.loadNextPage();
   }
 
   private initTaskGroups() {
@@ -57,18 +63,18 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
     }
   }
 
-  private createTaskGroup(i: number, dayNumber: number): TaskGroup {
+  private createTaskGroup(n: number, dayNumber: number): TaskGroup {
     const taskRequest = new GetTasksRequest();
-    taskRequest.statuses = [TaskStatus.PROCESSED];
-    if (i === 0) {
-      taskRequest.statuses.push(TaskStatus.COMPLETED);
+    taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+    taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
+    if (n === 0) {
       taskRequest.deadlineTo = DateTimeUtils.endOfToday();
-      taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
     } else {
-      taskRequest.deadlineFrom = moment().add(i, 'day').startOf('day').toDate();
-      taskRequest.deadlineTo = moment().add(i, 'day').endOf('day').toDate();
+      taskRequest.deadlineFrom = moment().add(n, 'day').startOf('day').toDate();
+      taskRequest.deadlineTo = moment().add(n, 'day').endOf('day').toDate();
     }
-    return new TaskGroup(TaskListForWeekComponent.getTaskGroupName(i, dayNumber), taskRequest, this.taskService);
+    const groupName = TaskListForWeekComponent.getTaskGroupName(n, dayNumber);
+    return new TaskGroup(groupName, taskRequest, this.taskService, this.httpResponseHandler);
   }
 
   private onTaskUpdate(updatedTask: Task) {
@@ -91,19 +97,67 @@ class TaskGroup {
   size: number;
   pageRequest = new PageRequest();
 
-  constructor(public name: string, private taskRequest: GetTasksRequest, private taskService: TaskService) {
+  loading: boolean;
+  initialized: boolean;
+
+  private loadingSubscription: Subscription;
+
+  constructor(public name: string,
+              private taskRequest: GetTasksRequest,
+              private taskService: TaskService,
+              private httpResponseHandler: HttpResponseHandler) {
     this.reloadTasks();
   }
 
+  onDestroy() {
+    if (this.loading) {
+      this.loadingSubscription.unsubscribe();
+      this.loadingSubscription = null;
+      this.loading = false;
+    }
+    this.initialized = false;
+  }
+
   reloadTasks() {
-    this.taskService.getTaskCount(this.taskRequest).subscribe({
+    if (this.loading) {
+      return;
+    }
+
+    this.loading = true;
+    this.loadingSubscription = this.taskService.getTaskCount(this.taskRequest).subscribe({
       next: taskCount => {
         this.size = taskCount;
         if (taskCount > 0) {
-          this.taskService.getTasks(this.taskRequest, this.pageRequest, false)
-            .subscribe(tasks => this.tasks = tasks);
+          this.loadingSubscription = this.taskService.getTasks(this.taskRequest, this.pageRequest, false).subscribe(tasks => {
+            this.tasks = tasks;
+            this.loading = false;
+            this.initialized = true;
+          });
+        } else {
+          this.loading = false;
+          this.initialized = true;
         }
-      }
-    })
+      },
+      error: error => this.onHttpRequestError(error)
+    });
+  }
+
+  loadNextPage() {
+    if (this.loading) {
+      return;
+    }
+
+    this.loading = true;
+    this.pageRequest.page++;
+
+    this.loadingSubscription = this.taskService.getTasks(this.taskRequest, this.pageRequest, false).subscribe(tasks => {
+      this.tasks = this.tasks.concat(tasks);
+      this.loading = false;
+    });
+  }
+
+  private onHttpRequestError(error: HttpRequestError) {
+    this.loading = false;
+    this.httpResponseHandler.handleError(error);
   }
 }

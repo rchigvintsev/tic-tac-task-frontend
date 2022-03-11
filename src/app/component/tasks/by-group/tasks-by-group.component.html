@@ -7,13 +7,13 @@
     </div>
   </div>
 
-  <app-new-task-form *ngIf="loaded"
+  <app-new-task-form *ngIf="initialized"
                      [taskDeadline]="taskDeadline"
                      [taskStatus]="taskStatus"
                      (taskCreate)="onTaskCreate($event)"></app-new-task-form>
 
   <mat-card-content>
-    <app-task-list-for-week *ngIf="tasksForWeek" [loading]="loading"></app-task-list-for-week>
+    <app-task-list-for-week *ngIf="tasksForWeek"></app-task-list-for-week>
     <app-task-list *ngIf="!tasksForWeek" [tasks]="tasks" [loading]="loading" (scrolled)="onTaskListScroll($event)">
     </app-task-list>
   </mat-card-content>

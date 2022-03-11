@@ -9,5 +9,16 @@
     <ng-container *ngFor="let task of taskGroup.tasks">
       <app-task-list-item [task]="task" [showOnlyExpiredDeadline]="true"></app-task-list-item>
     </ng-container>
+
+    <div class="d-flex justify-content-center pt-2 pb-2">
+      <mat-spinner *ngIf="taskGroup.loading" [diameter]="30"></mat-spinner>
+
+      <button *ngIf="taskGroup.initialized && !taskGroup.loading && taskGroup.tasks.length < taskGroup.size"
+              mat-stroked-button
+              color="primary"
+              (click)="onLoadMoreButtonClick(taskGroup)">
+        {{ 'load_more' | translate }}
+      </button>
+    </div>
   </div>
 </mat-list>

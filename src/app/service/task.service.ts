@@ -48,7 +48,7 @@ export class TaskService {
     this.restoredTask = this.restoredTaskSource.asObservable();
   }
 
-  private static newGetTasksRequestForTaskGroup(taskGroup: TaskGroup): GetTasksRequest {
+  private static newTaskCountRequestForTaskGroup(taskGroup: TaskGroup): GetTasksRequest {
     const taskRequest = new GetTasksRequest();
     switch (taskGroup) {
       case TaskGroup.INBOX: {
@@ -56,9 +56,8 @@ export class TaskService {
         break;
       }
       case TaskGroup.TODAY: {
-        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.statuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineTo = DateTimeUtils.endOfToday();
-        taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
         break;
       }
       case TaskGroup.TOMORROW: {
@@ -68,9 +67,8 @@ export class TaskService {
         break;
       }
       case TaskGroup.WEEK: {
-        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.statuses = [TaskStatus.PROCESSED];
         taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
-        taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
         break;
       }
       case TaskGroup.SOME_DAY: {
@@ -81,6 +79,50 @@ export class TaskService {
       }
       case TaskGroup.ALL: {
         taskRequest.statuses = [TaskStatus.UNPROCESSED, TaskStatus.PROCESSED];
+        break;
+      }
+    }
+    return taskRequest;
+  }
+
+  private static newTaskRequestForTaskGroup(taskGroup: TaskGroup): GetTasksRequest {
+    const taskRequest = new GetTasksRequest();
+    taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
+
+    switch (taskGroup) {
+      case TaskGroup.INBOX: {
+        taskRequest.statuses = [TaskStatus.UNPROCESSED, TaskStatus.COMPLETED];
+        taskRequest.previousStatuses = [TaskStatus.UNPROCESSED];
+        break;
+      }
+      case TaskGroup.TODAY: {
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineTo = DateTimeUtils.endOfToday();
+        break;
+      }
+      case TaskGroup.TOMORROW: {
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineFrom = DateTimeUtils.startOfTomorrow();
+        taskRequest.deadlineTo = DateTimeUtils.endOfTomorrow();
+        break;
+      }
+      case TaskGroup.WEEK: {
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
+        break;
+      }
+      case TaskGroup.SOME_DAY: {
+        taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
+        taskRequest.previousStatuses = [TaskStatus.PROCESSED];
+        taskRequest.deadlineFrom = null;
+        taskRequest.deadlineTo = null;
+        break;
+      }
+      case TaskGroup.ALL: {
+        taskRequest.statuses = [TaskStatus.UNPROCESSED, TaskStatus.PROCESSED, TaskStatus.COMPLETED];
         break;
       }
     }
@@ -101,7 +143,7 @@ export class TaskService {
         counter.next(0);
       }
 
-      const taskRequest = TaskService.newGetTasksRequestForTaskGroup(taskGroup);
+      const taskRequest = TaskService.newTaskCountRequestForTaskGroup(taskGroup);
       this.getTaskCount(taskRequest).subscribe(count => counter.next(count));
     }
     return counter;
@@ -135,7 +177,7 @@ export class TaskService {
                        pageRequest: PageRequest = new PageRequest(),
                        showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
-    const taskRequest = TaskService.newGetTasksRequestForTaskGroup(taskGroup);
+    const taskRequest = TaskService.newTaskRequestForTaskGroup(taskGroup);
     return this.getTasks(taskRequest, pageRequest, showLoadingIndicator);
   }
 
@@ -363,6 +405,7 @@ export class TaskService {
 
 export class GetTasksRequest {
   statuses: TaskStatus[];
+  previousStatuses: TaskStatus[];
   completedAtFrom: Date;
   completedAtTo: Date;
 
@@ -398,6 +441,13 @@ export class GetTasksRequest {
 
     if (this.statuses) {
       params += 'statuses=' + this.statuses.join(',');
+    }
+
+    if (this.previousStatuses) {
+      if (params.length > 0) {
+        params += '&';
+      }
+      params += 'previousStatuses=' + this.previousStatuses.join(',');
     }
 
     if (this._deadlineFromDirty) {
