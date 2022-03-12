@@ -348,11 +348,24 @@ describe('TaskService', () => {
 
   it('should complete task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Test task'});
+    const completedTestTask = testTask.clone();
+    completedTestTask.status = TaskStatus.COMPLETED;
+
     taskService.completeTask(testTask).subscribe(_ => done());
 
     const request = httpMock.expectOne(`${taskService.baseUrl}/completed/${testTask.id}`);
     expect(request.request.method).toBe('PUT');
-    request.flush(null);
+    request.flush(completedTestTask.serialize());
+  });
+
+  it('should notify about completed task', done => {
+    const testTask = new Task().deserialize({id: 1, name: 'Test task', status: TaskStatus.COMPLETED});
+    taskService.getCompletedTask().subscribe(task => {
+      expect(task).toEqual(testTask);
+      done();
+    });
+    taskService.completeTask(testTask).subscribe(() => {});
+    httpMock.expectOne(`${taskService.baseUrl}/completed/${testTask.id}`).flush(testTask.serialize());
   });
 
   it('should throw error on task complete when task is null', () => {

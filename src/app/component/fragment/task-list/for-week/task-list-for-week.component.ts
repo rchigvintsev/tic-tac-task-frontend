@@ -13,6 +13,7 @@ import {DateTimeUtils} from '../../../../util/time/date-time-utils';
 import {WeekDay} from '../../../../util/time/week-day';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
 import {HttpRequestError} from '../../../../error/http-request.error';
+import {DailyTaskRecurrenceStrategy} from '../../../../model/task-recurrence-strategy';
 
 @Component({
   selector: 'app-task-list-for-week',
@@ -31,12 +32,22 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
     return i === 0 ? 'today' : (i === 1 ? 'tomorrow' : WeekDay.forNumber(dayNumber).name.toLowerCase());
   }
 
+  private static isDailyTask(task: Task) {
+    return task.deadline && task.recurrenceStrategy && task.recurrenceStrategy.getType() === DailyTaskRecurrenceStrategy.TYPE;
+  }
+
   ngOnInit() {
     this.initTaskGroups();
     // Subscribe to task update events in order to refresh task list after task is dragged and dropped to another group
     this.taskService.getUpdatedTask()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(task => this.onTaskUpdate(task));
+    this.taskService.getCompletedTask()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(task => this.onTaskCompleteOrRestore(task));
+    this.taskService.getRestoredTask()
+      .pipe(takeUntil(this.componentDestroyed))
+      .subscribe(task => this.onTaskCompleteOrRestore(task));
   }
 
   ngOnDestroy(): void {
@@ -77,14 +88,32 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
     return new TaskGroup(groupName, taskRequest, this.taskService, this.httpResponseHandler);
   }
 
-  private onTaskUpdate(updatedTask: Task) {
-    for (const taskGroup of this.taskGroups) {
-      const index = taskGroup.tasks.findIndex(task => task.id === updatedTask.id);
-      if (index >= 0) {
-        this.reloadTasks();
-        break;
+  private onTaskUpdate(task: Task) {
+    if (this.findTaskGroupIndex(task) >= 0) {
+      this.reloadTasks();
+    }
+  }
+
+  private onTaskCompleteOrRestore(task: Task) {
+    if (TaskListForWeekComponent.isDailyTask(task)) {
+      const taskGroupIndex = this.findTaskGroupIndex(task);
+      if (taskGroupIndex >= 0) {
+        this.taskGroups[taskGroupIndex].reloadTasks();
+        if (taskGroupIndex < this.taskGroups.length - 1) {
+          this.taskGroups[taskGroupIndex + 1].reloadTasks();
+        }
       }
     }
+  }
+
+  private findTaskGroupIndex(task: Task): number {
+    for (let i = 0; i < this.taskGroups.length; i++) {
+      const taskIndex = this.taskGroups[i].tasks.findIndex(t => t.id === task.id);
+      if (taskIndex >= 0) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   private reloadTasks() {
@@ -94,7 +123,7 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
 
 class TaskGroup {
   tasks: Task[] = [];
-  size: number;
+  size = 0;
   pageRequest = new PageRequest();
 
   loading: boolean;
@@ -134,6 +163,7 @@ class TaskGroup {
             this.initialized = true;
           });
         } else {
+          this.tasks = [];
           this.loading = false;
           this.initialized = true;
         }

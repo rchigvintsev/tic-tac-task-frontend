@@ -29,6 +29,9 @@ export class TaskService {
   private readonly updatedTaskSource: Subject<Task>;
   private readonly updatedTask: Observable<Task>;
 
+  private readonly completedTaskSource: Subject<Task>;
+  private readonly completedTask: Observable<Task>;
+
   private readonly restoredTaskSource: Subject<Task>;
   private readonly restoredTask: Observable<Task>;
 
@@ -43,6 +46,9 @@ export class TaskService {
 
     this.updatedTaskSource = new Subject<Task>();
     this.updatedTask = this.updatedTaskSource.asObservable();
+
+    this.completedTaskSource = new Subject<Task>();
+    this.completedTask = this.completedTaskSource.asObservable();
 
     this.restoredTaskSource = new Subject<Task>();
     this.restoredTask = this.restoredTaskSource.asObservable();
@@ -164,6 +170,10 @@ export class TaskService {
     return this.updatedTask;
   }
 
+  getCompletedTask(): Observable<Task> {
+    return this.completedTask;
+  }
+
   getRestoredTask(): Observable<Task> {
     return this.restoredTask;
   }
@@ -244,7 +254,9 @@ export class TaskService {
             error.localizedMessage = this.i18nService.translate('failed_to_complete_task');
           }
         }
-      })
+      }),
+      map(response => new Task().deserialize(response)),
+      tap(completedTask => this.notifyTaskCompleted(completedTask))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
@@ -367,6 +379,10 @@ export class TaskService {
 
   notifyTaskUpdated(task: Task) {
     this.updatedTaskSource.next(task);
+  }
+
+  notifyTaskCompleted(task: Task) {
+    this.completedTaskSource.next(task);
   }
 
   notifyTaskRestored(task: Task) {
