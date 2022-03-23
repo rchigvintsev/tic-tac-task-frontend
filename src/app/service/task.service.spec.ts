@@ -91,7 +91,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
+        && /deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
@@ -106,7 +107,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && /deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -125,7 +127,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
-        && /deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
+        && /deadlineDateFrom=[\d-]+&deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeFrom=[\d-]+T[\d:]+&deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
@@ -140,7 +143,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
-        && /deadlineFrom=[\d-]+T[\d:]+&deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && /deadlineDateFrom=[\d-]+&deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeFrom=[\d-]+T[\d:]+&deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -160,7 +164,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url)
+        && /deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
@@ -175,7 +180,8 @@ describe('TaskService', () => {
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
         && httpReq.url.startsWith(`${taskService.baseUrl}/count?statuses=PROCESSED`)
-        && /deadlineTo=[\d-]+T[\d:]+/.test(httpReq.url);
+        && /deadlineDateTo=[\d-]+/.test(httpReq.url)
+        && /deadlineDateTimeTo=[\d-]+T[\d:]+/.test(httpReq.url);
     });
     request.flush(2);
   });
@@ -193,7 +199,7 @@ describe('TaskService', () => {
 
     const request = httpMock.expectOne((httpReq) => {
       return httpReq.method === 'GET'
-        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&deadlineFrom=&deadlineTo=`)
+        && httpReq.url.startsWith(`${taskService.baseUrl}?statuses=PROCESSED,COMPLETED&withoutDeadline=true`)
         && /completedAtFrom=[\d-]+T[\d:]+/.test(httpReq.url)
         && httpReq.url.endsWith('page=0&size=20');
     });
@@ -205,7 +211,7 @@ describe('TaskService', () => {
       .pipe(skip(1))
       .subscribe(count => { expect(count).toBe(2); done(); });
 
-    const request = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=PROCESSED&deadlineFrom=&deadlineTo=`);
+    const request = httpMock.expectOne(`${taskService.baseUrl}/count?statuses=PROCESSED&withoutDeadline=true`);
     expect(request.request.method).toBe('GET');
     request.flush(2);
   });

@@ -63,24 +63,27 @@ export class TaskService {
       }
       case TaskGroup.TODAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED];
-        taskRequest.deadlineTo = DateTimeUtils.endOfToday();
+        taskRequest.deadlineDateTo = DateTimeUtils.today();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfToday();
         break;
       }
       case TaskGroup.TOMORROW: {
         taskRequest.statuses = [TaskStatus.PROCESSED];
-        taskRequest.deadlineFrom = DateTimeUtils.startOfTomorrow();
-        taskRequest.deadlineTo = DateTimeUtils.endOfTomorrow();
+        taskRequest.deadlineDateFrom = DateTimeUtils.tomorrow();
+        taskRequest.deadlineDateTo = DateTimeUtils.tomorrow();
+        taskRequest.deadlineDateTimeFrom = DateTimeUtils.startOfTomorrow();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfTomorrow();
         break;
       }
       case TaskGroup.WEEK: {
         taskRequest.statuses = [TaskStatus.PROCESSED];
-        taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
+        taskRequest.deadlineDateTo = DateTimeUtils.endOfWeek();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfWeek();
         break;
       }
       case TaskGroup.SOME_DAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED];
-        taskRequest.deadlineFrom = null;
-        taskRequest.deadlineTo = null;
+        taskRequest.withoutDeadline = true;
         break;
       }
       case TaskGroup.ALL: {
@@ -102,24 +105,27 @@ export class TaskService {
       }
       case TaskGroup.TODAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.deadlineTo = DateTimeUtils.endOfToday();
+        taskRequest.deadlineDateTo = DateTimeUtils.today();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfToday();
         break;
       }
       case TaskGroup.TOMORROW: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.deadlineFrom = DateTimeUtils.startOfTomorrow();
-        taskRequest.deadlineTo = DateTimeUtils.endOfTomorrow();
+        taskRequest.deadlineDateFrom = DateTimeUtils.tomorrow();
+        taskRequest.deadlineDateTo = DateTimeUtils.tomorrow();
+        taskRequest.deadlineDateTimeFrom = DateTimeUtils.startOfTomorrow();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfTomorrow();
         break;
       }
       case TaskGroup.WEEK: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.deadlineTo = DateTimeUtils.endOfWeek();
+        taskRequest.deadlineDateTo = DateTimeUtils.endOfWeek();
+        taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfWeek();
         break;
       }
       case TaskGroup.SOME_DAY: {
         taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
-        taskRequest.deadlineFrom = null;
-        taskRequest.deadlineTo = null;
+        taskRequest.withoutDeadline = true;
         break;
       }
       case TaskGroup.ALL: {
@@ -418,75 +424,49 @@ export class GetTasksRequest {
   statuses: TaskStatus[];
   completedAtFrom: Date;
   completedAtTo: Date;
+  withoutDeadline: boolean;
+  deadlineDateFrom: Date;
+  deadlineDateTo: Date;
+  deadlineDateTimeFrom: Date;
+  deadlineDateTimeTo: Date;
 
-  private _deadlineFrom: Date;
-  private _deadlineFromDirty: boolean;
-  private _deadlineTo: Date;
-  private _deadlineToDirty: boolean;
-
-  private static formatDate(date: Date): string {
-    return moment(date).utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
-  }
-
-  get deadlineFrom(): Date {
-    return this._deadlineFrom;
-  }
-
-  set deadlineFrom(value: Date) {
-    this._deadlineFrom = value;
-    this._deadlineFromDirty = true;
-  }
-
-  get deadlineTo(): Date {
-    return this._deadlineTo;
-  }
-
-  set deadlineTo(value: Date) {
-    this._deadlineTo = value;
-    this._deadlineToDirty = true;
+  private static appendParameter(params: string, name: string, value: any): string {
+    if (params.length > 0) {
+      params += '&';
+    }
+    return params + name + '=' + value;
   }
 
   toQueryParameters(): string {
     let params = '';
 
     if (this.statuses) {
-      params += 'statuses=' + this.statuses.join(',');
+      params = GetTasksRequest.appendParameter(params, 'statuses', this.statuses.join(','));
     }
 
-    if (this._deadlineFromDirty) {
-      if (params.length > 0) {
-        params += '&';
+    if (this.withoutDeadline) {
+      params = GetTasksRequest.appendParameter(params, 'withoutDeadline', true);
+    } else {
+      if (this.deadlineDateFrom) {
+        params = GetTasksRequest.appendParameter(params, 'deadlineDateFrom', DateTimeUtils.formatDate(this.deadlineDateFrom));
       }
-      params += 'deadlineFrom=';
-
-      if (this.deadlineFrom) {
-        params += GetTasksRequest.formatDate(this.deadlineFrom);
+      if (this.deadlineDateTo) {
+        params = GetTasksRequest.appendParameter(params, 'deadlineDateTo', DateTimeUtils.formatDate(this.deadlineDateTo));
       }
-    }
-
-    if (this._deadlineToDirty) {
-      if (params.length > 0) {
-        params += '&';
+      if (this.deadlineDateTimeFrom) {
+        params = GetTasksRequest.appendParameter(params, 'deadlineDateTimeFrom', DateTimeUtils.formatDateTime(this.deadlineDateTimeFrom));
       }
-      params += 'deadlineTo=';
-
-      if (this.deadlineTo) {
-        params += GetTasksRequest.formatDate(this.deadlineTo);
+      if (this.deadlineDateTimeTo) {
+        params = GetTasksRequest.appendParameter(params, 'deadlineDateTimeTo', DateTimeUtils.formatDateTime(this.deadlineDateTimeTo));
       }
     }
 
     if (this.completedAtFrom) {
-      if (params.length > 0) {
-        params += '&';
-      }
-      params += `completedAtFrom=${GetTasksRequest.formatDate(this.completedAtFrom)}`;
+      params = GetTasksRequest.appendParameter(params, 'completedAtFrom', DateTimeUtils.formatDateTime(this.completedAtFrom));
     }
 
     if (this.completedAtTo) {
-      if (params.length > 0) {
-        params += '&';
-      }
-      params += `completedAtTo=${GetTasksRequest.formatDate(this.completedAtTo)}`;
+      params = GetTasksRequest.appendParameter(params, 'completedAtTo', DateTimeUtils.formatDateTime(this.completedAtTo));
     }
 
     return params;

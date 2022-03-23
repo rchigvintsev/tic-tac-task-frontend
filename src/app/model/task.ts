@@ -4,6 +4,7 @@ import {AbstractEntity} from './abstract-entity';
 import {TaskRecurrenceStrategy} from './task-recurrence-strategy';
 import {Objects} from '../util/objects';
 import {TaskStatus} from './task-status';
+import {DateTimeUtils} from '../util/time/date-time-utils';
 
 export class Task extends AbstractEntity {
   id: number;
@@ -11,8 +12,8 @@ export class Task extends AbstractEntity {
   title: string;
   description: string;
   status: string;
-  deadline: Date;
-  deadlineTimeSpecified = false;
+  deadlineDate: Date;
+  deadlineDateTime: Date;
   recurrenceStrategy: TaskRecurrenceStrategy;
 
   deserialize(input: any): Task {
@@ -21,10 +22,8 @@ export class Task extends AbstractEntity {
     this.title = input.title;
     this.description = input.description;
     this.status = input.status;
-    if (input.deadline) {
-      this.deadline = moment.utc(input.deadline, moment.HTML5_FMT.DATETIME_LOCAL).local().toDate();
-    }
-    this.deadlineTimeSpecified = input.deadlineTimeSpecified;
+    this.deadlineDate = DateTimeUtils.parseDate(input.deadlineDate);
+    this.deadlineDateTime = DateTimeUtils.parseDateTime(input.deadlineDateTime);
     if (input.recurrenceStrategy) {
       this.recurrenceStrategy = TaskRecurrenceStrategy.create(input.recurrenceStrategy);
     }
@@ -38,8 +37,8 @@ export class Task extends AbstractEntity {
       title: this.title,
       description: this.description,
       status: this.status,
-      deadline: this.deadline ? moment(this.deadline).utc().format(moment.HTML5_FMT.DATETIME_LOCAL) : null,
-      deadlineTimeSpecified: this.deadlineTimeSpecified,
+      deadlineDate: DateTimeUtils.formatDate(this.deadlineDate),
+      deadlineDateTime: DateTimeUtils.formatDateTime(this.deadlineDateTime),
       recurrenceStrategy: this.recurrenceStrategy ? this.recurrenceStrategy.serialize() : null
     };
   }
@@ -51,8 +50,8 @@ export class Task extends AbstractEntity {
     clone.title = this.title;
     clone.description = this.description;
     clone.status = this.status;
-    clone.deadline = this.deadline != null ? new Date(this.deadline.getTime()) : null;
-    clone.deadlineTimeSpecified = this.deadlineTimeSpecified;
+    clone.deadlineDate = this.deadlineDate != null ? new Date(this.deadlineDate.getTime()) : null;
+    clone.deadlineDateTime = this.deadlineDateTime != null ? new Date(this.deadlineDateTime.getTime()) : null;
     clone.recurrenceStrategy = this.recurrenceStrategy;
     return clone;
   }
@@ -63,16 +62,16 @@ export class Task extends AbstractEntity {
       && Objects.equals(this.title, other.title)
       && Objects.equals(this.description, other.description)
       && Objects.equals(this.status, other.status)
-      && Objects.equals(this.deadline, other.deadline)
-      && Objects.equals(this.deadlineTimeSpecified, other.deadlineTimeSpecified)
+      && Objects.equals(this.deadlineDate, other.deadlineDate)
+      && Objects.equals(this.deadlineDateTime, other.deadlineDateTime)
       && Objects.equals(this.recurrenceStrategy, other.recurrenceStrategy);
   }
 
   isOverdue(): boolean {
-    if (this.deadline == null) {
+    if (!this.deadlineDate && !this.deadlineDateTime) {
       return false;
     }
-    return moment().isAfter(this.deadline, 'minutes');
+    return this.deadlineDate ? moment().isAfter(this.deadlineDate, 'days') : moment().isAfter(this.deadlineDateTime, 'minutes');
   }
 
   isCompleted(): boolean {
