@@ -1,3 +1,7 @@
+@import "src/styles/spacing.scss";
+@import "src/styles/display.scss";
+@import "src/styles/flex.scss";
+
 .mat-nav-list {
   .mat-date-icon {
     position: relative;
@@ -24,23 +28,8 @@
       border-top-left-radius: 0;
     }
 
-    .sidenav-expansion-panel-header {
-      padding-left: 16px;
-
-      .sidenav-expansion-panel-header-content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        mat-icon {
-          padding: 4px;
-        }
-
-        span {
-          font-size: 16px;
-          padding-left: 16px;
-        }
-      }
+    .mat-expansion-panel-header span {
+      font-size: 16px;
     }
   }
 }

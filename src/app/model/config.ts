@@ -19,6 +19,9 @@ export class Config extends AbstractEntity {
   }
 
   equals(other: Config): boolean {
-    return Objects.equals(this.domain, other.domain) && Objects.equals(this.apiBaseUrl, other.apiBaseUrl);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.domain, other.domain) && Objects.equal(this.apiBaseUrl, other.apiBaseUrl);
   }
 }

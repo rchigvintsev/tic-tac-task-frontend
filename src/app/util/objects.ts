@@ -4,7 +4,7 @@ export class Objects {
   private constructor() {
   }
 
-  static equals(v1: any, v2: any): boolean {
+  static equal(v1: any, v2: any): boolean {
     if (Objects.isNullOrUndefined(v1)) {
       return this.isNullOrUndefined(v2);
     }
@@ -19,7 +19,7 @@ export class Objects {
         return false;
       }
       for (let i = 0; i < v1.length; i++) {
-        if (!Objects.equals(v1[i], v2[i])) {
+        if (!Objects.equal(v1[i], v2[i])) {
           return false;
         }
       }
@@ -28,7 +28,7 @@ export class Objects {
     return v1 === v2;
   }
 
-  private static isNullOrUndefined(v: any) {
+  static isNullOrUndefined(v: any) {
     return v === null || typeof v === 'undefined';
   }
 }

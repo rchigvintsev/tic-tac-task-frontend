@@ -48,14 +48,17 @@ export class User extends AbstractEntity {
   }
 
   equals(other: User): boolean {
-    return Objects.equals(this.id, other.id)
-      && Objects.equals(this.email, other.email)
-      && Objects.equals(this.password, other.password)
-      && Objects.equals(this.fullName, other.fullName)
-      && Objects.equals(this.profilePictureUrl, other.profilePictureUrl)
-      && Objects.equals(this.admin, other.admin)
-      && Objects.equals(this.enabled, other.enabled)
-      && Objects.equals(this.validUntilSeconds, other.validUntilSeconds)
-      && Objects.equals(this.createdAt, other.createdAt);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.id, other.id)
+      && Objects.equal(this.email, other.email)
+      && Objects.equal(this.password, other.password)
+      && Objects.equal(this.fullName, other.fullName)
+      && Objects.equal(this.profilePictureUrl, other.profilePictureUrl)
+      && Objects.equal(this.admin, other.admin)
+      && Objects.equal(this.enabled, other.enabled)
+      && Objects.equal(this.validUntilSeconds, other.validUntilSeconds)
+      && Objects.equal(this.createdAt, other.createdAt);
   }
 }

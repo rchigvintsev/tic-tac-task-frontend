@@ -49,8 +49,7 @@ describe('TaskListItemComponent', () => {
       id: 1,
       title: 'Test task',
       status: 'PROCESSED',
-      deadline: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL),
-      deadlineTimeSpecified: true
+      deadlineDateTime: moment().utc().add(1, 'month').format(moment.HTML5_FMT.DATETIME_LOCAL)
     });
     fixture.detectChanges();
   });
@@ -96,7 +95,7 @@ describe('TaskListItemComponent', () => {
   it('should highlight overdue task', async () => {
     const compiled = fixture.debugElement.nativeElement;
     await fixture.whenStable();
-    component.task.deadline = moment().subtract(1, 'hour').toDate();
+    component.task.deadlineDateTime = moment().subtract(1, 'hour').toDate();
     fixture.detectChanges();
     expect(compiled.querySelector('.task-1 .color-warn')).not.toBeNull();
   });

@@ -38,6 +38,7 @@ import {
 } from '../../../model/task-recurrence-strategy';
 import {WeekDay} from '../../../util/time/week-day';
 import {Month} from '../../../util/time/month';
+import {DateTimeUtils} from '../../../util/time/date-time-utils';
 
 const CURRENT_LANG = 'en';
 const TASK_DEADLINE = '2021-01-01T00:01'
@@ -91,8 +92,7 @@ describe('TaskDetailsComponent', () => {
       title: 'Test task',
       description: 'Test description',
       status: 'PROCESSED',
-      deadline: TASK_DEADLINE,
-      deadlineTimeSpecified: true
+      deadlineDateTime: TASK_DEADLINE
     });
 
     router = injector.inject(Router);
@@ -105,8 +105,8 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'completeTask').and.returnValue(of(true));
     spyOn(taskService, 'deleteTask').and.returnValue(of(true));
     spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
-    spyOn(taskService, 'assignTag').and.returnValue(of());
-    spyOn(taskService, 'removeTag').and.returnValue(of());
+    spyOn(taskService, 'assignTag').and.returnValue(of(null));
+    spyOn(taskService, 'removeTag').and.returnValue(of(null));
     spyOn(taskService, 'getComments').and.returnValue(EMPTY);
 
     updatedTagSource = new Subject<Tag>();
@@ -286,27 +286,27 @@ describe('TaskDetailsComponent', () => {
 
   it('should display server validation error', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError(BadRequestError.fromResponse({
+      return throwError(() => BadRequestError.fromResponse({
           url: '/',
           status: 400,
-          error: {fieldErrors: [{field: 'deadline', message: 'Must be valid'}]}
+          error: {fieldErrors: [{field: 'deadlineDateTime', message: 'Must be valid'}]}
         }
       ));
     });
     await fixture.whenStable();
-    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.deadlineDate = moment().add(1, 'days').format(moment.HTML5_FMT.DATE);
     component.onDeadlineDateInputChange();
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    const deadlineError = compiled.querySelector('.deadline-error-container mat-error');
+    const deadlineError = compiled.querySelector('.deadline-error mat-error');
     expect(deadlineError).toBeTruthy();
     expect(deadlineError.textContent.trim()).toEqual('Must be valid');
   });
 
   it('should ignore validation error when field is not found', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError(BadRequestError.fromResponse({
+      return throwError(() => BadRequestError.fromResponse({
           url: '/',
           status: 400,
           error: {fieldErrors: [{absent: 'Must be present'}]}
@@ -314,7 +314,7 @@ describe('TaskDetailsComponent', () => {
       ));
     });
     await fixture.whenStable();
-    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.taskFormModel.deadlineDateTime = moment().add(1, 'days').toDate();
     component.onDeadlineDateInputChange();
     fixture.detectChanges();
 
@@ -325,7 +325,7 @@ describe('TaskDetailsComponent', () => {
 
   it('should log service call error', async () => {
     (taskService.updateTask as jasmine.Spy).and.callFake(() => {
-      return throwError(HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
+      return throwError(() => HttpRequestError.fromResponse({url: '/', status: 500, message: 'Something went wrong'}));
     });
     const logService = fixture.debugElement.injector.get(LogService);
 
@@ -338,40 +338,18 @@ describe('TaskDetailsComponent', () => {
 
   it('should save task on "deadlineDate" input change', async () => {
     await fixture.whenStable();
-    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
+    component.deadlineDate = moment().add(1, 'days').format(moment.HTML5_FMT.DATE);
     component.onDeadlineDateInputChange();
     fixture.detectChanges();
     expect(taskService.updateTask).toHaveBeenCalled();
-  });
-
-  it('should set deadline time to end of day on "deadlineDate" input change when "deadlineTime" input is disabled', async () => {
-    await fixture.whenStable();
-    component.taskFormModel.deadline = moment().add(1, 'days').toDate();
-    component.deadlineTimeEnabled = false;
-    component.onDeadlineDateInputChange();
-    fixture.detectChanges();
-    const momentTime = moment(component.taskFormModel.deadline);
-    expect(momentTime.hours()).toEqual(23);
-    expect(momentTime.minutes()).toEqual(59);
-  });
-
-  it('should set deadline time to end of day on "deadlineTimeEnabled" checkbox uncheck', async () => {
-    const checkboxChangeEvent = new MatCheckboxChange();
-    checkboxChangeEvent.checked = false;
-
-    await fixture.whenStable();
-    component.onDeadlineTimeEnabledCheckboxChange(checkboxChangeEvent);
-    fixture.detectChanges();
-    const momentTime = moment(component.taskFormModel.deadline);
-    expect(momentTime.hours()).toEqual(23);
-    expect(momentTime.minutes()).toEqual(59);
   });
 
   it('should save task on "deadlineDate" input clear', async () => {
     await fixture.whenStable();
     component.onClearDeadlineDateButtonClick();
     fixture.detectChanges();
-    expect(component.taskFormModel.deadline).toBeNull();
+    expect(component.taskFormModel.deadlineDate).toBeNull();
+    expect(component.taskFormModel.deadlineDateTime).toBeNull();
     expect(taskService.updateTask).toHaveBeenCalled();
   });
 
@@ -455,10 +433,10 @@ describe('TaskDetailsComponent', () => {
     expect(taskService.updateTaskCounters).toHaveBeenCalled();
   });
 
-  it('should disable "deadlineTimeEnabled" checkbox when deadline is not defined', async () => {
+  it('should disable "deadlineTimeEnabled" checkbox when deadline date is not defined', async () => {
     const compiled = fixture.debugElement.nativeElement;
     await fixture.whenStable();
-    component.taskFormModel.deadline = null;
+    component.deadlineDate = null;
     fixture.detectChanges();
     expect(compiled.querySelector('.deadline-time-checkbox.mat-checkbox-disabled')).not.toBeNull();
   });
@@ -554,7 +532,7 @@ describe('TaskDetailsComponent', () => {
 
   it('should navigate to "not-found" error page when task is not found', async () => {
     taskService.getTask = jasmine.createSpy('getTask').and.callFake(() => {
-      return throwError(ResourceNotFoundError.fromResponse({url: '/'}));
+      return throwError(() => ResourceNotFoundError.fromResponse({url: '/'}));
     });
     component.ngOnInit();
     await fixture.whenStable();
@@ -563,17 +541,26 @@ describe('TaskDetailsComponent', () => {
 
   it('should set deadline to today using hot button', () => {
     component.onHotDeadlineButtonClick('today');
-    expect(component.taskFormModel.deadline).toEqual(moment().endOf('day').toDate());
+
+    const actual = DateTimeUtils.formatDate(component.taskFormModel.deadlineDate);
+    const expected = DateTimeUtils.formatDate(moment().toDate());
+    expect(actual).toEqual(expected);
   });
 
   it('should set deadline to tomorrow using hot button', () => {
     component.onHotDeadlineButtonClick('tomorrow');
-    expect(component.taskFormModel.deadline).toEqual(moment().add(1, 'day').endOf('day').toDate());
+
+    const actual = DateTimeUtils.formatDate(component.taskFormModel.deadlineDate);
+    const expected = DateTimeUtils.formatDate(moment().add(1, 'day').toDate());
+    expect(actual).toEqual(expected);
   });
 
   it('should set deadline to week using hot button', () => {
     component.onHotDeadlineButtonClick('in_week');
-    expect(component.taskFormModel.deadline).toEqual(moment().add(1, 'week').endOf('day').toDate());
+
+    const actual = DateTimeUtils.formatDate(component.taskFormModel.deadlineDate);
+    const expected = DateTimeUtils.formatDate(moment().add(1, 'week').toDate());
+    expect(actual).toEqual(expected);
   });
 
   it('should throw error on deadline hot button click when deadline code is invalid', () => {

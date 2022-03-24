@@ -1,70 +1,35 @@
 @import "src/styles/colors";
+@import "src/styles/display";
+@import "src/styles/flex";
+@import "src/styles/spacing";
 
-mat-card {
-  .mat-card-header {
-    a {
-      margin-bottom: 8px;
-    }
+.deadline-container {
+  .deadline-date-form-field {
+    max-width: 160px;
   }
 
-  .mat-card-content {
-    form {
-      .deadline-container {
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 1.25em;
+  .deadline-time-checkbox {
+    color: $color-black-54;
+  }
 
-        .deadline-form-field-container {
-          .deadline-date-form-field {
-            max-width: 160px;
-            margin-right: 16px;
-          }
+  .deadline-time-form-field {
+    max-width: 80px;
 
-          .deadline-time-checkbox {
-            padding: 1.1em 0;
-            color: $color-black-54;
-            margin-right: 8px;
-          }
+    ngx-material-timepicker-toggle {
+      position: relative;
+      bottom: -4px;
 
-          .deadline-time-form-field {
-            max-width: 80px;
-            margin-right: 16px;
-
-            ngx-material-timepicker-toggle {
-              position: relative;
-              bottom: -4px;
-
-              mat-icon {
-                color: $color-black-54;
-                margin-top: -2px;
-                height: 20px;
-              }
-            }
-
-            button {
-              min-width: 82px;
-            }
-          }
-        }
-
-        .deadline-error-container {
-          margin-top: -15px;
-
-          mat-error {
-            font-size: 75%;
-          }
-        }
-      }
-
-      .deadline-hot-button-container {
-        button {
-          margin-right: 8px;
-        }
+      mat-icon {
+        color: $color-black-54;
       }
     }
   }
 
-  .task-comments-container {
-    padding-top: 8px;
+  .deadline-error {
+    margin-top: -1rem;
+
+    mat-error {
+      font-size: 75%;
+    }
   }
 }

@@ -41,7 +41,6 @@ import {WeekDay} from '../../../util/time/week-day';
 import {Month} from '../../../util/time/month';
 
 const START_OF_DAY_TIME = '00:00';
-const END_OF_DAY_TIME = '23:59';
 
 @Component({
   selector: 'app-task-details',
@@ -59,13 +58,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   titleEditing = false;
   taskFormModel: Task;
   selectedTaskGroup: TaskGroup;
+
+  deadlineDate: string;
   deadlineTime: string;
   deadlineTimeEnabled = false;
+
   tagControl = new FormControl();
   tags: Tag[] = [];
   availableTags: Tag[] = [];
   filteredTags: Observable<Tag[]>;
+
   taskLists: TaskList[] = [];
+
   errorStateMatchers = new Map<string, ServerErrorStateMatcher>();
 
   selectedTaskRecurrenceOption: string;
@@ -99,17 +103,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const taskId = +this.route.snapshot.paramMap.get('id');
 
-    this.taskService.getTask(taskId).subscribe(task => this.initTaskModel(task), (error: HttpRequestError) => {
-      if (error instanceof ResourceNotFoundError) {
-        this.pageNavigationService.navigateToNotFoundErrorPage().then();
-      } else {
-        this.httpResponseHandler.handleError(error);
-      }
-    });
-    this.taskService.getTags(taskId).subscribe(
-      tags => this.initTags(tags),
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
+    this.taskService.getTask(taskId)
+      .subscribe({next: task => this.initTaskModel(task), error: error => this.handleHttpRequestError(error)});
+    this.taskService.getTags(taskId)
+      .subscribe({next: tags => this.initTags(tags), error: error => this.handleHttpRequestError(error)});
 
     this.taskGroupService.getSelectedTaskGroup()
       .pipe(takeUntil(this.componentDestroyed))
@@ -130,16 +127,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       map((tagName: string | null) => tagName ? this.filterTagsByName(tagName) : this.availableTags)
     );
 
-    this.taskListService.getUncompletedTaskLists().subscribe(
-      taskLists => this.taskLists = taskLists,
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
+    this.taskListService.getUncompletedTaskLists().subscribe({
+      next: taskLists => this.taskLists = taskLists,
+      error: error => this.handleHttpRequestError(error)
+    });
     this.taskListService.getCreatedTaskList()
       .pipe(takeUntil(this.componentDestroyed))
       .subscribe(createdTaskList => this.onTaskListCreate(createdTaskList));
 
     this.errorStateMatchers.set('description', new ServerErrorStateMatcher());
-    this.errorStateMatchers.set('deadline', new ServerErrorStateMatcher());
+    this.errorStateMatchers.set('deadlineDate', new ServerErrorStateMatcher());
+    this.errorStateMatchers.set('deadlineTime', new ServerErrorStateMatcher());
   }
 
   ngOnDestroy(): void {
@@ -175,27 +173,36 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeadlineDateInputChange() {
-    this.errorStateMatchers.get('deadline').errorState = false;
-    this.updateDeadlineTime(this.deadlineTimeEnabled ? this.deadlineTime : END_OF_DAY_TIME);
+    this.errorStateMatchers.get('deadlineDate').errorState = false;
+    this.updateTaskModelDeadline();
     this.saveTask();
   }
 
   onClearDeadlineDateButtonClick() {
-    this.errorStateMatchers.get('deadline').errorState = false;
-    this.taskFormModel.deadline = null;
-    this.taskFormModel.deadlineTimeSpecified = false;
+    this.errorStateMatchers.get('deadlineDate').errorState = false;
+    this.errorStateMatchers.get('deadlineTime').errorState = false;
+
+    this.deadlineDate = null;
+    this.deadlineTime = START_OF_DAY_TIME;
+
+    this.taskFormModel.deadlineDate = null;
+    this.taskFormModel.deadlineDateTime = null;
+
     this.saveTask();
   }
 
   onDeadlineTimeEnabledCheckboxChange(event: MatCheckboxChange) {
-    this.errorStateMatchers.get('deadline').errorState = false;
-    this.deadlineTimeEnabled = this.taskFormModel.deadlineTimeSpecified = event.checked;
-    this.updateDeadlineTime(this.deadlineTimeEnabled ? this.deadlineTime : END_OF_DAY_TIME);
+    this.errorStateMatchers.get('deadlineDate').errorState = false;
+    this.errorStateMatchers.get('deadlineTime').errorState = false;
+
+    this.deadlineTimeEnabled = event.checked;
+
+    this.updateTaskModelDeadline();
     this.saveTask();
   }
 
-  onDeadlineTimeSet(time) {
-    this.updateDeadlineTime(time);
+  onDeadlineTimeSet(deadlineTime: string) {
+    this.updateTaskModelDeadline(deadlineTime);
     this.saveTask();
   }
 
@@ -221,15 +228,15 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     const taskListId = this.taskFormModel.taskListId;
     if (taskListId !== this.task.taskListId) {
       if (taskListId) {
-        this.taskListService.addTask(taskListId, this.task.id).subscribe(
-          _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
-          (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-        );
+        this.taskListService.addTask(taskListId, this.task.id).subscribe({
+          next: _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
+          error: error => this.handleHttpRequestError(error)
+        });
       } else {
-        this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe(
-          _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
-          (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-        );
+        this.taskListService.removeTask(this.task.taskListId, this.task.id).subscribe({
+          next: _ => this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved')),
+          error: error => this.handleHttpRequestError(error)
+        });
       }
       this.task.taskListId = taskListId;
     }
@@ -244,20 +251,20 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         }
         case WeeklyTaskRecurrenceStrategy.TYPE: {
           const recurrenceStrategy = new WeeklyTaskRecurrenceStrategy();
-          recurrenceStrategy.dayOfWeek = WeekDay.forNumber(moment(this.taskFormModel.deadline).isoWeekday());
+          recurrenceStrategy.dayOfWeek = WeekDay.forNumber(moment(this.deadlineDate, moment.HTML5_FMT.DATE).isoWeekday());
           this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
           break;
         }
         case MonthlyTaskRecurrenceStrategy.TYPE: {
           const recurrenceStrategy = new MonthlyTaskRecurrenceStrategy();
-          recurrenceStrategy.dayOfMonth = moment(this.taskFormModel.deadline).date();
+          recurrenceStrategy.dayOfMonth = moment(this.deadlineDate, moment.HTML5_FMT.DATE).date();
           this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
           break;
         }
         case AnnuallyTaskRecurrenceStrategy.TYPE: {
           const recurrenceStrategy = new AnnuallyTaskRecurrenceStrategy();
-          recurrenceStrategy.month = Month.forCode(moment(this.taskFormModel.deadline).month() + 1);
-          recurrenceStrategy.dayOfMonth = moment(this.taskFormModel.deadline).date();
+          recurrenceStrategy.month = Month.forCode(moment(this.deadlineDate, moment.HTML5_FMT.DATE).month() + 1);
+          recurrenceStrategy.dayOfMonth = moment(this.deadlineDate, moment.HTML5_FMT.DATE).date();
           this.taskFormModel.recurrenceStrategy = recurrenceStrategy;
           break;
         }
@@ -292,13 +299,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   onHotDeadlineButtonClick(deadline: string) {
     switch (deadline) {
       case 'today':
-        this.taskFormModel.deadline = DateTimeUtils.endOfToday();
+        this.taskFormModel.deadlineDate = DateTimeUtils.today();
+        this.taskFormModel.deadlineDateTime = null;
         break;
       case 'tomorrow':
-        this.taskFormModel.deadline = DateTimeUtils.endOfTomorrow();
+        this.taskFormModel.deadlineDate = DateTimeUtils.tomorrow();
+        this.taskFormModel.deadlineDateTime = null;
         break;
       case 'in_week':
-        this.taskFormModel.deadline = DateTimeUtils.endOfWeek();
+        this.taskFormModel.deadlineDate = DateTimeUtils.endOfWeek();
+        this.taskFormModel.deadlineDateTime = null
         break;
       default:
         throw new Error('Unsupported deadline code: ' + deadline);
@@ -352,16 +362,39 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   private initTaskModel(task: Task) {
-    this.taskFormModel = task;
-    this.task = task.clone();
+    this.task = task;
+    this.taskFormModel = task.clone();
 
-    this.deadlineTimeEnabled = task.deadlineTimeSpecified;
-    if (this.deadlineTimeEnabled && task.deadline) {
-      this.deadlineTime = moment(task.deadline).format(moment.HTML5_FMT.TIME);
-    } else {
+    if (task.deadlineDate) {
+      this.deadlineDate = DateTimeUtils.formatDate(task.deadlineDate);
       this.deadlineTime = START_OF_DAY_TIME;
+      this.deadlineTimeEnabled = false;
+    } else if (task.deadlineDateTime) {
+      this.deadlineDate = DateTimeUtils.formatDate(task.deadlineDateTime);
+      this.deadlineTime = DateTimeUtils.formatTime(task.deadlineDateTime);
+      this.deadlineTimeEnabled = true;
+    } else {
+      this.deadlineDate = null;
+      this.deadlineTime = START_OF_DAY_TIME;
+      this.deadlineTimeEnabled = false;
     }
+
     this.selectedTaskRecurrenceOption = task.recurrenceStrategy ? task.recurrenceStrategy.getType() : null;
+  }
+
+  private updateTaskModelDeadline(deadlineTime?: string) {
+    const momentDate = moment(this.deadlineDate, moment.HTML5_FMT.DATE);
+    if (this.deadlineTimeEnabled) {
+      const momentTime = moment(deadlineTime || this.deadlineTime, moment.HTML5_FMT.TIME);
+      this.taskFormModel.deadlineDateTime = momentDate.set({
+        hour: momentTime.get('hour'),
+        minute: momentTime.get('minute')
+      }).toDate();
+      this.taskFormModel.deadlineDate = null;
+    } else {
+      this.taskFormModel.deadlineDate = momentDate.toDate();
+      this.taskFormModel.deadlineDateTime = null;
+    }
   }
 
   private initTags(tags: Tag[]) {
@@ -372,10 +405,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private initAvailableTags(excludedTags: Tag[]) {
     this.tagService.getTags().pipe(
       map(allTags => allTags.filter(tag => excludedTags.findIndex(excludedTag => excludedTag.name === tag.name) < 0))
-    ).subscribe(
-      availableTags => this.availableTags = availableTags,
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
+    ).subscribe({
+      next: availableTags => this.availableTags = availableTags,
+      error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+    });
   }
 
   private beginTitleEditing() {
@@ -394,81 +427,42 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (!this.taskFormModel.equals(this.task)) {
-      this.taskService.updateTask(this.taskFormModel).subscribe(task => {
+      this.taskService.updateTask(this.taskFormModel).subscribe({next: task => {
         this.clearErrors();
         this.initTaskModel(task);
         this.taskService.updateTaskCounters();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
-      }, (error: HttpRequestError) => {
+      }, error: (error: HttpRequestError) => {
         this.clearErrors();
-        if (error instanceof BadRequestError) {
-          this.handleBadRequestError(error);
-        } else {
-          this.httpResponseHandler.handleError(error);
-        }
-      });
+        this.handleHttpRequestError(error)
+      }});
     }
   }
 
   private completeTask() {
-    this.taskService.completeTask(this.taskFormModel).subscribe(
-      () => {
+    this.taskService.completeTask(this.taskFormModel).subscribe({
+      next: () => {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_completed'));
       },
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
+      error: error => this.handleHttpRequestError(error)
+    });
   }
 
   private deleteTask() {
-    this.taskService.deleteTask(this.taskFormModel).subscribe(
-      () => {
+    this.taskService.deleteTask(this.taskFormModel).subscribe({
+      next: () => {
         this.taskService.updateTaskCounters();
         this.pageNavigationService.navigateToTaskGroupPage(this.selectedTaskGroup || TaskGroup.TODAY).then();
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_deleted'));
       },
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
-  }
-
-  private handleBadRequestError(error: BadRequestError) {
-    for (const fieldError of error.fieldErrors) {
-      const fieldName = fieldError.field;
-      const controls = [];
-      if (fieldName === 'deadline') {
-        controls.push(this.taskDetailsForm.controls.deadlineDate);
-        controls.push(this.taskDetailsForm.controls.deadlineTime);
-      } else {
-        const control = this.taskDetailsForm.controls[fieldName];
-        if (control) {
-          controls.push(control);
-        }
-      }
-
-      if (controls.length > 0) {
-        const message = fieldError.message;
-        this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
-        for (const control of controls) {
-          control.setErrors({valid: message});
-        }
-        this.errorStateMatchers.get(fieldName).errorState = true;
-      } else {
-        this.log.error(`Field ${fieldName} is not found`);
-      }
-    }
+      error: error => this.handleHttpRequestError(error)
+    });
   }
 
   private clearErrors() {
     this.errorStateMatchers.forEach(matcher => matcher.errorState = false);
-  }
-
-  private updateDeadlineTime(deadlineTime: string) {
-    const momentTime = moment(deadlineTime, moment.HTML5_FMT.TIME);
-    this.taskFormModel.deadline = moment(this.taskFormModel.deadline).set({
-      hour: momentTime.get('hour'),
-      minute: momentTime.get('minute')
-    }).toDate();
   }
 
   private filterTagsByName(tagName: string): Tag[] {
@@ -484,23 +478,23 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       let tagIndex = this.availableTags.findIndex(tag => tag.name === trimmedName);
       if (tagIndex >= 0) {
         const tag = this.availableTags[tagIndex];
-        this.taskService.assignTag(this.task.id, tag.id).subscribe(_ => {
+        this.taskService.assignTag(this.task.id, tag.id).subscribe({next: _ => {
           this.tags.push(this.availableTags.splice(tagIndex, 1)[0]);
           this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
-        }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+        }, error: error => this.handleHttpRequestError(error)});
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
           const newTag = new Tag(trimmedName);
           this.tagService.createTag(newTag).pipe(
             mergeMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
-          ).subscribe(
-            tag => {
+          ).subscribe({
+            next: tag => {
               this.tags.push(tag);
               this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
             },
-            (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-          );
+            error: error => this.handleHttpRequestError(error)
+          });
         }
       }
     }
@@ -509,11 +503,61 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private removeTag(tag: Tag) {
     const tagIndex = this.tags.findIndex(t => t.name === tag.name);
     if (tagIndex >= 0) {
-      this.taskService.removeTag(this.task.id, tag.id).subscribe(_ => {
+      this.taskService.removeTag(this.task.id, tag.id).subscribe({next: _ => {
         this.tags.splice(tagIndex, 1);
         this.availableTags.push(tag);
         this.httpResponseHandler.handleSuccess(this.i18nService.translate('task_saved'));
-      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+      }, error: error => this.handleHttpRequestError(error)});
+    }
+  }
+
+  private handleHttpRequestError(error: HttpRequestError) {
+    if (error instanceof ResourceNotFoundError) {
+      this.handleResourceNotFoundError(error);
+    } else if (error instanceof BadRequestError) {
+      this.handleBadRequestError(error);
+    } else {
+      this.httpResponseHandler.handleError(error);
+    }
+  }
+
+  private handleResourceNotFoundError(_: ResourceNotFoundError) {
+    this.pageNavigationService.navigateToNotFoundErrorPage().then();
+  }
+
+  private handleBadRequestError(error: BadRequestError) {
+    for (const fieldError of error.fieldErrors) {
+      const controls = [];
+      const fieldName = fieldError.field;
+
+      if (fieldName === 'deadlineDate') {
+        controls.push(this.taskDetailsForm.controls.deadlineDate);
+        this.errorStateMatchers.get('deadlineDate').errorState = true;
+      } else if (fieldName === 'deadlineDateTime') {
+        controls.push(this.taskDetailsForm.controls.deadlineDate);
+        controls.push(this.taskDetailsForm.controls.deadlineTime);
+        this.errorStateMatchers.get('deadlineDate').errorState = true;
+        this.errorStateMatchers.get('deadlineTime').errorState = true;
+      } else {
+        const control = this.taskDetailsForm.controls[fieldName];
+        if (control) {
+          controls.push(control);
+        }
+      }
+
+      if (controls.length > 0) {
+        const message = fieldError.message;
+        this.log.error(`Constraint violation on field ${fieldName}: ${message}`);
+        for (const control of controls) {
+          control.setErrors({valid: message});
+        }
+        const errorStateMatcher = this.errorStateMatchers.get(fieldName);
+        if (errorStateMatcher) {
+          errorStateMatcher.errorState = true;
+        }
+      } else {
+        this.log.error(`Field ${fieldName} is not found`);
+      }
     }
   }
 }

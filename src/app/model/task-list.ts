@@ -27,8 +27,11 @@ export class TaskList extends AbstractEntity {
   }
 
   equals(other: TaskList): boolean {
-    return Objects.equals(this.id, other.id)
-      && Objects.equals(this.name, other.name)
-      && Objects.equals(this.completed, other.completed);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.id, other.id)
+      && Objects.equal(this.name, other.name)
+      && Objects.equal(this.completed, other.completed);
   }
 }

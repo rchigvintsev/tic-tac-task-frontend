@@ -19,6 +19,7 @@ import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 import {TaskStatus} from '../model/task-status';
 import {DateTimeUtils} from '../util/time/date-time-utils';
+import {Objects} from '../util/objects';
 
 @Injectable({providedIn: 'root'})
 export class TaskService {
@@ -470,5 +471,20 @@ export class GetTasksRequest {
     }
 
     return params;
+  }
+
+  equals(other: GetTasksRequest): boolean {
+    if (other == null) {
+      return false;
+    }
+
+    return Objects.equal(this.statuses, other.statuses)
+      && Objects.equal(DateTimeUtils.formatDateTime(this.completedAtFrom), DateTimeUtils.formatDateTime(other.completedAtFrom))
+      && Objects.equal(DateTimeUtils.formatDateTime(this.completedAtTo), DateTimeUtils.formatDateTime(other.completedAtTo))
+      && Objects.equal(this.withoutDeadline, other.withoutDeadline)
+      && Objects.equal(DateTimeUtils.formatDate(this.deadlineDateFrom), DateTimeUtils.formatDate(other.deadlineDateFrom))
+      && Objects.equal(DateTimeUtils.formatDate(this.deadlineDateTo), DateTimeUtils.formatDate(other.deadlineDateTo))
+      && Objects.equal(DateTimeUtils.formatDateTime(this.deadlineDateTimeFrom), DateTimeUtils.formatDateTime(other.deadlineDateTimeFrom))
+      && Objects.equal(DateTimeUtils.formatDateTime(this.deadlineDateTimeTo), DateTimeUtils.formatDateTime(other.deadlineDateTimeTo));
   }
 }

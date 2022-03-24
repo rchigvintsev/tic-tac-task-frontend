@@ -13,11 +13,17 @@
       <span [class.text-decoration-line-through]="task.isCompleted()">{{ task.title }}</span>
     </div>
 
-    <div *ngIf="task.deadline && (!showOnlyExpiredDeadline || task.isOverdue()) && !xsQuery.matches"
-         class="list-column deadline-column text-decoration-underline-dotted">
-              <span [matTooltip]="task.deadline | localizedDate" matTooltipPosition="above">
-                {{ task.deadline | localizedRelativeDate }}
-              </span>
+    <div *ngIf="isShowDeadline(task)" class="list-column deadline-column text-decoration-underline-dotted">
+      <span *ngIf="task.deadlineDate"
+            [matTooltip]="task.deadlineDate | localizedDate"
+            matTooltipPosition="above">
+        {{ task.deadlineDate | localizedRelativeDate }}
+      </span>
+      <span *ngIf="task.deadlineDateTime"
+            [matTooltip]="task.deadlineDateTime | localizedDate"
+            matTooltipPosition="above">
+        {{ task.deadlineDateTime | localizedRelativeDate }}
+      </span>
     </div>
   </div>
 

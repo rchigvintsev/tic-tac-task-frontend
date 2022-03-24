@@ -10,8 +10,10 @@
        (_drop)="onDrop($event, TaskGroup.INBOX)">
       <mat-icon mat-list-icon>inbox</mat-icon>
       <span matLine>{{ 'inbox' | translate }}</span>
-      <span *ngIf="hasTasks(TaskGroup.INBOX) | async" [matBadge]="getTaskCount(TaskGroup.INBOX) | async | number"
-            matBadgeOverlap="true" class="right-margin-12"></span>
+      <span *ngIf="hasTasks(TaskGroup.INBOX) | async"
+            [matBadge]="getTaskCount(TaskGroup.INBOX) | async | number"
+            matBadgeOverlap="true"
+            class="mr-2"></span>
     </a>
 
     <mat-divider></mat-divider>
@@ -32,8 +34,10 @@
           <span>{{ todayDate }}</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_today' | translate }}</p>
-        <span *ngIf="hasTasks(TaskGroup.TODAY) | async" [matBadge]="getTaskCount(TaskGroup.TODAY) | async | number"
-              matBadgeOverlap="true" class="right-margin-12"></span>
+        <span *ngIf="hasTasks(TaskGroup.TODAY) | async"
+              [matBadge]="getTaskCount(TaskGroup.TODAY) | async | number"
+              matBadgeOverlap="true"
+              class="mr-2"></span>
       </a>
 
       <a mat-list-item class="drop-receiver"
@@ -49,8 +53,10 @@
           <span>{{ tomorrowDate }}</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_tomorrow' | translate }}</p>
-        <span *ngIf="hasTasks(TaskGroup.TOMORROW) | async" [matBadge]="getTaskCount(TaskGroup.TOMORROW) | async | number"
-              matBadgeOverlap="true" class="right-margin-12"></span>
+        <span *ngIf="hasTasks(TaskGroup.TOMORROW) | async"
+              [matBadge]="getTaskCount(TaskGroup.TOMORROW) | async | number"
+              matBadgeOverlap="true"
+              class="mr-2"></span>
       </a>
 
       <a mat-list-item class="drop-receiver"
@@ -66,8 +72,10 @@
           <span>W</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_week' | translate }}</p>
-        <span *ngIf="hasTasks(TaskGroup.WEEK) | async" [matBadge]="getTaskCount(TaskGroup.WEEK) | async | number"
-              matBadgeOverlap="true" class="right-margin-12"></span>
+        <span *ngIf="hasTasks(TaskGroup.WEEK) | async"
+              [matBadge]="getTaskCount(TaskGroup.WEEK) | async | number"
+              matBadgeOverlap="true"
+              class="mr-2"></span>
       </a>
 
       <a mat-list-item class="drop-receiver"
@@ -83,8 +91,10 @@
           <span>?</span>
         </mat-icon>
         <p matLine>{{ 'scheduled_for_some_day' | translate }}</p>
-        <span *ngIf="hasTasks(TaskGroup.SOME_DAY) | async" [matBadge]="getTaskCount(TaskGroup.SOME_DAY) | async | number"
-              matBadgeOverlap="true" class="right-margin-12"></span>
+        <span *ngIf="hasTasks(TaskGroup.SOME_DAY) | async"
+              [matBadge]="getTaskCount(TaskGroup.SOME_DAY) | async | number"
+              matBadgeOverlap="true"
+              class="mr-2"></span>
       </a>
     </ng-container>
 
@@ -98,18 +108,20 @@
        (click)="onListItemClick(TaskGroup.ALL)">
       <mat-icon mat-list-icon>assignment</mat-icon>
       <p matLine>{{ 'all_tasks' | translate }}</p>
-      <span *ngIf="hasTasks(TaskGroup.ALL) | async" [matBadge]="getTaskCount(TaskGroup.ALL) | async | number"
-            matBadgeOverlap="true" class="right-margin-12"></span>
+      <span *ngIf="hasTasks(TaskGroup.ALL) | async"
+            [matBadge]="getTaskCount(TaskGroup.ALL) | async | number"
+            matBadgeOverlap="true"
+            class="mr-2"></span>
     </a>
 
     <mat-divider></mat-divider>
 
     <mat-accordion>
       <mat-expansion-panel class="mat-elevation-z0">
-        <mat-expansion-panel-header class="sidenav-expansion-panel-header">
-          <div class="sidenav-expansion-panel-header-content">
-            <mat-icon>label</mat-icon>
-            <span>{{ 'tags' | translate }}</span>
+        <mat-expansion-panel-header class="pl-3">
+          <div class="d-flex flex-row align-items-center">
+            <mat-icon class="p-1">label</mat-icon>
+            <span class="pl-3">{{ 'tags' | translate }}</span>
           </div>
         </mat-expansion-panel-header>
 
@@ -117,10 +129,10 @@
       </mat-expansion-panel>
 
       <mat-expansion-panel class="mat-elevation-z0">
-        <mat-expansion-panel-header class="sidenav-expansion-panel-header">
-          <div class="sidenav-expansion-panel-header-content">
-            <mat-icon>list</mat-icon>
-            <span>{{ 'task_lists' | translate }}</span>
+        <mat-expansion-panel-header class="pl-3">
+          <div class="d-flex flex-row align-items-center">
+            <mat-icon class="p-1">list</mat-icon>
+            <span class="pl-3">{{ 'task_lists' | translate }}</span>
           </div>
         </mat-expansion-panel-header>
 

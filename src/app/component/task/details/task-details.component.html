@@ -62,22 +62,22 @@
         </mat-error>
       </mat-form-field>
 
-      <div class="deadline-container">
-        <div fxFlex fxLayout="row" fxLayout.lt-md="column" class="deadline-form-field-container">
-          <mat-form-field class="deadline-date-form-field">
+      <div class="deadline-container d-flex flex-column pb-3">
+        <div fxFlex fxLayout="row" fxLayout.lt-md="column">
+          <mat-form-field class="deadline-date-form-field mr-3">
             <label>
               <input matInput
                      name="deadlineDate"
-                     [(ngModel)]="taskFormModel.deadline"
+                     [(ngModel)]="deadlineDate"
                      [class.color-warn]="taskFormModel.isOverdue()"
                      [matDatepicker]="deadlineDatepicker"
-                     [errorStateMatcher]="errorStateMatchers.get('deadline')"
+                     [errorStateMatcher]="errorStateMatchers.get('deadlineDate')"
                      (dateChange)="onDeadlineDateInputChange()"
                      placeholder="{{ 'deadline' | translate }}"
                      readonly>
             </label>
             <button mat-button
-                    *ngIf="taskFormModel.deadline"
+                    *ngIf="deadlineDate"
                     matSuffix
                     mat-icon-button
                     aria-label="Clear deadline date"
@@ -89,13 +89,14 @@
           </mat-form-field>
 
           <div>
-            <mat-checkbox name="deadlineTimeEnabled" class="deadline-time-checkbox"
+            <mat-checkbox name="deadlineTimeEnabled"
+                          class="deadline-time-checkbox mr-3"
                           [checked]="deadlineTimeEnabled"
-                          [disabled]="taskFormModel.deadline == null"
+                          [disabled]="!deadlineDate"
                           (change)="onDeadlineTimeEnabledCheckboxChange($event)">
             </mat-checkbox>
 
-            <mat-form-field class="deadline-time-form-field">
+            <mat-form-field class="deadline-time-form-field mr-3">
               <label>
                 <input matInput
                        name="deadlineTime"
@@ -104,7 +105,7 @@
                        [class.color-warn]="deadlineTimeEnabled && taskFormModel.isOverdue()"
                        [format]="24"
                        [disabled]="!deadlineTimeEnabled"
-                       [errorStateMatcher]="errorStateMatchers.get('deadline')"
+                       [errorStateMatcher]="errorStateMatchers.get('deadlineTime')"
                        readonly>
               </label>
               <ngx-material-timepicker-toggle matSuffix [for]="deadlineTimepicker">
@@ -127,7 +128,7 @@
           <mat-form-field class="repeat-form-field">
             <mat-label>{{ 'repeat' | translate }}</mat-label>
             <mat-select name="repeatTask" [(ngModel)]="selectedTaskRecurrenceOption"
-                        [disabled]="taskFormModel.deadline == null" (selectionChange)="onTaskRecurrenceOptionSelect()">
+                        [disabled]="!deadlineDate" (selectionChange)="onTaskRecurrenceOptionSelect()">
               <mat-option>{{ 'never' | translate }}</mat-option>
               <mat-option *ngFor="let recurrenceOption of taskRecurrenceOptions" [value]="recurrenceOption">
                 {{ recurrenceOption | translate }}
@@ -136,14 +137,15 @@
           </mat-form-field>
         </div>
 
-        <div class="deadline-error-container">
-          <mat-error *ngIf="errorStateMatchers.get('deadline').errorState">
+        <div class="deadline-error">
+          <mat-error *ngIf="errorStateMatchers.get('deadlineDate').errorState
+          || errorStateMatchers.get('deadlineTime').errorState">
             {{ getFirstFieldErrorMessage('deadlineDate', 'deadlineTime') }}
           </mat-error>
         </div>
       </div>
 
-      <div class="deadline-hot-button-container form-group">
+      <div class="form-group">
         <div class="form-group-header">
           <div class="form-group-title">
             {{ 'quick_deadlines' | translate }}
@@ -151,13 +153,13 @@
         </div>
 
         <div class="form-group-content">
-          <button mat-button color="primary" (click)="onHotDeadlineButtonClick('today')">
+          <button mat-button color="primary" class="mr-2" (click)="onHotDeadlineButtonClick('today')">
             {{ 'today' | translate }}
           </button>
-          <button mat-button color="primary" (click)="onHotDeadlineButtonClick('tomorrow')">
+          <button mat-button color="primary" class="mr-2" (click)="onHotDeadlineButtonClick('tomorrow')">
             {{ 'tomorrow' | translate }}
           </button>
-          <button mat-button color="primary" (click)="onHotDeadlineButtonClick('in_week')">
+          <button mat-button color="primary" class="mr-2" (click)="onHotDeadlineButtonClick('in_week')">
             {{ 'in_week' | translate }}
           </button>
         </div>
@@ -199,7 +201,7 @@
 
   <mat-divider></mat-divider>
 
-  <div class="task-comments-container">
+  <div class="mt-2">
     <app-task-comments></app-task-comments>
   </div>
 </mat-card>

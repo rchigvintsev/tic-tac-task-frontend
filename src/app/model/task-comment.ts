@@ -34,10 +34,13 @@ export class TaskComment extends AbstractEntity {
   }
 
   equals(other: TaskComment): boolean {
-    return Objects.equals(this.id, other.id)
-      && Objects.equals(this.taskId, other.taskId)
-      && Objects.equals(this.commentText, other.commentText)
-      && Objects.equals(this.createdAt, other.createdAt)
-      && Objects.equals(this.updatedAt, other.updatedAt);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.id, other.id)
+      && Objects.equal(this.taskId, other.taskId)
+      && Objects.equal(this.commentText, other.commentText)
+      && Objects.equal(this.createdAt, other.createdAt)
+      && Objects.equal(this.updatedAt, other.updatedAt);
   }
 }

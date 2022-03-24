@@ -33,7 +33,9 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
   }
 
   private static isDailyTask(task: Task) {
-    return task.deadline && task.recurrenceStrategy && task.recurrenceStrategy.getType() === DailyTaskRecurrenceStrategy.TYPE;
+    return (task.deadlineDate || task.deadlineDateTime)
+      && task.recurrenceStrategy
+      && task.recurrenceStrategy.getType() === DailyTaskRecurrenceStrategy.TYPE;
   }
 
   ngOnInit() {
@@ -79,10 +81,15 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
     taskRequest.statuses = [TaskStatus.PROCESSED, TaskStatus.COMPLETED];
     taskRequest.completedAtFrom = DateTimeUtils.startOfToday();
     if (n === 0) {
-      taskRequest.deadlineTo = DateTimeUtils.endOfToday();
+      taskRequest.deadlineDateTo = DateTimeUtils.today();
+      taskRequest.deadlineDateTimeTo = DateTimeUtils.endOfToday();
     } else {
-      taskRequest.deadlineFrom = moment().add(n, 'day').startOf('day').toDate();
-      taskRequest.deadlineTo = moment().add(n, 'day').endOf('day').toDate();
+      const deadlineDate = moment().add(n, 'day').toDate();
+      taskRequest.deadlineDateFrom = deadlineDate;
+      taskRequest.deadlineDateTo = deadlineDate;
+
+      taskRequest.deadlineDateTimeFrom = moment().add(n, 'day').startOf('day').toDate();
+      taskRequest.deadlineDateTimeTo = moment().add(n, 'day').endOf('day').toDate();
     }
     const groupName = TaskListForWeekComponent.getTaskGroupName(n, dayNumber);
     return new TaskGroup(groupName, taskRequest, this.taskService, this.httpResponseHandler);

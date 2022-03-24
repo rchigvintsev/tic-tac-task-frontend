@@ -13,7 +13,6 @@ import {TaskStatus} from '../../../../model/task-status';
 import {TaskGroupService} from '../../../../service/task-group.service';
 import {TaskService} from '../../../../service/task.service';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
-import {HttpRequestError} from '../../../../error/http-request.error';
 import {PathMatcher} from '../../../../util/path-matcher';
 import {DateTimeUtils} from '../../../../util/time/date-time-utils';
 
@@ -111,31 +110,31 @@ export class SidenavMenuComponent implements OnInit, OnDestroy {
   private moveTaskToGroup(task: Task, taskGroup: TaskGroup) {
     switch (taskGroup) {
       case TaskGroup.INBOX:
-        task.deadline = null;
+        task.deadlineDate = null;
         task.status = TaskStatus.UNPROCESSED;
         break;
       case TaskGroup.TODAY:
-        task.deadline = DateTimeUtils.endOfToday();
+        task.deadlineDate = DateTimeUtils.today();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.TOMORROW:
-        task.deadline = DateTimeUtils.endOfTomorrow();
+        task.deadlineDate = DateTimeUtils.tomorrow();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.WEEK:
-        task.deadline = DateTimeUtils.endOfWeek();
+        task.deadlineDate = DateTimeUtils.endOfWeek();
         task.status = TaskStatus.PROCESSED;
         break;
       case TaskGroup.SOME_DAY:
-        task.deadline = null;
+        task.deadlineDate = null;
         task.status = TaskStatus.PROCESSED;
         break;
       default:
         throw new Error('Unsupported task group: ' + taskGroup);
     }
 
-    task.deadlineTimeSpecified = false;
-    this.taskService.updateTask(task).subscribe(_ => this.taskService.updateTaskCounters(),
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+    task.deadlineDateTime = null;
+    this.taskService.updateTask(task).subscribe({next: _ => this.taskService.updateTaskCounters(),
+      error: error => this.httpResponseHandler.handleError(error)});
   }
 }

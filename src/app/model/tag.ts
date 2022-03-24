@@ -43,8 +43,11 @@ export class Tag extends AbstractEntity {
   }
 
   equals(other: Tag): boolean {
-    return Objects.equals(this.id, other.id)
-      && Objects.equals(this.name, other.name)
-      && Objects.equals(this.color, other.color);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.id, other.id)
+      && Objects.equal(this.name, other.name)
+      && Objects.equal(this.color, other.color);
   }
 }

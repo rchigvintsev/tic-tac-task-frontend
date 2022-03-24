@@ -21,7 +21,7 @@ export class TaskListItemComponent {
   @Input()
   showOnlyExpiredDeadline = false;
 
-  xsQuery: MediaQueryList;
+  private xsQuery: MediaQueryList;
 
   constructor(public i18nService: I18nService,
               private taskService: TaskService,
@@ -47,6 +47,10 @@ export class TaskListItemComponent {
     } else {
       this.completeTask();
     }
+  }
+
+  isShowDeadline(task: Task): boolean {
+    return (task.deadlineDate || task.deadlineDateTime) && (!this.showOnlyExpiredDeadline || task.isOverdue()) && !this.xsQuery.matches;
   }
 
   private completeTask() {

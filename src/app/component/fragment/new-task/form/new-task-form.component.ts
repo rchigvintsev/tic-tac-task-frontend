@@ -41,7 +41,7 @@ export class NewTaskFormComponent {
 
   private createTask() {
     if (!Strings.isBlank(this.formModel.title)) {
-      this.formModel.deadline = this.taskDeadline;
+      this.formModel.deadlineDate = this.taskDeadline;
       this.formModel.status = this.taskStatus;
 
       this.taskService.createTask(this.formModel).subscribe({

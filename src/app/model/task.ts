@@ -57,14 +57,17 @@ export class Task extends AbstractEntity {
   }
 
   equals(other: Task): boolean {
-    return Objects.equals(this.id, other.id)
-      && Objects.equals(this.taskListId, other.taskListId)
-      && Objects.equals(this.title, other.title)
-      && Objects.equals(this.description, other.description)
-      && Objects.equals(this.status, other.status)
-      && Objects.equals(this.deadlineDate, other.deadlineDate)
-      && Objects.equals(this.deadlineDateTime, other.deadlineDateTime)
-      && Objects.equals(this.recurrenceStrategy, other.recurrenceStrategy);
+    if (!other) {
+      return false;
+    }
+    return Objects.equal(this.id, other.id)
+      && Objects.equal(this.taskListId, other.taskListId)
+      && Objects.equal(this.title, other.title)
+      && Objects.equal(this.description, other.description)
+      && Objects.equal(this.status, other.status)
+      && Objects.equal(this.deadlineDate, other.deadlineDate)
+      && Objects.equal(this.deadlineDateTime, other.deadlineDateTime)
+      && Objects.equal(this.recurrenceStrategy, other.recurrenceStrategy);
   }
 
   isOverdue(): boolean {
