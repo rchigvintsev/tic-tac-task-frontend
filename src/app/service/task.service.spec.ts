@@ -378,6 +378,26 @@ describe('TaskService', () => {
     expect(() => taskService.completeTask(null)).toThrowError('Task must not be null or undefined');
   });
 
+  it('should reschedule task on task complete if necessary', done => {
+    const task = new Task().deserialize({id: 1, title: 'Test task', deadlineDate: '2022-01-01', recurrenceStrategy: {type: 'daily'}});
+    taskService.completeTask(task).subscribe(_ => done());
+
+    const completedTask = task.clone();
+    completedTask.status = TaskStatus.COMPLETED;
+
+    const completeRequest = httpMock.expectOne(`${taskService.baseUrl}/completed/${task.id}`);
+    expect(completeRequest.request.method).toBe('PUT');
+    completeRequest.flush(completedTask.serialize());
+
+    const rescheduledTask = completedTask.clone();
+    rescheduledTask.status = TaskStatus.PROCESSED;
+    task.recurrenceStrategy.reschedule(rescheduledTask);
+
+    const createRequest = httpMock.expectOne(taskService.baseUrl);
+    expect(createRequest.request.method).toBe('POST');
+    createRequest.flush(rescheduledTask.serialize());
+  });
+
   it('should restore task', done => {
     const testTask = new Task().deserialize({id: 1, title: 'Test task', status: TaskStatus.COMPLETED});
     const restoredTestTask = testTask.clone();

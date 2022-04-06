@@ -10,9 +10,9 @@ export class WeekDay {
   static readonly SATURDAY = new WeekDay('SATURDAY', 6);
   static readonly SUNDAY = new WeekDay('SUNDAY', 7);
 
-  private constructor(public readonly name: string, public readonly n: number) {
+  private constructor(public readonly name: string, public readonly dayNumber: number) {
     WeekDay.daysByName[name] = this;
-    WeekDay.daysByNumber[n] = this;
+    WeekDay.daysByNumber[dayNumber] = this;
   }
 
   static forName(name: string): WeekDay {

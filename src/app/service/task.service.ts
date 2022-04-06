@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, mergeMap, Observable, of, Subject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
 import * as moment from 'moment';
@@ -263,7 +263,8 @@ export class TaskService {
         }
       }),
       map(response => new Task().deserialize(response)),
-      tap(completedTask => this.notifyTaskCompleted(completedTask))
+      tap(completedTask => this.notifyTaskCompleted(completedTask)),
+      mergeMap(completedTask => this.rescheduleTaskIfNecessary(completedTask))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
@@ -418,6 +419,17 @@ export class TaskService {
       })
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
+  private rescheduleTaskIfNecessary(task: Task): Observable<Task> {
+    const recurrenceStrategy = task.recurrenceStrategy;
+    if (recurrenceStrategy) {
+      const newTask = task.clone();
+      newTask.parentId = task.id;
+      recurrenceStrategy.reschedule(newTask);
+      return this.createTask(newTask, false);
+    }
+    return of(task);
   }
 }
 

@@ -8,6 +8,7 @@ import {DateTimeUtils} from '../util/time/date-time-utils';
 
 export class Task extends AbstractEntity {
   id: number;
+  parentId: number;
   taskListId: number;
   title: string;
   description: string;
@@ -18,6 +19,7 @@ export class Task extends AbstractEntity {
 
   deserialize(input: any): Task {
     this.id = input.id;
+    this.parentId = input.parentId;
     this.taskListId = input.taskListId;
     this.title = input.title;
     this.description = input.description;
@@ -33,6 +35,7 @@ export class Task extends AbstractEntity {
   serialize(): any {
     return {
       id: this.id,
+      parentId: this.parentId,
       taskListId: this.taskListId,
       title: this.title,
       description: this.description,
@@ -46,6 +49,7 @@ export class Task extends AbstractEntity {
   clone(): Task {
     const clone = new Task();
     clone.id = this.id;
+    clone.parentId = this.parentId;
     clone.taskListId = this.taskListId;
     clone.title = this.title;
     clone.description = this.description;
@@ -61,6 +65,7 @@ export class Task extends AbstractEntity {
       return false;
     }
     return Objects.equal(this.id, other.id)
+      && Objects.equal(this.parentId, other.parentId)
       && Objects.equal(this.taskListId, other.taskListId)
       && Objects.equal(this.title, other.title)
       && Objects.equal(this.description, other.description)

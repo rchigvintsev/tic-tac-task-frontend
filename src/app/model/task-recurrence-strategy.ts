@@ -1,6 +1,10 @@
 import {Serializable} from './serializable';
 import {Month} from '../util/time/month';
 import {WeekDay} from '../util/time/week-day';
+import {Task} from './task';
+import {Assert} from '../util/assert';
+import moment from 'moment';
+import {DateTimeUtils} from '../util/time/date-time-utils';
 
 export abstract class TaskRecurrenceStrategy implements Serializable {
   static create(input: any): TaskRecurrenceStrategy {
@@ -23,9 +27,16 @@ export abstract class TaskRecurrenceStrategy implements Serializable {
   abstract deserialize(input: any): TaskRecurrenceStrategy;
 
   abstract serialize(): any;
+
+  reschedule(task: Task) {
+    Assert.notNullOrUndefined(task, 'Task to reschedule must not be null or undefined');
+    this.doReschedule(task);
+  }
+
+  protected abstract doReschedule(task: Task);
 }
 
-export class DailyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
+export class DailyTaskRecurrenceStrategy extends TaskRecurrenceStrategy {
   static readonly TYPE = 'daily';
 
   getType(): string {
@@ -39,9 +50,21 @@ export class DailyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
   serialize(): any {
     return {type: this.getType()};
   }
+
+  protected doReschedule(task: Task) {
+    const tomorrow = DateTimeUtils.tomorrow();
+    if (task.deadlineDate) {
+      task.deadlineDate = tomorrow;
+    } else {
+      const momentDeadline = moment(task.deadlineDateTime);
+      const hours = momentDeadline.get('hour');
+      const minutes = momentDeadline.get('minute');
+      task.deadlineDateTime = DateTimeUtils.tomorrowAt(hours, minutes);
+    }
+  }
 }
 
-export class WeeklyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
+export class WeeklyTaskRecurrenceStrategy extends TaskRecurrenceStrategy {
   static readonly TYPE = 'weekly';
 
   dayOfWeek: WeekDay;
@@ -58,9 +81,21 @@ export class WeeklyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
   serialize(): any {
     return {type: this.getType(), dayOfWeek: this.dayOfWeek.name};
   }
+
+  protected doReschedule(task: Task) {
+    const nextWeek = DateTimeUtils.nextWeek(this.dayOfWeek);
+    if (task.deadlineDate) {
+      task.deadlineDate = nextWeek;
+    } else {
+      const momentDeadline = moment(task.deadlineDateTime);
+      const hours = momentDeadline.get('hour');
+      const minutes = momentDeadline.get('minute');
+      task.deadlineDateTime = DateTimeUtils.nextWeekAt(hours, minutes, this.dayOfWeek);
+    }
+  }
 }
 
-export class MonthlyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
+export class MonthlyTaskRecurrenceStrategy extends TaskRecurrenceStrategy {
   static readonly TYPE = 'monthly';
 
   dayOfMonth: number;
@@ -77,9 +112,20 @@ export class MonthlyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
   serialize(): any {
     return {type: this.getType(), dayOfMonth: this.dayOfMonth};
   }
+
+  protected doReschedule(task: Task) {
+    if (task.deadlineDate) {
+      task.deadlineDate = DateTimeUtils.nextMonth(this.dayOfMonth);
+    } else {
+      const momentDeadline = moment(task.deadlineDateTime);
+      const hours = momentDeadline.get('hour');
+      const minutes = momentDeadline.get('minute');
+      task.deadlineDateTime = DateTimeUtils.nextMonthAt(hours, minutes, this.dayOfMonth);
+    }
+  }
 }
 
-export class AnnuallyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
+export class AnnuallyTaskRecurrenceStrategy extends TaskRecurrenceStrategy {
   static readonly TYPE = 'annually';
 
   month: Month;
@@ -97,5 +143,16 @@ export class AnnuallyTaskRecurrenceStrategy implements TaskRecurrenceStrategy {
 
   serialize(): any {
     return {type: this.getType(), month: this.month.name, dayOfMonth: this.dayOfMonth};
+  }
+
+  protected doReschedule(task: Task) {
+    if (task.deadlineDate) {
+      task.deadlineDate = DateTimeUtils.nextYear(this.month, this.dayOfMonth);
+    } else {
+      const momentDeadline = moment(task.deadlineDateTime);
+      const hours = momentDeadline.get('hour');
+      const minutes = momentDeadline.get('minute');
+      task.deadlineDateTime = DateTimeUtils.nextYearAt(hours, minutes, this.month, this.dayOfMonth);
+    }
   }
 }

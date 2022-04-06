@@ -1,6 +1,6 @@
 export class Month {
   private static readonly monthsByName = new Map<string, Month>();
-  private static readonly monthsByCode = new Map<number, Month>();
+  private static readonly monthsByNumber = new Map<number, Month>();
 
   static readonly JANUARY = new Month('JANUARY', 1);
   static readonly FEBRUARY = new Month('FEBRUARY', 2);
@@ -15,9 +15,9 @@ export class Month {
   static readonly NOVEMBER = new Month('NOVEMBER', 11);
   static readonly DECEMBER = new Month('DECEMBER', 12);
 
-  private constructor(public readonly name: string, public readonly code: number) {
+  private constructor(public readonly name: string, public readonly monthNumber: number) {
     Month.monthsByName[name] = this;
-    Month.monthsByCode[code] = this;
+    Month.monthsByNumber[monthNumber] = this;
   }
 
   static forName(name: string): Month {
@@ -25,6 +25,6 @@ export class Month {
   }
 
   static forCode(code: number): Month {
-    return Month.monthsByCode[code];
+    return Month.monthsByNumber[code];
   }
 }
