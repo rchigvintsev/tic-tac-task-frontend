@@ -12,7 +12,7 @@ export class AccountPasswordChangeComponent implements OnInit {
   @Input()
   submitButtonLabel: string;
   @Input()
-  submitButtonWidth = 'auto';
+  submitButtonMinWidth = 'auto';
   @Input()
   currentPasswordRequired = true;
 
