@@ -3,6 +3,10 @@
 @import "src/styles/flex";
 @import "src/styles/spacing";
 
+mat-chip {
+  font-weight: 600;
+}
+
 .deadline-container {
   .deadline-date-form-field {
     max-width: 160px;

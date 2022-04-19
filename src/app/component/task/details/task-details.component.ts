@@ -39,6 +39,7 @@ import {
 } from '../../../model/task-recurrence-strategy';
 import {WeekDay} from '../../../util/time/week-day';
 import {Month} from '../../../util/time/month';
+import {ColorPalette} from '../../../util/color-palette';
 
 const START_OF_DAY_TIME = '00:00';
 
@@ -314,6 +315,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         throw new Error('Unsupported deadline code: ' + deadline);
     }
     this.saveTask();
+  }
+
+  getTagColorStyle(tag: Tag): string {
+    return ColorPalette.isDark(tag.color) ? 'white' : 'inherit';
   }
 
   getFirstFieldErrorMessage(...fieldNames: string[]): string {

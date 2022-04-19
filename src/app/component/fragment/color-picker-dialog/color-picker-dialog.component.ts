@@ -3,6 +3,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 import {ColorEvent} from 'ngx-color';
 
+import {ColorPalette} from '../../../util/color-palette';
+
 @Component({
   selector: 'app-color-picker-dialog',
   templateUrl: './color-picker-dialog.component.html',
@@ -10,9 +12,11 @@ import {ColorEvent} from 'ngx-color';
 })
 export class ColorPickerDialogComponent {
   readonly COLORS = [
-    '#e57373', '#f06292', '#ba68c8', '#9575cd', '#7986cb',
-    '#64b5f6', '#4dd0e1', '#4db6ac', '#81c784', '#dce775',
-    '#fff176', '#ffb74d', '#a1887f', '#e0e0e0', '#90a4ae'
+    ColorPalette.COLOR_RED[500].hex, ColorPalette.COLOR_PINK[500].hex, ColorPalette.COLOR_PURPLE[500].hex,
+    ColorPalette.COLOR_DEEP_PURPLE[500].hex, ColorPalette.COLOR_INDIGO[500].hex, ColorPalette.COLOR_BLUE[500].hex,
+    ColorPalette.COLOR_CYAN[500].hex, ColorPalette.COLOR_TEAL[500].hex, ColorPalette.COLOR_GREEN[500].hex,
+    ColorPalette.COLOR_LIME[500].hex, ColorPalette.COLOR_YELLOW[500].hex, ColorPalette.COLOR_ORANGE[500].hex,
+    ColorPalette.COLOR_DEEP_ORANGE[500].hex, ColorPalette.COLOR_BROWN[500].hex, ColorPalette.COLOR_GREY[500].hex
   ];
 
   color: string;
