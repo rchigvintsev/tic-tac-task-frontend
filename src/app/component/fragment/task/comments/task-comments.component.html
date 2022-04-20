@@ -1,5 +1,5 @@
 <mat-card-content *ngIf="newCommentFormModel">
-  <form #newCommentForm="ngForm" (ngSubmit)="onNewCommentFormSubmit()">
+  <form #newCommentForm="ngForm" (ngSubmit)="onNewCommentFormSubmit()" class="d-flex flex-column pt-2">
     <mat-form-field>
       <label>
           <textarea matInput
@@ -15,7 +15,7 @@
     </mat-form-field>
 
     <div fxFlex fxFlexAlign="end">
-      <button mat-raised-button type="submit" color="primary" [disabled]="!newCommentFormEnabled">
+      <button *ngIf="newCommentFormEnabled" mat-raised-button type="submit" color="primary">
         {{ 'post' | translate }}
       </button>
     </div>
@@ -24,24 +24,25 @@
 
 <div *ngIf="comments" infiniteScroll [infiniteScrollDistance]="1" (scrolled)="onCommentListScroll()">
   <mat-card-content *ngFor="let comment of comments" [className]="'comment-' + comment.id">
-    <div class="divider-wrapper">
+    <div class="pb-2">
       <mat-divider></mat-divider>
     </div>
 
-    <div class="comment-wrapper" (mouseover)="onCommentContainerMouseOver(comment)"
+    <div class="pt-2 pb-2"
+         (mouseover)="onCommentContainerMouseOver(comment)"
          (mouseout)="onCommentContainerMouseOut(comment)">
-      <div class="comment-header">
-        <div class="comment-date-wrapper">
+      <div class="d-flex">
+        <div class="flex-grow-1 pt-2 pb-2 color-black-54">
           <span [matTooltip]="comment.createdAt | localizedDate: 'medium'">
             {{ getRelativeCommentDate(comment) }}
           </span>
 
-          <span *ngIf="comment.updatedAt" class="comment-date-annotation">
+          <span *ngIf="comment.updatedAt" class="font-italic">
             ({{ 'changed' | translate }})
           </span>
         </div>
 
-        <div class="comment-menu-wrapper">
+        <div class="pl-3 pb-2">
           <button mat-icon-button aria-label="Task comment menu" [matMenuTriggerFor]="taskCommentMenu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -58,7 +59,7 @@
         </div>
       </div>
 
-      <div class="comment-body">
+      <div>
         <form *ngIf="editCommentFormModel?.id == comment.id" (ngSubmit)="onEditCommentFormSubmit()">
           <mat-form-field>
             <label>
@@ -72,18 +73,18 @@
             </label>
           </mat-form-field>
 
-          <div class="form-buttons">
-            <button mat-raised-button type="submit" color="primary" [disabled]="!editCommentFormEnabled">
-              {{ 'post' | translate }}
-            </button>
-
+          <div class="form-buttons d-flex justify-content-end">
             <button mat-raised-button (click)="onCancelEditCommentButtonClick()">
               {{ 'cancel' | translate }}
+            </button>
+
+            <button mat-raised-button type="submit" color="primary" [disabled]="!editCommentFormEnabled">
+              {{ 'post' | translate }}
             </button>
           </div>
         </form>
 
-        <span *ngIf="editCommentFormModel?.id != comment.id" class="comment-text">{{ comment.commentText }}</span>
+        <span *ngIf="editCommentFormModel?.id != comment.id">{{ comment.commentText }}</span>
       </div>
     </div>
   </mat-card-content>

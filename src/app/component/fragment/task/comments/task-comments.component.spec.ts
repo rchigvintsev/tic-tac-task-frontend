@@ -143,7 +143,7 @@ describe('TaskCommentsComponent', () => {
     await fixture.whenStable();
     component.onEditCommentButtonClick(component.comments[0]);
     fixture.detectChanges();
-    const commentForm = fixture.debugElement.query(By.css('.comment-' + commentId + ' .comment-body form'));
+    const commentForm = fixture.debugElement.query(By.css('.comment-' + commentId + ' form'));
     expect(commentForm).toBeTruthy();
   });
 
@@ -204,8 +204,9 @@ describe('TaskCommentsComponent', () => {
   it('should render annotation when comment was changed', async () => {
     await fixture.whenStable();
     const commentId = component.comments[0].id;
-    const selector = By.css('.comment-' + commentId + ' .comment-header .comment-date-annotation');
-    const annotation = fixture.debugElement.query(selector);
+    const annotation = fixture.debugElement
+      .query(By.css('.comment-' + commentId))
+      .query(e => e.name === 'span' && e.nativeElement.textContent.trim() === '(changed)');
     expect(annotation).toBeTruthy();
   });
 
