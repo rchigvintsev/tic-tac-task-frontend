@@ -11,7 +11,7 @@ import {SidenavMenuComponent} from './sidenav-menu.component';
 import {TaskGroupService} from '../../../../service/task-group.service';
 import {TaskService} from '../../../../service/task.service';
 import {ConfigService} from '../../../../service/config.service';
-import {TagService} from '../../../../service/tag.service';
+import {TaskTagService} from '../../../../service/task-tag.service';
 import {TaskListService} from '../../../../service/task-list.service';
 import {TaskGroup} from '../../../../model/task-group';
 import {Config} from '../../../../model/config';
@@ -51,7 +51,7 @@ describe('SidenavMenuComponent', () => {
     const taskGroupService = injector.inject(TaskGroupService);
     spyOn(taskGroupService, 'notifyTaskGroupSelected').and.stub();
 
-    const tagService = injector.inject(TagService);
+    const tagService = injector.inject(TaskTagService);
     spyOn(tagService, 'getTags').and.returnValue(EMPTY);
 
     const taskListService = injector.inject(TaskListService);

@@ -1,16 +1,16 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpTestingController} from '@angular/common/http/testing';
 
-import {TagService} from './tag.service';
+import {TaskTagService} from './task-tag.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
-import {Tag} from '../model/tag';
+import {TaskTag} from '../model/task-tag';
 import {Task} from '../model/task';
 import {TestSupport} from '../test/test-support';
 import {ConfigService} from './config.service';
 
-describe('TagService', () => {
+describe('TaskTagService', () => {
   let httpMock: HttpTestingController;
-  let tagService: TagService;
+  let tagService: TaskTagService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,18 +25,18 @@ describe('TagService', () => {
     spyOn(loadingIndicatorService, 'showUntilExecuted').and.callFake((observable) => observable);
 
     httpMock = injector.inject(HttpTestingController);
-    tagService = injector.inject(TagService);
+    tagService = injector.inject(TaskTagService);
   });
 
   it('should be created', () => {
-    const service: TagService = TestBed.inject(TagService);
+    const service: TaskTagService = TestBed.inject(TaskTagService);
     expect(service).toBeTruthy();
   });
 
   it('should return all tags', done => {
     const testTags = [];
-    testTags.push(new Tag().deserialize({id: 1, name: 'Tag 1'}));
-    testTags.push(new Tag().deserialize({id: 2, name: 'Tag 2'}));
+    testTags.push(new TaskTag().deserialize({id: 1, name: 'Tag 1'}));
+    testTags.push(new TaskTag().deserialize({id: 2, name: 'Tag 2'}));
 
     tagService.getTags().subscribe(tags => {
       expect(tags.length).toBe(2);
@@ -50,7 +50,7 @@ describe('TagService', () => {
   });
 
   it('should return tag by id', done => {
-    const testTag = new Tag().deserialize({id: 1, name: 'Test tag'});
+    const testTag = new TaskTag().deserialize({id: 1, name: 'Test tag'});
     tagService.getTag(testTag.id).subscribe(tag => {
       expect(tag).toEqual(testTag);
       done();
@@ -62,7 +62,7 @@ describe('TagService', () => {
   });
 
   it('should create tag', done => {
-    const newTag = new Tag().deserialize({name: 'New tag'});
+    const newTag = new TaskTag().deserialize({name: 'New tag'});
     tagService.createTag(newTag).subscribe(tag => {
       expect(tag).toEqual(newTag);
       done();
@@ -74,7 +74,7 @@ describe('TagService', () => {
   });
 
   it('should notify about created tag', done => {
-    const testTag = new Tag().deserialize({name: 'Test tag'});
+    const testTag = new TaskTag().deserialize({name: 'Test tag'});
     tagService.getCreatedTag().subscribe(tag => {
       expect(tag).toEqual(testTag);
       done();
@@ -88,7 +88,7 @@ describe('TagService', () => {
   });
 
   it('should update tag', done => {
-    const testTag = new Tag().deserialize({id: 1, name: 'Updated test tag'});
+    const testTag = new TaskTag().deserialize({id: 1, name: 'Updated test tag'});
     tagService.updateTag(testTag).subscribe(tag => {
       expect(tag).toEqual(testTag);
       done();
@@ -100,7 +100,7 @@ describe('TagService', () => {
   });
 
   it('should notify about updated tag', done => {
-    const testTag = new Tag().deserialize({id: 1, name: 'Test tag'});
+    const testTag = new TaskTag().deserialize({id: 1, name: 'Test tag'});
     tagService.getUpdatedTag().subscribe(tag => {
       expect(tag).toEqual(testTag);
       done();
@@ -114,7 +114,7 @@ describe('TagService', () => {
   });
 
   it('should delete tag', done => {
-    const testTag = new Tag().deserialize({id: 1});
+    const testTag = new TaskTag().deserialize({id: 1});
     tagService.deleteTag(testTag).subscribe(() => done());
     const request = httpMock.expectOne(`${tagService.baseUrl}/${testTag.id}`);
     expect(request.request.method).toBe('DELETE');
@@ -122,7 +122,7 @@ describe('TagService', () => {
   });
 
   it('should notify about deleted tag', done => {
-    const testTag = new Tag().deserialize({id: 1});
+    const testTag = new TaskTag().deserialize({id: 1});
     tagService.getDeletedTag().subscribe(tag => {
       expect(tag).toEqual(testTag);
       done();

@@ -66,7 +66,7 @@ import {
 import {ErrorNotFoundComponent} from './component/error/not-found/error-not-found.component';
 import {DummyComponent} from './component/dummy/dummy.component';
 import {AlertComponent} from './component/fragment/alert/alert.component';
-import {SidenavTagsComponent} from './component/fragment/sidenav/tags/sidenav-tags.component';
+import {SidenavTaskTagsComponent} from './component/fragment/sidenav/tags/sidenav-task-tags.component';
 import {SidenavTaskListsComponent} from './component/fragment/sidenav/task-lists/sidenav-task-lists.component';
 import {LoadingIndicatorComponent} from './component/fragment/loading-indicator/loading-indicator.component';
 import {AccountDialogComponent} from './component/fragment/account/dialog/account-dialog.component';
@@ -136,7 +136,7 @@ registerLocaleData(localeRu, 'ru');
     ErrorNotFoundComponent,
     DummyComponent,
     AlertComponent,
-    SidenavTagsComponent,
+    SidenavTaskTagsComponent,
     SidenavTaskListsComponent,
     AdminSidenavMenuComponent,
     AdminUsersComponent,

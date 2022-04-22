@@ -6,31 +6,31 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {I18nService} from '../../../../service/i18n.service';
-import {TagService} from '../../../../service/tag.service';
-import {Tag} from '../../../../model/tag';
+import {TaskTagService} from '../../../../service/task-tag.service';
+import {TaskTag} from '../../../../model/task-tag';
 import {HttpRequestError} from '../../../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
 import {PathMatcher} from '../../../../util/path-matcher';
 import {Strings} from '../../../../util/strings';
 
 @Component({
-  selector: 'app-sidenav-tags',
-  templateUrl: './sidenav-tags.component.html',
-  styleUrls: ['./sidenav-tags.component.scss']
+  selector: 'app-sidenav-task-tags',
+  templateUrl: './sidenav-task-tags.component.html',
+  styleUrls: ['./sidenav-task-tags.component.scss']
 })
-export class SidenavTagsComponent implements OnInit, OnDestroy {
+export class SidenavTaskTagsComponent implements OnInit, OnDestroy {
   @ViewChild('tagForm')
   tagForm: NgForm;
-  tagFormModel = new Tag();
+  tagFormModel = new TaskTag();
   tagFormSubmitEnabled = false;
-  tags: Tag[] = [];
+  tags: TaskTag[] = [];
 
   private pathMatcher: PathMatcher;
   private componentDestroyed = new Subject<boolean>();
 
   constructor(public i18nService: I18nService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
-              private tagService: TagService,
+              private tagService: TaskTagService,
               private router: Router) {
   }
 
@@ -81,25 +81,25 @@ export class SidenavTagsComponent implements OnInit, OnDestroy {
 
   private createTag() {
     if (!Strings.isBlank(this.tagFormModel.name)) {
-      this.tagService.createTag(this.tagFormModel).subscribe(
-        _ => this.tagForm.resetForm(),
-        (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-      );
+      this.tagService.createTag(this.tagFormModel).subscribe({
+        next: _ => this.tagForm.resetForm(),
+        error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+    });
     }
   }
 
-  private onTagCreate(tag: Tag) {
-    return this.tags.push(tag);
+  private onTagCreate(tag: TaskTag) {
+    return this.tags.unshift(tag);
   }
 
-  private onTagUpdate(updatedTag: Tag) {
+  private onTagUpdate(updatedTag: TaskTag) {
     const tagIndex = this.tags.findIndex(tag => tag.id === updatedTag.id);
     if (tagIndex >= 0) {
       this.tags[tagIndex] = updatedTag;
     }
   }
 
-  private onTagDelete(deletedTag: Tag) {
+  private onTagDelete(deletedTag: TaskTag) {
     const tagIndex = this.tags.findIndex(tag => tag.id === deletedTag.id);
     if (tagIndex >= 0) {
       this.tags.splice(tagIndex, 1);

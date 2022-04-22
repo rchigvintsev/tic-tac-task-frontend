@@ -13,7 +13,7 @@ import {TaskService} from './task.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
 import {TaskGroup} from '../model/task-group';
 import {Task} from '../model/task';
-import {Tag} from '../model/tag';
+import {TaskTag} from '../model/task-tag';
 import {TaskComment} from '../model/task-comment';
 import {TaskStatus} from '../model/task-status';
 
@@ -444,8 +444,8 @@ describe('TaskService', () => {
     const taskId = 1;
     const testTags = [];
 
-    testTags.push(new Tag().deserialize({id: 2, name: 'Red'}));
-    testTags.push(new Tag().deserialize({id: 3, name: 'Green'}));
+    testTags.push(new TaskTag().deserialize({id: 2, name: 'Red'}));
+    testTags.push(new TaskTag().deserialize({id: 3, name: 'Green'}));
 
     taskService.getTags(taskId).subscribe(tags => {
       expect(tags.length).toBe(2);

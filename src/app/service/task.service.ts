@@ -8,7 +8,7 @@ import * as moment from 'moment';
 
 import {LoadingIndicatorService} from './loading-indicator.service';
 import {Task} from '../model/task';
-import {Tag} from '../model/tag';
+import {TaskTag} from '../model/task-tag';
 import {TaskComment} from '../model/task-comment';
 import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
@@ -299,7 +299,7 @@ export class TaskService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getTags(taskId: number, showLoadingIndicator = true): Observable<Tag[]> {
+  getTags(taskId: number, showLoadingIndicator = true): Observable<TaskTag[]> {
     const observable = this.http.get<any>(`${this.baseUrl}/${taskId}/tags`, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
@@ -311,7 +311,7 @@ export class TaskService {
       map(response => {
         const tags = [];
         for (const json of response) {
-          tags.push(new Tag().deserialize(json));
+          tags.push(new TaskTag().deserialize(json));
         }
         return tags;
       })

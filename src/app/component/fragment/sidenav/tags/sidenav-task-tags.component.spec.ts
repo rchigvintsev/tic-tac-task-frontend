@@ -4,21 +4,21 @@ import {By} from '@angular/platform-browser';
 
 import {of, Subject} from 'rxjs';
 
-import {SidenavTagsComponent} from './sidenav-tags.component';
+import {SidenavTaskTagsComponent} from './sidenav-task-tags.component';
 import {TestSupport} from '../../../../test/test-support';
 import {ConfigService} from '../../../../service/config.service';
-import {TagService} from '../../../../service/tag.service';
-import {Tag} from '../../../../model/tag';
+import {TaskTagService} from '../../../../service/task-tag.service';
+import {TaskTag} from '../../../../model/task-tag';
 import {HTTP_RESPONSE_HANDLER} from '../../../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../../../handler/default-http-response.handler';
 
-describe('SidenavTagsComponent', () => {
-  let component: SidenavTagsComponent;
-  let fixture: ComponentFixture<SidenavTagsComponent>;
-  let tagService: TagService;
-  let createdTagSource: Subject<Tag>;
-  let updatedTagSource: Subject<Tag>;
-  let deletedTagSource: Subject<Tag>;
+describe('SidenavTaskTagsComponent', () => {
+  let component: SidenavTaskTagsComponent;
+  let fixture: ComponentFixture<SidenavTaskTagsComponent>;
+  let tagService: TaskTagService;
+  let createdTagSource: Subject<TaskTag>;
+  let updatedTagSource: Subject<TaskTag>;
+  let deletedTagSource: Subject<TaskTag>;
   let routerEvents: Subject<RouterEvent>;
 
   beforeEach(waitForAsync(() => {
@@ -33,13 +33,13 @@ describe('SidenavTagsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SidenavTagsComponent);
+    fixture = TestBed.createComponent(SidenavTaskTagsComponent);
     const injector = getTestBed();
 
-    tagService = injector.inject(TagService);
+    tagService = injector.inject(TaskTagService);
     const tags = [];
     for (let i = 0; i < 3; i++) {
-      tags.push(new Tag().deserialize({id: i + 1, name: `Test tag ${i + 1}`}));
+      tags.push(new TaskTag().deserialize({id: i + 1, name: `Test tag ${i + 1}`}));
     }
     spyOn(tagService, 'getTags').and.returnValue(of(tags));
     spyOn(tagService, 'createTag').and.callFake(tag => {
@@ -48,11 +48,11 @@ describe('SidenavTagsComponent', () => {
       return of(createdTag);
     });
 
-    createdTagSource = new Subject<Tag>();
+    createdTagSource = new Subject<TaskTag>();
     spyOn(tagService, 'getCreatedTag').and.returnValue(createdTagSource.asObservable());
-    updatedTagSource = new Subject<Tag>();
+    updatedTagSource = new Subject<TaskTag>();
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
-    deletedTagSource = new Subject<Tag>();
+    deletedTagSource = new Subject<TaskTag>();
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
 
     routerEvents = new Subject();
@@ -77,16 +77,16 @@ describe('SidenavTagsComponent', () => {
 
   it('should update tag list on tag create', async () => {
     await fixture.whenStable();
-    const newTag = new Tag('New tag');
+    const newTag = new TaskTag('New tag');
     createdTagSource.next(newTag);
     fixture.detectChanges();
     expect(component.tags.length).toBe(4);
-    expect(component.tags[3]).toEqual(newTag);
+    expect(component.tags[0]).toEqual(newTag);
   });
 
   it('should update tag list on tag update', async () => {
     await fixture.whenStable();
-    const updatedTag = new Tag().deserialize({id: 1, name: 'Updated tag'});
+    const updatedTag = new TaskTag().deserialize({id: 1, name: 'Updated tag'});
     updatedTagSource.next(updatedTag);
     fixture.detectChanges();
     expect(component.tags[0].name).toEqual(updatedTag.name);
@@ -94,7 +94,7 @@ describe('SidenavTagsComponent', () => {
 
   it('should update tag list on tag delete', async () => {
     await fixture.whenStable();
-    const deletedTag = new Tag().deserialize({id: 1});
+    const deletedTag = new TaskTag().deserialize({id: 1});
     deletedTagSource.next(deletedTag);
     fixture.detectChanges();
     expect(component.tags.length).toBe(2);
@@ -120,7 +120,7 @@ describe('SidenavTagsComponent', () => {
     fixture.detectChanges();
     expect(tagService.createTag).toHaveBeenCalled();
     expect(component.tags.length).toBe(4);
-    expect(component.tags[3].name).toEqual(tagName);
+    expect(component.tags[0].name).toEqual(tagName);
   });
 
   it('should not create tag with blank name', async () => {

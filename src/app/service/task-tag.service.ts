@@ -7,7 +7,7 @@ import {map, tap} from 'rxjs/operators';
 import {ConfigService} from './config.service';
 import {I18nService} from './i18n.service';
 import {LoadingIndicatorService} from './loading-indicator.service';
-import {Tag} from '../model/tag';
+import {TaskTag} from '../model/task-tag';
 import {Task} from '../model/task';
 import {PageRequest} from './page-request';
 import {HttpRequestError} from '../error/http-request.error';
@@ -15,17 +15,17 @@ import {HttpRequestOptions} from '../util/http-request-options';
 import {Assert} from '../util/assert';
 
 @Injectable({providedIn: 'root'})
-export class TagService {
+export class TaskTagService {
   readonly baseUrl: string;
 
-  private readonly createdTagSource: Subject<Tag>;
-  private readonly createdTag: Observable<Tag>;
+  private readonly createdTagSource: Subject<TaskTag>;
+  private readonly createdTag: Observable<TaskTag>;
 
-  private readonly updatedTagSource: Subject<Tag>;
-  private readonly updatedTag: Observable<Tag>;
+  private readonly updatedTagSource: Subject<TaskTag>;
+  private readonly updatedTag: Observable<TaskTag>;
 
-  private readonly deletedTagSource: Subject<Tag>;
-  private readonly deletedTag: Observable<Tag>;
+  private readonly deletedTagSource: Subject<TaskTag>;
+  private readonly deletedTag: Observable<TaskTag>;
 
   constructor(private http: HttpClient,
               private config: ConfigService,
@@ -33,17 +33,17 @@ export class TagService {
               private loadingIndicatorService: LoadingIndicatorService) {
     this.baseUrl = `${this.config.apiBaseUrl}/v1/tags`;
 
-    this.createdTagSource = new Subject<Tag>();
+    this.createdTagSource = new Subject<TaskTag>();
     this.createdTag = this.createdTagSource.asObservable();
 
-    this.updatedTagSource = new Subject<Tag>();
+    this.updatedTagSource = new Subject<TaskTag>();
     this.updatedTag = this.updatedTagSource.asObservable();
 
-    this.deletedTagSource = new Subject<Tag>();
+    this.deletedTagSource = new Subject<TaskTag>();
     this.deletedTag = this.deletedTagSource.asObservable();
   }
 
-  getTags(showLoadingIndicator = true): Observable<Tag[]> {
+  getTags(showLoadingIndicator = true): Observable<TaskTag[]> {
     const observable = this.http.get<any>(this.baseUrl, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
@@ -55,7 +55,7 @@ export class TagService {
       map(response => {
         const tags = [];
         for (const json of response) {
-          tags.push(new Tag().deserialize(json));
+          tags.push(new TaskTag().deserialize(json));
         }
         return tags;
       })
@@ -63,7 +63,7 @@ export class TagService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getTag(id: number, showLoadingIndicator = true): Observable<Tag> {
+  getTag(id: number, showLoadingIndicator = true): Observable<TaskTag> {
     const observable = this.http.get<any>(`${this.baseUrl}/${id}`, {withCredentials: true}).pipe(
       tap({
         error: (error: HttpRequestError) => {
@@ -72,14 +72,14 @@ export class TagService {
           }
         }
       }),
-      map(response => new Tag().deserialize(response))
+      map(response => new TaskTag().deserialize(response))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  createTag(tag: Tag, showLoadingIndicator = true): Observable<Tag> {
+  createTag(tag: TaskTag, showLoadingIndicator = true): Observable<TaskTag> {
     Assert.notNullOrUndefined(tag, 'Tag must not be null or undefined');
-    const observable = this.http.post<Tag>(this.baseUrl, tag.serialize(), HttpRequestOptions.JSON).pipe(
+    const observable = this.http.post<TaskTag>(this.baseUrl, tag.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -87,15 +87,15 @@ export class TagService {
           }
         }
       }),
-      map(response => new Tag().deserialize(response)),
+      map(response => new TaskTag().deserialize(response)),
       tap(createdTag => this.notifyTagCreated(createdTag))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  updateTag(tag: Tag, showLoadingIndicator = true): Observable<Tag> {
+  updateTag(tag: TaskTag, showLoadingIndicator = true): Observable<TaskTag> {
     Assert.notNullOrUndefined(tag, 'Tag must not be null or undefined');
-    const observable = this.http.put<Tag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), HttpRequestOptions.JSON).pipe(
+    const observable = this.http.put<TaskTag>(`${this.baseUrl}/${tag.id}`, tag.serialize(), HttpRequestOptions.JSON).pipe(
       tap({
         error: (error: HttpRequestError) => {
           if (!error.localizedMessage) {
@@ -103,13 +103,13 @@ export class TagService {
           }
         }
       }),
-      map(response => new Tag().deserialize(response)),
+      map(response => new TaskTag().deserialize(response)),
       tap(updatedTag => this.notifyTagUpdated(updatedTag))
     );
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  deleteTag(tag: Tag, showLoadingIndicator = true): Observable<any> {
+  deleteTag(tag: TaskTag, showLoadingIndicator = true): Observable<any> {
     Assert.notNullOrUndefined(tag, 'Tag must not be null or undefined');
     const observable = this.http.delete<any>(`${this.baseUrl}/${tag.id}`, {withCredentials: true}).pipe(
       tap({
@@ -147,27 +147,27 @@ export class TagService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getCreatedTag(): Observable<Tag> {
+  getCreatedTag(): Observable<TaskTag> {
     return this.createdTag;
   }
 
-  getUpdatedTag(): Observable<Tag> {
+  getUpdatedTag(): Observable<TaskTag> {
     return this.updatedTag;
   }
 
-  getDeletedTag(): Observable<Tag> {
+  getDeletedTag(): Observable<TaskTag> {
     return this.deletedTag;
   }
 
-  private notifyTagCreated(tag: Tag) {
+  private notifyTagCreated(tag: TaskTag) {
     this.createdTagSource.next(tag);
   }
 
-  private notifyTagUpdated(tag: Tag) {
+  private notifyTagUpdated(tag: TaskTag) {
     this.updatedTagSource.next(tag);
   }
 
-  private notifyTagDeleted(tag: Tag) {
+  private notifyTagDeleted(tag: TaskTag) {
     this.deletedTagSource.next(tag);
   }
 }

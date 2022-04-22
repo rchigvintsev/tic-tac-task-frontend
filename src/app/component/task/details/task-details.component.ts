@@ -16,14 +16,14 @@ import {ConfirmationDialogComponent} from '../../fragment/confirmation-dialog/co
 import {TaskService} from '../../../service/task.service';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {TaskListService} from '../../../service/task-list.service';
-import {TagService} from '../../../service/tag.service';
+import {TaskTagService} from '../../../service/task-tag.service';
 import {LogService} from '../../../service/log.service';
 import {I18nService} from '../../../service/i18n.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
 import {Task} from '../../../model/task';
 import {TaskGroup} from '../../../model/task-group';
 import {TaskList} from '../../../model/task-list';
-import {Tag} from '../../../model/tag';
+import {TaskTag} from '../../../model/task-tag';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {BadRequestError} from '../../../error/bad-request.error';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
@@ -65,9 +65,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   deadlineTimeEnabled = false;
 
   tagControl = new FormControl();
-  tags: Tag[] = [];
-  availableTags: Tag[] = [];
-  filteredTags: Observable<Tag[]>;
+  tags: TaskTag[] = [];
+  availableTags: TaskTag[] = [];
+  filteredTags: Observable<TaskTag[]>;
 
   taskLists: TaskList[] = [];
 
@@ -88,7 +88,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private taskGroupService: TaskGroupService,
               private taskListService: TaskListService,
-              private tagService: TagService,
+              private tagService: TaskTagService,
               private i18nService: I18nService,
               private pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
@@ -221,7 +221,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.tagControl.setValue(null);
   }
 
-  onTagChipRemoved(tag: Tag) {
+  onTagChipRemoved(tag: TaskTag) {
     this.removeTag(tag);
   }
 
@@ -317,7 +317,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.saveTask();
   }
 
-  getTagColorStyle(tag: Tag): string {
+  getTagColorStyle(tag: TaskTag): string {
     return ColorPalette.isDark(tag.color) ? 'white' : 'inherit';
   }
 
@@ -338,7 +338,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.selectedTaskGroup = taskGroup;
   }
 
-  private onTagUpdate(tag: Tag) {
+  private onTagUpdate(tag: TaskTag) {
     let tagIndex = this.tags.findIndex(t => t.id === tag.id);
     if (tagIndex >= 0) {
       this.tags[tagIndex] = tag;
@@ -350,7 +350,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onTagDelete(tag: Tag) {
+  private onTagDelete(tag: TaskTag) {
     let tagIndex = this.tags.findIndex(t => t.id === tag.id);
     if (tagIndex >= 0) {
       this.tags.splice(tagIndex, 1);
@@ -402,12 +402,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initTags(tags: Tag[]) {
+  private initTags(tags: TaskTag[]) {
     this.tags = tags;
     this.initAvailableTags(tags);
   }
 
-  private initAvailableTags(excludedTags: Tag[]) {
+  private initAvailableTags(excludedTags: TaskTag[]) {
     this.tagService.getTags().pipe(
       map(allTags => allTags.filter(tag => excludedTags.findIndex(excludedTag => excludedTag.name === tag.name) < 0))
     ).subscribe({
@@ -470,7 +470,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.errorStateMatchers.forEach(matcher => matcher.errorState = false);
   }
 
-  private filterTagsByName(tagName: string): Tag[] {
+  private filterTagsByName(tagName: string): TaskTag[] {
     const normalizedTagName = TaskDetailsComponent.normalizeTagName(tagName);
     return this.availableTags.filter(tag => {
       return TaskDetailsComponent.normalizeTagName(tag.name).indexOf(normalizedTagName) === 0;
@@ -490,7 +490,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       } else {
         tagIndex = this.tags.findIndex(taskTag => taskTag.name === trimmedName);
         if (tagIndex < 0) {
-          const newTag = new Tag(trimmedName);
+          const newTag = new TaskTag(trimmedName);
           this.tagService.createTag(newTag).pipe(
             mergeMap(tag => this.taskService.assignTag(this.task.id, tag.id).pipe(map(_ => tag)))
           ).subscribe({
@@ -505,7 +505,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private removeTag(tag: Tag) {
+  private removeTag(tag: TaskTag) {
     const tagIndex = this.tags.findIndex(t => t.name === tag.name);
     if (tagIndex >= 0) {
       this.taskService.removeTag(this.task.id, tag.id).subscribe({next: _ => {

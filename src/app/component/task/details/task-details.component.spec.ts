@@ -16,10 +16,10 @@ import * as moment from 'moment';
 import {TaskDetailsComponent} from './task-details.component';
 import {Task} from '../../../model/task';
 import {TaskList} from '../../../model/task-list';
-import {Tag} from '../../../model/tag';
+import {TaskTag} from '../../../model/task-tag';
 import {TaskGroup} from '../../../model/task-group';
 import {TaskService} from '../../../service/task.service';
-import {TagService} from '../../../service/tag.service';
+import {TaskTagService} from '../../../service/task-tag.service';
 import {TaskListService} from '../../../service/task-list.service';
 import {ConfigService} from '../../../service/config.service';
 import {LogService} from '../../../service/log.service';
@@ -56,10 +56,10 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let router: Router;
   let taskService: TaskService;
-  let tagService: TagService;
+  let tagService: TaskTagService;
   let taskListService: TaskListService;
-  let updatedTagSource: Subject<Tag>;
-  let deletedTagSource: Subject<Tag>;
+  let updatedTagSource: Subject<TaskTag>;
+  let deletedTagSource: Subject<TaskTag>;
   let createdTaskListSource: Subject<TaskList>;
   let task: Task;
 
@@ -104,16 +104,16 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'updateTaskCounters').and.stub();
     spyOn(taskService, 'completeTask').and.returnValue(of(true));
     spyOn(taskService, 'deleteTask').and.returnValue(of(true));
-    spyOn(taskService, 'getTags').and.returnValue(of([new Tag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
+    spyOn(taskService, 'getTags').and.returnValue(of([new TaskTag().deserialize({id: 2, name: 'Red', color: 0xff0000})]));
     spyOn(taskService, 'assignTag').and.returnValue(of(null));
     spyOn(taskService, 'removeTag').and.returnValue(of(null));
     spyOn(taskService, 'getComments').and.returnValue(EMPTY);
 
-    updatedTagSource = new Subject<Tag>();
-    deletedTagSource = new Subject<Tag>();
+    updatedTagSource = new Subject<TaskTag>();
+    deletedTagSource = new Subject<TaskTag>();
 
-    tagService = injector.inject(TagService);
-    spyOn(tagService, 'getTags').and.returnValue(of([new Tag('Green'), new Tag('Blue')]));
+    tagService = injector.inject(TaskTagService);
+    spyOn(tagService, 'getTags').and.returnValue(of([new TaskTag('Green'), new TaskTag('Blue')]));
     spyOn(tagService, 'createTag').and.callFake(t => of(t));
     spyOn(tagService, 'getUpdatedTag').and.returnValue(updatedTagSource.asObservable());
     spyOn(tagService, 'getDeletedTag').and.returnValue(deletedTagSource.asObservable());
@@ -269,7 +269,7 @@ describe('TaskDetailsComponent', () => {
   it('should filter tag options on tag input value change', (done) => {
     fixture.whenStable().then(() => {
       component.filteredTags.pipe(skip(1)).subscribe(filteredTags => {
-        expect(filteredTags).toEqual([new Tag('Green')]);
+        expect(filteredTags).toEqual([new TaskTag('Green')]);
         done();
       });
       component.tagControl.setValue('Gr');
@@ -468,7 +468,7 @@ describe('TaskDetailsComponent', () => {
 
   it('should remove tag from task on tag chip remove', async () => {
     await fixture.whenStable();
-    const tag = new Tag('Red');
+    const tag = new TaskTag('Red');
     component.onTagChipRemoved(tag);
     fixture.detectChanges();
     expect(taskService.removeTag).toHaveBeenCalled();

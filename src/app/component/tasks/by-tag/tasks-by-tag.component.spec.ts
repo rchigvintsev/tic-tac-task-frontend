@@ -10,9 +10,9 @@ import {TestSupport} from '../../../test/test-support';
 import {TasksByTagComponent} from './tasks-by-tag.component';
 import {ConfigService} from '../../../service/config.service';
 import {PageRequest} from '../../../service/page-request';
-import {TagService} from '../../../service/tag.service';
+import {TaskTagService} from '../../../service/task-tag.service';
 import {TaskGroup} from '../../../model/task-group';
-import {Tag} from '../../../model/tag';
+import {TaskTag} from '../../../model/task-tag';
 import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
 import {HTTP_RESPONSE_HANDLER} from '../../../handler/http-response.handler';
 import {DefaultHttpResponseHandler} from '../../../handler/default-http-response.handler';
@@ -29,12 +29,12 @@ class MatDialogMock {
 }
 
 describe('TasksByTagComponent', () => {
-  const tag = new Tag().deserialize({id: 1, name: 'Test tag'});
+  const tag = new TaskTag().deserialize({id: 1, name: 'Test tag'});
 
   let fixture: ComponentFixture<TasksByTagComponent>;
   let component: TasksByTagComponent;
   let router: Router;
-  let tagService: TagService;
+  let tagService: TaskTagService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -61,7 +61,7 @@ describe('TasksByTagComponent', () => {
     router = injector.inject(Router);
     router.navigate = jasmine.createSpy('navigate').and.callFake(() => Promise.resolve());
 
-    tagService = injector.inject(TagService);
+    tagService = injector.inject(TaskTagService);
     spyOn(tagService, 'getTag').and.returnValue(of(tag));
     spyOn(tagService, 'getUncompletedTasks').and.returnValue(of([]));
     spyOn(tagService, 'updateTag').and.callFake(t => of(t));

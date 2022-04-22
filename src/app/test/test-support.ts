@@ -51,7 +51,7 @@ import {TaskListComponent} from '../component/fragment/task-list/task-list.compo
 import {TaskListForWeekComponent} from '../component/fragment/task-list/for-week/task-list-for-week.component';
 import {TaskCommentsComponent} from '../component/fragment/task/comments/task-comments.component';
 import {NewTaskFormComponent} from '../component/fragment/new-task/form/new-task-form.component';
-import {SidenavTagsComponent} from '../component/fragment/sidenav/tags/sidenav-tags.component';
+import {SidenavTaskTagsComponent} from '../component/fragment/sidenav/tags/sidenav-task-tags.component';
 import {SidenavTaskListsComponent} from '../component/fragment/sidenav/task-lists/sidenav-task-lists.component';
 import {TasksByGroupComponent} from '../component/tasks/by-group/tasks-by-group.component';
 import {TasksByTagComponent} from '../component/tasks/by-tag/tasks-by-tag.component';
@@ -128,7 +128,7 @@ export class TestSupport {
     AccountPasswordResetComponent,
     AccountPasswordResetConfirmationComponent,
     TaskCommentsComponent,
-    SidenavTagsComponent,
+    SidenavTaskTagsComponent,
     SidenavTaskListsComponent,
     TaskListComponent,
     TaskListItemComponent,

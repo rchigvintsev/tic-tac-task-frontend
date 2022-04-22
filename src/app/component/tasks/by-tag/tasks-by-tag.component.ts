@@ -9,10 +9,10 @@ import {ConfirmationDialogComponent} from '../../fragment/confirmation-dialog/co
 import {ColorPickerDialogComponent} from '../../fragment/color-picker-dialog/color-picker-dialog.component';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
-import {TagService} from '../../../service/tag.service';
+import {TaskTagService} from '../../../service/task-tag.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
 import {TaskGroup} from '../../../model/task-group';
-import {Tag} from '../../../model/tag';
+import {TaskTag} from '../../../model/task-tag';
 import {HttpRequestError} from '../../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../handler/http-response.handler';
 import {Strings} from '../../../util/strings';
@@ -30,20 +30,20 @@ export class TasksByTagComponent implements OnInit {
   loading: boolean;
   loaded: boolean;
 
-  tagFormModel = new Tag();
+  tagFormModel = new TaskTag();
 
   @ViewChild('titleInput')
   titleElement: ElementRef;
   titleEditing = false;
 
-  private tag: Tag;
+  private tag: TaskTag;
   private pageRequest = new PageRequest();
 
   constructor(private i18nService: I18nService,
               private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
-              private tagService: TagService,
+              private tagService: TaskTagService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
   }
@@ -114,7 +114,7 @@ export class TasksByTagComponent implements OnInit {
     });
   }
 
-  private onTagLoad(tag: Tag) {
+  private onTagLoad(tag: TaskTag) {
     this.tag = tag;
     this.tagFormModel = tag.clone();
     this.reloadTasks();

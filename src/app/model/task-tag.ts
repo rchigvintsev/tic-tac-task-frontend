@@ -1,9 +1,10 @@
 import {AbstractEntity} from './abstract-entity';
 import {Objects} from '../util/objects';
+import {ColorPalette} from '../util/color-palette';
 
-const DEFAULT_TAG_COLOR = '#e0e0e0';
+const DEFAULT_TAG_COLOR = ColorPalette.COLOR_GREEN[500].hex;
 
-export class Tag extends AbstractEntity {
+export class TaskTag extends AbstractEntity {
   id: number;
   name: string;
   color = DEFAULT_TAG_COLOR;
@@ -17,7 +18,7 @@ export class Tag extends AbstractEntity {
     return hex ? parseInt(hex.substring(1), 16) : null;
   }
 
-  deserialize(input: any): Tag {
+  deserialize(input: any): TaskTag {
     this.id = input.id;
     this.name = input.name;
     if (input.color) {
@@ -31,18 +32,18 @@ export class Tag extends AbstractEntity {
   }
 
   serialize(): any {
-    return {id: this.id, name: this.name, color: Tag.hexStringToNumber(this.color)};
+    return {id: this.id, name: this.name, color: TaskTag.hexStringToNumber(this.color)};
   }
 
-  clone(): Tag {
-    const clone = new Tag();
+  clone(): TaskTag {
+    const clone = new TaskTag();
     clone.id = this.id;
     clone.name = this.name;
     clone.color = this.color;
     return clone;
   }
 
-  equals(other: Tag): boolean {
+  equals(other: TaskTag): boolean {
     if (!other) {
       return false;
     }

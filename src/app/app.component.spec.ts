@@ -10,7 +10,7 @@ import {AuthenticationService} from './service/authentication.service';
 import {User} from './model/user';
 import {TestSupport} from './test/test-support';
 import {ConfigService} from './service/config.service';
-import {TagService} from './service/tag.service';
+import {TaskTagService} from './service/task-tag.service';
 import {TaskListService} from './service/task-list.service';
 import {Language} from './service/i18n.service';
 import {Config} from './model/config';
@@ -46,7 +46,7 @@ describe('AppComponent', () => {
     const configService = injector.inject(ConfigService);
     configService.setConfig(new Config());
 
-    const tagService = injector.inject(TagService);
+    const tagService = injector.inject(TaskTagService);
     spyOn(tagService, 'getTags').and.returnValue(EMPTY);
 
     const taskListService = injector.inject(TaskListService);
