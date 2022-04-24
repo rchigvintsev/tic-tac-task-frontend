@@ -141,7 +141,7 @@ describe('SidenavTaskListsComponent', () => {
     fixture.detectChanges();
     expect(taskListService.createTaskList).toHaveBeenCalled();
     expect(component.taskLists.length).toBe(4);
-    expect(component.taskLists[3].name).toEqual(taskListName);
+    expect(component.taskLists[0].name).toEqual(taskListName);
   });
 
   it('should not create task list with blank name', async () => {

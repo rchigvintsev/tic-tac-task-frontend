@@ -88,7 +88,7 @@ export class SidenavTaskListsComponent implements OnInit, OnDestroy {
   private createTaskList() {
     if (!Strings.isBlank(this.taskListFormModel.name)) {
       this.taskListService.createTaskList(this.taskListFormModel).subscribe(createdTaskList => {
-        this.taskLists.push(createdTaskList);
+        this.taskLists.unshift(createdTaskList);
         this.taskListForm.resetForm();
       }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
     }
