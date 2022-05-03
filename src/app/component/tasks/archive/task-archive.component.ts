@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 
 import {Task} from '../../../model/task';
+import {ConfigService} from '../../../service/config.service';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
@@ -17,9 +18,10 @@ export class TaskArchiveComponent implements OnInit {
   tasks: Array<Task>;
   showInlineSpinner: boolean;
 
-  private pageRequest = new PageRequest();
+  private pageRequest = this.newPageRequest();
 
-  constructor(private i18nService: I18nService,
+  constructor(private config: ConfigService,
+              private i18nService: I18nService,
               private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
@@ -71,5 +73,9 @@ export class TaskArchiveComponent implements OnInit {
   private onHttpRequestError(error: HttpRequestError) {
     this.showInlineSpinner = false;
     this.httpResponseHandler.handleError(error);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

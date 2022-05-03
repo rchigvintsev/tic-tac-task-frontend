@@ -125,7 +125,7 @@ export class TaskTagService {
   }
 
   getUncompletedTasks(tagId: number,
-                      pageRequest: PageRequest = new PageRequest(),
+                      pageRequest: PageRequest = this.newPageRequest(),
                       showLoadingIndicator = true): Observable<Task[]> {
     const url = `${this.baseUrl}/${tagId}/tasks/uncompleted?${pageRequest.toQueryParameters()}`;
     const observable = this.http.get<any>(url, {withCredentials: true}).pipe(
@@ -169,5 +169,9 @@ export class TaskTagService {
 
   private notifyTagDeleted(tag: TaskTag) {
     this.deletedTagSource.next(tag);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

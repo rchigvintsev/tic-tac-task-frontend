@@ -7,6 +7,7 @@ import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
 
 import {ConfirmationDialogComponent} from '../../fragment/confirmation-dialog/confirmation-dialog.component';
 import {ColorPickerDialogComponent} from '../../fragment/color-picker-dialog/color-picker-dialog.component';
+import {ConfigService} from '../../../service/config.service';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
 import {TaskTagService} from '../../../service/task-tag.service';
@@ -37,9 +38,10 @@ export class TasksByTagComponent implements OnInit {
   titleEditing = false;
 
   private tag: TaskTag;
-  private pageRequest = new PageRequest();
+  private pageRequest = this.newPageRequest();
 
-  constructor(private i18nService: I18nService,
+  constructor(private config: ConfigService,
+              private i18nService: I18nService,
               private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
@@ -189,5 +191,9 @@ export class TasksByTagComponent implements OnInit {
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

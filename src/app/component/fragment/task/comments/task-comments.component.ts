@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
 
 import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
+import {ConfigService} from '../../../../service/config.service';
 import {TaskService} from '../../../../service/task.service';
 import {TaskCommentService} from '../../../../service/task-comment.service';
 import {I18nService} from '../../../../service/i18n.service';
@@ -31,9 +32,10 @@ export class TaskCommentsComponent implements OnInit {
   taskId: number;
   selectedComment: TaskComment;
 
-  private pageRequest = new PageRequest();
+  private pageRequest = this.newPageRequest();
 
-  constructor(private taskService: TaskService,
+  constructor(private config: ConfigService,
+              private taskService: TaskService,
               private commentService: TaskCommentService,
               private i18nService: I18nService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
@@ -106,10 +108,10 @@ export class TaskCommentsComponent implements OnInit {
 
   onCommentListScroll() {
     this.pageRequest.page++;
-    this.taskService.getComments(this.taskId, this.pageRequest).subscribe(
-      comments => this.comments = this.comments.concat(comments),
-      (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
-    );
+    this.taskService.getComments(this.taskId, this.pageRequest).subscribe({
+      next: comments => this.comments = this.comments.concat(comments),
+      error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+    });
   }
 
   getRelativeCommentDate(comment: TaskComment) {
@@ -127,29 +129,42 @@ export class TaskCommentsComponent implements OnInit {
 
   private createComment(comment: TaskComment) {
     if (!Strings.isBlank(comment.commentText)) {
-      this.taskService.addComment(this.taskId, comment).subscribe(createdComment => {
-        this.comments.unshift(createdComment);
-        this.newCommentForm.resetForm();
-      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+      this.taskService.addComment(this.taskId, comment).subscribe({
+        next: createdComment => {
+          this.comments.unshift(createdComment);
+          this.newCommentForm.resetForm();
+        },
+        error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+      });
     }
   }
 
   private updateComment(comment: TaskComment) {
     if (!Strings.isBlank(comment.commentText)) {
-      this.commentService.updateComment(comment).subscribe(savedComment => {
-        const idx = this.comments.findIndex(e => e.id === savedComment.id);
-        if (idx < 0) {
-          throw new Error(`Comment with id ${savedComment.id} is not found`);
-        }
-        this.comments[idx] = savedComment;
-        this.setEditCommentFormModel(null);
-      }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+      this.commentService.updateComment(comment).subscribe({
+        next: savedComment => {
+          const idx = this.comments.findIndex(e => e.id === savedComment.id);
+          if (idx < 0) {
+            throw new Error(`Comment with id ${savedComment.id} is not found`);
+          }
+          this.comments[idx] = savedComment;
+          this.setEditCommentFormModel(null);
+        },
+        error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+      });
     }
   }
 
   private deleteComment(comment: TaskComment) {
-    this.commentService.deleteComment(comment).subscribe(() => {
-      this.comments = this.comments.filter(e => e.id !== comment.id);
-    }, (error: HttpRequestError) => this.httpResponseHandler.handleError(error));
+    this.commentService.deleteComment(comment).subscribe({
+      next: () => {
+        this.comments = this.comments.filter(e => e.id !== comment.id);
+      },
+      error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
+    });
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

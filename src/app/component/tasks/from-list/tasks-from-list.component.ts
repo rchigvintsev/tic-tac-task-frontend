@@ -104,7 +104,7 @@ export class TasksFromListComponent implements OnInit {
     this.taskListService.addTask(this.taskList.id, task.id).subscribe({
       next: _ => {
         task.taskListId = this.taskList.id;
-        this.tasks.push(task);
+        this.tasks.unshift(task);
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });

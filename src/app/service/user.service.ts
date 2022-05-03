@@ -37,7 +37,7 @@ export class UserService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  getUsers(pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<User[]> {
+  getUsers(pageRequest: PageRequest = this.newPageRequest(), showLoadingIndicator = true): Observable<User[]> {
     const url = `${this.baseUrl}?${pageRequest.toQueryParameters()}`
     const observable = this.http.get<User[]>(url, {withCredentials: true}).pipe(
       tap({
@@ -127,5 +127,9 @@ export class UserService {
     const url = `${this.baseUrl}/${user.id}/profile-picture`;
     const observable = this.http.put<any>(url, formData, {withCredentials: true}).pipe(map(_ => url));
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

@@ -186,7 +186,7 @@ export class TaskService {
   }
 
   getTasksForTaskGroup(taskGroup: TaskGroup,
-                       pageRequest: PageRequest = new PageRequest(),
+                       pageRequest: PageRequest = this.newPageRequest(),
                        showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskGroup, 'Task group must not be null or undefined');
     const taskRequest = TaskService.newTaskRequestForTaskGroup(taskGroup);
@@ -194,14 +194,14 @@ export class TaskService {
   }
 
   getTasks(taskRequest: GetTasksRequest,
-           pageRequest: PageRequest = new PageRequest(),
+           pageRequest: PageRequest = this.newPageRequest(),
            showLoadingIndicator = true): Observable<Task[]> {
     Assert.notNullOrUndefined(taskRequest, 'Task request must not be null or undefined');
     const url = `${this.baseUrl}?${taskRequest.toQueryParameters()}&${pageRequest.toQueryParameters()}`;
     return this.loadTasks(url, showLoadingIndicator);
   }
 
-  getArchivedTasks(pageRequest: PageRequest = new PageRequest(), showLoadingIndicator = true): Observable<Task[]> {
+  getArchivedTasks(pageRequest: PageRequest = this.newPageRequest(), showLoadingIndicator = true): Observable<Task[]> {
     const completedAtTo = moment().subtract(1, 'day').endOf('day').utc().format(moment.HTML5_FMT.DATETIME_LOCAL);
     const url = `${this.baseUrl}?statuses=COMPLETED&completedAtTo=${completedAtTo}&${pageRequest.toQueryParameters()}`;
     return this.loadTasks(url, showLoadingIndicator);
@@ -347,7 +347,7 @@ export class TaskService {
   }
 
   getComments(taskId: number,
-              pageRequest: PageRequest = new PageRequest(),
+              pageRequest: PageRequest = this.newPageRequest(),
               showLoadingIndicator = true): Observable<TaskComment[]> {
     const url = `${this.baseUrl}/${taskId}/comments?${pageRequest.toQueryParameters()}`;
     const observable = this.http.get<TaskComment[]>(url, {withCredentials: true}).pipe(
@@ -430,6 +430,10 @@ export class TaskService {
       return this.createTask(newTask, false);
     }
     return of(task);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }
 

@@ -30,17 +30,22 @@ export class ConfigService {
     return this.config.domain;
   }
 
-  get apiBaseUrl() {
+  get apiBaseUrl(): string {
     this.assertInitialized();
     return this.config.apiBaseUrl;
   }
 
-  get selfBaseUrl() {
+  get selfBaseUrl(): string {
     this.assertInitialized();
     if (this.domain) {
       return `https://${this.domain}`
     }
     return `${ConfigService.DEFAULT_SCHEME}://${ConfigService.DEFAULT_HOST}:${ConfigService.DEFAULT_PORT}`
+  }
+
+  get pageSize(): number {
+    this.assertInitialized();
+    return this.config.pageSize;
   }
 
   private assertNotInitialized() {

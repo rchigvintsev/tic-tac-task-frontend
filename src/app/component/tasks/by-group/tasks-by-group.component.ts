@@ -7,6 +7,7 @@ import {takeUntil} from 'rxjs/operators';
 import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
 import * as moment from 'moment';
 
+import {ConfigService} from '../../../service/config.service';
 import {TaskService} from '../../../service/task.service';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
@@ -34,9 +35,10 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   private loadingSubscription: Subscription;
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
-  private pageRequest = new PageRequest();
+  private pageRequest = this.newPageRequest();
 
-  constructor(private taskService: TaskService,
+  constructor(private config: ConfigService,
+              private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute,
@@ -107,7 +109,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   }
 
   onTaskCreate(task: Task) {
-    this.tasks.push(task);
+    this.tasks.unshift(task);
   }
 
   onTaskListScroll(_?: IInfiniteScrollEvent) {
@@ -179,5 +181,9 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   private onHttpRequestError(error: HttpRequestError) {
     this.loading = false;
     this.httpResponseHandler.handleError(error);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

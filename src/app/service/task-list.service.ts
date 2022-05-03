@@ -151,7 +151,7 @@ export class TaskListService {
   }
 
   getTasks(taskListId: number,
-           pageRequest: PageRequest = new PageRequest(),
+           pageRequest: PageRequest = this.newPageRequest(),
            showLoadingIndicator = true): Observable<Task[]> {
     const url = `${this.baseUrl}/${taskListId}/tasks?${pageRequest.toQueryParameters()}`;
     const observable = this.http.get<Task[]>(url, {withCredentials: true}).pipe(
@@ -231,5 +231,9 @@ export class TaskListService {
 
   private notifyTaskListDeleted(taskList: TaskList) {
     this.deletedTaskListSource.next(taskList);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

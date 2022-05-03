@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import {takeUntil} from 'rxjs/operators';
 import {Subject, Subscription} from 'rxjs';
 
+import {ConfigService} from '../../../../service/config.service';
 import {GetTasksRequest, TaskService} from '../../../../service/task.service';
 import {PageRequest} from '../../../../service/page-request';
 import {Task} from '../../../../model/task';
@@ -25,7 +26,9 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
 
   private componentDestroyed = new Subject<boolean>();
 
-  constructor(private taskService: TaskService, @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
+  constructor(private config: ConfigService,
+              private taskService: TaskService,
+              @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
   }
 
   private static getTaskGroupName(i: number, dayNumber: number): string {
@@ -92,7 +95,7 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
       taskRequest.deadlineDateTimeTo = moment().add(n, 'day').endOf('day').toDate();
     }
     const groupName = TaskListForWeekComponent.getTaskGroupName(n, dayNumber);
-    return new TaskGroup(groupName, taskRequest, this.taskService, this.httpResponseHandler);
+    return new TaskGroup(groupName, taskRequest, this.config, this.taskService, this.httpResponseHandler);
   }
 
   private onTaskUpdate(task: Task) {
@@ -131,7 +134,7 @@ export class TaskListForWeekComponent implements OnInit, OnDestroy {
 class TaskGroup {
   tasks: Task[] = [];
   size = 0;
-  pageRequest = new PageRequest();
+  pageRequest = this.newPageRequest();
 
   loading: boolean;
   initialized: boolean;
@@ -140,6 +143,7 @@ class TaskGroup {
 
   constructor(public name: string,
               private taskRequest: GetTasksRequest,
+              private config: ConfigService,
               private taskService: TaskService,
               private httpResponseHandler: HttpResponseHandler) {
     this.reloadTasks();
@@ -196,5 +200,9 @@ class TaskGroup {
   private onHttpRequestError(error: HttpRequestError) {
     this.loading = false;
     this.httpResponseHandler.handleError(error);
+  }
+
+  private newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
   }
 }

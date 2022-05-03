@@ -170,7 +170,7 @@ describe('TasksFromListComponent', () => {
     component.onTaskCreate(newTask)
 
     expect(component.tasks.length).toBe(3);
-    expect(component.tasks[2].title).toBe(newTask.title);
-    expect(component.tasks[2].taskListId).toBe(taskList.id);
+    expect(component.tasks[0].title).toBe(newTask.title);
+    expect(component.tasks[0].taskListId).toBe(taskList.id);
   });
 });
