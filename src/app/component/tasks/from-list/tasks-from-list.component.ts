@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
@@ -24,7 +24,7 @@ import {ResourceNotFoundError} from '../../../error/resource-not-found.error';
   templateUrl: './tasks-from-list.component.html',
   styleUrls: ['./tasks-from-list.component.scss']
 })
-export class TasksFromListComponent implements OnInit {
+export class TasksFromListComponent implements OnInit, OnDestroy {
   tasks: Array<Task>;
   loading: boolean;
   loaded: boolean;
@@ -36,7 +36,8 @@ export class TasksFromListComponent implements OnInit {
   titleEditing = false;
 
   private taskList: TaskList;
-  private pageRequest = new PageRequest();
+  private pageRequest: PageRequest;
+  private recentlyCreatedTasks = new Map<number, Task>();
 
   constructor(private i18nService: I18nService,
               private taskService: TaskService,
@@ -45,10 +46,15 @@ export class TasksFromListComponent implements OnInit {
               private taskListService: TaskListService,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
+    this.pageRequest = taskListService.newPageRequest();
   }
 
   ngOnInit() {
     this.route.params.pipe(map(params => +params.id)).subscribe(taskListId => this.onTaskListIdChange(taskListId));
+  }
+
+  ngOnDestroy(): void {
+    this.recentlyCreatedTasks.clear();
   }
 
   onTitleTextClick() {
@@ -105,6 +111,7 @@ export class TasksFromListComponent implements OnInit {
       next: _ => {
         task.taskListId = this.taskList.id;
         this.tasks.unshift(task);
+        this.recentlyCreatedTasks.set(task.id, task);
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
     });
@@ -190,6 +197,7 @@ export class TasksFromListComponent implements OnInit {
     this.taskListService.getTasks(this.taskList.id, this.pageRequest).subscribe({
       next: tasks => {
         this.tasks = tasks;
+        this.recentlyCreatedTasks.clear();
         this.loading = false;
         this.loaded = true;
       },
@@ -200,10 +208,10 @@ export class TasksFromListComponent implements OnInit {
   private loadNextPage() {
     if (this.taskList) {
       this.pageRequest.page++;
-      this.taskListService.getTasks(this.taskList.id, this.pageRequest, false).subscribe(
-        tasks => this.tasks = this.tasks.concat(tasks),
-        (error: HttpRequestError) => this.onHttpRequestError(error)
-      );
+      this.taskListService.getTasks(this.taskList.id, this.pageRequest, false).subscribe({
+        next: tasks => this.tasks = this.tasks.concat(tasks.filter(t => !this.recentlyCreatedTasks.has(t.id))),
+        error: (error: HttpRequestError) => this.onHttpRequestError(error)
+      });
     }
   }
 }

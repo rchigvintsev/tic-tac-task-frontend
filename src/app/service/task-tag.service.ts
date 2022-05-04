@@ -159,6 +159,10 @@ export class TaskTagService {
     return this.deletedTag;
   }
 
+  newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
+  }
+
   private notifyTagCreated(tag: TaskTag) {
     this.createdTagSource.next(tag);
   }
@@ -169,9 +173,5 @@ export class TaskTagService {
 
   private notifyTagDeleted(tag: TaskTag) {
     this.deletedTagSource.next(tag);
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }

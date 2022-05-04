@@ -217,6 +217,10 @@ export class TaskListService {
     return this.deletedTaskList;
   }
 
+  newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
+  }
+
   private notifyTaskListCreated(taskList: TaskList) {
     this.createdTaskListSource.next(taskList);
   }
@@ -231,9 +235,5 @@ export class TaskListService {
 
   private notifyTaskListDeleted(taskList: TaskList) {
     this.deletedTaskListSource.next(taskList);
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }

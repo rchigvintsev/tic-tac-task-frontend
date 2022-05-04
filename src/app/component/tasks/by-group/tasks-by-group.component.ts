@@ -7,7 +7,6 @@ import {takeUntil} from 'rxjs/operators';
 import {IInfiniteScrollEvent} from 'ngx-infinite-scroll';
 import * as moment from 'moment';
 
-import {ConfigService} from '../../../service/config.service';
 import {TaskService} from '../../../service/task.service';
 import {TaskGroupService} from '../../../service/task-group.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
@@ -35,14 +34,15 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   private loadingSubscription: Subscription;
   private taskGroup: TaskGroup;
   private componentDestroyed = new Subject<boolean>();
-  private pageRequest = this.newPageRequest();
+  private pageRequest: PageRequest;
+  private recentlyCreatedTasks = new Map<number, Task>(); // To prevent loading of the same task twice
 
-  constructor(private config: ConfigService,
-              private taskService: TaskService,
+  constructor(private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               private taskGroupService: TaskGroupService,
               private route: ActivatedRoute,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
+    this.pageRequest = taskService.newPageRequest();
   }
 
   private static getTitle(taskGroup: TaskGroup): string {
@@ -77,6 +77,8 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.recentlyCreatedTasks.clear();
+
     this.componentDestroyed.next(true);
     this.componentDestroyed.complete();
 
@@ -110,6 +112,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
 
   onTaskCreate(task: Task) {
     this.tasks.unshift(task);
+    this.recentlyCreatedTasks.set(task.id, task);
   }
 
   onTaskListScroll(_?: IInfiniteScrollEvent) {
@@ -125,6 +128,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
     this.loadingSubscription = this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
         this.tasks = tasks;
+        this.recentlyCreatedTasks.clear();
         this.loading = false;
         this.initialized = true;
       },
@@ -142,7 +146,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
 
     this.loadingSubscription = this.taskService.getTasksForTaskGroup(this.taskGroup, this.pageRequest, false).subscribe({
       next: tasks => {
-        this.tasks = this.tasks.concat(tasks);
+        this.tasks = this.tasks.concat(tasks.filter(t => !this.recentlyCreatedTasks.has(t.id)));
         this.loading = false;
       },
       error: (error: HttpRequestError) => this.onHttpRequestError(error)
@@ -154,6 +158,7 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
       this.taskGroup = taskGroup;
       this.title = TasksByGroupComponent.getTitle(taskGroup);
       this.tasks = [];
+      this.recentlyCreatedTasks.clear();
       this.pageRequest.page = 0;
       this.tasksForWeek = taskGroup === TaskGroup.WEEK;
       if (!this.tasksForWeek) {
@@ -181,9 +186,5 @@ export class TasksByGroupComponent implements OnInit, OnDestroy {
   private onHttpRequestError(error: HttpRequestError) {
     this.loading = false;
     this.httpResponseHandler.handleError(error);
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }

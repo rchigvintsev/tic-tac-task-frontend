@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 
 import {Task} from '../../../model/task';
-import {ConfigService} from '../../../service/config.service';
 import {I18nService} from '../../../service/i18n.service';
 import {TaskService} from '../../../service/task.service';
 import {PageNavigationService} from '../../../service/page-navigation.service';
@@ -18,18 +17,20 @@ export class TaskArchiveComponent implements OnInit {
   tasks: Array<Task>;
   showInlineSpinner: boolean;
 
-  private pageRequest = this.newPageRequest();
+  private pageRequest: PageRequest;
 
-  constructor(private config: ConfigService,
-              private i18nService: I18nService,
+  constructor(private i18nService: I18nService,
               private taskService: TaskService,
               private pageNavigationService: PageNavigationService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
+    this.pageRequest = taskService.newPageRequest();
   }
 
   ngOnInit() {
-    this.taskService.getArchivedTasks(this.pageRequest)
-      .subscribe(tasks => this.tasks = tasks, (error: HttpRequestError) => this.onHttpRequestError(error));
+    this.taskService.getArchivedTasks(this.pageRequest).subscribe({
+      next: tasks => this.tasks = tasks,
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   onTaskRestoreButtonClick(task: Task) {
@@ -38,17 +39,17 @@ export class TaskArchiveComponent implements OnInit {
 
   onTaskListScroll() {
     this.beforeTasksLoad();
-    this.taskService.getArchivedTasks(this.pageRequest, false).subscribe(
-      tasks => this.afterTasksLoad(tasks),
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    );
+    this.taskService.getArchivedTasks(this.pageRequest, false).subscribe({
+      next: tasks => this.afterTasksLoad(tasks),
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   private restoreTask(task: Task) {
-    this.taskService.restoreTask(task).subscribe(
-      restoredTask => this.onTaskRestore(restoredTask),
-      (error: HttpRequestError) => this.onHttpRequestError(error)
-    )
+    this.taskService.restoreTask(task).subscribe({
+      next: restoredTask => this.onTaskRestore(restoredTask),
+      error: (error: HttpRequestError) => this.onHttpRequestError(error)
+    });
   }
 
   private onTaskRestore(task: Task) {
@@ -73,9 +74,5 @@ export class TaskArchiveComponent implements OnInit {
   private onHttpRequestError(error: HttpRequestError) {
     this.showInlineSpinner = false;
     this.httpResponseHandler.handleError(error);
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }

@@ -129,7 +129,7 @@ export class UserService {
     return showLoadingIndicator ? this.loadingIndicatorService.showUntilExecuted(observable) : observable;
   }
 
-  private newPageRequest() {
+  newPageRequest() {
     return new PageRequest(0, this.config.pageSize);
   }
 }

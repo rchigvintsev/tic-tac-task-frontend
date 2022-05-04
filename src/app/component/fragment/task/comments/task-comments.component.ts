@@ -6,7 +6,6 @@ import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
 
 import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
-import {ConfigService} from '../../../../service/config.service';
 import {TaskService} from '../../../../service/task.service';
 import {TaskCommentService} from '../../../../service/task-comment.service';
 import {I18nService} from '../../../../service/i18n.service';
@@ -32,15 +31,15 @@ export class TaskCommentsComponent implements OnInit {
   taskId: number;
   selectedComment: TaskComment;
 
-  private pageRequest = this.newPageRequest();
+  private pageRequest: PageRequest;
 
-  constructor(private config: ConfigService,
-              private taskService: TaskService,
+  constructor(private taskService: TaskService,
               private commentService: TaskCommentService,
               private i18nService: I18nService,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler,
               private route: ActivatedRoute,
               private dialog: MatDialog) {
+    this.pageRequest = taskService.newPageRequest();
   }
 
   ngOnInit() {
@@ -162,9 +161,5 @@ export class TaskCommentsComponent implements OnInit {
       },
       error: (error: HttpRequestError) => this.httpResponseHandler.handleError(error)
     });
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }

@@ -40,6 +40,10 @@ describe('TasksFromListComponent', () => {
   let taskService: TaskService;
   let taskListService: TaskListService;
 
+  beforeAll(() => {
+    jasmine.getEnv().allowRespy(true);
+  });
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
@@ -172,5 +176,16 @@ describe('TasksFromListComponent', () => {
     expect(component.tasks.length).toBe(3);
     expect(component.tasks[0].title).toBe(newTask.title);
     expect(component.tasks[0].taskListId).toBe(taskList.id);
+  });
+
+  it('should not duplicate newly created task on next page load', async () => {
+    await fixture.whenStable();
+
+    const newTask = new Task().deserialize({id: 4, title: 'New task', status: TaskStatus.PROCESSED})
+    spyOn(taskListService, 'getTasks').and.returnValue(of([newTask]));
+
+    component.onTaskCreate(newTask);
+    component.onTaskListScroll();
+    expect(component.tasks.filter(t => t.id === newTask.id).length).toBe(1);
   });
 });

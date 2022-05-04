@@ -24,6 +24,10 @@ describe('TasksByGroupComponent', () => {
   let taskService: TaskService;
   let taskGroupService: TaskGroupService;
 
+  beforeAll(() => {
+    jasmine.getEnv().allowRespy(true);
+  });
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: TestSupport.IMPORTS,
@@ -168,6 +172,17 @@ describe('TasksByGroupComponent', () => {
       await fixture.whenStable();
       taskService.notifyTaskUpdated(tasks[0]);
       expect(taskService.getTasksForTaskGroup).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not duplicate newly created task on next page load', async () => {
+      await fixture.whenStable();
+
+      const newTask = new Task().deserialize({id: 3, title: 'New task', status: TaskStatus.PROCESSED})
+      spyOn(taskService, 'getTasksForTaskGroup').and.returnValue(of([newTask]));
+
+      component.onTaskCreate(newTask);
+      component.onTaskListScroll();
+      expect(component.tasks.filter(t => t.id === newTask.id).length).toBe(1);
     });
   });
 

@@ -397,6 +397,10 @@ export class TaskService {
     this.restoredTaskSource.next(task);
   }
 
+  newPageRequest() {
+    return new PageRequest(0, this.config.pageSize);
+  }
+
   private loadTaskCount(url: string): Observable<number> {
     return this.http.get<number>(url, {withCredentials: true});
   }
@@ -430,10 +434,6 @@ export class TaskService {
       return this.createTask(newTask, false);
     }
     return of(task);
-  }
-
-  private newPageRequest() {
-    return new PageRequest(0, this.config.pageSize);
   }
 }
 
