@@ -1,3 +1,5 @@
+@import "responsive";
+
 .flex-row {
   flex-direction: row !important;
 }
@@ -44,4 +46,134 @@
 
 .flex-shrink-1 {
   flex-shrink: 1 !important;
+}
+
+@media #{$screen-xs} {
+  .flex-xs-column {
+    flex-direction: column !important;
+  }
+
+  .flex-xs-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-sm} {
+  .flex-sm-column {
+    flex-direction: column !important;
+  }
+
+  .flex-sm-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-md} {
+  .flex-md-column {
+    flex-direction: column !important;
+  }
+
+  .flex-md-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-lg} {
+  .flex-lg-column {
+    flex-direction: column !important;
+  }
+
+  .flex-lg-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-xl} {
+  .flex-xl-column {
+    flex-direction: column !important;
+  }
+
+  .flex-xl-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-lt-sm} {
+  .flex-lt-sm-column {
+    flex-direction: column !important;
+  }
+
+  .flex-lt-sm-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-lt-md} {
+  .flex-lt-md-column {
+    flex-direction: column !important;
+  }
+
+  .flex-lt-md-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-lt-lg} {
+  .flex-lt-lg-column {
+    flex-direction: column !important;
+  }
+
+  .flex-lt-lg-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-lt-xl} {
+  .flex-lt-xl-column {
+    flex-direction: column !important;
+  }
+
+  .flex-lt-xl-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-gt-xs} {
+  .flex-gt-xs-column {
+    flex-direction: column !important;
+  }
+
+  .flex-gt-xs-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-gt-sm} {
+  .flex-gt-sm-column {
+    flex-direction: column !important;
+  }
+
+  .flex-gt-sm-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-gt-md} {
+  .flex-gt-md-column {
+    flex-direction: column !important;
+  }
+
+  .flex-gt-md-row {
+    flex-direction: row !important;
+  }
+}
+
+@media #{$screen-gt-lg} {
+  .flex-gt-lg-column {
+    flex-direction: column !important;
+  }
+
+  .flex-gt-lg-row {
+    flex-direction: row !important;
+  }
 }

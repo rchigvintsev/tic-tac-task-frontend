@@ -1,3 +1,5 @@
+@import "src/styles/responsive.scss";
+
 .error-container {
   display: flex;
   flex-direction: row;
@@ -26,7 +28,7 @@
         text-shadow: 10px 5px 3px rgba(255, 255, 255, 0.8);
       }
 
-      @media (max-width: 480px) {
+      @media #{$screen-xs} {
         h1 {
           font-size: 100px;
           text-shadow: 5px 3px 2px rgba(255, 255, 255, 0.8);

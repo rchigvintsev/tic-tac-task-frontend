@@ -1,6 +1,7 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import "colors";
+@import "responsive";
 
 body {
   margin: 0;
@@ -88,10 +89,6 @@ body {
         }
       }
     }
-  }
-
-  .right-margin-8 {
-    margin-right: 8px;
   }
 
   mat-nav-list mat-list {
@@ -244,7 +241,7 @@ body {
       }
     }
 
-    @media (max-width: 599px) {
+    @media #{$screen-xs} {
       .mat-list-item-content {
         padding: 8px 0 0 0 !important;
       }

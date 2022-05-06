@@ -13,7 +13,7 @@
       </a>
       <span class="space-filler"></span>
 
-      <div class="right-margin-8">
+      <div class="mr-2">
         <button mat-button [matMenuTriggerFor]="languages">
           {{ currentLanguage.code | uppercase }}
           <mat-icon>arrow_drop_down</mat-icon>
@@ -26,7 +26,7 @@
         </mat-menu>
       </div>
 
-      <div *ngIf="authenticatedUser" class="profile-info-container" [class.right-margin-8]="xsQuery.matches">
+      <div *ngIf="authenticatedUser" class="profile-info-container" [class.mr-2]="xsQuery.matches">
         <button mat-button fxShow="true" fxHide.lt-sm="true" [matMenuTriggerFor]="profileActions">
           <img *ngIf="authenticatedUser.profilePictureUrl; else identicon" [src]="authenticatedUser.profilePictureUrl"
                alt="avatar" class="avatar round"/>
