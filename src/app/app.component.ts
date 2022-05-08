@@ -16,7 +16,7 @@ import {I18nService, Language} from './service/i18n.service';
 import {AuthenticationService} from './service/authentication.service';
 import {TaskGroupService} from './service/task-group.service';
 import {User} from './model/user';
-import {ViewportMediaQueries} from './util/viewport-media-queries';
+import {MediaQueries} from './util/media-queries';
 import {Routes} from './util/routes';
 import packageJson from '../../package.json';
 
@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
               private authenticationService: AuthenticationService,
               private media: MediaMatcher,
               private dialog: MatDialog) {
-    this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
+    this.xsQuery = media.matchMedia(MediaQueries.LT_MD);
   }
 
   ngOnInit() {

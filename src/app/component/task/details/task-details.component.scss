@@ -13,19 +13,23 @@ mat-chip {
     max-width: 160px;
   }
 
-  .deadline-time-checkbox {
-    color: $color-black-54;
-  }
+  .deadline-time-container {
+    min-width: 128px;
 
-  .deadline-time-form-field {
-    max-width: 80px;
+    .deadline-time-checkbox {
+      color: $color-black-54;
+    }
 
-    ngx-material-timepicker-toggle {
-      position: relative;
-      bottom: -4px;
+    .deadline-time-form-field {
+      max-width: 80px;
 
-      mat-icon {
-        color: $color-black-54;
+      ngx-material-timepicker-toggle {
+        position: relative;
+        bottom: -4px;
+
+        mat-icon {
+          color: $color-black-54;
+        }
       }
     }
   }

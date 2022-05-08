@@ -8,7 +8,7 @@ import {Task} from '../../../../model/task';
 import {TaskStatus} from '../../../../model/task-status';
 import {HttpRequestError} from '../../../../error/http-request.error';
 import {HTTP_RESPONSE_HANDLER, HttpResponseHandler} from '../../../../handler/http-response.handler';
-import {ViewportMediaQueries} from '../../../../util/viewport-media-queries';
+import {MediaQueries} from '../../../../util/media-queries';
 
 @Component({
   selector: 'app-task-list-item',
@@ -27,7 +27,7 @@ export class TaskListItemComponent {
               private taskService: TaskService,
               private media: MediaMatcher,
               @Inject(HTTP_RESPONSE_HANDLER) private httpResponseHandler: HttpResponseHandler) {
-    this.xsQuery = media.matchMedia(ViewportMediaQueries.XS);
+    this.xsQuery = media.matchMedia(MediaQueries.XS);
   }
 
   onTaskListItemDragEnded(event: CdkDragEnd) {
